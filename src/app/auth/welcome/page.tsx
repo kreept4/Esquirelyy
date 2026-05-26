@@ -39,7 +39,7 @@ export default function WelcomePage() {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (user) {
-      await supabase.from('profiles').upsert({
+      await (supabase.from('profiles') as any).upsert({
         id: user.id,
         user_type: userType,
         updated_at: new Date().toISOString(),
@@ -307,3 +307,4 @@ export default function WelcomePage() {
     </div>
   )
 }
+
