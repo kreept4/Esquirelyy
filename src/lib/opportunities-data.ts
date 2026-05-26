@@ -59,7 +59,7 @@ export const ALL_OPPORTUNITIES: Opportunity[] = [
     deadline: '2025-06-15',
     isRolling: false,
     duration: '3 weeks',
-    description: 'Templars' flagship scheme for law students. Immersive exposure to energy, corporate, and dispute resolution matters. Stipend provided.',
+    description: 'Templars flagship scheme for law students. Immersive exposure to energy, corporate, and dispute resolution matters. Stipend provided.',
     amount: 'Stipend provided',
     applyEmail: 'careers@templars-law.com',
     isVerified: true,
@@ -448,3 +448,4 @@ export const CATEGORY_META = {
     icon: 'briefcase',
   },
 }
+
