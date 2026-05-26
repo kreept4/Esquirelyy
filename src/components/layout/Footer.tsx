@@ -1,0 +1,179 @@
+'use client'
+
+import Link from 'next/link'
+
+const FOOTER_LINKS = {
+  Opportunities: [
+    { href: '/opportunities', label: 'All Opportunities' },
+    { href: '/jobs?type=job', label: 'Full-time Roles' },
+    { href: '/jobs?type=internship', label: 'Internships' },
+    { href: '/jobs?type=vacation_scheme', label: 'Vacation Schemes' },
+    { href: '/jobs?type=clerkship', label: 'Clerkships' },
+    { href: '/scholarships', label: 'Scholarships' },
+    { href: '/opportunities?category=grad_trainee_banking', label: 'Banking Roles' },
+    { href: '/opportunities?category=grad_trainee_fintech', label: 'Fintech Roles' },
+  ],
+  Explore: [
+    { href: '/firms', label: 'Firm Directory' },
+    { href: '/firms?tier=tier_1', label: 'Tier 1 Firms' },
+    { href: '/firms?type=court', label: 'Courts & Tribunals' },
+    { href: '/firms?city=abuja', label: 'Abuja Listings' },
+  ],
+  Platform: [
+    { href: '/tracker', label: 'Application Tracker' },
+    { href: '/auth-login', label: 'Create Account' },
+    { href: '/auth-login#alerts', label: 'Job Alerts' },
+  ],
+  Legal: [
+    { href: '/privacy', label: 'Privacy Policy' },
+    { href: '/terms', label: 'Terms of Use' },
+    { href: '/advertise', label: 'Post a Role' },
+    { href: '/contact', label: 'Contact' },
+  ],
+}
+
+export default function Footer() {
+  return (
+    <footer style={{ backgroundColor: '#1A1A1A', color: '#FAF7F2' }}>
+      {/* CTA strip */}
+      <div style={{
+        backgroundColor: '#0A2342',
+        padding: '4rem 2rem',
+        textAlign: 'center',
+        borderBottom: '0.5px solid rgba(250,247,242,0.1)',
+      }}>
+        <p style={{
+          fontFamily: 'DM Sans, sans-serif',
+          fontSize: '0.65rem',
+          fontWeight: 600,
+          letterSpacing: '0.2em',
+          textTransform: 'uppercase',
+          color: 'rgba(250,247,242,0.5)',
+          marginBottom: '1rem',
+        }}>
+          Built for Nigerian Legal Professionals
+        </p>
+        <h2 style={{
+          fontFamily: 'Playfair Display, Georgia, serif',
+          fontSize: 'clamp(1.8rem, 4vw, 3rem)',
+          fontWeight: 700,
+          color: '#FAF7F2',
+          marginBottom: '1.5rem',
+          lineHeight: 1.2,
+        }}>
+          Every opportunity.<br />One platform.
+        </h2>
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link href="/jobs" className="btn-primary" style={{
+            backgroundColor: '#FAF7F2',
+            color: '#0A2342',
+            borderColor: '#FAF7F2',
+          }}>
+            Browse Opportunities
+          </Link>
+          <Link href="/auth-login" className="btn-outline" style={{
+            color: '#FAF7F2',
+            borderColor: 'rgba(250,247,242,0.4)',
+          }}>
+            Create Free Account
+          </Link>
+        </div>
+      </div>
+
+      {/* Links grid */}
+      <div style={{
+        maxWidth: '1280px',
+        margin: '0 auto',
+        padding: '4rem 2rem 2rem',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+        gap: '2.5rem',
+      }}>
+        {/* Brand column */}
+        <div>
+          <span style={{
+            fontFamily: 'Playfair Display, Georgia, serif',
+            fontWeight: 700,
+            fontSize: '1.25rem',
+            color: '#FAF7F2',
+            display: 'block',
+            marginBottom: '0.75rem',
+          }}>
+            Esquirely
+          </span>
+          <p style={{
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: '0.8rem',
+            color: 'rgba(250,247,242,0.45)',
+            lineHeight: 1.7,
+            maxWidth: '200px',
+          }}>
+            Nigeria's definitive platform for legal careers, opportunities, and professional growth.
+          </p>
+        </div>
+
+        {Object.entries(FOOTER_LINKS).map(([section, links]) => (
+          <div key={section}>
+            <p style={{
+              fontFamily: 'DM Sans, sans-serif',
+              fontSize: '0.62rem',
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+              textTransform: 'uppercase',
+              color: 'rgba(250,247,242,0.35)',
+              marginBottom: '1rem',
+            }}>
+              {section}
+            </p>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              {links.map(({ href, label }) => (
+                <li key={href}>
+                  <Link href={href} style={{
+                    fontFamily: 'DM Sans, sans-serif',
+                    fontSize: '0.82rem',
+                    color: 'rgba(250,247,242,0.6)',
+                    textDecoration: 'none',
+                    transition: 'color 0.2s ease',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#FAF7F2')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'rgba(250,247,242,0.6)')}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom bar */}
+      <div style={{
+        maxWidth: '1280px',
+        margin: '0 auto',
+        padding: '1.5rem 2rem',
+        borderTop: '0.5px solid rgba(250,247,242,0.08)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '1rem',
+      }}>
+        <p style={{
+          fontFamily: 'DM Sans, sans-serif',
+          fontSize: '0.72rem',
+          color: 'rgba(250,247,242,0.3)',
+        }}>
+          © {new Date().getFullYear()} Esquirely. All rights reserved.
+        </p>
+        <p style={{
+          fontFamily: 'DM Sans, sans-serif',
+          fontSize: '0.72rem',
+          color: 'rgba(250,247,242,0.3)',
+        }}>
+          Made for the Nigerian bar.
+        </p>
+      </div>
+    </footer>
+  )
+}

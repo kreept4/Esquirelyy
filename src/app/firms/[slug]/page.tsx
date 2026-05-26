@@ -1,0 +1,327 @@
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
+import { ALL_FIRMS, getMonogram } from '@/lib/firms-data'
+
+const ArrowLeftIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 12H5M12 5l-7 7 7 7"/>
+  </svg>
+)
+const MapPinIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
+  </svg>
+)
+const MailIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+  </svg>
+)
+const GlobeIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+  </svg>
+)
+const ShieldCheckIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
+  </svg>
+)
+const BriefcaseIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+  </svg>
+)
+
+export async function generateStaticParams() {
+  return ALL_FIRMS.map(f => ({ slug: f.slug }))
+}
+
+export default function FirmProfilePage({ params }: { params: { slug: string } }) {
+  const firm = ALL_FIRMS.find(f => f.slug === params.slug)
+  if (!firm) notFound()
+
+  return (
+    <>
+      <Navbar />
+      <main style={{ backgroundColor: '#FAF7F2', paddingTop: '64px', minHeight: '100vh' }}>
+
+        {/* Back nav */}
+        <div style={{
+          borderBottom: '0.5px solid #E8E0D5',
+          padding: '1rem 2rem',
+          backgroundColor: '#F0EBE3',
+        }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+            <Link href="/firms" style={{
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              fontFamily: 'DM Sans, sans-serif', fontSize: '0.75rem',
+              fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase',
+              color: '#4A4A4A', textDecoration: 'none',
+            }}>
+              <ArrowLeftIcon /> Firm Directory
+            </Link>
+          </div>
+        </div>
+
+        {/* Firm header */}
+        <div style={{
+          backgroundColor: '#F0EBE3',
+          borderBottom: '0.5px solid #E8E0D5',
+          padding: '3rem 2rem',
+        }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', flexWrap: 'wrap' }}>
+              {/* Monogram */}
+              <div style={{
+                width: '72px', height: '72px', flexShrink: 0,
+                backgroundColor: '#0A2342', color: '#FAF7F2',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'Playfair Display, Georgia, serif',
+                fontWeight: 700, fontSize: '1.35rem', borderRadius: '3px',
+              }}>
+                {getMonogram(firm.name)}
+              </div>
+
+              <div style={{ flex: 1, minWidth: '240px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                  <span className="label-caps" style={{ color: '#0A2342', opacity: 0.6, fontSize: '0.6rem' }}>
+                    {firm.tier}
+                  </span>
+                  <span style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '3px',
+                    color: '#2D6A4F', fontFamily: 'DM Sans, sans-serif',
+                    fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
+                  }}>
+                    <ShieldCheckIcon /> Verified
+                  </span>
+                  {firm.openRoles > 0 && (
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: '3px',
+                      backgroundColor: '#0A2342', color: '#FAF7F2',
+                      fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem',
+                      fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
+                      padding: '2px 8px', borderRadius: '2px',
+                    }}>
+                      <BriefcaseIcon /> {firm.openRoles} open role{firm.openRoles !== 1 ? 's' : ''}
+                    </span>
+                  )}
+                </div>
+
+                <h1 style={{
+                  fontFamily: 'Playfair Display, Georgia, serif',
+                  fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)',
+                  fontWeight: 700, color: '#1A1A1A', lineHeight: 1.1,
+                  marginBottom: '0.75rem',
+                }}>
+                  {firm.name}
+                </h1>
+
+                <p style={{
+                  fontFamily: 'DM Sans, sans-serif', fontSize: '0.88rem',
+                  color: '#4A4A4A', lineHeight: 1.7, maxWidth: '600px',
+                }}>
+                  {firm.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '3rem 2rem' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '2rem',
+            alignItems: 'start',
+          }}>
+
+            {/* Left: details */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+              {/* Contact */}
+              <div style={{
+                border: '0.5px solid #E8E0D5', borderRadius: '3px',
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  padding: '0.75rem 1.25rem',
+                  backgroundColor: '#F0EBE3',
+                  borderBottom: '0.5px solid #E8E0D5',
+                }}>
+                  <p className="label-caps" style={{ color: '#0A2342', opacity: 0.7, fontSize: '0.6rem' }}>Contact</p>
+                </div>
+                <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                  <a href={`mailto:${firm.email}`} style={{
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#0A2342',
+                    textDecoration: 'none',
+                  }}>
+                    <span style={{ color: '#4A4A4A' }}><MailIcon /></span>
+                    {firm.email}
+                  </a>
+                  <a href={firm.website} target="_blank" rel="noopener noreferrer" style={{
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#0A2342',
+                    textDecoration: 'none',
+                  }}>
+                    <span style={{ color: '#4A4A4A' }}><GlobeIcon /></span>
+                    {firm.website.replace('https://', '')}
+                  </a>
+                </div>
+              </div>
+
+              {/* Offices */}
+              <div style={{
+                border: '0.5px solid #E8E0D5', borderRadius: '3px',
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  padding: '0.75rem 1.25rem',
+                  backgroundColor: '#F0EBE3',
+                  borderBottom: '0.5px solid #E8E0D5',
+                }}>
+                  <p className="label-caps" style={{ color: '#0A2342', opacity: 0.7, fontSize: '0.6rem' }}>
+                    Office{firm.offices.length > 1 ? 's' : ''}
+                  </p>
+                </div>
+                <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {firm.offices.map(office => (
+                    <div key={office.city} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                      <span style={{ color: '#4A4A4A', marginTop: '2px', flexShrink: 0 }}><MapPinIcon /></span>
+                      <div>
+                        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', fontWeight: 700, color: '#1A1A1A', marginBottom: '2px' }}>
+                          {office.city}
+                        </p>
+                        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.75rem', color: '#4A4A4A', lineHeight: 1.5 }}>
+                          {office.address}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Practice areas */}
+              <div style={{
+                border: '0.5px solid #E8E0D5', borderRadius: '3px',
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  padding: '0.75rem 1.25rem',
+                  backgroundColor: '#F0EBE3',
+                  borderBottom: '0.5px solid #E8E0D5',
+                }}>
+                  <p className="label-caps" style={{ color: '#0A2342', opacity: 0.7, fontSize: '0.6rem' }}>Practice Areas</p>
+                </div>
+                <div style={{ padding: '1.25rem', display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+                  {firm.practiceAreas.map(area => (
+                    <span key={area} style={{
+                      fontFamily: 'DM Sans, sans-serif', fontSize: '0.75rem',
+                      backgroundColor: '#F0EBE3', color: '#1A1A1A',
+                      padding: '4px 10px', borderRadius: '2px',
+                    }}>
+                      {area}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {firm.foundedYear && (
+                <div style={{
+                  border: '0.5px solid #E8E0D5', borderRadius: '3px', overflow: 'hidden',
+                }}>
+                  <div style={{ padding: '0.75rem 1.25rem', backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5' }}>
+                    <p className="label-caps" style={{ color: '#0A2342', opacity: 0.7, fontSize: '0.6rem' }}>Established</p>
+                  </div>
+                  <div style={{ padding: '1.25rem' }}>
+                    <p style={{
+                      fontFamily: 'Playfair Display, Georgia, serif',
+                      fontSize: '2rem', fontWeight: 700, color: '#1A1A1A',
+                    }}>
+                      {firm.foundedYear}
+                    </p>
+                    <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.75rem', color: '#4A4A4A' }}>
+                      {new Date().getFullYear() - firm.foundedYear} years of practice
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Right: CTA */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{
+                border: '0.5px solid #E8E0D5', borderRadius: '3px', overflow: 'hidden',
+              }}>
+                <div style={{ padding: '0.75rem 1.25rem', backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5' }}>
+                  <p className="label-caps" style={{ color: '#0A2342', opacity: 0.7, fontSize: '0.6rem' }}>Open Roles</p>
+                </div>
+                <div style={{ padding: '1.5rem' }}>
+                  {firm.openRoles > 0 ? (
+                    <>
+                      <p style={{
+                        fontFamily: 'Playfair Display, Georgia, serif',
+                        fontSize: '2.5rem', fontWeight: 700, color: '#1A1A1A',
+                        lineHeight: 1, marginBottom: '0.25rem',
+                      }}>
+                        {firm.openRoles}
+                      </p>
+                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: '#4A4A4A', marginBottom: '1.25rem' }}>
+                        open position{firm.openRoles !== 1 ? 's' : ''} at this firm
+                      </p>
+                      <Link href={`/jobs?firm=${firm.slug}`} className="btn-primary" style={{ display: 'block', textAlign: 'center' }}>
+                        View open roles
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', color: '#4A4A4A', lineHeight: 1.65, marginBottom: '1.25rem' }}>
+                        No active listings at this firm right now. Set an alert to be notified when they post.
+                      </p>
+                      <Link href="/auth-login#alerts" className="btn-outline" style={{ display: 'block', textAlign: 'center' }}>
+                        Set firm alert
+                      </Link>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Apply directly */}
+              <div style={{
+                backgroundColor: '#0A2342', borderRadius: '3px', padding: '1.5rem',
+              }}>
+                <p className="label-caps" style={{ color: 'rgba(250,247,242,0.5)', fontSize: '0.6rem', marginBottom: '0.5rem' }}>
+                  Direct Application
+                </p>
+                <p style={{
+                  fontFamily: 'Playfair Display, Georgia, serif',
+                  fontSize: '1rem', fontWeight: 600, color: '#FAF7F2',
+                  lineHeight: 1.3, marginBottom: '0.75rem',
+                }}>
+                  Apply directly to their recruitment team.
+                </p>
+                <a
+                  href={`mailto:${firm.email}?subject=Application Enquiry`}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                    fontFamily: 'DM Sans, sans-serif', fontSize: '0.75rem',
+                    fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase',
+                    color: '#FAF7F2', border: '0.5px solid rgba(250,247,242,0.3)',
+                    padding: '0.65rem 1.25rem', textDecoration: 'none', borderRadius: '2px',
+                  }}
+                >
+                  <MailIcon /> {firm.email}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  )
+}

@@ -1,0 +1,224 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Core palette */
+  --charcoal: #1A1A1A;
+  --charcoal-light: #2C2C2C;
+  --charcoal-muted: #4A4A4A;
+
+  --cream: #FAF7F2;
+  --cream-dark: #F0EBE3;
+  --cream-border: #E8E0D5;
+
+  --ink: #0A2342;
+  --ink-light: #1B3A5E;
+  --ink-muted: #2E5080;
+
+  /* Status */
+  --verified: #2D6A4F;
+  --closing: #B5451B;
+
+  /* Typography scale */
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--cream);
+  color: var(--charcoal);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Scrollbar — subtle, on-brand */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--cream-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--charcoal-muted);
+}
+
+/* Selection */
+::selection {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+/* Typography utilities */
+@layer components {
+  .heading-display {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .heading-section {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .label-caps {
+    font-family: var(--font-sans);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .body-legal {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--charcoal-muted);
+  }
+
+  /* Card — the core unit */
+  .card-esquirely {
+    background: var(--cream);
+    border: 0.5px solid var(--cream-border);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .card-esquirely:hover {
+    border-color: var(--ink-muted);
+    box-shadow: 0 4px 24px rgba(10, 35, 66, 0.06);
+  }
+
+  /* Button variants */
+  .btn-primary {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.75rem;
+    border: 1px solid var(--ink);
+    transition: background 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: var(--charcoal);
+    border-color: var(--charcoal);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.75rem;
+    border: 1px solid var(--ink);
+    transition: background 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .btn-outline:hover {
+    background: var(--ink);
+    color: var(--cream);
+  }
+
+  /* Badge variants */
+  .badge-verified {
+    background: rgba(45, 106, 79, 0.08);
+    color: var(--verified);
+    border: 0.5px solid rgba(45, 106, 79, 0.2);
+  }
+
+  .badge-closing {
+    background: rgba(181, 69, 27, 0.08);
+    color: var(--closing);
+    border: 0.5px solid rgba(181, 69, 27, 0.2);
+  }
+
+  .badge-new {
+    background: rgba(10, 35, 66, 0.06);
+    color: var(--ink);
+    border: 0.5px solid rgba(10, 35, 66, 0.15);
+  }
+
+  /* Divider rule */
+  .rule-esquirely {
+    border: none;
+    border-top: 0.5px solid var(--cream-border);
+  }
+
+  /* Grain texture overlay */
+  .grain-overlay {
+    position: relative;
+  }
+
+  .grain-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+}
+
+/* Ticker animation */
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-ticker {
+  animation: ticker 35s linear infinite;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
+/* Staggered fade-up for cards */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.5s ease forwards;
+  opacity: 0;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
