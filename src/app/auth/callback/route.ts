@@ -11,7 +11,6 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
-      // Check if onboarding is complete
       const { data: { user } } = await supabase.auth.getUser()
 
       if (user) {
@@ -21,10 +20,9 @@ export async function GET(request: Request) {
           .eq('id', user.id)
           .single()
 
-        if (profile?.onboarding_complete) {
+        if ((profile as any)?.onboarding_complete) {
           return NextResponse.redirect(`${origin}/jobs`)
         }
-
         return NextResponse.redirect(`${origin}/auth/welcome`)
       }
     }
