@@ -1,14 +1,12 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Eye, EyeOff } from 'lucide-react'
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') || '/jobs'
@@ -57,7 +55,6 @@ export default function LoginPage() {
       justifyContent: 'center',
       padding: '2rem',
     }}>
-      {/* Wordmark */}
       <Link href="/" style={{ textDecoration: 'none', marginBottom: '2.5rem' }}>
         <span style={{
           fontFamily: 'Playfair Display, Georgia, serif',
@@ -97,7 +94,6 @@ export default function LoginPage() {
           Sign in to your Esquirely account.
         </p>
 
-        {/* Google OAuth */}
         <button
           onClick={handleGoogleLogin}
           style={{
@@ -137,13 +133,10 @@ export default function LoginPage() {
           marginBottom: '1.5rem',
         }}>
           <div style={{ flex: 1, height: '0.5px', backgroundColor: '#E8E0D5' }} />
-          <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: '#4A4A4A', letterSpacing: '0.06em' }}>
-            OR
-          </span>
+          <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: '#4A4A4A', letterSpacing: '0.06em' }}>OR</span>
           <div style={{ flex: 1, height: '0.5px', backgroundColor: '#E8E0D5' }} />
         </div>
 
-        {/* Form */}
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
             <label style={{
@@ -286,7 +279,7 @@ export default function LoginPage() {
         color: '#4A4A4A',
         marginTop: '1.5rem',
       }}>
-        Don't have an account?{' '}
+        No account?{' '}
         <Link href="/auth/signup" style={{ color: '#0A2342', fontWeight: 600, textDecoration: 'none' }}>
           Create one
         </Link>
@@ -295,3 +288,10 @@ export default function LoginPage() {
   )
 }
 
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  )
+}
