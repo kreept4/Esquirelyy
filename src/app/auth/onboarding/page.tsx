@@ -59,7 +59,7 @@ export default function OnboardingPage() {
     const { data: { user } } = await supabase.auth.getUser()
 
     if (user) {
-      await supabase.from('profiles').upsert({
+      await (supabase.from('profiles') as any).upsert({
         id: user.id,
         location,
         preferred_areas: selectedAreas,
@@ -166,11 +166,7 @@ export default function OnboardingPage() {
             Current location
           </label>
 
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.5rem',
-          }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
             {NIGERIAN_CITIES.map(city => {
               const active = location === city
               return (
@@ -230,11 +226,7 @@ export default function OnboardingPage() {
             </p>
           </div>
 
-          <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '0.5rem',
-          }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
             {LAW_AREAS.map(area => {
               const active = selectedAreas.includes(area)
               return (
