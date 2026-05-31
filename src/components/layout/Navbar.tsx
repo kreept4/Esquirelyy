@@ -118,11 +118,19 @@ export default function Navbar() {
         {/* Mobile menu */}
         {open && (
           <div style={{
+            position: 'fixed',
+            top: '64px',
+            left: 0,
+            right: 0,
+            backgroundColor: 'rgba(250, 247, 242, 0.98)',
+            backdropFilter: 'blur(12px)',
             borderTop: '0.5px solid #E8E0D5',
-            padding: '1.5rem 0',
+            borderBottom: '0.5px solid #E8E0D5',
+            padding: '1.5rem 2rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '1.25rem',
+            zIndex: 99,
           }}>
             {NAV_LINKS.map(({ href, label }) => (
               <Link
