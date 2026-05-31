@@ -86,8 +86,7 @@ export default function FirmsPage() {
   return (
     <>
       <Navbar />
-      <main style={{ backgroundColor: '#FAF7F2', paddingTop: '64px', minHeight: '100vh' }}>
-
+    <main style={{ backgroundColor: '#FAF7F2', paddingTop: '80px', minHeight: '100vh' }}>
         {/* Page header */}
         <div style={{
           backgroundColor: '#F0EBE3',
