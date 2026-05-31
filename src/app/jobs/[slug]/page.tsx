@@ -185,8 +185,7 @@ export default function JobDetailPage({ params }: { params: { slug: string } }) 
                 Apply for this role
               </p>
 
-              
-                href={`mailto:${listing.applyEmail}?subject=Application: ${listing.title}`}
+              href={`mailto:${listing.applyEmail}?subject=Application: ${listing.title}`}
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
                   width: '100%', padding: '0.75rem', boxSizing: 'border-box' as const,
