@@ -56,7 +56,7 @@ const LEVEL_LABELS: Record<string, string> = {
 
 export default function JobDetailPage({ params }: { params: { slug: string } }) {
   const listing = ALL_LISTINGS.find(l => l.slug === params.slug)
-  if (!listing) notFound()
+  if (!listing) return notFound()
 
   const accent = SECTOR_ACCENT[listing.sector] || '#3B3B3B'
 
