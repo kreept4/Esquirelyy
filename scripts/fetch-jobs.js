@@ -1,5 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+const ws = require('ws');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {realtime:{transport:ws}});
 const APP_ID = process.env.ADZUNA_APP_ID;
 const APP_KEY = process.env.ADZUNA_APP_KEY;
 const QUERIES = ['legal counsel','lawyer','legal officer','compliance counsel','solicitor','NYSC legal','law trainee','legal trainee','associate lawyer'];
