@@ -1,25 +1,10 @@
-name: Fetch Jobs from Adzuna
-
-on:
-  schedule:
-    - cron: "0 6 * * *"
-  workflow_dispatch:
-
-jobs:
-  fetch:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Install dependencies
-        run: npm install @supabase/supabase-js
-      - name: Fetch and upsert jobs
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
-          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
-        run: node scripts/fetch-jobs.js
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+const APP_ID = process.env.ADZUNA_APP_ID;
+const APP_KEY = process.env.ADZUNA_APP_KEY;
+const QUERIES = ['legal counsel','lawyer','legal officer','compliance counsel','solicitor','NYSC legal','law trainee','legal trainee','associate lawyer'];
+function slugify(str){return str.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');}
+function inferSector(employer){const e=employer.toLowerCase();if(e.includes('bank')||e.includes('cbn'))return 'banking';if(e.includes('oil')||e.includes('energy')||e.includes('nnpc')||e.includes('seplat')||e.includes('chevron')||e.includes('total'))return 'energy';if(e.includes('tech')||e.includes('fintech')||e.includes('pay')||e.includes('flutter')||e.includes('mtn')||e.includes('airtel'))return 'fintech';if(e.includes('solicitor')||e.includes('chambers')||e.includes('llp')||e.includes('partners')||e.includes('associates'))return 'law_firm';return 'other';}
+function inferLevel(title){const t=title.toLowerCase();if(t.includes('nysc')||t.includes('trainee')||t.includes('intern'))return 'nysc';if(t.includes('junior')||t.includes('associate'))return 'junior';if(t.includes('senior')||t.includes('manager')||t.includes('head'))return 'senior';if(t.includes('mid')||t.includes('counsel'))return 'mid';return 'junior';}
+async function fetchJobs(){const seen=new Set();const jobs=[];for(const query of QUERIES){const url='https://api.adzuna.com/v1/api/jobs/ng/search/1?app_id='+APP_ID+'&app_key='+APP_KEY+'&results_per_page=20&what='+encodeURIComponent(query)+'&content-type=application/json';try{const res=await fetch(url);const data=await res.json();if(!data.results)continue;for(const job of data.results){if(seen.has(job.id))continue;seen.add(job.id);const employer=job.company?.display_name||'Unknown';const title=job.title||'Legal Role';const slug=slugify(employer+'-'+title+'-'+job.id.slice(-6));const deadline=job.expiration_date?job.expiration_date.split('T')[0]:null;jobs.push({id:job.id,slug,title,employer,sector:inferSector(employer),tier:null,type:'job',level:inferLevel(title),location:job.location?.display_name||'Nigeria',deadline,is_verified:false,is_closing_soon:false,is_rolling:!deadline,practice_areas:[],about:null,role_desc:job.description?job.description.slice(0,800):null,requirements:[],apply_email:null,apply_url:job.redirect_url||null,source:'adzuna',updated_at:new Date().toISOString()});}}catch(err){console.error('Error:',query,err.message);}}if(jobs.length===0){console.log('No jobs fetched.');return;}const{error}=await supabase.from('jobs').upsert(jobs,{onConflict:'id'});if(error){console.error('Upsert error:',error.message);}else{console.log('Upserted',jobs.length,'jobs.');}}
+fetchJobs();
