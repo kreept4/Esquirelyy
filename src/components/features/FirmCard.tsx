@@ -32,6 +32,47 @@ const TIER_COLORS: Record<string, string> = {
   institution: '#4A4A4A',
 }
 
+
+function FirmLogo({ website, monogram, tierColor }: { website: string | null, monogram: string, tierColor: string }) {
+  const [logoFailed, setLogoFailed] = useState(false)
+  const domain = website ? website.replace('https://','').replace('http://','').replace(/\/.*/,'') : null
+
+  return (
+    <div style={{
+      width: '48px',
+      height: '48px',
+      flexShrink: 0,
+      borderRadius: '2px',
+      overflow: 'hidden',
+      border: '0.5px solid #E8E0D5',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: (!domain || logoFailed) ? tierColor : '#FAF6F0',
+    }}>
+      {domain && !logoFailed ? (
+        <img
+          src={'https://logo.clearbit.com/' + domain}
+          alt={monogram}
+          width={48}
+          height={48}
+          style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+          onError={() => setLogoFailed(true)}
+        />
+      ) : (
+        <span style={{
+          fontFamily: 'Playfair Display, Georgia, serif',
+          fontWeight: 700,
+          fontSize: '1rem',
+          color: '#FAF7F2',
+        }}>
+          {monogram}
+        </span>
+      )}
+    </div>
+  )
+}
+
 export default function FirmCard({ firm, liveRoles = 0, animate = false, delay = 0 }: FirmCardProps) {
   const monogram = getMonogram(firm.name)
   const tierColor = TIER_COLORS[firm.tier] || '#4A4A4A'

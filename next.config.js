@@ -2,12 +2,8 @@
 const nextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**.supabase.co',
-      },
+      { protocol: 'https', hostname: 'logo.clearbit.com' },
     ],
   },
 }
-
 module.exports = nextConfig
