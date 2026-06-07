@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -64,6 +64,32 @@ const ShieldCheckIcon = () => (
     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
   </svg>
 )
+
+
+const STORAGE = 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/';
+
+function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string }) {
+  const [failed, setFailed] = useState(false)
+  const url = logoFile && !failed ? STORAGE + logoFile.replace(/ /g, '%20') : null
+  return (
+    <div style={{
+      width: '48px', height: '48px', flexShrink: 0, borderRadius: '2px',
+      border: '0.5px solid #E8E0D5', overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      backgroundColor: url ? '#FFFFFF' : '#8B3A3A',
+    }}>
+      {url ? (
+        <img src={url} alt={name} width={48} height={48}
+          style={{ objectFit: 'contain', width: '100%', height: '100%', padding: '6px' }}
+          onError={() => setFailed(true)} />
+      ) : (
+        <span style={{ fontFamily: 'Playfair Display, Georgia, serif', fontWeight: 700, fontSize: '0.9rem', color: '#FAF7F2' }}>
+          {getMonogram(name)}
+        </span>
+      )}
+    </div>
+  )
+}
 
 export default function FirmsPage() {
   const [search, setSearch] = useState('')
