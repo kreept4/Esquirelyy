@@ -1,0 +1,13 @@
+const fs = require('fs');
+let d = fs.readFileSync('src/lib/firms-data.ts', 'utf8');
+  d = d.replace("slug: 'spa-ajibade',", "slug: 'spa-ajibade',\n    logoFile: 'spa-ajibade.jpg',");
+  d = d.replace("slug: 'wole-olanipekun',", "slug: 'wole-olanipekun',\n    logoFile: 'wole-olanipekun.ico',");
+  d = d.replace("slug: 'bloomfield-law',", "slug: 'bloomfield-law',\n    logoFile: 'bloomfield-law.ico',");
+  d = d.replace("slug: 'simmons-cooper',", "slug: 'simmons-cooper',\n    logoFile: 'simmons-cooper.png',");
+  d = d.replace("slug: 'george-etomi',", "slug: 'george-etomi',\n    logoFile: 'george-etomi.jpg',");
+  d = d.replace("slug: 'primera-africa',", "slug: 'primera-africa',\n    logoFile: 'primera-africa.png',");
+  d = d.replace("slug: 'resolution-law',", "slug: 'resolution-law',\n    logoFile: 'resolution-law.webp',");
+  d = d.replace("slug: 'mike-igbokwe',", "slug: 'mike-igbokwe',\n    logoFile: 'mike-igbokwe.jpg',");
+  d = d.replace("slug: 'blackfriars-law',", "slug: 'blackfriars-law',\n    logoFile: 'blackfriars-law.jpg',");
+fs.writeFileSync('src/lib/firms-data.ts', d);
+console.log('done');

@@ -255,6 +255,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'spa-ajibade',
+    logoFile: 'SPA ajibade.jpg',
     name: 'SPA Ajibade & Co',
     shortName: 'SPA Ajibade',
     tier: 'Tier 1',
@@ -270,6 +271,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'acas-law',
+    logoFile: 'ACAS.jpg',
     name: 'ACAS-Law',
     shortName: 'ACAS',
     tier: 'Tier 1',
@@ -285,6 +287,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'wole-olanipekun',
+    logoFile: 'wole olanipekun.jpg',
     name: 'Wole Olanipekun & Co',
     shortName: 'Wole Olanipekun',
     tier: 'Tier 1',
@@ -300,6 +303,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'bloomfield-law',
+    logoFile: 'bloomfield-law.ico',
     name: 'Bloomfield Law Practice',
     shortName: 'Bloomfield',
     tier: 'Tier 2',
@@ -315,6 +319,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'simmons-cooper',
+    logoFile: 'simmons-cooper.png',
     name: 'Simmons Cooper Partners',
     shortName: 'Simmons Cooper',
     tier: 'Tier 2',
@@ -362,6 +367,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'george-etomi',
+    logoFile: 'george-etomi.jpg',
     name: 'George Etomi & Partners',
     shortName: 'George Etomi',
     tier: 'Tier 2',
@@ -377,6 +383,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'tayo-oyetibo',
+    logoFile: 'Tayo Oyetibo.jpg',
     name: 'Tayo Oyetibo LP',
     shortName: 'Tayo Oyetibo',
     tier: 'Tier 2',
@@ -392,6 +399,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'primera-africa',
+    logoFile: 'Primera.jpg',
     name: 'Primera Africa Legal',
     shortName: 'Primera Africa',
     tier: 'Tier 2',
@@ -422,6 +430,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'famsville-solicitors',
+    logoFile: 'Famsville.jpg',
     name: 'Famsville Solicitors',
     shortName: 'Famsville',
     tier: 'Boutique',
@@ -452,6 +461,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'mike-igbokwe',
+    logoFile: 'mike-igbokwe.jpg',
     name: 'Mike Igbokwe & Co',
     shortName: 'Mike Igbokwe',
     tier: 'Boutique',
@@ -467,6 +477,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'blackfriars-law',
+    logoFile: 'blackfriars-law.jpg',
     name: 'Blackfriars Law',
     shortName: 'Blackfriars',
     tier: 'Boutique',
