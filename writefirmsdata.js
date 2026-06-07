@@ -1,4 +1,6 @@
-export type FirmTier = 'Tier 1' | 'Tier 2' | 'Boutique' | 'International'
+const fs = require('fs');
+
+const content = `export type FirmTier = 'Tier 1' | 'Tier 2' | 'Boutique' | 'International'
 
 export interface FirmOffice {
   city: string
@@ -491,3 +493,7 @@ export function getMonogram(name: string): string {
     .join('')
     .toUpperCase()
 }
+`;
+
+fs.writeFileSync('src/lib/firms-data.ts', content);
+console.log('Done. Firms written:', (content.match(/slug:/g) || []).length - 1);
