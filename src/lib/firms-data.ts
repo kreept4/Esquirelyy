@@ -106,7 +106,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'detail-solicitors',
-    logoFile: 'Detail.jpg',
+    logoFile: 'detail solicitors.jpg',
     name: 'Detail Solicitors',
     shortName: 'Detail',
     tier: 'Tier 1',

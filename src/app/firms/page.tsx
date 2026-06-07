@@ -38,7 +38,7 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
     }}>
       {url ? (
         <img src={url} alt={name} width={48} height={48}
-          style={{ objectFit: 'contain', width: '120%', height: '120%', maxWidth: '120%' }}
+          style={{ objectFit: 'contain', width: '100%', height: '100%' }}
           onError={() => setFailed(true)} />
       ) : (
         <span style={{ fontFamily: 'Playfair Display, Georgia, serif', fontWeight: 700, fontSize: '0.9rem', color: '#FAF7F2' }}>
