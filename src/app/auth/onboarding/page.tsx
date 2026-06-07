@@ -118,7 +118,7 @@ export default function OnboardingPage() {
           fontFamily: 'DM Sans, sans-serif',
           fontSize: '0.72rem',
           fontWeight: 600,
-          color: '#0A2342',
+          color: '#5C1A1A',
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
           marginBottom: '0.5rem',
@@ -162,7 +162,7 @@ export default function OnboardingPage() {
             gap: '6px',
             marginBottom: '1rem',
           }}>
-            <MapPin size={13} style={{ color: '#0A2342' }} />
+            <MapPin size={13} style={{ color: '#5C1A1A' }} />
             Current location
           </label>
 
@@ -175,9 +175,9 @@ export default function OnboardingPage() {
                   onClick={() => setLocation(city)}
                   style={{
                     padding: '0.45rem 1rem',
-                    backgroundColor: active ? '#0A2342' : '#fff',
+                    backgroundColor: active ? '#5C1A1A' : '#fff',
                     color: active ? '#FAF7F2' : '#1A1A1A',
-                    border: active ? '0.5px solid #0A2342' : '0.5px solid #E8E0D5',
+                    border: active ? '0.5px solid #5C1A1A' : '0.5px solid #E8E0D5',
                     borderRadius: '100px',
                     fontFamily: 'DM Sans, sans-serif',
                     fontSize: '0.82rem',
@@ -219,7 +219,7 @@ export default function OnboardingPage() {
             }}>
               Pick as many as you like. You can always update these later.
               {selectedAreas.length > 0 && (
-                <span style={{ color: '#0A2342', fontWeight: 600, marginLeft: '0.5rem' }}>
+                <span style={{ color: '#5C1A1A', fontWeight: 600, marginLeft: '0.5rem' }}>
                   {selectedAreas.length} selected
                 </span>
               )}
@@ -235,9 +235,9 @@ export default function OnboardingPage() {
                   onClick={() => toggleArea(area)}
                   style={{
                     padding: '0.5rem 1.1rem',
-                    backgroundColor: active ? '#0A2342' : '#fff',
+                    backgroundColor: active ? '#5C1A1A' : '#fff',
                     color: active ? '#FAF7F2' : '#1A1A1A',
-                    border: active ? '0.5px solid #0A2342' : '0.5px solid #E8E0D5',
+                    border: active ? '0.5px solid #5C1A1A' : '0.5px solid #E8E0D5',
                     borderRadius: '100px',
                     fontFamily: 'DM Sans, sans-serif',
                     fontSize: '0.82rem',
@@ -264,7 +264,7 @@ export default function OnboardingPage() {
             disabled={!canFinish || saving}
             style={{
               padding: '0.85rem 2.5rem',
-              backgroundColor: (!canFinish || saving) ? '#B0BEC5' : '#0A2342',
+              backgroundColor: (!canFinish || saving) ? '#B0BEC5' : '#5C1A1A',
               color: '#FAF7F2',
               border: 'none',
               borderRadius: '2px',

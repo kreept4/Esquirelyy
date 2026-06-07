@@ -121,7 +121,7 @@ export default function OpportunitiesPage() {
           padding: '3rem 2rem 2rem',
         }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <p className="label-caps" style={{ color: '#0A2342', opacity: 0.6, marginBottom: '0.5rem' }}>
+            <p className="label-caps" style={{ color: '#5C1A1A', opacity: 0.6, marginBottom: '0.5rem' }}>
               {filtered.length} opportunit{filtered.length !== 1 ? 'ies' : 'y'}
             </p>
             <h1 style={{
@@ -165,9 +165,9 @@ export default function OpportunitiesPage() {
                 style={{
                   padding: '0.65rem 1rem',
                   fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem',
-                  color: eligibility ? '#0A2342' : '#4A4A4A',
+                  color: eligibility ? '#5C1A1A' : '#4A4A4A',
                   backgroundColor: '#FAF7F2',
-                  border: `0.5px solid ${eligibility ? '#0A2342' : '#E8E0D5'}`,
+                  border: `0.5px solid ${eligibility ? '#5C1A1A' : '#E8E0D5'}`,
                   borderRadius: '2px', outline: 'none', cursor: 'pointer',
                 }}
               >
@@ -180,9 +180,9 @@ export default function OpportunitiesPage() {
                   padding: '0.65rem 1.1rem',
                   fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem',
                   fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
-                  backgroundColor: internationalOnly ? '#0A2342' : '#FAF7F2',
+                  backgroundColor: internationalOnly ? '#5C1A1A' : '#FAF7F2',
                   color: internationalOnly ? '#FAF7F2' : '#4A4A4A',
-                  border: `0.5px solid ${internationalOnly ? '#0A2342' : '#E8E0D5'}`,
+                  border: `0.5px solid ${internationalOnly ? '#5C1A1A' : '#E8E0D5'}`,
                   borderRadius: '2px', cursor: 'pointer',
                 }}
               >
@@ -212,9 +212,9 @@ export default function OpportunitiesPage() {
                   padding: '4px 12px',
                   fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', fontWeight: 600,
                   letterSpacing: '0.06em', textTransform: 'uppercase',
-                  backgroundColor: activeCategory === '' ? '#0A2342' : 'transparent',
+                  backgroundColor: activeCategory === '' ? '#5C1A1A' : 'transparent',
                   color: activeCategory === '' ? '#FAF7F2' : '#4A4A4A',
-                  border: `0.5px solid ${activeCategory === '' ? '#0A2342' : '#E8E0D5'}`,
+                  border: `0.5px solid ${activeCategory === '' ? '#5C1A1A' : '#E8E0D5'}`,
                   borderRadius: '2px', cursor: 'pointer',
                 }}
               >
@@ -228,9 +228,9 @@ export default function OpportunitiesPage() {
                     padding: '4px 12px',
                     fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', fontWeight: 600,
                     letterSpacing: '0.06em', textTransform: 'uppercase',
-                    backgroundColor: activeCategory === cat ? '#0A2342' : 'transparent',
+                    backgroundColor: activeCategory === cat ? '#5C1A1A' : 'transparent',
                     color: activeCategory === cat ? '#FAF7F2' : '#4A4A4A',
-                    border: `0.5px solid ${activeCategory === cat ? '#0A2342' : '#E8E0D5'}`,
+                    border: `0.5px solid ${activeCategory === cat ? '#5C1A1A' : '#E8E0D5'}`,
                     borderRadius: '2px', cursor: 'pointer', whiteSpace: 'nowrap',
                   }}
                 >
@@ -270,7 +270,7 @@ export default function OpportunitiesPage() {
               return (
                 <div key={group.label} style={{ marginBottom: '4rem' }}>
                   <div style={{ marginBottom: '1.5rem' }}>
-                    <p className="label-caps" style={{ color: '#0A2342', opacity: 0.6, marginBottom: '0.25rem', fontSize: '0.6rem' }}>
+                    <p className="label-caps" style={{ color: '#5C1A1A', opacity: 0.6, marginBottom: '0.25rem', fontSize: '0.6rem' }}>
                       {group.label}
                     </p>
                     <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#4A4A4A' }}>
@@ -322,7 +322,7 @@ function OpportunityCard({ opp }: { opp: typeof ALL_OPPORTUNITIES[0] }) {
               display: 'inline-flex', alignItems: 'center', gap: '3px',
               padding: '2px 7px', borderRadius: '2px', fontSize: '0.58rem',
               fontFamily: 'DM Sans, sans-serif', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
-              color: '#0A2342', backgroundColor: 'rgba(10,35,66,0.08)',
+              color: '#5C1A1A', backgroundColor: 'rgba(10,35,66,0.08)',
             }}>
               <GlobeIcon /> International
             </span>
@@ -349,7 +349,7 @@ function OpportunityCard({ opp }: { opp: typeof ALL_OPPORTUNITIES[0] }) {
         </p>
 
         {/* Organisation */}
-        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#0A2342', marginBottom: '0.5rem' }}>
+        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#5C1A1A', marginBottom: '0.5rem' }}>
           {opp.organisation}
         </p>
 

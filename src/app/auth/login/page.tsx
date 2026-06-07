@@ -187,7 +187,7 @@ function LoginForm() {
               <Link href="/auth/forgot-password" style={{
                 fontFamily: 'DM Sans, sans-serif',
                 fontSize: '0.72rem',
-                color: '#0A2342',
+                color: '#5C1A1A',
                 textDecoration: 'none',
               }}>
                 Forgot password?
@@ -254,7 +254,7 @@ function LoginForm() {
             style={{
               width: '100%',
               padding: '0.8rem',
-              backgroundColor: loading ? '#6B8CAE' : '#0A2342',
+              backgroundColor: loading ? '#6B8CAE' : '#5C1A1A',
               color: '#FAF7F2',
               border: 'none',
               borderRadius: '2px',
@@ -280,7 +280,7 @@ function LoginForm() {
         marginTop: '1.5rem',
       }}>
         No account?{' '}
-        <Link href="/auth/signup" style={{ color: '#0A2342', fontWeight: 600, textDecoration: 'none' }}>
+        <Link href="/auth/signup" style={{ color: '#5C1A1A', fontWeight: 600, textDecoration: 'none' }}>
           Create one
         </Link>
       </p>

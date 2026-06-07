@@ -77,7 +77,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
               {/* Monogram */}
               <div style={{
                 width: '72px', height: '72px', flexShrink: 0,
-                backgroundColor: '#0A2342', color: '#FAF7F2',
+                backgroundColor: '#5C1A1A', color: '#FAF7F2',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontFamily: 'Playfair Display, Georgia, serif',
                 fontWeight: 700, fontSize: '1.35rem', borderRadius: '3px',
@@ -87,7 +87,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
 
               <div style={{ flex: 1, minWidth: '240px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-                  <span className="label-caps" style={{ color: '#0A2342', opacity: 0.6, fontSize: '0.6rem' }}>
+                  <span className="label-caps" style={{ color: '#5C1A1A', opacity: 0.6, fontSize: '0.6rem' }}>
                     {firm.tier}
                   </span>
                   <span style={{
@@ -100,7 +100,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                   {firm.openRoles > 0 && (
                     <span style={{
                       display: 'inline-flex', alignItems: 'center', gap: '3px',
-                      backgroundColor: '#0A2342', color: '#FAF7F2',
+                      backgroundColor: '#5C1A1A', color: '#FAF7F2',
                       fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem',
                       fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
                       padding: '2px 8px', borderRadius: '2px',
@@ -152,12 +152,12 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                   backgroundColor: '#F0EBE3',
                   borderBottom: '0.5px solid #E8E0D5',
                 }}>
-                  <p className="label-caps" style={{ color: '#0A2342', opacity: 0.7, fontSize: '0.6rem' }}>Contact</p>
+                  <p className="label-caps" style={{ color: '#5C1A1A', opacity: 0.7, fontSize: '0.6rem' }}>Contact</p>
                 </div>
                 <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                   <a href={`mailto:${firm.email}`} style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
-                    fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#0A2342',
+                    fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#5C1A1A',
                     textDecoration: 'none',
                   }}>
                     <span style={{ color: '#4A4A4A' }}><MailIcon /></span>
@@ -165,7 +165,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                   </a>
                   <a href={firm.website} target="_blank" rel="noopener noreferrer" style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
-                    fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#0A2342',
+                    fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#5C1A1A',
                     textDecoration: 'none',
                   }}>
                     <span style={{ color: '#4A4A4A' }}><GlobeIcon /></span>
@@ -184,7 +184,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                   backgroundColor: '#F0EBE3',
                   borderBottom: '0.5px solid #E8E0D5',
                 }}>
-                  <p className="label-caps" style={{ color: '#0A2342', opacity: 0.7, fontSize: '0.6rem' }}>
+                  <p className="label-caps" style={{ color: '#5C1A1A', opacity: 0.7, fontSize: '0.6rem' }}>
                     Office{firm.offices.length > 1 ? 's' : ''}
                   </p>
                 </div>
@@ -215,7 +215,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                   backgroundColor: '#F0EBE3',
                   borderBottom: '0.5px solid #E8E0D5',
                 }}>
-                  <p className="label-caps" style={{ color: '#0A2342', opacity: 0.7, fontSize: '0.6rem' }}>Practice Areas</p>
+                  <p className="label-caps" style={{ color: '#5C1A1A', opacity: 0.7, fontSize: '0.6rem' }}>Practice Areas</p>
                 </div>
                 <div style={{ padding: '1.25rem', display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                   {firm.practiceAreas.map(area => (
@@ -235,7 +235,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                   border: '0.5px solid #E8E0D5', borderRadius: '3px', overflow: 'hidden',
                 }}>
                   <div style={{ padding: '0.75rem 1.25rem', backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5' }}>
-                    <p className="label-caps" style={{ color: '#0A2342', opacity: 0.7, fontSize: '0.6rem' }}>Established</p>
+                    <p className="label-caps" style={{ color: '#5C1A1A', opacity: 0.7, fontSize: '0.6rem' }}>Established</p>
                   </div>
                   <div style={{ padding: '1.25rem' }}>
                     <p style={{
@@ -258,7 +258,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                 border: '0.5px solid #E8E0D5', borderRadius: '3px', overflow: 'hidden',
               }}>
                 <div style={{ padding: '0.75rem 1.25rem', backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5' }}>
-                  <p className="label-caps" style={{ color: '#0A2342', opacity: 0.7, fontSize: '0.6rem' }}>Open Roles</p>
+                  <p className="label-caps" style={{ color: '#5C1A1A', opacity: 0.7, fontSize: '0.6rem' }}>Open Roles</p>
                 </div>
                 <div style={{ padding: '1.5rem' }}>
                   {firm.openRoles > 0 ? (
@@ -292,7 +292,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
 
               {/* Apply directly */}
               <div style={{
-                backgroundColor: '#0A2342', borderRadius: '3px', padding: '1.5rem',
+                backgroundColor: '#5C1A1A', borderRadius: '3px', padding: '1.5rem',
               }}>
                 <p className="label-caps" style={{ color: 'rgba(250,247,242,0.5)', fontSize: '0.6rem', marginBottom: '0.5rem' }}>
                   Direct Application

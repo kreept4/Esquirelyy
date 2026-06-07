@@ -37,7 +37,7 @@ export default function Footer() {
     <footer style={{ backgroundColor: '#1A1A1A', color: '#FAF7F2' }}>
       {/* CTA strip */}
       <div style={{
-        backgroundColor: '#0A2342',
+        backgroundColor: '#5C1A1A',
         padding: '4rem 2rem',
         textAlign: 'center',
         borderBottom: '0.5px solid rgba(250,247,242,0.1)',
@@ -66,7 +66,7 @@ export default function Footer() {
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/jobs" className="btn-primary" style={{
             backgroundColor: '#FAF7F2',
-            color: '#0A2342',
+            color: '#5C1A1A',
             borderColor: '#FAF7F2',
           }}>
             Browse Opportunities
