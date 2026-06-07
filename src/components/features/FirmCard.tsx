@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 
 import Link from 'next/link'
 import { MapPin, ExternalLink } from 'lucide-react'
@@ -208,3 +209,4 @@ export default function FirmCard({ firm, liveRoles = 0, animate = false, delay =
     </article>
   )
 }
+
