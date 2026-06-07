@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+const content = `'use client'
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
@@ -123,12 +125,12 @@ export default function FirmsPage() {
                 { value: city, setter: setCity, options: CITY_OPTIONS, placeholder: 'City' },
               ].map(({ value, setter, options, placeholder }) => (
                 <select key={placeholder} value={value} onChange={e => setter(e.target.value)}
-                  style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: value ? '#8B3A3A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${value ? '#8B3A3A' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
+                  style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: value ? '#8B3A3A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: \`0.5px solid \${value ? '#8B3A3A' : '#E8E0D5'}\`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
                   {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               ))}
               <select value={practiceArea} onChange={e => setPracticeArea(e.target.value)}
-                style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: practiceArea ? '#8B3A3A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${practiceArea ? '#8B3A3A' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
+                style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: practiceArea ? '#8B3A3A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: \`0.5px solid \${practiceArea ? '#8B3A3A' : '#E8E0D5'}\`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
                 <option value="">All Practice Areas</option>
                 {PRACTICE_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
@@ -151,7 +153,7 @@ export default function FirmsPage() {
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1px', backgroundColor: '#E8E0D5', border: '0.5px solid #E8E0D5' }}>
               {filtered.map(firm => (
-                <Link key={firm.slug} href={`/firms/${firm.slug}`}
+                <Link key={firm.slug} href={\`/firms/\${firm.slug}\`}
                   style={{ backgroundColor: '#FAF7F2', padding: '1.75rem', textDecoration: 'none', display: 'block', transition: 'background-color 0.15s ease' }}
                   onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fff')}
                   onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#FAF7F2')}>
@@ -201,3 +203,7 @@ export default function FirmsPage() {
     </>
   )
 }
+`;
+
+fs.writeFileSync('src/app/firms/page.tsx', content);
+console.log('done');
