@@ -211,24 +211,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section>
+  {/* CTA */}
+      <section style={{ backgroundColor: '#0A2342' }}>
         <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-          <h2 className="font-display text-4xl font-black text-charcoal mb-4">Every opportunity.<br />One platform.</h2>
-          <p className="text-charcoal/50 mb-2 max-w-lg mx-auto">From law school to senior practice, Esquirely. connects Nigerian legal professionals with opportunities across law firms, corporates, NGOs, and international organisations.</p>
-          <p className="text-charcoal/35 text-sm italic mb-10">The only platform built for the full arc of a Nigerian legal career.</p>
+          <h2 className="font-display text-4xl font-black mb-4" style={{ color: '#FAF7F2' }}>
+            New roles added daily.<br />Never miss a deadline.
+          </h2>
+          <p className="mb-2 max-w-lg mx-auto" style={{ color: 'rgba(250,247,242,0.6)' }}>
+            Set up alerts for the practice areas, firms, and role types you care about. Esquirely. notifies you the moment a matching role goes live.
+          </p>
+          <p className="text-sm italic mb-10" style={{ color: 'rgba(250,247,242,0.35)' }}>
+            Because in Nigerian legal hiring, deadlines wait for no one.
+          </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/jobs" className="inline-flex items-center justify-center gap-2 bg-ink text-cream px-8 py-3.5 rounded-lg font-medium text-sm hover:bg-ink/90 transition-colors">
-              Browse All Opportunities <ArrowRight size={16} />
+            <Link href="/jobs" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg font-medium text-sm transition-colors" style={{ backgroundColor: '#FAF7F2', color: '#0A2342' }}>
+              Create Job Alert <ArrowRight size={16} />
             </Link>
-            <Link href="/auth/login" className="inline-flex items-center justify-center gap-2 border border-cream-border text-charcoal px-8 py-3.5 rounded-lg font-medium text-sm hover:border-ink/30 transition-colors">
-              Create Free Account
+            <Link href="/jobs" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg font-medium text-sm transition-colors" style={{ border: '1px solid rgba(250,247,242,0.2)', color: '#FAF7F2' }}>
+              Browse All Opportunities
             </Link>
           </div>
         </div>
       </section>
-
-      <Footer />
-    </div>
-  )
-}
