@@ -215,6 +215,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'udo-udoma-bello-osagie',
+    logoFile: 'udo-udoma.webp',
     name: 'Udo Udoma & Bello-Osagie',
     shortName: 'UUBO',
     tier: 'Tier 1',
@@ -231,6 +232,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'jackson-etti-edu',
+    logoFile: 'Jackson etti.png',
     name: 'Jackson, Etti & Edu',
     shortName: 'JEE',
     tier: 'Tier 1',
