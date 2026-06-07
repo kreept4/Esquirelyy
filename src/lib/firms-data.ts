@@ -170,7 +170,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'g-elias',
-    logoFile: 'G elias.jpg',
+    logoFile: 'Elias.jpeg',
     name: 'G. Elias & Co',
     shortName: 'G. Elias',
     tier: 'Tier 1',

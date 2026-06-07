@@ -46,7 +46,7 @@ function FirmLogo({ logoFile, monogram, tierColor }: { logoFile?: string | null;
     }}>
       {url ? (
         <img src={url} alt={monogram} width={48} height={48}
-          style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+          style={{ objectFit: 'contain', width: '80%', height: '80%' }}
           onError={() => setFailed(true)} />
       ) : (
         <span style={{ fontFamily: 'Playfair Display, Georgia, serif', fontWeight: 700, fontSize: '1rem', color: '#FAF7F2' }}>
