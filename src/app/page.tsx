@@ -48,9 +48,6 @@ export default async function HomePage() {
             <p className="text-lg text-charcoal/60 leading-relaxed mb-3 max-w-md">
               Jobs, vacation schemes, pupillages, and scholarships across law firms, corporates, and institutions, verified and updated daily.
             </p>
-            <p className="text-sm text-charcoal/40 italic mb-10 max-w-md">
-              For Nigerian legal professionals at every stage, from law school to senior practice.
-            </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link href="/jobs" className="inline-flex items-center justify-center gap-2 bg-ink text-cream px-6 py-3 rounded-lg font-medium text-sm hover:bg-ink-light transition-colors">
                 Browse Opportunities <ArrowRight size={16} />
@@ -151,3 +148,4 @@ export default async function HomePage() {
     </div>
   )
 }
+
