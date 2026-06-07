@@ -415,6 +415,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'dealhq-partners',
+    logoFile: 'dealhq-partners.jpg',
     name: 'DealHQ Partners',
     shortName: 'DealHQ',
     tier: 'Boutique',
@@ -446,6 +447,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'resolution-law',
+    logoFile: 'resolution-law.webp',
     name: 'Resolution Law Firm',
     shortName: 'Resolution Law',
     tier: 'Boutique',
