@@ -2,71 +2,7 @@
 
 export default function HomeIcons({ type }: { type: string }) {
   if (type === 'hero') return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" className="w-full max-w-md" aria-hidden="true">
-      <ellipse cx="250" cy="425" rx="185" ry="18" fill="#8B3A3A" opacity="0.06"/>
-
-      {/* Tall center building */}
-      <g>
-        <polygon points="253,315 251,138 288,138 287,318" fill="#FAF6F0" stroke="#8B3A3A" strokeWidth="1.5"/>
-        <polygon points="288,138 316,138 314,302 287,318" fill="#8B3A3A" opacity="0.15"/>
-        <rect x="284" y="80" width="2.5" height="38" fill="#8B3A3A" opacity="0.4"/>
-        <polygon points="269,126 269,116 300,116 300,126" fill="#FAF6F0" stroke="#8B3A3A" strokeWidth="1.5"/>
-        <polygon points="285,126 285,116 300,116 300,126" fill="#8B3A3A" opacity="0.15"/>
-        <polygon points="251,138 260,129 288,129 288,138" fill="#FAF6F0" stroke="#8B3A3A" strokeWidth="1.5"/>
-        <polygon points="288,129 310,131 316,138 288,138" fill="#8B3A3A" opacity="0.15"/>
-        <rect x="259" y="178" width="18" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-        <rect x="259" y="193" width="18" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-        <rect x="259" y="208" width="18" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-        <rect x="259" y="223" width="18" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-        <rect x="259" y="238" width="18" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-        <rect x="259" y="253" width="18" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-        <rect x="259" y="268" width="18" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-      </g>
-
-      {/* Hiring building */}
-      <g>
-        <polygon points="310,202 370,206 390,200 328,196" fill="#FAF6F0" stroke="#8B3A3A" strokeWidth="1.5"/>
-        <polygon points="370,206 369,302 388,294 390,200" fill="#8B3A3A" opacity="0.12"/>
-        <polygon points="310,202 310,290 369,302 370,206" fill="#FAF6F0" stroke="#8B3A3A" strokeWidth="1.5"/>
-        <rect x="316" y="207" width="44" height="22" fill="#8B3A3A" opacity="0.85" rx="1"/>
-        <text x="321" y="222" fontSize="7.5" fill="#FAF6F0" fontFamily="Georgia, serif" fontWeight="bold" letterSpacing="1">HIRING</text>
-        <rect x="316" y="238" width="30" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-        <rect x="316" y="248" width="24" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-        <rect x="316" y="258" width="28" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-        <rect x="316" y="268" width="20" height="2.5" fill="#8B3A3A" opacity="0.1"/>
-      </g>
-
-      {/* Small left building */}
-      <g>
-        <polygon points="158,242 208,245 222,241 170,238" fill="#FAF6F0" stroke="#8B3A3A" strokeWidth="1"/>
-        <polygon points="208,245 207,312 220,307 222,241" fill="#8B3A3A" opacity="0.1"/>
-        <polygon points="158,242 158,308 207,312 208,245" fill="#FAF6F0" stroke="#8B3A3A" strokeWidth="1"/>
-      </g>
-
-      {/* Man — standing at base, looking toward hiring building */}
-      <g>
-        {/* Shadow */}
-        <ellipse cx="198" cy="422" rx="12" ry="3" fill="#8B3A3A" opacity="0.08"/>
-        {/* Legs */}
-        <line x1="193" y1="400" x2="190" y2="422" stroke="#8B3A3A" strokeWidth="2.5" strokeLinecap="round"/>
-        <line x1="201" y1="400" x2="204" y2="422" stroke="#8B3A3A" strokeWidth="2.5" strokeLinecap="round"/>
-        {/* Body */}
-        <rect x="188" y="375" width="18" height="27" rx="3" fill="#8B3A3A" opacity="0.75"/>
-        {/* Left arm raised pointing at hiring sign */}
-        <line x1="206" y1="380" x2="222" y2="368" stroke="#8B3A3A" strokeWidth="2" strokeLinecap="round"/>
-        {/* Right arm down */}
-        <line x1="188" y1="382" x2="183" y2="396" stroke="#8B3A3A" strokeWidth="2" strokeLinecap="round"/>
-        {/* Neck */}
-        <line x1="197" y1="375" x2="197" y2="368" stroke="#8B3A3A" strokeWidth="2" strokeLinecap="round"/>
-        {/* Head */}
-        <circle cx="197" cy="363" r="8" fill="#FAF6F0" stroke="#8B3A3A" strokeWidth="1.5"/>
-        {/* Briefcase */}
-        <rect x="178" y="396" width="10" height="8" rx="1.5" fill="#FAF6F0" stroke="#8B3A3A" strokeWidth="1.2"/>
-        <line x1="181" y1="396" x2="181" y2="393" stroke="#8B3A3A" strokeWidth="1" strokeLinecap="round"/>
-        <line x1="185" y1="396" x2="185" y2="393" stroke="#8B3A3A" strokeWidth="1" strokeLinecap="round"/>
-        <line x1="181" y1="393" x2="185" y2="393" stroke="#8B3A3A" strokeWidth="1" strokeLinecap="round"/>
-      </g>
-    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" className="w-full max-w-lg" aria-hidden="true"><g><path d="M415.34,324.94s37.13-44.87,27.13-123S381.07,101.26,348.23,101,284,136.83,239.7,144.11,134,130.72,84.06,148.2,29.8,270.79,70.5,312.18,197.58,351.94,249,341.55,377.5,372.69,415.34,324.94Z" style={{fill:"#8B3A3A",opacity:0.15}}/></g><g><path d="M269.83,116.11c-4.79-2.61-7-.44-8.71-2.61s4.79-7.84-8.27-13.49c0,0-.87-12.19-18.71-12.63s-13.06,12.19-17.85,15.24-6.09-1.74-10.88,1.3-2.61,9.14-6.53,10-9.14-3.91-13.92-.87-4.79,5.66-7,5.66-6.53-1.74-9.14,0-5.66,3.92-5.66,3.92H273.31S274.61,118.72,269.83,116.11Z" style={{fill:"#FAF6F0",opacity:0.8}}/><path d="M403.41,163c-2.64-1.45-3.84-.24-4.8-1.45s2.64-4.32-4.57-7.45c0,0-.48-6.73-10.34-7s-7.21,6.73-9.85,8.42-3.37-1-6,.72-1.44,5-3.61,5.53-5.05-2.17-7.69-.49-2.64,3.13-3.85,3.13-3.6-1-5,0-3.13,2.16-3.13,2.16h60.82S406.06,164.39,403.41,163Z" style={{fill:"#FAF6F0",opacity:0.8}}/><path d="M118.2,217.63c-2.64-1.44-3.85-.24-4.81-1.44s2.65-4.33-4.56-7.46c0,0-.48-6.73-10.34-7s-7.21,6.73-9.86,8.42-3.36-1-6,.72-1.45,5-3.61,5.53-5-2.17-7.69-.48-2.65,3.12-3.85,3.12-3.6-1-5.05,0-3.12,2.16-3.12,2.16h60.81S120.85,219.07,118.2,217.63Z" style={{fill:"#FAF6F0",opacity:0.8}}/></g><g><polygon points="253.09 305.53 251.48 139 284.33 138.68 283.37 311.01 253.09 305.53" style={{fill:"#FAF6F0",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><polygon points="284.33 138.68 309.78 139 307.85 293.94 283.37 311.01 284.33 138.68" style={{fill:"#1A1A1A",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><rect x="280.45" y="84" width="2.23" height="35.12" style={{fill:"#FAF6F0",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><polygon points="267.39 125.27 267.28 116.86 294.84 117.3 295.06 125.83 267.39 125.27" style={{fill:"#FAF6F0",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><polygon points="282.44 125.49 282.44 117.3 294.84 117.3 295.06 125.83 282.44 125.49" style={{fill:"#1A1A1A",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><polygon points="251.48 139 258.24 131.27 284.33 130.95 284.33 138.68 251.48 139" style={{fill:"#FAF6F0",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><polygon points="284.33 130.95 303.98 131.59 309.78 139 284.33 138.68 284.33 130.95" style={{fill:"#1A1A1A",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><polygon points="305.99 196.7 362.5 201.49 381.02 196.38 323.87 191.91 305.99 196.7" style={{fill:"#FAF6F0",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><polygon points="362.5 201.49 360.9 295.35 379.42 286.73 381.02 196.38 362.5 201.49" style={{fill:"#1A1A1A",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><polygon points="305.99 196.7 305.67 283.54 360.9 295.35 362.5 201.49 305.99 196.7" style={{fill:"#FAF6F0",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><polygon points="353.36 223.31 311.27 219.23 311.27 201.77 353.36 205.85 353.36 223.31" style={{fill:"#8B3A3A",stroke:"#1A1A1A",strokeMiterlimit:10}}/></g><g><path d="M150,166.24s2.5,6,2,9-7.24,5.5-8.24,6-6.24-1.75-6.24-7.5S147,161.5,150,166.24Z" style={{fill:"#FAF6F0",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><path d="M151,145a23,23,0,0,1,1.26,5.31c0,1.76-1,3-.76,4.29s2.27,3.28.51,6.56-.26,8.08-2.78,9.09a16.26,16.26,0,0,1-5.3,1l-.76,5.55-12.62-4V162.68s5.3.25,7.32-2.28,1.51-7.82,2.52-11.36,5.05-5.8,6.82-5.8S151,145,151,145Z" style={{fill:"#FAF6F0",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><path d="M154.62,140.43A7.54,7.54,0,0,1,151,145c-2.53,1.52-5.81,1-5.81,2.28s2.27,1,1.51,4.29a11,11,0,0,1-3,5.3s2.28,2.78,0,3.28-2.77,3.79-5.55,4.55-5.3,2.77-7.57.75-9.6-10.35-10.61-15.9,4.55-11.36,4.55-11.36-.25-3.28,1.77-4.55,7.42-1.69,7.93-3.71c2.12-8.4,16.69-.49,19.25,3.95A9.2,9.2,0,0,1,154.62,140.43Z" style={{fill:"#1A1A1A"}}/><path d="M143.93,161.41s-2-6.06-4.8-4.54-.5,6.06,1,7.32,3.28-.5,3.28-.5" style={{fill:"#FAF6F0",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><path d="M124.49,173.78a27.86,27.86,0,0,0-7.72,8.45c-3,5.3.9,29.93,1.91,36.49s-1.26,17.42.51,20.45,7.57,5.55,13.12,6.06,14.14-.25,17.42-1.26,5.05-3.79,5.05-5.05-.25-16.66-.25-19.95-.25-26.76-2.27-31.3a19.29,19.29,0,0,0-8.84-9.09C140.39,177.07,129,171.51,124.49,173.78Z" style={{fill:"#8B3A3A",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><path d="M118.9,236.51s-2.14,8.82-.53,12.82,1.87,10.42,2.14,12.56-2.68,20-3.75,29.39-5.61,19.77-3.74,26.45.27,31,.81,34.73,1.6,7,2.4,7.48,3.74.8,6.15-.27,4-9.08,4.54-11.48,2.67-30.46,3.47-34.74,3.21-23.51,3.21-23.51,2.13,15.77,1.6,20-2.41,12.56-1.6,20,2.13,35.26,2.13,35.26a11.17,11.17,0,0,0,3.74,1.34c1.34,0,11.49-6.95,12.56-9.35s0-6.68,0-6.68,1.87-42.48,3.74-56.91-2.4-53.7-2.4-53.7S132.26,244.79,118.9,236.51Z" style={{fill:"#1A1A1A"}}/><path d="M152,357.27l.72.24,14.78,4.84s1.87,1.06,1.33,2.67-16,3.47-22.17,3.47-10.15-.53-10.15-2.94S152,357.27,152,357.27Z" style={{fill:"#8B3A3A",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><path d="M125.05,348.19s7.74-3.21,9.08-.54-1.87,6.68-3.74,7.48-3.21,1.34-4.27,2.67-4.28,4.55-7.75,4-3.48-5.07-3.21-5.88S125.05,348.19,125.05,348.19Z" style={{fill:"#8B3A3A",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><path d="M169.17,185.65,160.34,165a19.41,19.41,0,0,0-3.79-3.28,1.6,1.6,0,0,1-.51-2.53s2.53.51,2.53-.5a30.17,30.17,0,0,0-.51-5c-.25-.76-1-1.27-1-2s1.77-1.77,3.79-1.26,1.68.21,1.68.21c2.89-.64,3.45,0,4.89,2.56a14.11,14.11,0,0,1,1.26,6.31c0,1.27-1.52,5.05-1.52,5.05l10.86,21Z" style={{fill:"#FAF6F0",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><path d="M170.18,191.46s-3.28,0-3-.76-.75-3.54-.75-4.8,2.27-2.78,5-3.28,5.81.5,6.82.76,1.26,2.27,2,3.53,1.26,2.78.76,3.79a3.94,3.94,0,0,1-2,1.51Z" style={{fill:"#8B3A3A",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><path d="M133.83,187.67s1.77-6.06,5.3-7.32,7.83.5,12.12,3.28,18.43,11.11,18.43,11.11l-1.52-6.06s9.09-2.78,11.36,1.51,3.79,19.95,3.79,22-5.3,3.78-8.58,3.53-32.32-14.64-32.32-14.64" style={{fill:"#8B3A3A",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/><path d="M126.76,169.49s7.32.51,12.12,3.28,8.08,5.56,9.84,6.06,5.05.76,4,1-2.27.51-4.79,1.26-6.06-.75-11.36-3.28-11.11-4-12.12-4S124.74,169.49,126.76,169.49Z" style={{fill:"#8B3A3A",stroke:"#1A1A1A",strokeLinecap:"round",strokeLinejoin:"round"}}/></g></svg>
   )
 
   const icons: Record<string, JSX.Element> = {
