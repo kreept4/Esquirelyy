@@ -244,7 +244,7 @@ function AppCard({
           </button>
         </div>
 
-        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', fontWeight: 600, color: '#5C1A1A', marginBottom: '0.6rem' }}>
+        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', fontWeight: 600, color: '#8B3A3A', marginBottom: '0.6rem' }}>
           {app.firm}
         </p>
 
@@ -266,7 +266,7 @@ function AppCard({
           fontWeight: 600,
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
-          color: '#5C1A1A',
+          color: '#8B3A3A',
           backgroundColor: '#EBF0F7',
           padding: '2px 7px',
           borderRadius: '2px',
@@ -470,7 +470,7 @@ function AddModal({ onClose, onAdd }: {
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
           <div>
-            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#5C1A1A', opacity: 0.6, marginBottom: '0.2rem' }}>
+            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#8B3A3A', opacity: 0.6, marginBottom: '0.2rem' }}>
               Application Tracker
             </p>
             <h2 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1.4rem', fontWeight: 700, color: '#1A1A1A' }}>
@@ -530,7 +530,7 @@ function AddModal({ onClose, onAdd }: {
             alignItems: 'center',
             justifyContent: 'center',
             gap: '8px',
-            backgroundColor: '#5C1A1A',
+            backgroundColor: '#8B3A3A',
             color: '#FAF7F2',
             fontFamily: 'DM Sans, sans-serif',
             fontSize: '0.78rem',
@@ -543,7 +543,7 @@ function AddModal({ onClose, onAdd }: {
             cursor: 'pointer',
           }}
           onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#0D2E57')}
-          onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#5C1A1A')}
+          onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#8B3A3A')}
         >
           <IconSend size={14} /> Log Application
         </button>
@@ -611,7 +611,7 @@ export default function TrackerPage() {
                 fontWeight: 700,
                 letterSpacing: '0.12em',
                 textTransform: 'uppercase',
-                color: '#5C1A1A',
+                color: '#8B3A3A',
                 opacity: 0.6,
                 marginBottom: '0.4rem',
               }}>
@@ -634,7 +634,7 @@ export default function TrackerPage() {
                 lineHeight: 1.6,
               }}>
                 Every application, every stage. Forward confirmations to{' '}
-                <code style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.8rem', backgroundColor: '#EBF0F7', padding: '1px 5px', borderRadius: '2px', color: '#5C1A1A' }}>
+                <code style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.8rem', backgroundColor: '#EBF0F7', padding: '1px 5px', borderRadius: '2px', color: '#8B3A3A' }}>
                   you@mail.esquirely.app
                 </code>
                 {' '}and we log them automatically.
@@ -647,7 +647,7 @@ export default function TrackerPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                backgroundColor: '#5C1A1A',
+                backgroundColor: '#8B3A3A',
                 color: '#FAF7F2',
                 fontFamily: 'DM Sans, sans-serif',
                 fontSize: '0.75rem',
@@ -661,7 +661,7 @@ export default function TrackerPage() {
                 flexShrink: 0,
               }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#0D2E57')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#5C1A1A')}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#8B3A3A')}
             >
               <IconPlus /> Log Application
             </button>
@@ -817,7 +817,7 @@ export default function TrackerPage() {
                     }}
                     onMouseEnter={e => {
                       e.currentTarget.style.backgroundColor = '#EAE4DB'
-                      e.currentTarget.style.color = '#5C1A1A'
+                      e.currentTarget.style.color = '#8B3A3A'
                     }}
                     onMouseLeave={e => {
                       e.currentTarget.style.backgroundColor = 'transparent'
@@ -848,11 +848,11 @@ export default function TrackerPage() {
             gap: '1rem',
             flexWrap: 'wrap',
           }}>
-            <div style={{ color: '#5C1A1A', flexShrink: 0 }}>
+            <div style={{ color: '#8B3A3A', flexShrink: 0 }}>
               <IconSend size={18} />
             </div>
             <div style={{ flex: 1 }}>
-              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', fontWeight: 600, color: '#5C1A1A', marginBottom: '0.2rem' }}>
+              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', fontWeight: 600, color: '#8B3A3A', marginBottom: '0.2rem' }}>
                 Auto-log with email forwarding
               </p>
               <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', color: '#4A6A8A', lineHeight: 1.5 }}>
@@ -865,9 +865,9 @@ export default function TrackerPage() {
               fontWeight: 600,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
-              color: '#5C1A1A',
+              color: '#8B3A3A',
               backgroundColor: 'transparent',
-              border: '0.5px solid #5C1A1A',
+              border: '0.5px solid #8B3A3A',
               borderRadius: '2px',
               padding: '0.5rem 1rem',
               cursor: 'pointer',

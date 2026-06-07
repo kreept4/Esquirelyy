@@ -112,7 +112,7 @@ export default function WelcomePage() {
                   width: '52px',
                   height: '52px',
                   borderRadius: '50%',
-                  backgroundColor: '#5C1A1A',
+                  backgroundColor: '#8B3A3A',
                   border: '2.5px solid #FAF7F2',
                   display: 'flex',
                   alignItems: 'center',
@@ -157,7 +157,7 @@ export default function WelcomePage() {
           fontFamily: 'DM Sans, sans-serif',
           fontSize: '0.72rem',
           fontWeight: 600,
-          color: '#5C1A1A',
+          color: '#8B3A3A',
           letterSpacing: '0.1em',
           textTransform: 'uppercase',
           marginBottom: '0.875rem',
@@ -191,8 +191,8 @@ export default function WelcomePage() {
                 style={{
                   textAlign: 'left',
                   padding: '1.25rem 1.5rem',
-                  backgroundColor: selected ? '#5C1A1A' : '#fff',
-                  border: selected ? '0.5px solid #5C1A1A' : '0.5px solid #E8E0D5',
+                  backgroundColor: selected ? '#8B3A3A' : '#fff',
+                  border: selected ? '0.5px solid #8B3A3A' : '0.5px solid #E8E0D5',
                   borderRadius: '3px',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
@@ -225,7 +225,7 @@ export default function WelcomePage() {
           <div style={{
             backgroundColor: '#fff',
             border: '0.5px solid #E8E0D5',
-            borderLeft: '3px solid #5C1A1A',
+            borderLeft: '3px solid #8B3A3A',
             padding: '2rem 2rem 2rem 1.75rem',
             marginBottom: '2.5rem',
             animation: 'fadeIn 0.3s ease',
@@ -255,7 +255,7 @@ export default function WelcomePage() {
               fontFamily: 'DM Sans, sans-serif',
               fontSize: '0.75rem',
               fontWeight: 600,
-              color: '#5C1A1A',
+              color: '#8B3A3A',
               marginTop: '1.5rem',
               letterSpacing: '0.05em',
             }}>
@@ -271,7 +271,7 @@ export default function WelcomePage() {
             disabled={!userType || saving}
             style={{
               padding: '0.85rem 2.5rem',
-              backgroundColor: (!userType || saving) ? '#B0BEC5' : '#5C1A1A',
+              backgroundColor: (!userType || saving) ? '#B0BEC5' : '#8B3A3A',
               color: '#FAF7F2',
               border: 'none',
               borderRadius: '2px',

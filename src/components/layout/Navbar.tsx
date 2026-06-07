@@ -64,7 +64,7 @@ export default function Navbar() {
                   fontWeight: 500,
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  color: pathname === href ? '#5C1A1A' : '#4A4A4A',
+                  color: pathname === href ? '#8B3A3A' : '#4A4A4A',
                   textDecoration: 'none',
                   position: 'relative',
                   display: 'inline-block',
@@ -74,7 +74,7 @@ export default function Navbar() {
                 {label}
                 {pathname === href && (
                   <svg viewBox="0 0 60 8" preserveAspectRatio="none" style={{ position: 'absolute', bottom: '-5px', left: '-2px', width: 'calc(100% + 4px)', height: '6px' }}>
-                    <path d="M2,5 Q10,1 20,4 Q35,7 45,3 Q52,1 58,4" stroke="#5C1A1A" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+                    <path d="M2,5 Q10,1 20,4 Q35,7 45,3 Q52,1 58,4" stroke="#8B3A3A" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
                   </svg>
                 )}
               </Link>
@@ -141,7 +141,7 @@ export default function Navbar() {
                   fontFamily: 'DM Sans, sans-serif',
                   fontSize: '0.9rem',
                   fontWeight: 500,
-                  color: pathname === href ? '#5C1A1A' : '#1A1A1A',
+                  color: pathname === href ? '#8B3A3A' : '#1A1A1A',
                   textDecoration: 'none',
                 }}
               >

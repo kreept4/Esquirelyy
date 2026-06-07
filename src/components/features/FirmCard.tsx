@@ -24,7 +24,7 @@ function getMonogram(name: string): string {
 }
 
 const TIER_COLORS: Record<string, string> = {
-  tier_1: '#5C1A1A',
+  tier_1: '#8B3A3A',
   tier_2: '#1B3A5E',
   tier_3: '#2E5080',
   boutique: '#2D6A4F',
@@ -91,7 +91,7 @@ export default function FirmCard({ firm, liveRoles = 0, animate = false, delay =
               display: 'block',
               lineHeight: 1.3,
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#5C1A1A')}
+            onMouseEnter={e => (e.currentTarget.style.color = '#8B3A3A')}
             onMouseLeave={e => (e.currentTarget.style.color = '#1A1A1A')}
           >
             {firm.name}
@@ -147,7 +147,7 @@ export default function FirmCard({ firm, liveRoles = 0, animate = false, delay =
           fontFamily: 'DM Sans, sans-serif',
           fontSize: '0.75rem',
           fontWeight: 600,
-          color: '#5C1A1A',
+          color: '#8B3A3A',
           textDecoration: 'none',
         }}>
           {liveRoles > 0 ? `${liveRoles} open role${liveRoles > 1 ? 's' : ''}` : 'View profile →'}

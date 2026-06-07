@@ -94,7 +94,7 @@ export default function FirmsPage() {
           padding: '3rem 2rem 2rem',
         }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <p className="label-caps" style={{ color: '#5C1A1A', opacity: 0.6, marginBottom: '0.5rem' }}>
+            <p className="label-caps" style={{ color: '#8B3A3A', opacity: 0.6, marginBottom: '0.5rem' }}>
               {filtered.length} firm{filtered.length !== 1 ? 's' : ''}
             </p>
             <h1 style={{
@@ -145,9 +145,9 @@ export default function FirmsPage() {
                     padding: '0.65rem 1rem',
                     fontFamily: 'DM Sans, sans-serif',
                     fontSize: '0.8rem',
-                    color: value ? '#5C1A1A' : '#4A4A4A',
+                    color: value ? '#8B3A3A' : '#4A4A4A',
                     backgroundColor: '#FAF7F2',
-                    border: `0.5px solid ${value ? '#5C1A1A' : '#E8E0D5'}`,
+                    border: `0.5px solid ${value ? '#8B3A3A' : '#E8E0D5'}`,
                     borderRadius: '2px',
                     outline: 'none',
                     cursor: 'pointer',
@@ -164,9 +164,9 @@ export default function FirmsPage() {
                   padding: '0.65rem 1rem',
                   fontFamily: 'DM Sans, sans-serif',
                   fontSize: '0.8rem',
-                  color: practiceArea ? '#5C1A1A' : '#4A4A4A',
+                  color: practiceArea ? '#8B3A3A' : '#4A4A4A',
                   backgroundColor: '#FAF7F2',
-                  border: `0.5px solid ${practiceArea ? '#5C1A1A' : '#E8E0D5'}`,
+                  border: `0.5px solid ${practiceArea ? '#8B3A3A' : '#E8E0D5'}`,
                   borderRadius: '2px',
                   outline: 'none',
                   cursor: 'pointer',
@@ -231,7 +231,7 @@ export default function FirmsPage() {
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
                     <div style={{
                       width: '48px', height: '48px', flexShrink: 0,
-                      backgroundColor: '#5C1A1A', color: '#FAF7F2',
+                      backgroundColor: '#8B3A3A', color: '#FAF7F2',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontFamily: 'Playfair Display, Georgia, serif',
                       fontWeight: 700, fontSize: '0.9rem', borderRadius: '2px',
@@ -240,7 +240,7 @@ export default function FirmsPage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem', flexWrap: 'wrap' }}>
-                        <p className="label-caps" style={{ color: '#5C1A1A', opacity: 0.6, fontSize: '0.58rem' }}>
+                        <p className="label-caps" style={{ color: '#8B3A3A', opacity: 0.6, fontSize: '0.58rem' }}>
                           {firm.tier}
                         </p>
                         <span style={{
@@ -307,7 +307,7 @@ export default function FirmsPage() {
                         </span>
                       )}
                     </div>
-                    <span style={{ color: '#5C1A1A' }}><ArrowRightIcon size={14} /></span>
+                    <span style={{ color: '#8B3A3A' }}><ArrowRightIcon size={14} /></span>
                   </div>
                 </Link>
               ))}

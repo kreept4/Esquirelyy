@@ -1,4 +1,24 @@
-'use client'
+const fs = require('fs');
+
+// Soften burgundy globally
+const files = require('child_process').execSync(
+  'powershell -Command "Get-ChildItem -Path src -Recurse -Filter *.tsx | Select-Object -ExpandProperty FullName"',
+  { encoding: 'utf8' }
+).trim().split('\r\n');
+
+files.forEach(f => {
+  try {
+    const content = fs.readFileSync(f, 'utf8');
+    fs.writeFileSync(f, content.replace(/#5C1A1A/g, '#8B3A3A'));
+  } catch(e) {}
+});
+
+// Also update tailwind config
+const tw = fs.readFileSync('tailwind.config.js', 'utf8');
+fs.writeFileSync('tailwind.config.js', tw.replace(/#5C1A1A/g, '#8B3A3A'));
+
+// Rewrite HomeIcons with man restored
+fs.writeFileSync('src/app/HomeIcons.tsx', `'use client'
 
 export default function HomeIcons({ type }: { type: string }) {
   if (type === 'hero') return (
@@ -79,3 +99,6 @@ export default function HomeIcons({ type }: { type: string }) {
   }
   return icons[type] || null
 }
+`);
+
+console.log('done');

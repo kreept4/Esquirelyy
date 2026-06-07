@@ -4,11 +4,12 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { ArrowRight } from 'lucide-react'
 import HomeIcons from './HomeIcons'
+import FadeSection from './FadeSection'
 
 export const revalidate = 3600
 
 const SECTOR_ACCENT: Record<string, string> = {
-  law_firm: '#5C1A1A', banking: '#1A3A5C', energy: '#7A3B00', fintech: '#0E5C3A', other: '#3B3B3B'
+  law_firm: '#8B3A3A', banking: '#1A3A5C', energy: '#7A3B00', fintech: '#0E5C3A', other: '#3B3B3B'
 }
 
 export default async function HomePage() {
@@ -140,42 +141,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      <section style={{ backgroundColor: '#5C1A1A' }}>
-        <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-          <h2 className="font-display text-4xl font-black mb-4" style={{ color: '#FAF6F0' }}>
-            New roles added daily.<br />Never miss a deadline.
-          </h2>
-          <p className="mb-2 max-w-lg mx-auto" style={{ color: 'rgba(250,246,240,0.6)' }}>
-            Set up alerts for the practice areas, firms, and role types you care about. Esquirely. notifies you the moment a matching role goes live.
-          </p>
-          <p className="text-sm italic mb-10" style={{ color: 'rgba(250,246,240,0.35)' }}>
-            Because in Nigerian legal hiring, deadlines wait for no one.
-          </p>
-          <Link href="/jobs" className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg font-medium text-sm" style={{ backgroundColor: '#FAF6F0', color: '#5C1A1A' }}>
-            Create Job Alert <ArrowRight size={16} />
-          </Link>
-        </div>
-      </section>
-
-      <section style={{
-        background: 'linear-gradient(to bottom, #5C1A1A 0%, #7A2424 20%, #FAF6F0 100%)',
-        padding: '8rem 1.5rem',
-        textAlign: 'center',
-      }}>
-        <h2 style={{
-          fontFamily: 'Playfair Display, Georgia, serif',
-          fontSize: 'clamp(2.5rem, 6vw, 5rem)',
-          fontWeight: 900,
-          lineHeight: 1.1,
-          color: '#1A1A1A',
-          maxWidth: '800px',
-          margin: '0 auto',
-          paddingTop: '4rem',
-        }}>
-          Every opportunity.<br />One platform.
-        </h2>
-      </section>
+      <FadeSection />
 
       <Footer />
     </div>

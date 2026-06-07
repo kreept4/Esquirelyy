@@ -5,7 +5,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { ArrowLeft, MapPin, Clock, ExternalLink } from 'lucide-react'
 export const revalidate = 0
-const SA: Record<string,string> = { law_firm:'#5C1A1A', banking:'#0A4A8C', energy:'#7A3B00', fintech:'#0E5C3A', other:'#3B3B3B' }
+const SA: Record<string,string> = { law_firm:'#8B3A3A', banking:'#0A4A8C', energy:'#7A3B00', fintech:'#0E5C3A', other:'#3B3B3B' }
 const SL: Record<string,string> = { law_firm:'Law Firm', banking:'Banking', energy:'Energy', fintech:'Tech & Fintech', other:'Industry' }
 const TL: Record<string,string> = { job:'Full-time', internship:'Internship', vacation_scheme:'Vacation Scheme', pupillage:'Pupillage' }
 const LL: Record<string,string> = { student:'Student', nysc:'NYSC', junior:'Junior (0-3 yrs PQE)', mid:'Mid-level (3-6 yrs PQE)', senior:'Senior (6+ yrs PQE)' }
@@ -34,7 +34,7 @@ export default async function JobDetailPage({ params }: { params: { slug: string
               {listing.is_closing_soon && <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#B5451B' }}>Closing Soon</span>}
             </div>
             <h1 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 'clamp(1.5rem, 3vw, 2.2rem)', fontWeight: 700, color: '#1A1A1A', lineHeight: 1.2, marginBottom: '0.4rem' }}>{listing.title}</h1>
-            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '1rem', fontWeight: 600, color: '#5C1A1A', marginBottom: '1rem' }}>{listing.employer}</p>
+            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '1rem', fontWeight: 600, color: '#8B3A3A', marginBottom: '1rem' }}>{listing.employer}</p>
             <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' as const, marginBottom: '1.5rem' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: '#4A4A4A' }}><MapPin size={12} />{listing.location}</span>
               <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: '#4A4A4A' }}>{LL[listing.level] || listing.level}</span>
@@ -52,10 +52,10 @@ export default async function JobDetailPage({ params }: { params: { slug: string
           <div style={{ position: 'sticky' as const, top: '96px' }}>
             <div style={{ border: '0.5px solid #E8E0D5', borderTop: '3px solid ' + accent, backgroundColor: '#FFFFFF', padding: '1.5rem' }}>
               <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4A4A4A', marginBottom: '1rem' }}>Apply for this role</p>
-              {applyHref && <a href={applyHref} target='_blank' rel='noopener noreferrer' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '0.75rem', boxSizing: 'border-box' as const, backgroundColor: '#5C1A1A', color: '#FAF7F2', fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const, textDecoration: 'none', borderRadius: '2px', marginBottom: '0.75rem' }}><ExternalLink size={13} />{listing.apply_url ? 'Apply Now' : 'Apply via Email'}</a>}
+              {applyHref && <a href={applyHref} target='_blank' rel='noopener noreferrer' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '0.75rem', boxSizing: 'border-box' as const, backgroundColor: '#8B3A3A', color: '#FAF7F2', fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const, textDecoration: 'none', borderRadius: '2px', marginBottom: '0.75rem' }}><ExternalLink size={13} />{listing.apply_url ? 'Apply Now' : 'Apply via Email'}</a>}
               <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '0.5px solid #E8E0D5' }}>
                 <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: '#4A4A4A', lineHeight: 1.6 }}>
-                  {listing.apply_email && <span>Send your CV to <a href={'mailto:' + listing.apply_email} style={{ color: '#5C1A1A', fontWeight: 600 }}>{listing.apply_email}</a>. </span>}
+                  {listing.apply_email && <span>Send your CV to <a href={'mailto:' + listing.apply_email} style={{ color: '#8B3A3A', fontWeight: 600 }}>{listing.apply_email}</a>. </span>}
                   {listing.is_rolling ? 'Applications reviewed on a rolling basis.' : listing.deadline ? 'Deadline: ' + new Date(listing.deadline).toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' }) + '.' : ''}
                 </p>
               </div>

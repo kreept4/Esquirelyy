@@ -99,7 +99,7 @@ export default function SignupPage() {
             justifyContent: 'center',
             margin: '0 auto 1.5rem',
           }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5C1A1A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B3A3A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
           </div>
@@ -125,7 +125,7 @@ export default function SignupPage() {
             fontFamily: 'DM Sans, sans-serif',
             fontSize: '0.78rem',
             fontWeight: 600,
-            color: '#5C1A1A',
+            color: '#8B3A3A',
             textDecoration: 'none',
             letterSpacing: '0.06em',
           }}>
@@ -373,9 +373,9 @@ export default function SignupPage() {
             lineHeight: 1.6,
           }}>
             By creating an account you agree to our{' '}
-            <Link href="/terms" style={{ color: '#5C1A1A', textDecoration: 'none' }}>Terms of Use</Link>
+            <Link href="/terms" style={{ color: '#8B3A3A', textDecoration: 'none' }}>Terms of Use</Link>
             {' '}and{' '}
-            <Link href="/privacy" style={{ color: '#5C1A1A', textDecoration: 'none' }}>Privacy Policy</Link>.
+            <Link href="/privacy" style={{ color: '#8B3A3A', textDecoration: 'none' }}>Privacy Policy</Link>.
           </p>
 
           <button
@@ -384,7 +384,7 @@ export default function SignupPage() {
             style={{
               width: '100%',
               padding: '0.8rem',
-              backgroundColor: loading ? '#6B8CAE' : '#5C1A1A',
+              backgroundColor: loading ? '#6B8CAE' : '#8B3A3A',
               color: '#FAF7F2',
               border: 'none',
               borderRadius: '2px',
@@ -409,7 +409,7 @@ export default function SignupPage() {
         marginTop: '1.5rem',
       }}>
         Already have an account?{' '}
-        <Link href="/auth/login" style={{ color: '#5C1A1A', fontWeight: 600, textDecoration: 'none' }}>
+        <Link href="/auth/login" style={{ color: '#8B3A3A', fontWeight: 600, textDecoration: 'none' }}>
           Sign in
         </Link>
       </p>

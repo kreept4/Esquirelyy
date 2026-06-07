@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
               justifyContent: 'center',
               margin: '0 auto 1.5rem',
             }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5C1A1A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B3A3A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
@@ -100,7 +100,7 @@ export default function ForgotPasswordPage() {
               fontFamily: 'DM Sans, sans-serif',
               fontSize: '0.78rem',
               fontWeight: 600,
-              color: '#5C1A1A',
+              color: '#8B3A3A',
               textDecoration: 'none',
               letterSpacing: '0.06em',
             }}>
@@ -184,7 +184,7 @@ export default function ForgotPasswordPage() {
                 style={{
                   width: '100%',
                   padding: '0.8rem',
-                  backgroundColor: loading ? '#6B8CAE' : '#5C1A1A',
+                  backgroundColor: loading ? '#6B8CAE' : '#8B3A3A',
                   color: '#FAF7F2',
                   border: 'none',
                   borderRadius: '2px',
@@ -208,7 +208,7 @@ export default function ForgotPasswordPage() {
               marginTop: '1.5rem',
               textAlign: 'center',
             }}>
-              <Link href="/auth/login" style={{ color: '#5C1A1A', fontWeight: 600, textDecoration: 'none' }}>
+              <Link href="/auth/login" style={{ color: '#8B3A3A', fontWeight: 600, textDecoration: 'none' }}>
                 Back to sign in
               </Link>
             </p>

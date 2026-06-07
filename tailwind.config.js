@@ -19,13 +19,13 @@ module.exports = {
           border: '#E8E0D5',
         },
         ink: {
-          DEFAULT: '#5C1A1A',
+          DEFAULT: '#8B3A3A',
           light: '#7A2424',
           muted: '#9A3A3A',
         },
         verified: '#2D6A4F',
         closing: '#B5451B',
-        new: '#5C1A1A',
+        new: '#8B3A3A',
       },
       fontFamily: {
         serif: ['Playfair Display', 'Georgia', 'serif'],
