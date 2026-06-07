@@ -22,6 +22,10 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-cream font-sans" style={{ paddingTop: '64px' }}>
       <Navbar />
+      <style>{`
+        ::selection { background: #8B3A3A; color: #FAF6F0; }
+        ::-moz-selection { background: #8B3A3A; color: #FAF6F0; }
+      `}</style>
 
       <div className="border-b border-cream-border bg-cream-dark overflow-hidden">
         <div className="flex animate-ticker whitespace-nowrap py-2">

@@ -49,7 +49,7 @@ export default function Navbar() {
               color: '#1A1A1A',
               letterSpacing: '-0.01em',
             }}>
-              Esquirely<span style={{ opacity: 0.4 }}>.</span>
+              Esquirely<span style={{ color: '#1A1A1A' }}>.</span>
             </span>
           </Link>
 

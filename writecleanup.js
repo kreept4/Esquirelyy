@@ -1,4 +1,7 @@
-'use client'
+const fs = require('fs');
+
+// 1. Rewrite Footer — remove CTA strip, fix fullstop, fix copyright symbol
+fs.writeFileSync('src/components/layout/Footer.tsx', `'use client'
 
 import Link from 'next/link'
 
@@ -129,3 +132,35 @@ export default function Footer() {
     </footer>
   )
 }
+`);
+
+// 2. Fix page.tsx — remove "Built for Nigerian legal professionals" subtitle
+let page = fs.readFileSync('src/app/page.tsx', 'utf8');
+page = page.replace(
+  `            <p className="text-charcoal/50 text-sm max-w-md mx-auto">Built for Nigerian legal professionals at every stage, from law school through senior practice.</p>\n`,
+  ''
+);
+
+// 3. Fix text selection color — add global style
+if (!page.includes('::selection')) {
+  page = page.replace(
+    `      <Navbar />`,
+    `      <Navbar />
+      <style>{\`
+        ::selection { background: #8B3A3A; color: #FAF6F0; }
+        ::-moz-selection { background: #8B3A3A; color: #FAF6F0; }
+      \`}</style>`
+  );
+}
+
+fs.writeFileSync('src/app/page.tsx', page);
+
+// 4. Fix Navbar fullstop to #1A1A1A
+let navbar = fs.readFileSync('src/components/layout/Navbar.tsx', 'utf8');
+navbar = navbar.replace(
+  `<span style={{ opacity: 0.4 }}>.</span>`,
+  `<span style={{ color: '#1A1A1A' }}>.</span>`
+);
+fs.writeFileSync('src/components/layout/Navbar.tsx', navbar);
+
+console.log('done');
