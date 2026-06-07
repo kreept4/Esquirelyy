@@ -1,4 +1,5 @@
-import Link from 'next/link'
+'use client'
+  import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
