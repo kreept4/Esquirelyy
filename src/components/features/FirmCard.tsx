@@ -37,6 +37,7 @@ const TIER_COLORS: Record<string, string> = {
 function FirmLogo({ website, monogram, tierColor }: { website: string | null, monogram: string, tierColor: string }) {
   const [logoFailed, setLogoFailed] = useState(false)
   const domain = website ? website.replace('https://','').replace('http://','').replace(/\/.*/,'') : null
+  const faviconUrl = domain ? 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64' : null
 
   return (
     <div style={{
@@ -49,15 +50,15 @@ function FirmLogo({ website, monogram, tierColor }: { website: string | null, mo
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: (!domain || logoFailed) ? tierColor : '#FAF6F0',
+      backgroundColor: (!faviconUrl || logoFailed) ? tierColor : '#FAF6F0',
     }}>
-      {domain && !logoFailed ? (
+      {faviconUrl && !logoFailed ? (
         <img
-          src={'https://logo.clearbit.com/' + domain}
+          src={faviconUrl}
           alt={monogram}
-          width={48}
-          height={48}
-          style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+          width={32}
+          height={32}
+          style={{ objectFit: 'contain', width: '32px', height: '32px' }}
           onError={() => setLogoFailed(true)}
         />
       ) : (
@@ -73,6 +74,7 @@ function FirmLogo({ website, monogram, tierColor }: { website: string | null, mo
     </div>
   )
 }
+
 
 export default function FirmCard({ firm, liveRoles = 0, animate = false, delay = 0 }: FirmCardProps) {
   const monogram = getMonogram(firm.name)
