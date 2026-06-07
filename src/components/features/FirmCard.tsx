@@ -34,41 +34,22 @@ const TIER_COLORS: Record<string, string> = {
 }
 
 
-function FirmLogo({ logoFile, monogram, tierColor }: { logoFile?: string | null, monogram: string, tierColor: string }) {
-  const [logoFailed, setLogoFailed] = useState(false)
-  const logoUrl = logoFile && !logoFailed
-    ? 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/' + encodeURIComponent(logoFile)
-    : null
-
+function FirmLogo({ logoFile, monogram, tierColor }: { logoFile?: string | null; monogram: string; tierColor: string }) {
+  const [failed, setFailed] = useState(false)
+  const url = logoFile && !failed ? 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/' + logoFile.replace(/ /g, '%20') : null
   return (
     <div style={{
-      width: '48px',
-      height: '48px',
-      flexShrink: 0,
-      borderRadius: '2px',
-      overflow: 'hidden',
-      border: '0.5px solid #E8E0D5',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: logoUrl ? '#FFFFFF' : tierColor,
+      width: '48px', height: '48px', flexShrink: 0, borderRadius: '2px',
+      border: '0.5px solid #E8E0D5', overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      backgroundColor: url ? '#FFFFFF' : tierColor,
     }}>
-      {logoUrl ? (
-        <img
-          src={logoUrl}
-          alt={monogram}
-          width={48}
-          height={48}
-          style={{ objectFit: 'contain', width: '100%', height: '100%', padding: '4px' }}
-          onError={() => setLogoFailed(true)}
-        />
+      {url ? (
+        <img src={url} alt={monogram} width={48} height={48}
+          style={{ objectFit: 'contain', width: '100%', height: '100%', padding: '6px' }}
+          onError={() => setFailed(true)} />
       ) : (
-        <span style={{
-          fontFamily: 'Playfair Display, Georgia, serif',
-          fontWeight: 700,
-          fontSize: '1rem',
-          color: '#FAF7F2',
-        }}>
+        <span style={{ fontFamily: 'Playfair Display, Georgia, serif', fontWeight: 700, fontSize: '1rem', color: '#FAF7F2' }}>
           {monogram}
         </span>
       )}
@@ -87,23 +68,7 @@ export default function FirmCard({ firm, liveRoles = 0, animate = false, delay =
       style={{ padding: '1.5rem' }}
     >
       <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-        {/* Monogram avatar */}
-        <div style={{
-          width: '48px',
-          height: '48px',
-          backgroundColor: tierColor,
-          color: '#FAF7F2',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontFamily: 'Playfair Display, Georgia, serif',
-          fontWeight: 700,
-          fontSize: '1rem',
-          flexShrink: 0,
-          borderRadius: '2px',
-        }}>
-          {monogram}
-        </div>
+        <FirmLogo logoFile={firm.logoFile} monogram={monogram} tierColor={tierColor} />
 
         <div style={{ flex: 1, minWidth: 0 }}>
           {/* Tier + verified */}
