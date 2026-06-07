@@ -8,26 +8,24 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Esquirely palette
         charcoal: {
           DEFAULT: '#1A1A1A',
           light: '#2C2C2C',
           muted: '#4A4A4A',
         },
         cream: {
-          DEFAULT: '#FAF7F2',
-          dark: '#F0EBE3',
+          DEFAULT: '#FAF6F0',
+          dark: '#F2EBE1',
           border: '#E8E0D5',
         },
         ink: {
-          DEFAULT: '#0A2342',
-          light: '#1B3A5E',
-          muted: '#2E5080',
+          DEFAULT: '#5C1A1A',
+          light: '#7A2424',
+          muted: '#9A3A3A',
         },
-        // Status colors — restrained
         verified: '#2D6A4F',
         closing: '#B5451B',
-        new: '#0A2342',
+        new: '#5C1A1A',
       },
       fontFamily: {
         serif: ['Playfair Display', 'Georgia', 'serif'],

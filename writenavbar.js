@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+fs.writeFileSync('src/components/layout/Navbar.tsx', `'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -159,14 +161,17 @@ export default function Navbar() {
         )}
       </nav>
 
-      <style>{`
+      <style>{\`
         @media (max-width: 768px) {
           .desktop-nav { display: none !important; }
         }
         @media (min-width: 769px) {
           .mobile-menu-btn { display: none !important; }
         }
-      `}</style>
+      \`}</style>
     </header>
   )
 }
+`);
+
+console.log('done');
