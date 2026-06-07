@@ -58,7 +58,7 @@ export default async function HomePage() {
   const { data: jobs } = await supabase.from('jobs').select('*').order('created_at', { ascending: false })
   const listings = jobs || []
   const featured = listings.slice(0, 6)
-  const tickerItems = listings.map((j: any) => `${j.employer}, ${j.title}`)
+  const tickerItems = listings.map((j: any) => j.employer + ', ' + j.title)
 
   return (
     <div className="min-h-screen bg-cream font-sans" style={{ paddingTop: '64px' }}>
