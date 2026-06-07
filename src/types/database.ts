@@ -17,6 +17,7 @@ export interface Firm {
   state: string
   description: string | null
   website: string | null
+  logoFile?: string | null
   logo_url: string | null
   verified: boolean
   practice_areas: string[]
@@ -184,3 +185,4 @@ export const PRACTICE_AREAS = [
   'Family Law',
   'Arbitration',
 ]
+

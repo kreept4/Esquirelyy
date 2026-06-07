@@ -34,10 +34,11 @@ const TIER_COLORS: Record<string, string> = {
 }
 
 
-function FirmLogo({ website, monogram, tierColor }: { website: string | null, monogram: string, tierColor: string }) {
+function FirmLogo({ logoFile, monogram, tierColor }: { logoFile?: string | null, monogram: string, tierColor: string }) {
   const [logoFailed, setLogoFailed] = useState(false)
-  const domain = website ? website.replace('https://','').replace('http://','').replace(/\/.*/,'') : null
-  const faviconUrl = domain ? 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64' : null
+  const logoUrl = logoFile && !logoFailed
+    ? 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/' + encodeURIComponent(logoFile)
+    : null
 
   return (
     <div style={{
@@ -50,15 +51,15 @@ function FirmLogo({ website, monogram, tierColor }: { website: string | null, mo
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: (!faviconUrl || logoFailed) ? tierColor : '#FAF6F0',
+      backgroundColor: logoUrl ? '#FFFFFF' : tierColor,
     }}>
-      {faviconUrl && !logoFailed ? (
+      {logoUrl ? (
         <img
-          src={faviconUrl}
+          src={logoUrl}
           alt={monogram}
-          width={32}
-          height={32}
-          style={{ objectFit: 'contain', width: '32px', height: '32px' }}
+          width={48}
+          height={48}
+          style={{ objectFit: 'contain', width: '100%', height: '100%', padding: '4px' }}
           onError={() => setLogoFailed(true)}
         />
       ) : (
