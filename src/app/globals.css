@@ -14,9 +14,9 @@
   --cream-dark: #F0EBE3;
   --cream-border: #E8E0D5;
 
-  --ink: #0A2342;
-  --ink-light: #1B3A5E;
-  --ink-muted: #2E5080;
+  --ink: #8B3A3A;
+  --ink-light: #A84A4A;
+  --ink-muted: #C47070;
 
   /* Status */
   --verified: #2D6A4F;
@@ -222,3 +222,4 @@ body {
 .delay-3 { animation-delay: 0.3s; }
 .delay-4 { animation-delay: 0.4s; }
 .delay-5 { animation-delay: 0.5s; }
+
