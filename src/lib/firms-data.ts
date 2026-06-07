@@ -24,7 +24,6 @@ export const ALL_FIRMS: Firm[] = [
   {
     slug: 'olaniwun-ajayi',
     logoFile: 'olaniwun-ajayi.jpg',
-    logoFile: 'olaniwun-ajayi.jpg',
     name: 'Olaniwun Ajayi LP',
     shortName: 'Olaniwun Ajayi',
     tier: 'Tier 1',
@@ -42,7 +41,6 @@ export const ALL_FIRMS: Firm[] = [
   {
     slug: 'banwo-ighodalo',
     logoFile: 'banwo-ighodalo.jpg',
-    logoFile: 'banwo-ighodalo.jpg',
     name: 'Banwo & Ighodalo',
     shortName: 'Banwo & Ighodalo',
     tier: 'Tier 1',
@@ -58,7 +56,6 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'aluko-oyebode',
-    logoFile: 'aluko-oyebode.jpg',
     logoFile: 'aluko-oyebode.jpg',
     name: 'Aluko & Oyebode',
     shortName: 'Aluko & Oyebode',
@@ -78,7 +75,6 @@ export const ALL_FIRMS: Firm[] = [
   {
     slug: 'kenna-partners',
     logoFile: 'kenna-partners.png',
-    logoFile: 'kenna-partners.png',
     name: 'Kenna Partners',
     shortName: 'Kenna Partners',
     tier: 'Tier 1',
@@ -93,7 +89,6 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'templars',
-    logoFile: 'templars.jpg',
     logoFile: 'templars.jpg',
     name: 'Templars',
     shortName: 'Templars',
@@ -112,7 +107,6 @@ export const ALL_FIRMS: Firm[] = [
   {
     slug: 'detail-solicitors',
     logoFile: 'Detail.jpg',
-    logoFile: 'Detail.jpg',
     name: 'Detail Solicitors',
     shortName: 'Detail',
     tier: 'Tier 1',
@@ -128,7 +122,6 @@ export const ALL_FIRMS: Firm[] = [
   {
     slug: 'perchstone-graeys',
     logoFile: 'perchstone.jpg',
-    logoFile: 'perchstone.jpg',
     name: 'Perchstone & Graeys LP',
     shortName: 'Perchstone & Graeys',
     tier: 'Tier 1',
@@ -143,7 +136,6 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'aelex',
-    logoFile: 'aelex.jpg',
     logoFile: 'aelex.jpg',
     name: 'AELEX',
     shortName: 'AELEX',
@@ -163,7 +155,6 @@ export const ALL_FIRMS: Firm[] = [
   {
     slug: 'streamsowers-kohn',
     logoFile: 'streamsowers.jpg',
-    logoFile: 'streamsowers.jpg',
     name: 'Streamsowers & Köhn',
     shortName: 'Streamsowers',
     tier: 'Tier 1',
@@ -180,7 +171,6 @@ export const ALL_FIRMS: Firm[] = [
   {
     slug: 'g-elias',
     logoFile: 'G elias.jpg',
-    logoFile: 'G elias.jpg',
     name: 'G. Elias & Co',
     shortName: 'G. Elias',
     tier: 'Tier 1',
@@ -196,7 +186,6 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'olajide-oyewole',
-    logoFile: 'olajide oyewole.jpg',
     logoFile: 'olajide oyewole.jpg',
     name: 'Olajide Oyewole LLP',
     shortName: 'Olajide Oyewole',
@@ -256,7 +245,6 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'ajumogobia-okeke',
-    logoFile: 'ajumogbia.jpg',
     logoFile: 'ajumogbia.jpg',
     name: 'Ajumogobia & Okeke',
     shortName: 'A&O Nigeria',
