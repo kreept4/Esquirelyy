@@ -9,7 +9,7 @@ import FadeSection from './FadeSection'
 export const revalidate = 3600
 
 const SECTOR_ACCENT: Record<string, string> = {
-  law_firm: '#8B3A3A', banking: '#1A3A5C', energy: '#7A3B00', fintech: '#0E5C3A', other: '#3B3B3B'
+  law_firm: '#8B3A3A', banking: '#8B3A3A', energy: '#7A3B00', fintech: '#0E5C3A', other: '#3B3B3B'
 }
 
 export default async function HomePage() {

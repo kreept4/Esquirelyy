@@ -3,7 +3,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Search, SlidersHorizontal, X, Bookmark, MapPin, Clock, ChevronRight } from 'lucide-react'
 
-const SECTOR_ACCENT: Record<string, string> = { law_firm: '#8B3A3A', banking: '#0A4A8C', energy: '#7A3B00', fintech: '#0E5C3A', other: '#3B3B3B' }
+const SECTOR_ACCENT: Record<string, string> = { law_firm: '#8B3A3A', banking: '#8B3A3A', energy: '#7A3B00', fintech: '#0E5C3A', other: '#3B3B3B' }
 const SECTOR_LABELS: Record<string, string> = { law_firm: 'Law Firm', banking: 'Banking', energy: 'Energy', fintech: 'Tech & Fintech', other: 'Industry' }
 const TYPE_LABELS: Record<string, string> = { job: 'Full-time', internship: 'Internship', vacation_scheme: 'Vacation Scheme', pupillage: 'Pupillage' }
 const SECTOR_OPTIONS = [{ value: '', label: 'All Sectors' }, { value: 'law_firm', label: 'Law Firms' }, { value: 'banking', label: 'Banking & Finance' }, { value: 'energy', label: 'Energy & Extractives' }, { value: 'fintech', label: 'Technology & Fintech' }, { value: 'other', label: 'Multinationals & Other' }]

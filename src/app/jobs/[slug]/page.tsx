@@ -5,7 +5,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { ArrowLeft, MapPin, Clock, ExternalLink } from 'lucide-react'
 export const revalidate = 0
-const SA: Record<string,string> = { law_firm:'#8B3A3A', banking:'#0A4A8C', energy:'#7A3B00', fintech:'#0E5C3A', other:'#3B3B3B' }
+const SA: Record<string,string> = { law_firm:'#8B3A3A', banking:'#8B3A3A', energy:'#7A3B00', fintech:'#0E5C3A', other:'#3B3B3B' }
 const SL: Record<string,string> = { law_firm:'Law Firm', banking:'Banking', energy:'Energy', fintech:'Tech & Fintech', other:'Industry' }
 const TL: Record<string,string> = { job:'Full-time', internship:'Internship', vacation_scheme:'Vacation Scheme', pupillage:'Pupillage' }
 const LL: Record<string,string> = { student:'Student', nysc:'NYSC', junior:'Junior (0-3 yrs PQE)', mid:'Mid-level (3-6 yrs PQE)', senior:'Senior (6+ yrs PQE)' }
