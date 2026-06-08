@@ -75,10 +75,6 @@ const BriefcaseIcon = () => (
   </svg>
 )
 
-export async function generateStaticParams() {
-  return ALL_FIRMS.map(f => ({ slug: f.slug }))
-}
-
 export default function FirmProfilePage({ params }: { params: { slug: string } }) {
   const firm = ALL_FIRMS.find(f => f.slug === params.slug)
   if (!firm) notFound()
