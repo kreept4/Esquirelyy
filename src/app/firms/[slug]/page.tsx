@@ -68,6 +68,39 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
   )
 }
 
+
+const STORAGE = 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/'
+
+function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string }) {
+  const url = logoFile ? STORAGE + logoFile.replace(/ /g, '%20') : null
+  if (!url) {
+    return (
+      <div style={{
+        width: '72px', height: '72px', flexShrink: 0,
+        backgroundColor: '#0A2342', color: '#FAF7F2',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontFamily: 'Playfair Display, Georgia, serif',
+        fontWeight: 700, fontSize: '1.35rem', borderRadius: '3px',
+      }}>
+        {name.split(' ').filter(w => w.length > 2 && !['and','LLP','LP','Co','the'].includes(w)).slice(0,2).map(w => w[0]).join('').toUpperCase()}
+      </div>
+    )
+  }
+  return (
+    <div style={{
+      width: '72px', height: '72px', flexShrink: 0,
+      backgroundColor: '#FAF7F2', border: '0.5px solid #E8E0D5',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      borderRadius: '3px', overflow: 'hidden',
+    }}>
+      <img src={url} alt={name} width={72} height={72}
+        style={{ objectFit: 'cover', width: '100%', height: '100%' }}
+        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+      />
+    </div>
+  )
+}
+
 export async function generateStaticParams() {
   return ALL_FIRMS.map(f => ({ slug: f.slug }))
 }
