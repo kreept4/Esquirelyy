@@ -38,107 +38,10 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
     }}>
       {url ? (
         <img src={url} alt={name} width={48} height={48}
-          style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+          style={{ objectFit: 'contain', width: '80%', height: '80%' }}
           onError={() => setFailed(true)} />
       ) : (
-        <span style={{ fontFamily: 'Playfair Display, Georgia, serif', fontWeight: 700, fontSize: '0.9rem', color: '#FAF7F2' }}>
-          {getMonogram(name)}
-        </span>
-      )}
-    </div>
-  )
-}
-
-const SearchIcon = () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>)
-const ArrowRightIcon = () => (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>)
-const MapPinIcon = () => (<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>)
-const BriefcaseIcon = () => (<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>)
-const XIcon = () => (<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>)
-const ShieldCheckIcon = () => (<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>)
-
-export default function FirmsPage() {
-  const [search, setSearch] = useState('')
-  const [tier, setTier] = useState('')
-  const [city, setCity] = useState('')
-  const [practiceArea, setPracticeArea] = useState('')
-
-  const filtered = useMemo(() => {
-    return ALL_FIRMS.filter(f => {
-      if (search && !f.name.toLowerCase().includes(search.toLowerCase()) && !f.practiceAreas.some((p: string) => p.toLowerCase().includes(search.toLowerCase()))) return false
-      if (tier && f.tier !== tier) return false
-      if (city && !f.offices.some((o: any) => o.city === city)) return false
-      if (practiceArea && !f.practiceAreas.includes(practiceArea)) return false
-      return true
-    })
-  }, [search, tier, city, practiceArea])
-
-  const hasFilters = tier || city || practiceArea
-
-  return (
-    <>
-      <Navbar />
-      <main style={{ backgroundColor: '#FAF7F2', paddingTop: '80px', minHeight: '100vh' }}>
-        <div style={{ backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5', padding: '3rem 2rem 2rem' }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <p className="label-caps" style={{ color: '#8B3A3A', opacity: 0.6, marginBottom: '0.5rem' }}>
-              {filtered.length} firm{filtered.length !== 1 ? 's' : ''}
-            </p>
-            <h1 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, color: '#1A1A1A', marginBottom: '1.5rem', lineHeight: 1.1 }}>
-              Firm Directory
-            </h1>
-            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <div style={{ position: 'relative', flex: '1 1 280px' }}>
-                <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#4A4A4A' }}>
-                  <SearchIcon />
-                </span>
-                <input type="text" placeholder="Search firms or practice areas" value={search} onChange={e => setSearch(e.target.value)}
-                  style={{ width: '100%', padding: '0.65rem 1rem 0.65rem 2.25rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', color: '#1A1A1A', backgroundColor: '#FAF7F2', border: '0.5px solid #E8E0D5', borderRadius: '2px', outline: 'none' }} />
-              </div>
-              {[
-                { value: tier, setter: setTier, options: TIER_OPTIONS, placeholder: 'Tier' },
-                { value: city, setter: setCity, options: CITY_OPTIONS, placeholder: 'City' },
-              ].map(({ value, setter, options, placeholder }) => (
-                <select key={placeholder} value={value} onChange={e => setter(e.target.value)}
-                  style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: value ? '#8B3A3A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: value ? '0.5px solid #8B3A3A' : '0.5px solid #E8E0D5', borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
-                  {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
-              ))}
-              <select value={practiceArea} onChange={e => setPracticeArea(e.target.value)}
-                style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: practiceArea ? '#8B3A3A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: practiceArea ? '0.5px solid #8B3A3A' : '0.5px solid #E8E0D5', borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
-                <option value="">All Practice Areas</option>
-                {PRACTICE_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
-              </select>
-              {hasFilters && (
-                <button onClick={() => { setTier(''); setCity(''); setPracticeArea('') }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', color: '#B5451B', backgroundColor: 'transparent', border: '0.5px solid rgba(181,69,27,0.3)', borderRadius: '2px', cursor: 'pointer' }}>
-                  <XIcon /> Clear
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem' }}>
-          {filtered.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '5rem 0' }}>
-              <p style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1.5rem', color: '#1A1A1A', marginBottom: '0.5rem' }}>No firms match your filters.</p>
-              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', color: '#4A4A4A' }}>Try broadening your search.</p>
-            </div>
-          ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1px', backgroundColor: '#E8E0D5', border: '0.5px solid #E8E0D5' }}>
-              {filtered.map(firm => (
-                <Link key={firm.slug} href={'/firms/' + firm.slug}
-                  style={{ backgroundColor: '#FAF7F2', padding: '1.75rem', textDecoration: 'none', display: 'block', transition: 'background-color 0.15s ease' }}
-                  onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#fff')}
-                  onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#FAF7F2')}>
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1rem' }}>
-                    <FirmAvatar logoFile={firm.logoFile} name={firm.name} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem', flexWrap: 'wrap' }}>
-                        <p className="label-caps" style={{ color: '#8B3A3A', opacity: 0.6, fontSize: '0.58rem' }}>{firm.tier}</p>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', color: '#2D6A4F', fontSize: '0.58rem', fontFamily: 'DM Sans, sans-serif', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                          <ShieldCheckIcon /> Verified
-                        </span>
+        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#2D6A4F' }}>Verified</span>
                       </div>
                       <p style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '0.95rem', fontWeight: 600, color: '#1A1A1A', lineHeight: 1.2 }}>{firm.name}</p>
                     </div>

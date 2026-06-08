@@ -40,7 +40,7 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
       borderRadius: '3px', overflow: 'hidden',
     }}>
       <img src={url} alt={name} width={72} height={72}
-        style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+        style={{ objectFit: 'contain', width: '80%', height: '80%' }} />
     </div>
   )
 }
@@ -206,7 +206,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                     <>
                       <p style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '2.5rem', fontWeight: 700, color: '#1A1A1A', lineHeight: 1, marginBottom: '0.25rem' }}>{firm!.openRoles}</p>
                       <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: '#4A4A4A', marginBottom: '1.25rem' }}>open position{firm!.openRoles !== 1 ? 's' : ''} at this firm</p>
-                      <Link href={`/jobs?firm=${firm!.slug}`} className="btn-primary" style={{ display: 'block', textAlign: 'center' as const }}>
+                      <Link href={`/jobs?firm=${firm!.slug}`} style={{ display: 'block', textAlign: 'center' as const, padding: '0.65rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#FAF7F2', backgroundColor: '#0A2342', textDecoration: 'none', borderRadius: '2px' }}>
                         View open roles
                       </Link>
                     </>
@@ -215,7 +215,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                       <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', color: '#4A4A4A', lineHeight: 1.65, marginBottom: '1.25rem' }}>
                         No active listings right now. Set an alert to be notified when they post.
                       </p>
-                      <Link href="/auth/login" className="btn-outline" style={{ display: 'block', textAlign: 'center' as const }}>
+                      <Link href="/auth/login" style={{ display: 'block', textAlign: 'center' as const, padding: '0.65rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#0A2342', backgroundColor: 'transparent', border: '0.5px solid #0A2342', textDecoration: 'none', borderRadius: '2px' }}>
                         Set firm alert
                       </Link>
                     </>
@@ -223,18 +223,18 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                 </div>
               </div>
 
-              <div style={{ backgroundColor: '#0A2342', borderRadius: '3px', padding: '1.5rem' }}>
-                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: 'rgba(250,247,242,0.5)', marginBottom: '0.5rem' }}>
+              <div style={{ border: '0.5px solid #E8E0D5', borderRadius: '3px', padding: '1.5rem' }}>
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#0A2342', opacity: 0.6, marginBottom: '0.5rem' }}>
                   Direct Application
                 </p>
-                <p style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1rem', fontWeight: 600, color: '#FAF7F2', lineHeight: 1.3, marginBottom: '0.75rem' }}>
+                <p style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1rem', fontWeight: 600, color: '#1A1A1A', lineHeight: 1.3, marginBottom: '0.75rem' }}>
                   Apply directly to their recruitment team.
                 </p>
                 <a href={`mailto:${firm!.email}?subject=Application Enquiry`} style={{
                   display: 'inline-flex', alignItems: 'center', gap: '6px',
                   fontFamily: 'DM Sans, sans-serif', fontSize: '0.75rem',
                   fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const,
-                  color: '#FAF7F2', border: '0.5px solid rgba(250,247,242,0.3)',
+                  color: '#0A2342', border: '0.5px solid #E8E0D5',
                   padding: '0.65rem 1.25rem', textDecoration: 'none', borderRadius: '2px',
                 }}>
                   <MailIcon /> {firm!.email}
