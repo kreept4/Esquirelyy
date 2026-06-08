@@ -43,7 +43,7 @@ export const ALL_FIRMS: Firm[] = [
     description: 'A leading Nigerian commercial law firm with particular strength in energy, corporate transactions, and dispute resolution.',
     foundedYear: 2000,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'aelex',
     logoFile: 'aelex.jpg',
@@ -61,7 +61,7 @@ export const ALL_FIRMS: Firm[] = [
     description: 'A leading full-service West African law firm with exceptional expertise in energy, dispute resolution, and maritime law.',
     foundedYear: 2004,
     openRoles: 4,
-  },,
+  },
   {
     slug: 'aina-blankson',
     logoFile: 'aina blankson.jpg',
@@ -77,7 +77,7 @@ export const ALL_FIRMS: Firm[] = [
     description: 'A leading maritime and shipping law firm in Nigeria, with additional expertise in corporate, energy, and commercial law.',
     foundedYear: 1994,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'ajumogobia-okeke',
     logoFile: 'ajumogbia.jpg',
@@ -92,7 +92,7 @@ export const ALL_FIRMS: Firm[] = [
     practiceAreas: ['Energy & Natural Resources', 'Corporate & Commercial', 'Dispute Resolution', 'Shipping & Maritime'],
     description: 'A boutique firm with deep expertise in energy, maritime, and natural resources law.',
     openRoles: 0,
-  },,
+  },
   {
     slug: 'aluko-oyebode',
     logoFile: 'aluko-oyebode.jpg',
@@ -110,7 +110,7 @@ export const ALL_FIRMS: Firm[] = [
     description: "Nigeria's largest law firm by headcount, offering a full range of corporate and commercial legal services with offices across the country.",
     foundedYear: 1993,
     openRoles: 4,
-  },,
+  },
   {
     slug: 'banwo-ighodalo',
     logoFile: 'banwo-ighodalo.jpg',
@@ -126,7 +126,7 @@ export const ALL_FIRMS: Firm[] = [
     description: 'A leading Nigerian law firm with particular strength in capital markets, banking and finance, and corporate transactions.',
     foundedYear: 1991,
     openRoles: 2,
-  },,
+  },
   {
     slug: 'blackfriars-law',
     logoFile: 'blackfriars-law.jpg',
@@ -166,7 +166,7 @@ export function getMonogram(name: string): string {
     description: 'A commercial law firm offering expertise across corporate transactions, banking, intellectual property, and dispute resolution.',
     foundedYear: 2005,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'dealhq-partners',
     logoFile: 'dealhq-partners.jpg',
@@ -182,7 +182,7 @@ export function getMonogram(name: string): string {
     description: 'A transactions-focused boutique law firm specialising in corporate finance, capital markets, and commercial advisory.',
     foundedYear: 2015,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'detail-solicitors',
     logoFile: 'Detail solicitors.jpg',
@@ -197,7 +197,7 @@ export function getMonogram(name: string): string {
     practiceAreas: ['Corporate & Commercial', 'Intellectual Property', 'Tax', 'Banking & Finance'],
     description: 'A specialist commercial firm with a formidable reputation in intellectual property, corporate advisory, and tax matters.',
     openRoles: 2,
-  },,
+  },
   {
     slug: 'famsville-solicitors',
     logoFile: 'Famsville.jpg',
@@ -213,7 +213,7 @@ export function getMonogram(name: string): string {
     description: 'A boutique commercial law firm providing focused legal services across corporate, finance, and dispute resolution.',
     foundedYear: 2012,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'g-elias',
     logoFile: 'Elias.jpeg',
@@ -229,7 +229,7 @@ export function getMonogram(name: string): string {
     description: 'A renowned commercial law firm with a distinguished heritage and leading practice in telecommunications and corporate law.',
     foundedYear: 1944,
     openRoles: 1,
-  },,
+  },
   {
     slug: 'george-etomi',
     logoFile: 'george-etomi.jpg',
@@ -245,7 +245,7 @@ export function getMonogram(name: string): string {
     description: 'A full-service commercial law firm with deep expertise in energy, corporate transactions, and dispute resolution.',
     foundedYear: 1994,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'jackson-etti-edu',
     logoFile: 'Jackson etti.png',
@@ -260,7 +260,7 @@ export function getMonogram(name: string): string {
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Employment', 'Intellectual Property', 'Real Estate'],
     description: 'A well-established firm with broad commercial expertise, particularly recognised for its employment law and intellectual property practice.',
     openRoles: 1,
-  },,
+  },
   {
     slug: 'kenna-partners',
     logoFile: 'kenna-partners.png',
@@ -275,7 +275,7 @@ export function getMonogram(name: string): string {
     practiceAreas: ['Corporate & Commercial', 'Tax', 'Banking & Finance', 'Real Estate', 'Employment'],
     description: 'A full-service commercial law firm with deep expertise in corporate transactions, tax advisory, and real estate.',
     openRoles: 1,
-  },,
+  },
   {
     slug: 'mike-igbokwe',
     logoFile: 'mike-igbokwe.jpg',
@@ -291,7 +291,7 @@ export function getMonogram(name: string): string {
     description: "A specialist dispute resolution and arbitration practice led by one of Nigeria's foremost arbitration practitioners.",
     foundedYear: 1995,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'olajide-oyewole',
     logoFile: 'olajide oyewole.jpg',
@@ -306,7 +306,7 @@ export function getMonogram(name: string): string {
     practiceAreas: ['Banking & Finance', 'Tax', 'Corporate & Commercial', 'Capital Markets', 'Real Estate'],
     description: 'A full-service commercial law firm known for innovative legal solutions in banking, finance, and tax advisory.',
     openRoles: 2,
-  },,
+  },
   {
     slug: 'olaniwun-ajayi',
     logoFile: 'olaniwun-ajayi.jpg',
@@ -323,7 +323,7 @@ export function getMonogram(name: string): string {
     description: "One of Nigeria's foremost full-service commercial law firms, widely recognised for its leading corporate and energy practice.",
     foundedYear: 1978,
     openRoles: 3,
-  },,
+  },
   {
     slug: 'perchstone-graeys',
     logoFile: 'perchstone.jpg',
@@ -338,7 +338,7 @@ export function getMonogram(name: string): string {
     practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Capital Markets', 'Dispute Resolution', 'Real Estate'],
     description: 'A full-service law firm providing comprehensive corporate and commercial legal services to domestic and international clients.',
     openRoles: 1,
-  },,
+  },
   {
     slug: 'primera-africa',
     logoFile: 'Primera.jpg',
@@ -354,7 +354,7 @@ export function getMonogram(name: string): string {
     description: 'A leading commercial law firm with a strong focus on banking, finance, capital markets, and energy transactions.',
     foundedYear: 2008,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'punuka',
     logoFile: 'punuka.png',
@@ -370,7 +370,7 @@ export function getMonogram(name: string): string {
     description: 'A commercial law firm with strong expertise in corporate transactions, dispute resolution, and energy law.',
     foundedYear: 1993,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'resolution-law',
     logoFile: 'resolution-law.webp',
@@ -386,7 +386,7 @@ export function getMonogram(name: string): string {
     description: 'A boutique commercial law firm offering expertise in corporate advisory, dispute resolution, and intellectual property.',
     foundedYear: 2010,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'simmons-cooper',
     logoFile: 'simmons-cooper.png',
@@ -402,7 +402,7 @@ export function getMonogram(name: string): string {
     description: 'A full-service commercial law firm with strong expertise in energy, corporate, and finance transactions.',
     foundedYear: 2003,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'spa-ajibade',
     logoFile: 'SPA ajibade.jpg',
@@ -418,7 +418,7 @@ export function getMonogram(name: string): string {
     description: "One of Nigeria's leading full-service commercial law firms, widely recognised for its energy, corporate and finance practice.",
     foundedYear: 1994,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'streamsowers-kohn',
     logoFile: 'streamsowers.jpg',
@@ -434,7 +434,7 @@ export function getMonogram(name: string): string {
     description: "Nigeria's pre-eminent dispute resolution firm, with unrivalled expertise in commercial arbitration and litigation.",
     foundedYear: 1993,
     openRoles: 2,
-  },,
+  },
   {
     slug: 'stren-blan-partners',
     logoFile: 'StrenBlanPartners.png',
@@ -467,7 +467,7 @@ export function getMonogram(name: string): string {
     description: 'A full-service commercial law firm with expertise in corporate transactions, energy, and dispute resolution.',
     foundedYear: 1996,
     openRoles: 0,
-  },,
+  },
   {
     slug: 'templars',
     logoFile: 'templars.jpg',
@@ -484,7 +484,7 @@ export function getMonogram(name: string): string {
     description: 'A top-tier commercial law firm known for its strong energy and corporate practice, serving multinationals and major Nigerian businesses.',
     foundedYear: 2009,
     openRoles: 3,
-  },,
+  },
   {
     slug: 'udo-udoma-bello-osagie',
     logoFile: 'udo-udoma.webp',
@@ -501,7 +501,7 @@ export function getMonogram(name: string): string {
     description: "One of Nigeria's foremost law firms, offering exceptional legal services across corporate, finance, and dispute resolution practice areas.",
     foundedYear: 1996,
     openRoles: 2,
-  },,
+  },
   {
     slug: 'wole-olanipekun',
     logoFile: 'wole olanipekun.jpg',
@@ -517,7 +517,7 @@ export function getMonogram(name: string): string {
     description: 'A distinguished Nigerian law firm with a strong reputation in litigation, arbitration, and corporate advisory.',
     foundedYear: 1988,
     openRoles: 0,
-  },,
+  },
 ])
     .join('')
     .toUpperCase()
