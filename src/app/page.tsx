@@ -20,7 +20,7 @@ export default async function HomePage() {
   const tickerItems = listings.map((j: any) => j.employer + ', ' + j.title)
 
   return (
-    <div className="min-h-screen bg-cream font-sans" style={{ paddingTop: '64px' }}>
+    <div className="min-h-screen bg-cream font-sans" style={{ paddingTop: '80px' }}>
       <Navbar />
       <style>{`
         ::selection { background: #8B3A3A; color: #FAF6F0; }
