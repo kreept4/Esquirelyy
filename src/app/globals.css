@@ -370,10 +370,7 @@ body {
   }
 }
 
-/* Smooth transitions for layout shifts */
-* {
-  transition: padding 0.2s ease, margin 0.2s ease;
-}
+/* Smooth transitions removed - was causing layout lag */
 
 /* Prevent horizontal overflow */
 html, body {
