@@ -42,7 +42,7 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
       width: '48px', height: '48px', flexShrink: 0, borderRadius: '2px',
       border: '0.5px solid #E8E0D5', overflow: 'hidden',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      backgroundColor: url ? '#FFFFFF' : '#0A2342',
+      backgroundColor: url ? '#FFFFFF' : '#8B3A3A',
     }}>
       {url ? (
         <img src={url} alt={name} width={48} height={48}
@@ -89,7 +89,7 @@ export default function FirmsPage() {
 
         <div style={{ backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5', padding: '3rem 2rem 2rem' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#0A2342', opacity: 0.5, marginBottom: '0.4rem' }}>
+            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.5, marginBottom: '0.4rem' }}>
               {filtered.length} firm{filtered.length !== 1 ? 's' : ''}
             </p>
             <h1 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, color: '#1A1A1A', marginBottom: '1.5rem', lineHeight: 1.1 }}>
@@ -113,13 +113,13 @@ export default function FirmsPage() {
                 { value: city, setter: setCity, options: CITY_OPTIONS, placeholder: 'City' },
               ].map(({ value, setter, options, placeholder }) => (
                 <select key={placeholder} value={value} onChange={e => setter(e.target.value)}
-                  style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: value ? '#0A2342' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${value ? '#0A2342' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
+                  style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: value ? '#8B3A3A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${value ? '#8B3A3A' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
                   {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               ))}
 
               <select value={practiceArea} onChange={e => setPracticeArea(e.target.value)}
-                style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: practiceArea ? '#0A2342' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${practiceArea ? '#0A2342' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
+                style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: practiceArea ? '#8B3A3A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${practiceArea ? '#8B3A3A' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
                 <option value="">All Practice Areas</option>
                 {PRACTICE_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
@@ -152,7 +152,7 @@ export default function FirmsPage() {
                     <FirmAvatar logoFile={firm.logoFile} name={firm.name} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem', flexWrap: 'wrap' as const }}>
-                        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#0A2342', opacity: 0.5 }}>
+                        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.5 }}>
                           {firm.tier}
                         </span>
                         <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#2D6A4F' }}>
@@ -187,7 +187,7 @@ export default function FirmsPage() {
                         </span>
                       )}
                     </div>
-                    <span style={{ color: '#0A2342' }}><ArrowRightIcon /></span>
+                    <span style={{ color: '#8B3A3A' }}><ArrowRightIcon /></span>
                   </div>
                 </Link>
               ))}

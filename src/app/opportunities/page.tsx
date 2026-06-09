@@ -322,7 +322,7 @@ function OpportunityCard({ opp }: { opp: typeof ALL_OPPORTUNITIES[0] }) {
               display: 'inline-flex', alignItems: 'center', gap: '3px',
               padding: '2px 7px', borderRadius: '2px', fontSize: '0.58rem',
               fontFamily: 'DM Sans, sans-serif', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
-              color: '#8B3A3A', backgroundColor: 'rgba(10,35,66,0.08)',
+              color: '#8B3A3A', backgroundColor: 'rgba(139,58,58,0.08)',
             }}>
               <GlobeIcon /> International
             </span>

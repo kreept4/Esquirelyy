@@ -215,7 +215,7 @@ function AppCard({
       overflow: 'hidden',
       transition: 'box-shadow 0.2s ease',
     }}
-      onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 16px rgba(10,35,66,0.07)')}
+      onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 16px rgba(139,58,58,0.07)')}
       onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
     >
       {/* Color bar */}
@@ -450,7 +450,7 @@ function AddModal({ onClose, onAdd }: {
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 200,
-      backgroundColor: 'rgba(10,35,66,0.45)',
+      backgroundColor: 'rgba(139,58,58,0.45)',
       backdropFilter: 'blur(4px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '1rem',

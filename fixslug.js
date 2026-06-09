@@ -11,7 +11,7 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
     return (
       <div style={{
         width: '72px', height: '72px', flexShrink: 0,
-        backgroundColor: '#0A2342', color: '#FAF7F2',
+        backgroundColor: '#8B3A3A', color: '#FAF7F2',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontFamily: 'Playfair Display, Georgia, serif',
         fontWeight: 700, fontSize: '1.35rem', borderRadius: '3px',
