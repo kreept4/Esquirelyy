@@ -1,4 +1,6 @@
-import Link from 'next/link'
+const fs = require('fs');
+
+fs.writeFileSync('src/app/firms/[slug]/page.tsx', `import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { useState } from 'react'
 import Navbar from '@/components/layout/Navbar'
@@ -153,3 +155,6 @@ export default function FirmDetailPage({ params }: { params: { slug: string } })
     </>
   )
 }
+`);
+
+console.log('done');
