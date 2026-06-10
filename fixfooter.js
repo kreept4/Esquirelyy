@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+const content = `'use client'
 
 import Link from 'next/link'
 
@@ -128,3 +130,7 @@ export default function Footer() {
     </footer>
   )
 }
+`;
+
+fs.writeFileSync('src/components/layout/Footer.tsx', content);
+console.log('done');
