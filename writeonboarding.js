@@ -1,4 +1,25 @@
-'use client'
+const fs = require('fs');
+
+// Fix navbar "Join Free" -> "Join Esquirely"
+let navbar = fs.readFileSync('src/components/layout/Navbar.tsx', 'utf8');
+navbar = navbar.replace(/Join Free/g, 'Join Esquirely');
+fs.writeFileSync('src/components/layout/Navbar.tsx', navbar);
+
+// Rewrite welcome page — skip straight to onboarding
+fs.writeFileSync('src/app/auth/welcome/page.tsx', `'use client'
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+
+export default function WelcomePage() {
+  const router = useRouter()
+  useEffect(() => { router.replace('/auth/onboarding') }, [router])
+  return null
+}
+`);
+
+// Rewrite onboarding as 3-question slider
+fs.writeFileSync('src/app/auth/onboarding/page.tsx', `'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -194,3 +215,6 @@ export default function OnboardingPage() {
     </div>
   )
 }
+`);
+
+console.log('done');

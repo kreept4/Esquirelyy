@@ -83,7 +83,7 @@ export default function Navbar() {
                   Sign In
                 </Link>
                 <Link href="/auth/signup" className="btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.75rem' }}>
-                  Join Free
+                  Join Esquirely
                 </Link>
               </>
             )}
@@ -110,7 +110,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/auth/login" onClick={() => setOpen(false)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.9rem', color: '#4A4A4A', textDecoration: 'none' }}>Sign In</Link>
-                <Link href="/auth/signup" onClick={() => setOpen(false)} className="btn-primary" style={{ textAlign: 'center' }}>Join Free</Link>
+                <Link href="/auth/signup" onClick={() => setOpen(false)} className="btn-primary" style={{ textAlign: 'center' }}>Join Esquirely</Link>
               </>
             )}
           </div>
