@@ -16,7 +16,7 @@ export default async function HomePage() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
   const { data: jobs } = await supabase.from('jobs').select('*').order('created_at', { ascending: false })
   const listings = jobs || []
-  const featured = listings.slice(0, 6)
+  const seen = new Set(); const featured = listings.filter((j: any) => { if (seen.has(j.employer)) return false; seen.add(j.employer); return true; }).slice(0, 6)
   const tickerItems = listings.slice(0, 8).map((j: any) => j.employer + ', ' + j.title)
 
   return (
@@ -148,4 +148,5 @@ export default async function HomePage() {
     </div>
   )
 }
+
 
