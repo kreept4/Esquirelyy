@@ -69,9 +69,9 @@ export default function FirmDetailPage({ params }: { params: { slug: string } })
                 </>
               )}
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-              <FirmAvatar logoFile={firm.logoFile} name={firm.name} />
-              <div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '2rem', flexWrap: 'wrap' }}>
+              <div style={{ paddingTop: '6px' }}><FirmAvatar logoFile={firm.logoFile} name={firm.name} /></div>
+              <div style={{ backgroundColor: '#F2EBE1', padding: '1.25rem 1.5rem', borderRadius: '2px', border: '0.5px solid #E8E0D5' }}>
                 <h1 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: 700, color: '#1A1A1A', lineHeight: 1.1, marginBottom: '0.75rem' }}>
                   {firm.name}
                 </h1>
