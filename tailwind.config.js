@@ -43,7 +43,7 @@ module.exports = {
         '0.5': '0.5px',
       },
       animation: {
-        'ticker': 'ticker 18s linear infinite',
+        'ticker': 'ticker 12s linear infinite',
         'fade-up': 'fadeUp 0.6s ease forwards',
         'fade-in': 'fadeIn 0.4s ease forwards',
       },
