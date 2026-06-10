@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+const content = `'use client'
 
 export default function HomeIcons({ type }: { type: string }) {
   if (type === 'hero') return (
@@ -98,3 +100,7 @@ export default function HomeIcons({ type }: { type: string }) {
 
   return icons[type] || null
 }
+`;
+
+fs.writeFileSync('src/app/HomeIcons.tsx', content);
+console.log('done');
