@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+fs.writeFileSync('src/app/auth/welcome/page.tsx', `'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -134,3 +136,6 @@ export default function WelcomePage() {
     </div>
   )
 }
+`);
+
+console.log('done');
