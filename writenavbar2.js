@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+fs.writeFileSync('src/components/layout/Navbar.tsx', `'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -117,10 +119,28 @@ export default function Navbar() {
         )}
       </nav>
 
-      <style>{`
+      <style>{\`
         @media (max-width: 768px) { .desktop-nav { display: none !important; } }
         @media (min-width: 769px) { .mobile-menu-btn { display: none !important; } }
-      `}</style>
+      \`}</style>
     </header>
   )
 }
+`);
+
+// Recolor SVG pink circle to sky blue
+let icons = fs.readFileSync('src/app/HomeIcons.tsx', 'utf8');
+icons = icons.replace(/#EC5A5A/g, '#8B3A3A');
+const pinkPatterns = [
+  /fill="#ffd6d6"/gi,
+  /fill="#ffb3b3"/gi,
+  /fill="#ffe0e0"/gi,
+  /fill="#fce4e4"/gi,
+  /fill="#f8d7da"/gi,
+  /"fill":"#EC5A5A"/g,
+];
+pinkPatterns.forEach(p => { icons = icons.replace(p, 'fill="#D6EAF8"'); });
+icons = icons.replace(/style=\{\{fill:"[^"]*pink[^"]*"\}\}/gi, 'style={{fill:"#D6EAF8"}}');
+fs.writeFileSync('src/app/HomeIcons.tsx', icons);
+
+console.log('done');
