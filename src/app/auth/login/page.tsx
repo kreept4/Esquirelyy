@@ -31,6 +31,15 @@ function LoginForm() {
       return
     }
 
+    const sb = createClient()
+    const { data: { user: u } } = await sb.auth.getUser()
+    if (u) {
+      const { data: prof } = await (sb as any).from('profiles').select('onboarding_complete').eq('id', u.id).single()
+      if (!prof || !prof.onboarding_complete) {
+        router.push('/auth/onboarding')
+        return
+      }
+    }
     router.push(redirect)
     router.refresh()
   }
