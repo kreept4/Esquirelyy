@@ -20,11 +20,11 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
   if (!logoFile) {
     return (
       <div style={{
-        width: '72px', height: '72px', flexShrink: 0,
+        width: '88px', height: '88px', flexShrink: 0,
         backgroundColor: '#8B3A3A', color: '#FAF7F2',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontFamily: 'Playfair Display, Georgia, serif',
-        fontWeight: 700, fontSize: '1.35rem', borderRadius: '3px',
+        fontWeight: 700, fontSize: '1.5rem', borderRadius: '3px',
       }}>
         {monogram}
       </div>
@@ -34,13 +34,13 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
   const url = STORAGE + logoFile.replace(/ /g, '%20')
   return (
     <div style={{
-      width: '72px', height: '72px', flexShrink: 0,
-      backgroundColor: '#FAF7F2', border: '0.5px solid #E8E0D5',
+      width: '88px', height: '88px', flexShrink: 0,
+      backgroundColor: '#FFFFFF', border: '0.5px solid #E8E0D5',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       borderRadius: '3px', overflow: 'hidden',
     }}>
       <img src={url} alt={name} width={72} height={72}
-        style={{ objectFit: 'contain', width: '80%', height: '80%' }} />
+        style={{ objectFit: 'contain', width: '85%', height: '85%' }} />
     </div>
   )
 }
@@ -93,13 +93,13 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
           </div>
         </div>
 
-        <div style={{ backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5', padding: '3rem 2rem' }}>
+        <div style={{ backgroundColor: '#FFFFFF', borderBottom: '0.5px solid #E8E0D5', padding: '3rem 2rem' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', flexWrap: 'wrap' as const }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' as const }}>
               <FirmAvatar logoFile={firm!.logoFile} name={firm!.name} />
               <div style={{ flex: 1, minWidth: '240px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem', flexWrap: 'wrap' as const }}>
-                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.6 }}>
+                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A' }}>
                     {firm!.tier}
                   </span>
                   <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#2D6A4F' }}>
@@ -108,10 +108,9 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                   {firm!.openRoles > 0 && (
                     <span style={{
                       display: 'inline-flex', alignItems: 'center', gap: '3px',
-                      backgroundColor: '#8B3A3A', color: '#FAF7F2',
                       fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem',
                       fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const,
-                      padding: '2px 8px', borderRadius: '2px',
+                      color: '#8B3A3A',
                     }}>
                       <BriefcaseIcon /> {firm!.openRoles} open role{firm!.openRoles !== 1 ? 's' : ''}
                     </span>
@@ -139,7 +138,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
 
               <div style={{ border: '0.5px solid #E8E0D5', borderRadius: '3px', overflow: 'hidden' }}>
                 <div style={{ padding: '0.75rem 1.25rem', backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5' }}>
-                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.6 }}>Contact</p>
+                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A' }}>Contact</p>
                 </div>
                 <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column' as const, gap: '0.85rem' }}>
                   <a href={`mailto:${firm!.email}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#8B3A3A', textDecoration: 'none' }}>
@@ -153,7 +152,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
 
               <div style={{ border: '0.5px solid #E8E0D5', borderRadius: '3px', overflow: 'hidden' }}>
                 <div style={{ padding: '0.75rem 1.25rem', backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5' }}>
-                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.6 }}>
+                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A' }}>
                     Office{firm!.offices.length > 1 ? 's' : ''}
                   </p>
                 </div>
@@ -172,7 +171,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
 
               <div style={{ border: '0.5px solid #E8E0D5', borderRadius: '3px', overflow: 'hidden' }}>
                 <div style={{ padding: '0.75rem 1.25rem', backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5' }}>
-                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.6 }}>Practice Areas</p>
+                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A' }}>Practice Areas</p>
                 </div>
                 <div style={{ padding: '1.25rem', display: 'flex', flexWrap: 'wrap' as const, gap: '0.4rem' }}>
                   {firm!.practiceAreas.map((area: string) => (
@@ -186,7 +185,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
               {firm!.foundedYear && (
                 <div style={{ border: '0.5px solid #E8E0D5', borderRadius: '3px', overflow: 'hidden' }}>
                   <div style={{ padding: '0.75rem 1.25rem', backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5' }}>
-                    <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.6 }}>Established</p>
+                    <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A' }}>Established</p>
                   </div>
                   <div style={{ padding: '1.25rem' }}>
                     <p style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '2rem', fontWeight: 700, color: '#1A1A1A' }}>{firm!.foundedYear}</p>
@@ -199,7 +198,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1rem' }}>
               <div style={{ border: '0.5px solid #E8E0D5', borderRadius: '3px', overflow: 'hidden' }}>
                 <div style={{ padding: '0.75rem 1.25rem', backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5' }}>
-                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.6 }}>Open Roles</p>
+                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A' }}>Open Roles</p>
                 </div>
                 <div style={{ padding: '1.5rem' }}>
                   {firm!.openRoles > 0 ? (
@@ -224,7 +223,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
               </div>
 
               <div style={{ border: '0.5px solid #E8E0D5', borderRadius: '3px', padding: '1.5rem' }}>
-                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.6, marginBottom: '0.5rem' }}>
+                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A', marginBottom: '0.5rem' }}>
                   Direct Application
                 </p>
                 <p style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1rem', fontWeight: 600, color: '#1A1A1A', lineHeight: 1.3, marginBottom: '0.75rem' }}>
