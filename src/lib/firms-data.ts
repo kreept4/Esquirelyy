@@ -402,6 +402,7 @@ export const ALL_FIRMS: Firm[] = [
   },
   {
     slug: 'tayo-oyetibo',
+    logoFile: 'tayo-oyetibo.jpg',
     logoFile: 'TayoOyetibo.jpg',
     name: 'Tayo Oyetibo LP',
     shortName: 'Tayo Oyetibo',
