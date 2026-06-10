@@ -254,7 +254,7 @@ function LoginForm() {
             style={{
               width: '100%',
               padding: '0.8rem',
-              backgroundColor: loading ? '#6B8CAE' : '#8B3A3A',
+              backgroundColor: loading ? '#C47070' : '#8B3A3A',
               color: '#FAF7F2',
               border: 'none',
               borderRadius: '2px',
