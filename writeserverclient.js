@@ -1,4 +1,6 @@
-import { createServerClient } from '@supabase/ssr'
+const fs = require('fs');
+
+fs.writeFileSync('src/lib/supabase/server.ts', `import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 export function createClient() {
@@ -21,3 +23,6 @@ export function createClient() {
     }
   )
 }
+`);
+
+console.log('done');
