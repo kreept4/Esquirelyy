@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { useState } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { ALL_FIRMS } from '@/lib/firms-data'
@@ -153,3 +152,4 @@ export default function FirmDetailPage({ params }: { params: { slug: string } })
     </>
   )
 }
+
