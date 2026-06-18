@@ -1,4 +1,10 @@
-'use client'
+const fs = require('fs');
+const path = require('path');
+
+// Ensure auth directory exists
+fs.mkdirSync('src/app/auth', { recursive: true });
+
+fs.writeFileSync('src/app/auth/AuthIllustration.tsx', `'use client'
 
 export default function AuthIllustration() {
   return (
@@ -48,3 +54,6 @@ export default function AuthIllustration() {
     </div>
   )
 }
+`);
+
+console.log('done');
