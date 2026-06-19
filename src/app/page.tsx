@@ -41,7 +41,7 @@ export default async function HomePage() {
       <section className="border-b border-cream-border">
         <div className="max-w-7xl mx-auto px-6 py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h1 className="font-serif text-6xl lg:text-7xl font-bold text-charcoal leading-[1.05] mb-5 tracking-tight">
+            <h1 className="font-serif text-5xl lg:text-6xl font-bold text-charcoal leading-[1.1] mb-5 tracking-tight max-w-lg">
               Your legal career starts here.
             </h1>
             <p className="text-lg text-charcoal/60 leading-relaxed mb-3 max-w-md">
