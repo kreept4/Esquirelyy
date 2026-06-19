@@ -113,8 +113,8 @@ export default function LoginPage() {
         <div className="auth-panel-inner">
           <span className="auth-panel-mark">"</span>
           <div className="auth-panel-content">
-            <p className="auth-panel-headline">Every opportunity.<br/>One platform.</p>
-            <p className="auth-panel-copy">Jobs, vacation schemes, pupillages, and scholarships for Nigerian legal professionals, in one place.</p>
+            <p className="auth-panel-headline">Welcome back.</p>
+            <p className="auth-panel-copy">Pick up where you left off. New roles and scholarships are added every week.</p>
           </div>
           <p className="auth-panel-foot">Esquirely.</p>
         </div>
