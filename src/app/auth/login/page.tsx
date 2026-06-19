@@ -109,6 +109,9 @@ export default function LoginPage() {
         </Suspense>
       </div>
 
+      <svg className="auth-seam" viewBox="0 0 60 100" preserveAspectRatio="none" style={{ position:'absolute', top:0, bottom:0, left:'50%', width:'60px', height:'100%', zIndex:5, display:'none' }}>
+        <polygon points="60,0 60,100 0,100" fill="#FAF6F0" />
+      </svg>
       <div className="auth-panel-col">
         <div className="auth-panel-inner">
           <span className="auth-panel-mark">"</span>
@@ -135,6 +138,7 @@ function AuthStyles() {
         min-height:100vh;
         display:flex;
         background:#FAF6F0;
+        position:relative;
       }
       .auth-form-col{
         flex:1;
@@ -155,17 +159,6 @@ function AuthStyles() {
         position:relative;
         background:radial-gradient(ellipse at 30% 20%, #9C4444 0%, #7A2E2E 60%, #6B2727 100%);
         overflow:hidden;
-      }
-      .auth-panel-col::before{
-        content:'';
-        position:absolute;
-        top:0;
-        left:-60px;
-        width:120px;
-        height:100%;
-        background:#FAF6F0;
-        clip-path: polygon(0 0, 50px 0, 0 100%, 0 100%);
-        z-index:2;
       }
       .auth-panel-inner{
         position:absolute;
@@ -228,6 +221,7 @@ function AuthStyles() {
 
       @media (min-width: 880px){
         .auth-panel-col{ display:block; }
+        .auth-seam{ display:block !important; }
       }
       @media (min-width: 1600px){
         .auth-form-col{ flex:0.85; }
