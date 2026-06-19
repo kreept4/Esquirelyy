@@ -171,6 +171,8 @@ function AuthStyles() {
         position:relative;
         background:radial-gradient(ellipse at 30% 20%, #9C4444 0%, #7A2E2E 60%, #6B2727 100%);
         overflow:hidden;
+        clip-path: polygon(4% 0, 100% 0, 100% 100%, 0% 100%);
+        margin-left:-4vw;
       }
       .auth-panel-inner{
         position:absolute;

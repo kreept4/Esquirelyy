@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+const content = `'use client'
 
 import { useState, Suspense } from 'react'
 import Link from 'next/link'
@@ -127,7 +129,7 @@ export default function LoginPage() {
 
 function AuthStyles() {
   return (
-    <style>{`
+    <style>{\`
       *,*::before,*::after{box-sizing:border-box}
       body{margin:0}
 
@@ -224,6 +226,10 @@ function AuthStyles() {
         .auth-form-col{ flex:0.85; }
         .auth-panel-col{ flex:1.15; }
       }
-    `}</style>
+    \`}</style>
   )
 }
+`;
+
+fs.writeFileSync('src/app/auth/login/page.tsx', content);
+console.log('login rewritten');
