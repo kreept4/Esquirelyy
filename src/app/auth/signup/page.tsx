@@ -135,8 +135,6 @@ export default function SignupPage() {
           <p className="auth-panel-foot">Esquirely.</p>
         </div>
       </div>
-</div>
-      </div>
 
       <AuthStyles />
     </div>
