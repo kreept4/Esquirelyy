@@ -155,8 +155,17 @@ function AuthStyles() {
         position:relative;
         background:radial-gradient(ellipse at 30% 20%, #9C4444 0%, #7A2E2E 60%, #6B2727 100%);
         overflow:hidden;
-        clip-path: polygon(4% 0, 100% 0, 100% 100%, 0% 100%);
-        margin-left:-4vw;
+      }
+      .auth-panel-col::before{
+        content:'';
+        position:absolute;
+        top:0;
+        left:-60px;
+        width:120px;
+        height:100%;
+        background:#FAF6F0;
+        clip-path: polygon(0 0, 50px 0, 0 100%, 0 100%);
+        z-index:2;
       }
       .auth-panel-inner{
         position:absolute;
