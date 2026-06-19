@@ -555,7 +555,7 @@ function AddModal({ onClose, onAdd }: {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function TrackerPage() {
-  const [apps, setApps] = useState<Application[]>(SEED)
+  const [apps, setApps] = useState<Application[]>([])
   const [showModal, setShowModal] = useState(false)
 
   function addApp(app: Application) {
