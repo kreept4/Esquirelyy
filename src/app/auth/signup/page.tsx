@@ -127,21 +127,15 @@ export default function SignupPage() {
 
       <div className="auth-panel-col">
         <div className="auth-panel-inner">
-          <div className="auth-panel-pattern" />
+          <span className="auth-panel-mark">"</span>
           <div className="auth-panel-content">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" style={{ marginBottom: '2rem', opacity: 0.9 }}>
-              <circle cx="9" cy="7" r="3.2" stroke="#FAF6F0" strokeWidth="1.3"/>
-              <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="#FAF6F0" strokeWidth="1.3" strokeLinecap="round"/>
-              <circle cx="17" cy="8.5" r="2.4" stroke="#FAF6F0" strokeWidth="1.1" opacity="0.7"/>
-              <path d="M13.8 19c.3-2.2 2.2-3.7 4.2-3.7s3.4 1.3 3.7 3" stroke="#FAF6F0" strokeWidth="1.1" strokeLinecap="round" opacity="0.7"/>
-            </svg>
             <p className="auth-panel-headline">Every opportunity.<br/>One platform.</p>
-            <p className="auth-panel-copy">
-              Jobs, vacation schemes, pupillages, and scholarships for Nigerian legal professionals, in one place.
-            </p>
+            <p className="auth-panel-copy">Jobs, vacation schemes, pupillages, and scholarships for Nigerian legal professionals, in one place.</p>
           </div>
           <p className="auth-panel-foot">Esquirely.</p>
         </div>
+      </div>
+</div>
       </div>
 
       <AuthStyles />
@@ -173,11 +167,12 @@ function AuthStyles() {
         max-width:380px;
       }
 
-      .auth-panel-col{
+.auth-panel-col{
         display:none;
         flex:1;
         position:relative;
         background:radial-gradient(ellipse at 30% 20%, #9C4444 0%, #7A2E2E 60%, #6B2727 100%);
+        overflow:hidden;
       }
       .auth-panel-inner{
         position:absolute;
@@ -187,14 +182,18 @@ function AuthStyles() {
         align-items:center;
         justify-content:center;
         padding:4rem 3rem;
-        overflow:hidden;
       }
-      .auth-panel-pattern{
+      .auth-panel-mark{
         position:absolute;
-        inset:0;
-        background-image:
-          repeating-linear-gradient(135deg, rgba(250,246,240,0.05) 0px, rgba(250,246,240,0.05) 1px, transparent 1px, transparent 48px);
-        opacity:0.5;
+        top:6%;
+        left:8%;
+        font-family:'Playfair Display', Georgia, serif;
+        font-size:14rem;
+        font-weight:700;
+        color:rgba(250,246,240,0.07);
+        line-height:1;
+        user-select:none;
+        pointer-events:none;
       }
       .auth-panel-content{
         position:relative;
@@ -204,17 +203,17 @@ function AuthStyles() {
       }
       .auth-panel-headline{
         font-family:'Playfair Display', Georgia, serif;
-        font-size:clamp(1.8rem, 3vw, 2.3rem);
+        font-size:clamp(1.9rem, 3.2vw, 2.5rem);
         font-weight:700;
         color:#FAF6F0;
-        line-height:1.2;
+        line-height:1.22;
         margin-bottom:1.25rem;
       }
       .auth-panel-copy{
         font-family:'DM Sans', sans-serif;
-        font-size:0.9rem;
+        font-size:0.92rem;
         color:rgba(250,246,240,0.7);
-        line-height:1.75;
+        line-height:1.8;
       }
       .auth-panel-foot{
         position:absolute;
