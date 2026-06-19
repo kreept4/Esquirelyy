@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+const content = `'use client'
 export const dynamic = 'force-dynamic'
 
 import { useState } from 'react'
@@ -27,7 +29,7 @@ export default function SignupPage() {
       password,
       options: {
         data: { full_name: fullName },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: \`\${window.location.origin}/auth/callback\`,
       },
     })
     if (error) { setError(error.message); setLoading(false); return }
@@ -39,7 +41,7 @@ export default function SignupPage() {
     const supabase = createClient()
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: \`\${window.location.origin}/auth/callback\` },
     })
   }
 
@@ -151,7 +153,7 @@ export default function SignupPage() {
 
 function AuthStyles() {
   return (
-    <style>{`
+    <style>{\`
       *,*::before,*::after{box-sizing:border-box}
       body{margin:0}
 
@@ -241,6 +243,10 @@ function AuthStyles() {
         .auth-form-col{ flex:0.85; }
         .auth-panel-col{ flex:1.15; }
       }
-    `}</style>
+    \`}</style>
   )
 }
+`;
+
+fs.writeFileSync('src/app/auth/signup/page.tsx', content);
+console.log('done');
