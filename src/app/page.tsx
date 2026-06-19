@@ -66,7 +66,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-6 py-16">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <h2 className="font-display text-3xl font-bold text-charcoal mb-1">Featured Opportunities</h2>
+              <h2 className="font-serif text-4xl font-bold text-charcoal mb-1 tracking-tight">Featured Opportunities</h2>
               <p className="text-charcoal/50 text-sm">Latest verified roles across Nigeria</p>
             </div>
             <Link href="/jobs" className="hidden sm:inline-flex items-center gap-2 text-sm text-ink font-medium hover:underline">
@@ -118,7 +118,7 @@ export default async function HomePage() {
       <section className="border-b border-cream-border bg-cream-dark">
         <div className="max-w-7xl mx-auto px-6 py-16">
           <div className="text-center mb-12">
-            <h2 className="font-display text-3xl font-bold text-charcoal mb-2">Everything you need</h2>
+            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal mb-3 tracking-tight">Everything you need</h2>
             <p className="text-charcoal/50 text-sm max-w-md mx-auto">Built for Nigerian legal professionals at every stage, from law school through senior practice.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
