@@ -486,7 +486,7 @@ function AddModal({ onClose, onAdd }: {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem 1.25rem' }}>
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={labelStyle}>Firm</label>
-            <input value={form.firm} onChange={e => field('firm', e.target.value)} placeholder="e.g. Templars" style={inputStyle} />
+            <input value={form.firm} onChange={e => field('firm', e.target.value)} placeholder="e.g. Banwo & Ighodalo" style={inputStyle} />
           </div>
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={labelStyle}>Role</label>
@@ -512,7 +512,7 @@ function AddModal({ onClose, onAdd }: {
           </div>
           <div>
             <label style={labelStyle}>Deadline</label>
-            <input value={form.deadline} onChange={e => field('deadline', e.target.value)} placeholder="30 Jun 2025 or Rolling" style={inputStyle} />
+            <input value={form.deadline} onChange={e => field('deadline', e.target.value)} placeholder="e.g. 30 Sep or Rolling" style={inputStyle} />
           </div>
           <div style={{ gridColumn: '1 / -1' }}>
             <label style={labelStyle}>Notes</label>
