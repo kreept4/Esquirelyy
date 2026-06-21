@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+const code = `'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -12,6 +14,10 @@ const NAV_LINKS = [
   { href: '/firms', label: 'Firms' },
   { href: '/scholarships', label: 'Scholarships' },
   { href: '/tracker', label: 'Tracker' },
+]
+
+const AI_TOOLS = [
+  { href: '/tools/cv-review', label: 'CV Review', description: 'Get honest, specific feedback on your CV' },
 ]
 
 export default function Navbar() {
@@ -44,6 +50,8 @@ export default function Navbar() {
     router.push('/')
   }
 
+  const isToolsActive = AI_TOOLS.some(t => pathname === t.href)
+
   return (
     <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, borderBottom: scrolled ? '0.5px solid #E8E0D5' : '0.5px solid transparent', backgroundColor: scrolled ? 'rgba(250,246,240,0.96)' : 'transparent', backdropFilter: scrolled ? 'blur(12px)' : 'none', transition: 'all 0.3s ease' }}>
       <nav style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 2rem' }}>
@@ -66,6 +74,22 @@ export default function Navbar() {
                 )}
               </Link>
             ))}
+
+            <div style={{ position: 'relative' }} onMouseEnter={() => setToolsOpen(true)} onMouseLeave={() => setToolsOpen(false)}>
+              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: isToolsActive ? '#8B3A3A' : '#4A4A4A', cursor: 'pointer', display: 'inline-block', transition: 'color 0.2s ease' }}>
+                AI Tools
+              </span>
+              {toolsOpen && (
+                <div style={{ position: 'absolute', top: '28px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#FAF6F0', border: '0.5px solid #E8E0D5', minWidth: '240px', padding: '0.5rem', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
+                  {AI_TOOLS.map(({ href, label, description }) => (
+                    <Link key={href} href={href} style={{ display: 'block', padding: '0.65rem 0.75rem', textDecoration: 'none', borderRadius: '2px' }}>
+                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '2px' }}>{label}</p>
+                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: '#4A4A4A', lineHeight: 1.4 }}>{description}</p>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }} className="desktop-nav">
@@ -102,6 +126,11 @@ export default function Navbar() {
                 {label}
               </Link>
             ))}
+            {AI_TOOLS.map(({ href, label }) => (
+              <Link key={href} href={href} onClick={() => setOpen(false)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.9rem', fontWeight: 500, color: pathname === href ? '#8B3A3A' : '#1A1A1A', textDecoration: 'none' }}>
+                {label}
+              </Link>
+            ))}
             <hr style={{ border: 'none', borderTop: '0.5px solid #E8E0D5' }} />
             {user ? (
               <>
@@ -118,10 +147,14 @@ export default function Navbar() {
         )}
       </nav>
 
-      <style>{`
+      <style>{\`
         @media (max-width: 768px) { .desktop-nav { display: none !important; } }
         @media (min-width: 769px) { .mobile-menu-btn { display: none !important; } }
-      `}</style>
+      \`}</style>
     </header>
   )
 }
+`;
+
+fs.writeFileSync('src/components/layout/Navbar.tsx', code);
+console.log('done');
