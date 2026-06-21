@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 2000,
+      max_tokens: 8192,
       system: systemPrompt,
       messages: [{ role: 'user', content: userPrompt }],
     })
@@ -72,11 +72,22 @@ export async function POST(req: NextRequest) {
     const responseText = message.content.map(function(block: any) { return block.type === 'text' ? block.text : '' }).join('')
 
     let parsed: any
+    let cleaned = responseText.trim()
+    cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim()
+
     try {
-      const cleaned = responseText.replace(/```json\s*|\s*```/g, '').trim()
       parsed = JSON.parse(cleaned)
     } catch (e: any) {
-      return NextResponse.json({ error: 'Failed to parse review. Please try again.', rawResponse: responseText }, { status: 500 })
+      const match = cleaned.match(/\{[\s\S]*\}/)
+      if (match) {
+        try {
+          parsed = JSON.parse(match[0])
+        } catch (e2: any) {
+          return NextResponse.json({ error: 'Failed to parse review. Please try again.', rawResponse: responseText }, { status: 500 })
+        }
+      } else {
+        return NextResponse.json({ error: 'Failed to parse review. Please try again.', rawResponse: responseText }, { status: 500 })
+      }
     }
 
     return NextResponse.json(parsed)
