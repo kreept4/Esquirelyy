@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
   } catch (err: any) {
     console.error('CV review error:', err)
     return NextResponse.json(
-      { error: err.message || 'Something went wrong processing your CV.' },
+      { error: err.message || 'Something went wrong processing your CV.', stack: err.stack, name: err.name },
       { status: 500 }
     )
   }
