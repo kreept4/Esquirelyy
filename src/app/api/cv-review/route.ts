@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import pdfParse from 'pdf-parse'
+import { PDFParse } from 'pdf-parse'
 import mammoth from 'mammoth'
 
 const anthropic = new Anthropic({
@@ -15,8 +15,9 @@ async function extractText(file) {
   const name = file.name.toLowerCase()
 
   if (name.endsWith('.pdf')) {
-    const data = await pdfParse(buffer)
-    return data.text
+    const parser = new PDFParse({ data: buffer })
+    const result = await parser.getText()
+    return result.text
   }
 
   if (name.endsWith('.docx')) {
