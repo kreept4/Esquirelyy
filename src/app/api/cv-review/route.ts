@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
       const cleaned = responseText.replace(/```json\s*|\s*```/g, '').trim()
       parsed = JSON.parse(cleaned)
     } catch (e: any) {
-      return NextResponse.json({ error: 'Failed to parse review. Please try again.' }, { status: 500 })
+      return NextResponse.json({ error: 'Failed to parse review. Please try again.', rawResponse: responseText }, { status: 500 })
     }
 
     return NextResponse.json(parsed)
