@@ -10,7 +10,7 @@ const anthropic = new Anthropic({
 export const runtime = 'nodejs'
 export const maxDuration = 60
 
-async function extractText(file) {
+async function extractText(file: File): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer())
   const name = file.name.toLowerCase()
 
@@ -32,12 +32,12 @@ async function extractText(file) {
   throw new Error('Unsupported file type. Please upload a PDF, DOCX, or TXT file.')
 }
 
-export async function POST(req) {
+export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData()
-    const file = formData.get('file')
-    const targetRole = formData.get('targetRole')
-    const careerStage = formData.get('careerStage')
+    const file = formData.get('file') as File | null
+    const targetRole = formData.get('targetRole') as string | null
+    const careerStage = formData.get('careerStage') as string | null
 
     if (!file) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
@@ -67,18 +67,18 @@ export async function POST(req) {
       messages: [{ role: 'user', content: userPrompt }],
     })
 
-    const responseText = message.content.map(function(block) { return block.type === 'text' ? block.text : '' }).join('')
+    const responseText = message.content.map(function(block: any) { return block.type === 'text' ? block.text : '' }).join('')
 
-    let parsed
+    let parsed: any
     try {
       const cleaned = responseText.replace(/```json\s*|\s*```/g, '').trim()
       parsed = JSON.parse(cleaned)
-    } catch (e) {
+    } catch (e: any) {
       return NextResponse.json({ error: 'Failed to parse review. Please try again.' }, { status: 500 })
     }
 
     return NextResponse.json(parsed)
-  } catch (err) {
+  } catch (err: any) {
     console.error('CV review error:', err)
     return NextResponse.json(
       { error: err.message || 'Something went wrong processing your CV.' },
