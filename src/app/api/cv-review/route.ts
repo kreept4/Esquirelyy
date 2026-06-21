@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { PDFParse } from 'pdf-parse'
+import { extractText as extractPdfText, getDocumentProxy } from 'unpdf'
 import mammoth from 'mammoth'
 
 const anthropic = new Anthropic({
@@ -15,9 +15,10 @@ async function extractText(file: File): Promise<string> {
   const name = file.name.toLowerCase()
 
   if (name.endsWith('.pdf')) {
-    const parser = new PDFParse({ data: buffer })
-    const result = await parser.getText()
-    return result.text
+    const uint8 = new Uint8Array(buffer)
+    const pdf = await getDocumentProxy(uint8)
+    const { text } = await extractPdfText(pdf, { mergePages: true })
+    return text
   }
 
   if (name.endsWith('.docx')) {
