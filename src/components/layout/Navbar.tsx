@@ -83,7 +83,7 @@ export default function Navbar() {
                 )}
               </span>
               {toolsOpen && (
-                <div style={{ position: 'absolute', top: '28px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#FAF6F0', border: '0.5px solid #E8E0D5', minWidth: '240px', padding: '0.5rem', boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
+                <div style={{ position: 'absolute', top: '28px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#FAF6F0', border: '0.5px solid #E8E0D5', minWidth: '240px', padding: '0.5rem', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', zIndex: 200, paddingTop: '14px' }}>
                   {AI_TOOLS.map(({ href, label, description }) => (
                     <Link key={href} href={href} style={{ display: 'block', padding: '0.65rem 0.75rem', textDecoration: 'none', borderRadius: '2px' }}>
                       <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '2px' }}>{label}</p>
