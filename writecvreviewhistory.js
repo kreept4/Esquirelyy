@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+fs.writeFileSync('src/app/tools/cv-review/page.tsx', `'use client'
 import { useState, useEffect } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -453,7 +455,10 @@ export default function CVReviewPage() {
         )}
       </main>
       <Footer />
-      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; }`}</style>
+      <style>{\`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; }\`}</style>
     </div>
   )
 }
+`);
+
+console.log('done');
