@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
+const fs = require('fs');
+
+fs.writeFileSync('src/app/api/interview-prep/route.ts', `import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { extractText as extractPdfText, getDocumentProxy } from 'unpdf'
 import mammoth from 'mammoth'
@@ -97,7 +99,7 @@ export async function POST(req: NextRequest) {
       if (employer) userPrompt += ' Specifically applying to: ' + employer + '.'
       if (careerStage) userPrompt += ' Career stage: ' + careerStage + '.'
       if (practiceArea) userPrompt += ' Practice area or specialisation: ' + practiceArea + '.'
-      userPrompt += '\n\nCV TEXT:\n' + cvText
+      userPrompt += '\\n\\nCV TEXT:\\n' + cvText
     } else {
       userPrompt = 'Generate interview questions for a candidate applying for ' + targetRole
       if (employer) userPrompt += ' at ' + employer
@@ -114,13 +116,13 @@ export async function POST(req: NextRequest) {
     })
 
     const responseText = message.content.map((b: any) => b.type === 'text' ? b.text : '').join('')
-    let cleaned = responseText.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim()
+    let cleaned = responseText.trim().replace(/^\`\`\`(?:json)?\\s*/i, '').replace(/\`\`\`\\s*$/, '').trim()
 
     let parsed: any
     try {
       parsed = JSON.parse(cleaned)
     } catch {
-      const match = cleaned.match(/\{[\s\S]*\}/)
+      const match = cleaned.match(/\\{[\\s\\S]*\\}/)
       if (match) {
         try { parsed = JSON.parse(match[0]) } catch {
           return NextResponse.json({ error: 'Failed to generate questions. Please try again.' }, { status: 500 })
@@ -136,3 +138,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: err.message || 'Something went wrong.' }, { status: 500 })
   }
 }
+`);
+
+console.log('done step 1 of 2 - API route with CV upload support written');
