@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+fs.writeFileSync('src/app/tools/interview-prep/page.tsx', `'use client'
 import { useState, useRef } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -332,3 +334,6 @@ export default function InterviewPrepPage() {
     </>
   )
 }
+`);
+
+console.log('done');
