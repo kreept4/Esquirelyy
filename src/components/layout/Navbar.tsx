@@ -16,6 +16,7 @@ const NAV_LINKS = [
 
 const AI_TOOLS = [
   { href: '/tools/cv-review', label: 'CV Review', description: 'Get honest, specific feedback on your CV' },
+  { href: '/tools/cover-letter', label: 'Cover Letter', description: 'Generate a cover letter that stands out' },
 ]
 
 export default function Navbar() {
@@ -183,3 +184,4 @@ export default function Navbar() {
     </header>
   )
 }
+
