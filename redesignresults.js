@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+const code = `'use client'
 
 import { useState } from 'react'
 import Navbar from '@/components/layout/Navbar'
@@ -384,3 +386,7 @@ export default function CVReviewPage() {
     </div>
   )
 }
+`;
+
+fs.writeFileSync('src/app/tools/cv-review/page.tsx', code);
+console.log('done');
