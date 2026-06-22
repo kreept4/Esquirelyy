@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+fs.writeFileSync('src/app/tools/cover-letter/page.tsx', `'use client'
 import { useState } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -246,7 +248,7 @@ export default function CoverLetterPage() {
                   {copied ? <><Check size={13} style={{ color: '#2D6A4F' }} /> Copied</> : <><Copy size={13} /> Copy</>}
                 </button>
               </div>
-              {result.coverLetter.split('\n').map((para, i) => para.trim() ? (
+              {result.coverLetter.split('\\n').map((para, i) => para.trim() ? (
                 <p key={i} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.95rem', color: ink, lineHeight: 1.85, marginBottom: '1.25rem' }}>{para}</p>
               ) : <div key={i} style={{ height: '0.5rem' }} />)}
             </div>
@@ -275,8 +277,11 @@ export default function CoverLetterPage() {
         )}
 
         <Footer />
-        <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+        <style>{\`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }\`}</style>
       </main>
     </div>
   )
 }
+`);
+
+console.log('done');
