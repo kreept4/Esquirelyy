@@ -1,4 +1,6 @@
-'use client'
+const fs = require('fs');
+
+fs.writeFileSync('src/app/tools/interview-prep/page.tsx', `'use client'
 import { useState, useRef } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
@@ -97,7 +99,7 @@ export default function InterviewPrepPage() {
 
   function loadFromHistory(item: HistoryItem) {
     setResult({
-      interviewerPersona: PERSONAS.find(p => p.id === item.interviewer_persona)?.label || item.interviewer_persona,
+      interviewerPersona: PERSONAS.find(p => p.id === item.persona)?.label || item.persona,
       inferredRole: item.target_role || 'CV-based session',
       questions: item.questions,
     })
@@ -127,13 +129,12 @@ export default function InterviewPrepPage() {
         return
       }
       setResult(data)
-      if (userId) {
+     if (userId) {
         const supabase = createClient()
- const { error: insertError } = await (supabase as any).from('interview_sessions').insert({
+        const { error: insertError } = await (supabase as any).from('interview_sessions').insert({
           user_id: userId,
           target_role: mode === 'role' ? targetRole.trim() : (data.inferredRole || null),
-          interviewer_persona: persona,
-          practice_area: practiceArea || null,
+          persona,
           questions: data.questions,
         })
         if (insertError) console.error('INSERT FAILED:', insertError)
@@ -314,16 +315,8 @@ export default function InterviewPrepPage() {
                   cursor: loading ? 'not-allowed' : 'pointer',
                 }}
               >
-                {loading ? (
-                  <>
-                    <Loader2 size={15} className="animate-spin" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                    Generating...
-                  </>
-                ) : 'Generate Questions'}
+                {loading ? 'Generating...' : 'Generate Questions'}
               </button>
-              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginTop: '0.75rem' }}>
-                AI-generated and may contain minor inaccuracies or mix-ups. Please review and edit before relying on it.
-              </p>
             </div>
           </>
         )}
@@ -337,12 +330,9 @@ export default function InterviewPrepPage() {
             <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, marginBottom: '0.5rem' }}>
               {result.interviewerPersona}
             </p>
-            <h2 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1.8rem', fontWeight: 700, color: ink, marginBottom: '0.75rem', lineHeight: 1.2 }}>
+            <h2 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1.8rem', fontWeight: 700, color: ink, marginBottom: '2rem', lineHeight: 1.2 }}>
               {result.inferredRole}
             </h2>
-            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginBottom: '2rem' }}>
-              These questions are AI-generated and may contain minor inaccuracies or mix-ups. Review and adapt them to your real background before an interview.
-            </p>
 
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0.75rem' }}>
               {result.questions.map((q, i) => (
@@ -398,7 +388,7 @@ export default function InterviewPrepPage() {
                         {h.target_role || 'CV-based session'}
                       </p>
                       <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: muted, marginTop: '0.2rem' }}>
-                        {PERSONAS.find(p => p.id === h.interviewer_persona)?.label || h.interviewer_persona} · {new Date(h.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        {PERSONAS.find(p => p.id === h.persona)?.label || h.persona} · {new Date(h.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </p>
                     </button>
                   ))}
@@ -413,3 +403,6 @@ export default function InterviewPrepPage() {
     </div>
   )
 }
+`);
+
+console.log('done');

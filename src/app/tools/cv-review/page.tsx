@@ -298,16 +298,16 @@ export default function CVReviewPage() {
                 onClick={handleSubmit}
                 disabled={loading}
                 style={{
-                  padding: '0.95rem 2.5rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                  backgroundColor: loading ? '#B0A89E' : accent, color: cream,
-                  fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', fontWeight: 600,
+                  padding: '0.9rem 2.5rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                  backgroundColor: loading ? muted : ink, color: cream,
+                  fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', fontWeight: 700,
                   letterSpacing: '0.06em', textTransform: 'uppercase' as const,
-                  border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+                  border: 'none', borderRadius: '2px', cursor: loading ? 'not-allowed' : 'pointer',
                 }}
               >
                 {loading ? (
                   <>
-                    <Loader2 size={15} className="animate-spin" />
+                    <Loader2 size={15} className="animate-spin" style={{ marginRight: '4px' }} />
                     Reading your CV...
                   </>
                 ) : (
@@ -317,6 +317,9 @@ export default function CVReviewPage() {
                   </>
                 )}
               </button>
+              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginTop: '0.75rem' }}>
+                AI-generated and may contain minor inaccuracies or mix-ups. Please review and edit before relying on it.
+              </p>
             </div>
           </>
         )}
@@ -326,6 +329,9 @@ export default function CVReviewPage() {
 
             <p style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 'clamp(1.5rem, 3.5vw, 2rem)', fontWeight: 500, color: ink, lineHeight: 1.45, marginBottom: '2.5rem' }}>
               {result.greeting}
+            </p>
+            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginBottom: '2.5rem' }}>
+              This review is AI-generated and may contain minor inaccuracies or mix-ups. Review and adapt the feedback against your own judgment.
             </p>
 
             <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.95rem', color: ink, lineHeight: 1.85, maxWidth: '600px', marginBottom: '3rem' }}>
