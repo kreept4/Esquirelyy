@@ -278,7 +278,7 @@ export default function CoverLetterPage() {
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.6rem',
                   padding: '0.95rem 2.5rem',
-                  backgroundColor: (loading || !form.targetRole || !form.employer) ? '#C47070' : ink,
+                  backgroundColor: (loading || !form.targetRole || !form.employer) ? muted : ink,
                   color: cream, border: 'none',
                   fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', fontWeight: 700,
                   letterSpacing: '0.1em', textTransform: 'uppercase' as const,
@@ -290,12 +290,14 @@ export default function CoverLetterPage() {
                   ? <><Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> Writing your letter...</>
                   : <>Generate <ArrowRight size={15} /></>}
               </button>
+              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: muted, marginTop: '1rem' }}>AI-generated draft. Review before sending.</p>
             </div>
           </>
         )}
 
         {result && (
           <div style={{ maxWidth: '640px', margin: '0 auto', padding: '5rem 2rem 6rem' }}>
+            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: muted, marginBottom: '2.5rem' }}>AI-generated draft. Review before sending.</p>
 
             <div style={{ marginBottom: '3rem' }}>
               <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75, marginBottom: '0.5rem' }}>

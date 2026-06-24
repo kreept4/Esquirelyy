@@ -50,7 +50,7 @@ interface SessionResult {
 interface HistoryItem {
   id: string
   target_role: string | null
-  persona: string
+  interviewer_persona: string
   questions: Question[]
   created_at: string
 }
