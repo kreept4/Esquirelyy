@@ -106,32 +106,32 @@ export interface Profile {
 export interface Application {
   id: string
   user_id: string
-  listing_id: string | null
-  listing?: Listing
-  firm_name: string | null
-  role_title: string | null
+  firm: string | null
+  role: string | null
+  type: string | null
+  location: string | null
   status: ApplicationStatus
-  applied_date: string | null
+  date_applied: string | null
   deadline: string | null
-  tracker_thread_id: string | null
-  last_email_at: string | null
-  email_count: number
   notes: string | null
-  salary_offered: number | null
-  offer_deadline: string | null
   created_at: string
-  updated_at: string
 }
 
-// Supabase Database type — extend as needed
+// Supabase Database type â€” extend as needed
 export interface Database {
   public: {
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
     Tables: {
-      firms: { Row: Firm; Insert: Partial<Firm>; Update: Partial<Firm> }
-      listings: { Row: Listing; Insert: Partial<Listing>; Update: Partial<Listing> }
-      scholarships: { Row: Scholarship; Insert: Partial<Scholarship>; Update: Partial<Scholarship> }
-      profiles: { Row: Profile; Insert: Partial<Profile>; Update: Partial<Profile> }
-      applications: { Row: Application; Insert: Partial<Application>; Update: Partial<Application> }
+      firms: { Row: Firm; Insert: Partial<Firm>; Update: Partial<Firm>; Relationships: [] }
+      listings: { Row: Listing; Insert: Partial<Listing>; Update: Partial<Listing>; Relationships: [] }
+      scholarships: { Row: Scholarship; Insert: Partial<Scholarship>; Update: Partial<Scholarship>; Relationships: [] }
+      profiles: { Row: Profile; Insert: Partial<Profile>; Update: Partial<Profile>; Relationships: [] }
+      applications: { Row: Application; Insert: Partial<Application>; Update: Partial<Application>; Relationships: [] }
     }
   }
 }
