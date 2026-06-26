@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -65,8 +65,13 @@ export default function Navbar() {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }} className="desktop-nav">
             {NAV_LINKS.map(({ href, label }) => (
-              <Link key={href} href={href} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: pathname === href ? '#8B3A3A' : '#4A4A4A', textDecoration: 'none', position: 'relative', display: 'inline-block', transition: 'color 0.2s ease' }}>
+              <Link key={href} href={href} className="nav-link" style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: pathname === href ? '#8B3A3A' : '#4A4A4A', textDecoration: 'none', position: 'relative', display: 'inline-block', transition: 'color 0.2s ease' }}>
                 {label}
+                {pathname !== href && (
+                  <svg viewBox="0 0 60 8" preserveAspectRatio="none" className="nav-underline" style={{ position: 'absolute', bottom: '-5px', left: '-2px', width: 'calc(100% + 4px)', height: '6px' }}>
+                    <path d="M2,5 Q10,1 20,4 Q35,7 45,3 Q52,1 58,4" stroke="#8B3A3A" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+                  </svg>
+                )}
                 {pathname === href && (
                   <svg viewBox="0 0 60 8" preserveAspectRatio="none" style={{ position: 'absolute', bottom: '-5px', left: '-2px', width: 'calc(100% + 4px)', height: '6px' }}>
                     <path d="M2,5 Q10,1 20,4 Q35,7 45,3 Q52,1 58,4" stroke="#8B3A3A" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
@@ -85,7 +90,7 @@ export default function Navbar() {
                 )}
               </span>
               {toolsOpen && (
-                <div style={{ position: 'absolute', top: '28px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#FAF6F0', border: '0.5px solid #E8E0D5', minWidth: '260px', padding: '6px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', zIndex: 200, paddingTop: '20px' }}>
+                <div style={{ position: 'absolute', top: '28px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#FAF6F0', border: '0.5px solid #E8E0D5', minWidth: '260px', padding: '6px', boxShadow: '0 8px 24px rgba(0,0,0,0.08)', zIndex: 200, paddingTop: '20px', animation: 'dropdownIn 0.18s ease' }}>
                   <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#A89A8A', padding: '0 0.65rem 0.5rem' }}>Career Tools</p>
                   {AI_TOOLS.map(({ href, label, description }) => (
                     <Link
@@ -151,7 +156,7 @@ export default function Navbar() {
         </div>
 
         {open && (
-          <div style={{ position: 'fixed', top: '64px', left: 0, right: 0, backgroundColor: 'rgba(250,246,240,0.98)', backdropFilter: 'blur(12px)', borderTop: '0.5px solid #E8E0D5', borderBottom: '0.5px solid #E8E0D5', padding: '1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', zIndex: 99 }}>
+          <div style={{ position: 'fixed', top: '64px', left: 0, right: 0, backgroundColor: 'rgba(250,246,240,0.98)', backdropFilter: 'blur(12px)', borderTop: '0.5px solid #E8E0D5', borderBottom: '0.5px solid #E8E0D5', padding: '1.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', zIndex: 99, animation: 'mobileMenuIn 0.22s ease' }}>
             {NAV_LINKS.map(({ href, label }) => (
               <Link key={href} href={href} onClick={() => setOpen(false)} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.9rem', fontWeight: 500, color: pathname === href ? '#8B3A3A' : '#1A1A1A', textDecoration: 'none' }}>
                 {label}
@@ -181,6 +186,11 @@ export default function Navbar() {
       <style>{`
         @media (max-width: 768px) { .desktop-nav { display: none !important; } }
         @media (min-width: 769px) { .mobile-menu-btn { display: none !important; } }
+        .nav-link { overflow: visible; }
+        .nav-underline { position: absolute; bottom: -5px; left: -2px; width: calc(100% + 4px); height: 6px; opacity: 0; transition: opacity 0.25s ease; }
+        .nav-link:hover .nav-underline { opacity: 0.45; }
+        @keyframes dropdownIn { from { opacity: 0; transform: translate(-50%, -4px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        @keyframes mobileMenuIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </header>
   )
