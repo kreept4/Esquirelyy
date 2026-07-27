@@ -9,23 +9,31 @@ module.exports = {
     extend: {
       colors: {
         charcoal: {
-          DEFAULT: '#1A1A1A',
-          light: '#2C2C2C',
-          muted: '#4A4A4A',
+          DEFAULT: '#171E1B',
+          light: '#2A332E',
+          muted: '#5C6B64',
         },
         cream: {
-          DEFAULT: '#FAF6F0',
-          dark: '#F2EBE1',
-          border: '#E8E0D5',
+          DEFAULT: '#FFFFFF',
+          dark: '#DCEAE3',
+          border: '#E1EBE6',
+        },
+        mist: {
+          DEFAULT: '#EAF3EF',
         },
         ink: {
-          DEFAULT: '#8B3A3A',
-          light: '#7A2424',
-          muted: '#9A3A3A',
+          DEFAULT: '#4FA980',
+          light: '#3E8A68',
+          muted: '#8FCDB3',
+        },
+        butter: {
+          DEFAULT: '#F5D76E',
+          light: '#FBEDB8',
+          dark: '#D9A91F',
         },
         verified: '#2D6A4F',
-        closing: '#B5451B',
-        new: '#8B3A3A',
+        closing: '#C1521B',
+        new: '#4FA980',
       },
       fontFamily: {
         serif: ['Playfair Display', 'Georgia', 'serif'],

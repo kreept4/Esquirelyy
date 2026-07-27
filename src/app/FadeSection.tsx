@@ -24,14 +24,14 @@ export default function FadeSection() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const r1 = 139, g1 = 58, b1 = 58
-  const r2 = 250, g2 = 246, b2 = 240
+  const r1 = 79, g1 = 169, b1 = 128
+  const r2 = 234, g2 = 243, b2 = 239
   const r = Math.round(r1 + (r2 - r1) * progress)
   const g = Math.round(g1 + (g2 - g1) * progress)
   const b = Math.round(b1 + (b2 - b1) * progress)
   const bg = 'rgb(' + r + ',' + g + ',' + b + ')'
   const textOpacity = progress > 0.3 ? Math.min((progress - 0.3) / 0.7, 1) : 0
-  const textColor = 'rgba(26,26,26,' + textOpacity + ')'
+  const textColor = 'rgba(23,30,27,' + textOpacity + ')'
 
   return (
     <section ref={ref} style={{
@@ -41,9 +41,10 @@ export default function FadeSection() {
       transition: 'background-color 0.05s linear',
     }}>
       <h2 style={{
-        fontFamily: 'Playfair Display, Georgia, serif',
+        fontFamily: '"DM Sans", system-ui, sans-serif',
         fontSize: 'clamp(2.5rem, 6vw, 5rem)',
-        fontWeight: 900,
+        fontWeight: 800,
+        letterSpacing: '-0.02em',
         lineHeight: 1.1,
         color: textColor,
         maxWidth: '800px',

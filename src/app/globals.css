@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,21 +6,26 @@
 
 :root {
   /* Core palette */
-  --charcoal: #1A1A1A;
-  --charcoal-light: #2C2C2C;
-  --charcoal-muted: #4A4A4A;
+  --charcoal: #171E1B;
+  --charcoal-light: #2A332E;
+  --charcoal-muted: #5C6B64;
 
-  --cream: #FAF7F2;
-  --cream-dark: #F0EBE3;
-  --cream-border: #E8E0D5;
+  --cream: #FFFFFF;
+  --cream-dark: #DCEAE3;
+  --cream-border: #E1EBE6;
+  --mist: #EAF3EF;
 
-  --ink: #8B3A3A;
-  --ink-light: #A84A4A;
-  --ink-muted: #C47070;
+  --ink: #4FA980;
+  --ink-light: #3E8A68;
+  --ink-muted: #8FCDB3;
+
+  --butter: #F5D76E;
+  --butter-light: #FBEDB8;
+  --butter-dark: #D9A91F;
 
   /* Status */
   --verified: #2D6A4F;
-  --closing: #B5451B;
+  --closing: #C1521B;
 
   /* Typography scale */
   --font-serif: 'Playfair Display', Georgia, serif;
@@ -39,7 +44,7 @@ html {
 }
 
 body {
-  background-color: var(--cream);
+  background-color: var(--mist);
   color: var(--charcoal);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -70,16 +75,17 @@ body {
 /* Typography utilities */
 @layer components {
   .heading-display {
-    font-family: var(--font-serif);
-    font-weight: 700;
+    font-family: var(--font-sans);
+    font-weight: 800;
     line-height: 1.1;
     letter-spacing: -0.02em;
   }
 
   .heading-section {
-    font-family: var(--font-serif);
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-weight: 700;
     line-height: 1.2;
+    letter-spacing: -0.01em;
   }
 
   .label-caps {
@@ -100,95 +106,79 @@ body {
   /* Card — the core unit */
   .card-esquirely {
     background: var(--cream);
-    border: 0.5px solid var(--cream-border);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid var(--cream-border);
+    border-radius: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
 
   .card-esquirely:hover {
     border-color: var(--ink-muted);
-    box-shadow: 0 4px 24px rgba(139, 58, 58, 0.06);
+    box-shadow: 0 8px 28px rgba(79, 169, 128, 0.12);
+    transform: translateY(-2px);
   }
 
   /* Button variants */
   .btn-primary {
     background: var(--ink);
-    color: var(--cream);
+    color: #FFFFFF;
     font-family: var(--font-sans);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0.75rem 1.75rem;
+    padding: 0.8rem 1.85rem;
     border: 1px solid var(--ink);
+    border-radius: 999px;
     transition: background 0.2s ease, color 0.2s ease;
     cursor: pointer;
     display: inline-block;
   }
 
   .btn-primary:hover {
-    background: var(--charcoal);
-    border-color: var(--charcoal);
+    background: var(--ink-light);
+    border-color: var(--ink-light);
   }
 
   .btn-outline {
     background: transparent;
-    color: var(--ink);
+    color: var(--ink-light);
     font-family: var(--font-sans);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0.75rem 1.75rem;
-    border: 1px solid var(--ink);
-    transition: background 0.2s ease, color 0.2s ease;
+    padding: 0.8rem 1.85rem;
+    border: 1px solid var(--cream-border);
+    border-radius: 999px;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
     cursor: pointer;
     display: inline-block;
   }
 
   .btn-outline:hover {
-    background: var(--ink);
-    color: var(--cream);
+    background: var(--mist);
+    border-color: var(--ink-muted);
   }
 
   /* Badge variants */
   .badge-verified {
-    background: rgba(45, 106, 79, 0.08);
+    background: rgba(45, 106, 79, 0.1);
     color: var(--verified);
-    border: 0.5px solid rgba(45, 106, 79, 0.2);
+    border: none;
   }
 
   .badge-closing {
-    background: rgba(181, 69, 27, 0.08);
+    background: rgba(193, 82, 27, 0.1);
     color: var(--closing);
-    border: 0.5px solid rgba(181, 69, 27, 0.2);
+    border: none;
   }
 
   .badge-new {
-    background: rgba(139, 58, 58, 0.06);
-    color: var(--ink);
-    border: 0.5px solid rgba(139, 58, 58, 0.15);
+    background: rgba(79, 169, 128, 0.12);
+    color: var(--ink-light);
+    border: none;
   }
 
   /* Divider rule */
   .rule-esquirely {
     border: none;
-    border-top: 0.5px solid var(--cream-border);
-  }
-
-  /* Grain texture overlay */
-  .grain-overlay {
-    position: relative;
-  }
-
-  .grain-overlay::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
+    border-top: 1px solid var(--cream-border);
   }
 }
 

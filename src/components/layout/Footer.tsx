@@ -33,7 +33,7 @@ const FOOTER_LINKS = {
 
 export default function Footer() {
   return (
-    <footer style={{ backgroundColor: '#1A1A1A', color: '#FAF6F0' }}>
+    <footer style={{ backgroundColor: '#171E1B', color: '#FFFFFF' }}>
       <div style={{
         maxWidth: '1280px',
         margin: '0 auto',
@@ -44,10 +44,10 @@ export default function Footer() {
       }}>
         <div>
           <span style={{
-            fontFamily: 'Playfair Display, Georgia, serif',
+            fontFamily: '"DM Sans", system-ui, sans-serif',
             fontWeight: 700,
             fontSize: '1.25rem',
-            color: '#FAF6F0',
+            color: '#FFFFFF',
             display: 'block',
             marginBottom: '0.75rem',
           }}>
@@ -56,7 +56,7 @@ export default function Footer() {
           <p style={{
             fontFamily: 'DM Sans, sans-serif',
             fontSize: '0.8rem',
-            color: 'rgba(250,246,240,0.45)',
+            color: 'rgba(255,255,255,0.45)',
             lineHeight: 1.7,
             maxWidth: '200px',
           }}>
@@ -72,23 +72,23 @@ export default function Footer() {
               fontWeight: 600,
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: 'rgba(250,246,240,0.35)',
+              color: 'rgba(255,255,255,0.35)',
               marginBottom: '1rem',
             }}>
               {section}
             </p>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
               {links.map(({ href, label }) => (
-                <li key={href}>
+                <li key={href + label}>
                   <Link href={href} style={{
                     fontFamily: 'DM Sans, sans-serif',
                     fontSize: '0.82rem',
-                    color: 'rgba(250,246,240,0.6)',
+                    color: 'rgba(255,255,255,0.6)',
                     textDecoration: 'none',
                     transition: 'color 0.2s ease',
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#FAF6F0')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'rgba(250,246,240,0.6)')}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#FFFFFF')}
+                  onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.6)')}
                   >
                     {label}
                   </Link>
@@ -103,7 +103,7 @@ export default function Footer() {
         maxWidth: '1280px',
         margin: '0 auto',
         padding: '1.5rem 2rem',
-        borderTop: '0.5px solid rgba(250,246,240,0.08)',
+        borderTop: '0.5px solid rgba(255,255,255,0.08)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -113,14 +113,14 @@ export default function Footer() {
         <p style={{
           fontFamily: 'DM Sans, sans-serif',
           fontSize: '0.72rem',
-          color: 'rgba(250,246,240,0.3)',
+          color: 'rgba(255,255,255,0.3)',
         }}>
           &copy; {new Date().getFullYear()} Esquirely. All rights reserved.
         </p>
         <p style={{
           fontFamily: 'DM Sans, sans-serif',
           fontSize: '0.72rem',
-          color: 'rgba(250,246,240,0.3)',
+          color: 'rgba(255,255,255,0.3)',
         }}>
           Made for the Nigerian bar.
         </p>
