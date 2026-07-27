@@ -33,7 +33,7 @@ const FOOTER_LINKS = {
 
 export default function Footer() {
   return (
-    <footer style={{ backgroundColor: '#171E1B', color: '#FFFFFF' }}>
+    <footer style={{ backgroundColor: '#2B2622', color: '#FFFFFF' }}>
       <div style={{
         maxWidth: '1280px',
         margin: '0 auto',

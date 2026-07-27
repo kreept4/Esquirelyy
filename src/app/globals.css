@@ -6,21 +6,21 @@
 
 :root {
   /* Core palette */
-  --charcoal: #171E1B;
-  --charcoal-light: #2A332E;
-  --charcoal-muted: #5C6B64;
+  --charcoal: #2B2622;
+  --charcoal-light: #3D372F;
+  --charcoal-muted: #8A8073;
 
   --cream: #FFFFFF;
-  --cream-dark: #DCEAE3;
-  --cream-border: #E1EBE6;
-  --mist: #EAF3EF;
+  --cream-dark: #F1EBE2;
+  --cream-border: #E3DDD3;
+  --mist: #F6F3EF;
 
-  --ink: #4FA980;
-  --ink-light: #3E8A68;
-  --ink-muted: #8FCDB3;
+  --ink: #B5645A;
+  --ink-light: #9C5049;
+  --ink-muted: #D9A79D;
 
   --butter: #F5D76E;
-  --butter-light: #FBEDB8;
+  --butter-light: #F0D98C;
   --butter-dark: #D9A91F;
 
   /* Status */

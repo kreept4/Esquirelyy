@@ -9,7 +9,7 @@ import FadeSection from './FadeSection'
 export const revalidate = 3600
 
 const SECTOR_ACCENT: Record<string, string> = {
-  law_firm: '#4FA980', banking: '#3E8A68', energy: '#D9A91F', fintech: '#2D6A4F', other: '#5C6B64'
+  law_firm: '#B5645A', banking: '#9C5049', energy: '#D9A91F', fintech: '#2D6A4F', other: '#8A8073'
 }
 
 const FEATURE_TINTS = ['bg-ink/10 text-ink-light', 'bg-butter/25 text-butter-dark']
@@ -73,7 +73,7 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {featured.map((listing: any) => {
-              const accent = SECTOR_ACCENT[listing.sector] || '#5C6B64'
+              const accent = SECTOR_ACCENT[listing.sector] || '#8A8073'
               return (
                 <Link key={listing.id} href={'/jobs/' + listing.slug} className="group border border-cream-border rounded-2xl p-5 bg-cream hover:border-ink/30 hover:shadow-md transition-all block" style={{ borderLeft: '3px solid ' + accent }}>
                   <div className="flex items-start justify-between mb-3">
