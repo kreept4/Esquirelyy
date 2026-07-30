@@ -502,10 +502,11 @@ export function logoForEmployer(employer?: string | null): string | null {
   const norm = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '')
   const target = norm(employer)
   if (!target) return null
+  // Exact only. A startsWith fallback here once matched the string
+  // 'aluko-oyebode.jpg' to a firm, so a passed-in filename silently rendered as
+  // a logo; prefix matching is too loose to be worth the extra hits.
   const hit = ALL_FIRMS.find(
     f => norm(f.name) === target || norm(f.shortName) === target || norm(f.slug) === target
-  ) || ALL_FIRMS.find(
-    f => norm(f.name).startsWith(target) || target.startsWith(norm(f.shortName))
   )
   if (hit) return logoUrl(hit.logoFile)
   return EMPLOYER_LOGOS[target] || null

@@ -188,12 +188,11 @@ function Preview({ kind, tone }: { kind: string; tone: Tone }) {
   }
 
   if (kind === 'firms') {
-    // Real logos off the same storage bucket the directory uses. White plate
-    // behind them because most are dark marks on transparent/white.
+    // Names only: Mark resolves the logo from the directory.
     const rows = [
-      ['aluko-oyebode.jpg', 'Aluko & Oyebode', 'Tier 1', 'Corporate · Energy · Capital markets'],
-      ['banwo-ighodalo.jpg', 'Banwo & Ighodalo', 'Tier 1', 'Banking · Capital markets'],
-      ['Detail solicitors.jpg', 'Detail Solicitors', 'Boutique', 'Energy · Dispute resolution'],
+      ['Aluko & Oyebode', 'Tier 1', 'Corporate · Energy · Capital markets'],
+      ['Banwo & Ighodalo', 'Tier 1', 'Banking · Capital markets'],
+      ['Detail Solicitors', 'Boutique', 'Energy · Dispute resolution'],
     ]
     return (
       <Panel tone={tone}>

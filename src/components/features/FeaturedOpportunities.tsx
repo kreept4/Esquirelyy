@@ -40,11 +40,14 @@ function Mark({ employer, size = 34 }: { employer: string; size?: number }) {
     .join('')
     .toUpperCase()
   return (
-    <span style={{ width: size, height: size, borderRadius: '999px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: url ? '#FFFFFF' : INK, border: `0.5px solid ${BORDER}` }}>
+    // One treatment for every employer: white plate, thin rule. Most employers
+    // in the jobs table are not firms in the directory and have no logo asset,
+    // so a differently-coloured fallback made the list look half-broken.
+    <span style={{ width: size, height: size, borderRadius: '999px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF', border: `0.5px solid ${BORDER}` }}>
       {url ? (
-        <img src={url} alt={employer} width={size} height={size} style={{ objectFit: 'contain', maxWidth: '76%', maxHeight: '76%', width: 'auto', height: 'auto' }} />
+        <img src={url} alt={employer} width={size} height={size} style={{ objectFit: 'contain', maxWidth: '80%', maxHeight: '80%', width: 'auto', height: 'auto' }} />
       ) : (
-        <span className="grotesk-bold" style={{ fontSize: size * 0.3, color: '#FAF6F0' }}>{initials}</span>
+        <span className="display-bold" style={{ fontSize: size * 0.34, color: INK, letterSpacing: '-0.02em' }}>{initials}</span>
       )}
     </span>
   )
