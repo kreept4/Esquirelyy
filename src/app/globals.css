@@ -542,9 +542,19 @@ html, body {
    draw, and hidden on small screens where drag-to-spin fights page scroll. */
 .firm-globe {
   position: relative;
-  height: clamp(420px, 62vh, 640px);
+  height: clamp(420px, 62vh, 620px);
   background: #1A1A1A;
   overflow: hidden;
+  border-bottom: 0.5px solid #E8E0D5;
+}
+.firm-globe-caption {
+  position: absolute;
+  top: 1.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  text-align: center;
+  pointer-events: none;
 }
 @media (max-width: 768px) {
   .firm-globe { display: none; }

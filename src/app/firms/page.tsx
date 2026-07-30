@@ -89,11 +89,6 @@ export default function FirmsPage() {
     <>
       <main style={{ backgroundColor: '#FAF7F2', paddingTop: '80px', minHeight: '100vh' }}>
 
-        {/* Showpiece only. The searchable, crawlable list still lives below it:
-            the sphere renders to a canvas, so nothing inside it is indexable or
-            reachable by keyboard, and the directory itself must be both. */}
-        <FirmGlobe />
-
         <PageHeader          heading="firm directory"
           subcopy="Profiles of Nigerian law firms with tier rankings, practice-area breakdowns, and hiring history."
         >
@@ -134,6 +129,8 @@ export default function FirmsPage() {
               )}
             </div>
         </PageHeader>
+
+        <FirmGlobe />
 
         <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '2rem' }}>
           {filtered.length === 0 ? (
