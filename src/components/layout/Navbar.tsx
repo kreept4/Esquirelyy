@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import StaggeredMenu from './StaggeredMenu'
 import './StaggeredMenu.css'
@@ -27,7 +27,14 @@ const NAV_ITEMS = [
 
 export default function Navbar() {
   const router = useRouter()
+  const pathname = usePathname()
   const [user, setUser] = useState<any>(null)
+
+  // Only the home page puts the header over the dark hero video. Everywhere else
+  // the page is cream, so a cream wordmark and toggle were invisible — there was
+  // no way back to the home page from an inner page.
+  const overHero = pathname === '/'
+  const restColor = overHero ? '#FAF6F0' : '#1A1A1A'
 
   useEffect(() => {
     const supabase = createClient()
@@ -68,13 +75,13 @@ export default function Navbar() {
         displaySocials
         displayItemNumbering
         changeMenuColorOnOpen
-        menuButtonColor="#FAF6F0"
+        menuButtonColor={restColor}
         openMenuButtonColor="#1A1A1A"
         accentColor="#EF4444"
         colors={['#38BDF8', '#F97316', '#22C55E']}
         logo={
           <Link href="/" style={{ textDecoration: 'none' }}>
-            <span className="display-black sm-wordmark" style={{ fontSize: '1.4rem', letterSpacing: '-0.03em' }}>
+            <span className="display-black sm-wordmark" style={{ fontSize: '1.4rem', letterSpacing: '-0.03em', color: restColor }}>
               Esquirely.
             </span>
           </Link>
@@ -83,8 +90,8 @@ export default function Navbar() {
 
       <style>{`
         /* Brand overrides for the vendored ReactBits panel. */
-        .sm-wordmark { color: #FAF6F0; transition: color 0.3s ease; }
-        .staggered-menu-wrapper[data-open] .sm-wordmark { color: #1A1A1A; }
+        .sm-wordmark { transition: color 0.3s ease; }
+        .staggered-menu-wrapper[data-open] .sm-wordmark { color: #1A1A1A !important; }
         .staggered-menu-header { padding: 1.5rem 1.75rem; }
         .staggered-menu-panel {
           background: #FAF6F0;

@@ -4,7 +4,6 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/layout/PageHeader'
-import FirmGlobe from '@/components/features/FirmGlobe'
 import { ALL_FIRMS, type FirmTier } from '@/lib/firms-data'
 
 const STORAGE = 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/'
@@ -130,7 +129,6 @@ export default function FirmsPage() {
             </div>
         </PageHeader>
 
-        <FirmGlobe />
 
         <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '2rem' }}>
           {filtered.length === 0 ? (

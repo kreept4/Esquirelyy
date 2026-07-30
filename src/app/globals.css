@@ -559,3 +559,56 @@ html, body {
 @media (max-width: 768px) {
   .firm-globe { display: none; }
 }
+
+/* Ball pit of open roles */
+.role-pit {
+  position: relative;
+  height: clamp(340px, 46vh, 480px);
+  border: 0.5px solid #E8E0D5;
+  border-radius: 14px;
+  background: #F0EBE3;
+  overflow: hidden;
+  touch-action: none;
+}
+.role-pit-ball {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 999px;
+  background: #FFFFFF;
+  border: 1.5px solid #1A1A1A;
+  box-shadow: 3px 4px 0 rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  padding: 0;
+  will-change: transform;
+  transition: box-shadow 0.15s ease;
+}
+.role-pit-ball:hover { box-shadow: 4px 6px 0 rgba(0,0,0,0.9); }
+.role-pit-ball:active { cursor: grabbing; }
+.role-pit-ball:focus-visible { outline: 3px solid #1A1A1A; outline-offset: 3px; }
+.role-pit-card {
+  position: relative;
+  margin-top: 1.5rem;
+  padding: 1.75rem;
+  max-width: 520px;
+  animation: fadeUp 0.25s ease forwards;
+}
+.role-pit-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.85rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #1A1A1A;
+}
+/* No simulation under reduced motion: lay the balls out as a static row. */
+@media (prefers-reduced-motion: reduce) {
+  .role-pit { height: auto; display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 1.25rem; }
+  .role-pit-ball { position: static; }
+}
