@@ -93,10 +93,10 @@ export default function OnboardingPage() {
 
       {/* Header */}
       <div style={{ padding: '1.25rem 2rem', borderBottom: '0.5px solid #E8E0D5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ fontFamily: 'Space Mono, monospace', fontWeight: 700, fontSize: '1.25rem', color: '#1A1A1A' }}>
+        <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontWeight: 700, fontSize: '1.25rem', color: '#1A1A1A' }}>
           Esquirely.
         </span>
-        <button onClick={() => router.push('/jobs')} style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', color: '#4A4A4A', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em' }}>
+        <button onClick={() => router.push('/jobs')} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', color: '#4A4A4A', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em' }}>
           Skip for now
         </button>
       </div>
@@ -131,7 +131,7 @@ export default function OnboardingPage() {
                       <polyline points="20 6 9 17 4 12"/>
                     </svg>
                   ) : (
-                    <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.65rem', fontWeight: 700, color: i === step ? '#FAF6F0' : '#A89A8A' }}>{i + 1}</span>
+                    <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, color: i === step ? '#FAF6F0' : '#A89A8A' }}>{i + 1}</span>
                   )}
                 </div>
                 {i < questions.length - 1 && (
@@ -142,7 +142,7 @@ export default function OnboardingPage() {
           </div>
 
           {/* Step counter */}
-          <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#1A1A1A', marginBottom: '1.25rem' }}>
+          <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#1A1A1A', marginBottom: '1.25rem' }}>
             {step + 1} of {questions.length}
           </p>
 
@@ -174,7 +174,7 @@ export default function OnboardingPage() {
                     border: selected ? '0.5px solid #1A1A1A' : '0.5px solid #E8E0D5',
                     borderRadius: '3px',
                     cursor: 'pointer',
-                    fontFamily: 'Space Mono, monospace',
+                    fontFamily: 'Schibsted Grotesk, sans-serif',
                     fontSize: '0.92rem',
                     fontWeight: selected ? 600 : 400,
                     color: selected ? '#FAF6F0' : '#1A1A1A',
@@ -202,7 +202,7 @@ export default function OnboardingPage() {
           {/* Navigation */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             {step > 0 ? (
-              <button onClick={back} style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.78rem', color: '#4A4A4A', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.04em' }}>
+              <button onClick={back} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', color: '#4A4A4A', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.04em' }}>
                 Back
               </button>
             ) : <div />}
@@ -216,7 +216,7 @@ export default function OnboardingPage() {
                 color: '#FAF6F0',
                 border: 'none',
                 borderRadius: '2px',
-                fontFamily: 'Space Mono, monospace',
+                fontFamily: 'Schibsted Grotesk, sans-serif',
                 fontSize: '0.78rem',
                 fontWeight: 600,
                 letterSpacing: '0.1em',

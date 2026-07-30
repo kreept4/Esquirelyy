@@ -24,13 +24,13 @@ module.exports = {
           muted: '#4A4A4A',
         },
         verified: '#2D6A4F',
-        closing: '#B5451B',
+        closing: '#000000',
         new: '#1A1A1A',
       },
       fontFamily: {
-        serif: ['Space Mono', 'monospace'],
-        sans: ['Space Mono', 'monospace'],
-        mono: ['Space Mono', 'monospace'],
+        serif: ['Schibsted Grotesk', 'sans-serif'],
+        sans: ['Schibsted Grotesk', 'sans-serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },
       fontSize: {
         '2xs': ['0.625rem', { lineHeight: '1rem' }],

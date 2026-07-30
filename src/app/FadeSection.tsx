@@ -24,7 +24,8 @@ export default function FadeSection() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const r1 = 139, g1 = 58, b1 = 58
+  // ink -> cream. Kept as decimal channels for interpolation: #1A1A1A -> #FAF6F0
+  const r1 = 26, g1 = 26, b1 = 26
   const r2 = 250, g2 = 246, b2 = 240
   const r = Math.round(r1 + (r2 - r1) * progress)
   const g = Math.round(g1 + (g2 - g1) * progress)
@@ -41,7 +42,7 @@ export default function FadeSection() {
       transition: 'background-color 0.05s linear',
     }}>
       <h2 style={{
-        fontFamily: 'Space Mono, monospace',
+        fontFamily: 'Schibsted Grotesk, sans-serif',
         fontSize: 'clamp(2.5rem, 6vw, 5rem)',
         fontWeight: 900,
         lineHeight: 1.1,

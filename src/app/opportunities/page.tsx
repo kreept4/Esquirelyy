@@ -80,7 +80,7 @@ function DeadlinePill({ deadline, isRolling, isClosingSoon }: { deadline: string
   return (
     <span style={{
       display: 'inline-flex', alignItems: 'center', gap: '3px',
-      fontFamily: 'Space Mono, monospace', fontSize: '0.62rem', fontWeight: 600,
+      fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.62rem', fontWeight: 600,
       letterSpacing: '0.08em', textTransform: 'uppercase',
       color: isClosingSoon ? '#000000' : '#4A4A4A',
     }}>
@@ -123,7 +123,7 @@ export default function OpportunitiesPage() {
               {filtered.length} opportunit{filtered.length !== 1 ? 'ies' : 'y'}
             </p>
             <h1 style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: 'clamp(1.8rem, 4vw, 3rem)',
               fontWeight: 700, color: '#1A1A1A',
               marginBottom: '0.5rem', lineHeight: 1.1,
@@ -131,7 +131,7 @@ export default function OpportunitiesPage() {
               Opportunities
             </h1>
             <p style={{
-              fontFamily: 'Space Mono, monospace', fontSize: '0.9rem',
+              fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.9rem',
               color: '#4A4A4A', lineHeight: 1.65, marginBottom: '2rem', maxWidth: '560px',
             }}>
               Internships and scholarships for law undergraduates. Graduate trainee and in-house roles at banks,
@@ -151,7 +151,7 @@ export default function OpportunitiesPage() {
                   onChange={e => setSearch(e.target.value)}
                   style={{
                     width: '100%', padding: '0.65rem 1rem 0.65rem 2.25rem',
-                    fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', color: '#1A1A1A',
+                    fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: '#1A1A1A',
                     backgroundColor: '#FAF7F2', border: '0.5px solid #E8E0D5',
                     borderRadius: '2px', outline: 'none',
                   }}
@@ -162,7 +162,7 @@ export default function OpportunitiesPage() {
                 onChange={e => setEligibility(e.target.value as EligibilityLevel | '')}
                 style={{
                   padding: '0.65rem 1rem',
-                  fontFamily: 'Space Mono, monospace', fontSize: '0.8rem',
+                  fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem',
                   color: eligibility ? '#1A1A1A' : '#4A4A4A',
                   backgroundColor: '#FAF7F2',
                   border: `0.5px solid ${eligibility ? '#1A1A1A' : '#E8E0D5'}`,
@@ -176,7 +176,7 @@ export default function OpportunitiesPage() {
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: '6px',
                   padding: '0.65rem 1.1rem',
-                  fontFamily: 'Space Mono, monospace', fontSize: '0.78rem',
+                  fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem',
                   fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
                   backgroundColor: internationalOnly ? '#1A1A1A' : '#FAF7F2',
                   color: internationalOnly ? '#FAF7F2' : '#4A4A4A',
@@ -192,7 +192,7 @@ export default function OpportunitiesPage() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: '4px',
                     padding: '0.65rem 1rem',
-                    fontFamily: 'Space Mono, monospace', fontSize: '0.78rem',
+                    fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem',
                     color: '#000000', backgroundColor: 'transparent',
                     border: '0.5px solid rgba(181,69,27,0.3)', borderRadius: '2px', cursor: 'pointer',
                   }}
@@ -208,7 +208,7 @@ export default function OpportunitiesPage() {
                 onClick={() => setActiveCategory('')}
                 style={{
                   padding: '4px 12px',
-                  fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', fontWeight: 600,
+                  fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600,
                   letterSpacing: '0.06em', textTransform: 'uppercase',
                   backgroundColor: activeCategory === '' ? '#1A1A1A' : 'transparent',
                   color: activeCategory === '' ? '#FAF7F2' : '#4A4A4A',
@@ -224,7 +224,7 @@ export default function OpportunitiesPage() {
                   onClick={() => setActiveCategory(activeCategory === cat ? '' : cat)}
                   style={{
                     padding: '4px 12px',
-                    fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', fontWeight: 600,
+                    fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600,
                     letterSpacing: '0.06em', textTransform: 'uppercase',
                     backgroundColor: activeCategory === cat ? '#1A1A1A' : 'transparent',
                     color: activeCategory === cat ? '#FAF7F2' : '#4A4A4A',
@@ -243,10 +243,10 @@ export default function OpportunitiesPage() {
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2.5rem 2rem' }}>
           {filtered.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '5rem 0' }}>
-              <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '1.5rem', color: '#1A1A1A', marginBottom: '0.5rem' }}>
+              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1.5rem', color: '#1A1A1A', marginBottom: '0.5rem' }}>
                 No opportunities match your filters.
               </p>
-              <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', color: '#4A4A4A' }}>
+              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: '#4A4A4A' }}>
                 Try broadening your search or clearing the filters.
               </p>
             </div>
@@ -271,7 +271,7 @@ export default function OpportunitiesPage() {
                     <p className="label-caps" style={{ color: '#1A1A1A', opacity: 0.6, marginBottom: '0.25rem', fontSize: '0.6rem' }}>
                       {group.label}
                     </p>
-                    <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.82rem', color: '#4A4A4A' }}>
+                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.82rem', color: '#4A4A4A' }}>
                       {group.description}
                     </p>
                   </div>
@@ -319,7 +319,7 @@ function OpportunityCard({ opp }: { opp: typeof ALL_OPPORTUNITIES[0] }) {
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: '3px',
               padding: '2px 7px', borderRadius: '2px', fontSize: '0.58rem',
-              fontFamily: 'Space Mono, monospace', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
+              fontFamily: 'Schibsted Grotesk, sans-serif', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase',
               color: '#1A1A1A', backgroundColor: 'rgba(139,58,58,0.08)',
             }}>
               <GlobeIcon /> International
@@ -339,7 +339,7 @@ function OpportunityCard({ opp }: { opp: typeof ALL_OPPORTUNITIES[0] }) {
 
         {/* Title */}
         <p style={{
-          fontFamily: 'Space Mono, monospace',
+          fontFamily: 'Schibsted Grotesk, sans-serif',
           fontSize: '1.05rem', fontWeight: 600, color: '#1A1A1A',
           lineHeight: 1.3, marginBottom: '0.2rem',
         }}>
@@ -347,13 +347,13 @@ function OpportunityCard({ opp }: { opp: typeof ALL_OPPORTUNITIES[0] }) {
         </p>
 
         {/* Organisation */}
-        <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.82rem', color: '#1A1A1A', marginBottom: '0.5rem' }}>
+        <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.82rem', color: '#1A1A1A', marginBottom: '0.5rem' }}>
           {opp.organisation}
         </p>
 
         {/* Description */}
         <p style={{
-          fontFamily: 'Space Mono, monospace', fontSize: '0.8rem', color: '#4A4A4A',
+          fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: '#4A4A4A',
           lineHeight: 1.65, marginBottom: '0.75rem',
           maxWidth: '600px',
         }}>
@@ -362,7 +362,7 @@ function OpportunityCard({ opp }: { opp: typeof ALL_OPPORTUNITIES[0] }) {
 
         {/* Meta */}
         <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Space Mono, monospace', fontSize: '0.73rem', color: '#4A4A4A' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.73rem', color: '#4A4A4A' }}>
             <MapPinIcon /> {opp.location}
           </span>
           {opp.amount && (
@@ -371,7 +371,7 @@ function OpportunityCard({ opp }: { opp: typeof ALL_OPPORTUNITIES[0] }) {
             </span>
           )}
           {opp.duration && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Space Mono, monospace', fontSize: '0.73rem', color: '#4A4A4A' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.73rem', color: '#4A4A4A' }}>
               <ClockIcon /> {opp.duration}
             </span>
           )}

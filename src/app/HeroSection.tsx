@@ -46,7 +46,7 @@ function AnimatedHeading({ text, scrollYProgress }: { text: string; scrollYProgr
   const baseDelay = 200
   let globalIndex = 0
   return (
-    <h1 className="space-mono-bold" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', letterSpacing: '-0.02em', lineHeight: 1.05, color: '#FAF6F0', marginBottom: '1.25rem' }}>
+    <h1 className="grotesk-bold" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', letterSpacing: '-0.02em', lineHeight: 1.05, color: '#FAF6F0', marginBottom: '1.25rem' }}>
       {lines.map((line, lineIdx) => (
         <div key={lineIdx}>
           {line.split(' ').map((word, wordIdx, wordsArr) => (
@@ -79,16 +79,16 @@ export default function HeroSection() {
           <div>
             <AnimatedHeading text={'Your legal career\nstarts here.'} scrollYProgress={scrollYProgress} />
             <FadeIn delay={800} duration={1000}>
-              <p className="space-mono-regular" style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.75)', maxWidth: '480px', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+              <p className="grotesk-regular" style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.75)', maxWidth: '480px', marginBottom: '1.5rem', lineHeight: 1.6 }}>
                 Jobs, vacation schemes, pupillages, and scholarships across law firms, corporates, and institutions, verified and updated daily.
               </p>
             </FadeIn>
             <FadeIn delay={1200} duration={1000}>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                <Link href="/jobs" className="space-mono-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.85rem 2rem', borderRadius: '0.5rem', fontSize: '0.85rem', textDecoration: 'none' }}>
+                <Link href="/jobs" className="grotesk-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.85rem 2rem', borderRadius: '0.5rem', fontSize: '0.85rem', textDecoration: 'none' }}>
                   Browse Opportunities
                 </Link>
-                <Link href="/tracker" className="liquid-glass space-mono-bold" style={{ border: '1px solid rgba(255,255,255,0.2)', color: '#FAF6F0', padding: '0.85rem 2rem', borderRadius: '0.5rem', fontSize: '0.85rem', textDecoration: 'none' }}>
+                <Link href="/tracker" className="liquid-glass grotesk-bold" style={{ border: '1px solid rgba(255,255,255,0.2)', color: '#FAF6F0', padding: '0.85rem 2rem', borderRadius: '0.5rem', fontSize: '0.85rem', textDecoration: 'none' }}>
                   Track Applications
                 </Link>
               </div>

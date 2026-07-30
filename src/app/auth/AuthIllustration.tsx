@@ -23,10 +23,10 @@ export default function AuthIllustration() {
         </svg>
       </div>
       <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', maxWidth: '320px' }}>
-        <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '2.5rem', fontWeight: 900, color: '#FAF6F0', lineHeight: 1.1, marginBottom: '2rem' }}>
+        <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '2.5rem', fontWeight: 900, color: '#FAF6F0', lineHeight: 1.1, marginBottom: '2rem' }}>
           Every opportunity.<br />One platform.
         </p>
-        <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', color: 'rgba(250,246,240,0.65)', lineHeight: 1.75, marginBottom: '3rem' }}>
+        <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: 'rgba(250,246,240,0.65)', lineHeight: 1.75, marginBottom: '3rem' }}>
           Jobs, vacation schemes, pupillages, and scholarships for Nigerian legal professionals, in one place.
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -37,12 +37,12 @@ export default function AuthIllustration() {
           ].map((item) => (
             <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', textAlign: 'left' }}>
               <div style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: 'rgba(250,246,240,0.5)', flexShrink: 0, marginTop: '7px' }} />
-              <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.8rem', color: 'rgba(250,246,240,0.6)', lineHeight: 1.6 }}>{item}</p>
+              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: 'rgba(250,246,240,0.6)', lineHeight: 1.6 }}>{item}</p>
             </div>
           ))}
         </div>
       </div>
-      <p style={{ position: 'absolute', bottom: '2rem', fontFamily: 'Space Mono, monospace', fontWeight: 700, fontSize: '1.1rem', color: 'rgba(250,246,240,0.4)' }}>
+      <p style={{ position: 'absolute', bottom: '2rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontWeight: 700, fontSize: '1.1rem', color: 'rgba(250,246,240,0.4)' }}>
         Esquirely.
       </p>
     </div>

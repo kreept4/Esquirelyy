@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
     }}>
       <Link href="/" style={{ textDecoration: 'none', marginBottom: '2.5rem' }}>
         <span style={{
-          fontFamily: 'Space Mono, monospace',
+          fontFamily: 'Schibsted Grotesk, sans-serif',
           fontWeight: 700,
           fontSize: '1.5rem',
           color: '#1A1A1A',
@@ -79,7 +79,7 @@ export default function ForgotPasswordPage() {
               </svg>
             </div>
             <h2 style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '1.35rem',
               fontWeight: 700,
               color: '#1A1A1A',
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
               Check your inbox
             </h2>
             <p style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '0.875rem',
               color: '#4A4A4A',
               lineHeight: 1.7,
@@ -97,7 +97,7 @@ export default function ForgotPasswordPage() {
               If an account exists for <strong>{email}</strong>, you will receive a password reset link shortly.
             </p>
             <Link href="/auth/login" style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '0.78rem',
               fontWeight: 600,
               color: '#1A1A1A',
@@ -110,7 +110,7 @@ export default function ForgotPasswordPage() {
         ) : (
           <>
             <h1 style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '1.5rem',
               fontWeight: 700,
               color: '#1A1A1A',
@@ -120,7 +120,7 @@ export default function ForgotPasswordPage() {
               Reset your password
             </h1>
             <p style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '0.85rem',
               color: '#4A4A4A',
               marginBottom: '2rem',
@@ -132,7 +132,7 @@ export default function ForgotPasswordPage() {
             <form onSubmit={handleReset} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
                 <label style={{
-                  fontFamily: 'Space Mono, monospace',
+                  fontFamily: 'Schibsted Grotesk, sans-serif',
                   fontSize: '0.72rem',
                   fontWeight: 600,
                   color: '#1A1A1A',
@@ -155,7 +155,7 @@ export default function ForgotPasswordPage() {
                     backgroundColor: '#FAF7F2',
                     border: '0.5px solid #E8E0D5',
                     borderRadius: '2px',
-                    fontFamily: 'Space Mono, monospace',
+                    fontFamily: 'Schibsted Grotesk, sans-serif',
                     fontSize: '0.875rem',
                     color: '#1A1A1A',
                     outline: 'none',
@@ -166,7 +166,7 @@ export default function ForgotPasswordPage() {
 
               {error && (
                 <p style={{
-                  fontFamily: 'Space Mono, monospace',
+                  fontFamily: 'Schibsted Grotesk, sans-serif',
                   fontSize: '0.8rem',
                   color: '#000000',
                   backgroundColor: '#FDF0EB',
@@ -188,7 +188,7 @@ export default function ForgotPasswordPage() {
                   color: '#FAF7F2',
                   border: 'none',
                   borderRadius: '2px',
-                  fontFamily: 'Space Mono, monospace',
+                  fontFamily: 'Schibsted Grotesk, sans-serif',
                   fontSize: '0.78rem',
                   fontWeight: 600,
                   letterSpacing: '0.1em',
@@ -202,7 +202,7 @@ export default function ForgotPasswordPage() {
             </form>
 
             <p style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '0.82rem',
               color: '#4A4A4A',
               marginTop: '1.5rem',

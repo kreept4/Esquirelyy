@@ -49,7 +49,7 @@ function FirmLogo({ logoFile, monogram, tierColor }: { logoFile?: string | null;
           style={{ objectFit: 'contain', width: '80%', height: '80%' }}
           onError={() => setFailed(true)} />
       ) : (
-        <span style={{ fontFamily: 'Space Mono, monospace', fontWeight: 700, fontSize: '1rem', color: '#FAF7F2' }}>
+        <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontWeight: 700, fontSize: '1rem', color: '#FAF7F2' }}>
           {monogram}
         </span>
       )}
@@ -93,7 +93,7 @@ export default function FirmCard({ firm, liveRoles = 0, animate = false, delay =
           <Link
             href={`/firms/${firm.slug}`}
             style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '1rem',
               fontWeight: 600,
               color: '#1A1A1A',
@@ -110,7 +110,7 @@ export default function FirmCard({ firm, liveRoles = 0, animate = false, delay =
           {/* Location */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '0.25rem' }}>
             <MapPin size={11} color="#4A4A4A" />
-            <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.78rem', color: '#4A4A4A' }}>
+            <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', color: '#4A4A4A' }}>
               {firm.city}, {firm.state}
             </span>
           </div>
@@ -122,7 +122,7 @@ export default function FirmCard({ firm, liveRoles = 0, animate = false, delay =
         <div style={{ marginTop: '1rem', display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
           {firm.practice_areas.slice(0, 3).map(area => (
             <span key={area} style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '0.7rem',
               color: '#4A4A4A',
               backgroundColor: '#F0EBE3',
@@ -134,7 +134,7 @@ export default function FirmCard({ firm, liveRoles = 0, animate = false, delay =
           ))}
           {firm.practice_areas.length > 3 && (
             <span style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '0.7rem',
               color: '#4A4A4A',
             }}>
@@ -154,7 +154,7 @@ export default function FirmCard({ firm, liveRoles = 0, animate = false, delay =
         justifyContent: 'space-between',
       }}>
         <Link href={`/firms/${firm.slug}`} style={{
-          fontFamily: 'Space Mono, monospace',
+          fontFamily: 'Schibsted Grotesk, sans-serif',
           fontSize: '0.75rem',
           fontWeight: 600,
           color: '#1A1A1A',

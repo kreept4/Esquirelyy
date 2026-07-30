@@ -20,7 +20,7 @@ const FOOTER_LINKS = {
   ],
   Platform: [
     { href: '/tracker', label: 'Application Tracker' },
-    { href: '/auth/login', label: 'Create Account' },
+    { href: '/auth/signup', label: 'Create Account' },
     { href: '/auth/login', label: 'Sign In' },
   ],
   Legal: [
@@ -44,7 +44,7 @@ export default function Footer() {
       }}>
         <div>
           <span style={{
-            fontFamily: 'Space Mono, monospace',
+            fontFamily: 'Schibsted Grotesk, sans-serif',
             fontWeight: 700,
             fontSize: '1.25rem',
             color: '#FAF6F0',
@@ -54,7 +54,7 @@ export default function Footer() {
             Esquirely.
           </span>
           <p style={{
-            fontFamily: 'Space Mono, monospace',
+            fontFamily: 'Schibsted Grotesk, sans-serif',
             fontSize: '0.8rem',
             color: 'rgba(250,246,240,0.45)',
             lineHeight: 1.7,
@@ -67,7 +67,7 @@ export default function Footer() {
         {Object.entries(FOOTER_LINKS).map(([section, links]) => (
           <div key={section}>
             <p style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '0.62rem',
               fontWeight: 600,
               letterSpacing: '0.18em',
@@ -81,7 +81,7 @@ export default function Footer() {
               {links.map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} style={{
-                    fontFamily: 'Space Mono, monospace',
+                    fontFamily: 'Schibsted Grotesk, sans-serif',
                     fontSize: '0.82rem',
                     color: 'rgba(250,246,240,0.6)',
                     textDecoration: 'none',
@@ -111,14 +111,14 @@ export default function Footer() {
         gap: '1rem',
       }}>
         <p style={{
-          fontFamily: 'Space Mono, monospace',
+          fontFamily: 'Schibsted Grotesk, sans-serif',
           fontSize: '0.72rem',
           color: 'rgba(250,246,240,0.3)',
         }}>
           &copy; {new Date().getFullYear()} Esquirely. All rights reserved.
         </p>
         <p style={{
-          fontFamily: 'Space Mono, monospace',
+          fontFamily: 'Schibsted Grotesk, sans-serif',
           fontSize: '0.72rem',
           color: 'rgba(250,246,240,0.3)',
         }}>

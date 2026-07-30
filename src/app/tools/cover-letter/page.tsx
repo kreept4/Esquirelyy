@@ -46,7 +46,7 @@ const rule = '#E8E0D5'
 const fieldStyle = {
   width: '100%',
   padding: '0.6rem 0',
-  fontFamily: 'Space Mono, monospace',
+  fontFamily: 'Schibsted Grotesk, sans-serif',
   fontSize: '0.92rem',
   color: ink,
   backgroundColor: 'transparent',
@@ -58,7 +58,7 @@ const fieldStyle = {
 
 const labelStyle = {
   display: 'block' as const,
-  fontFamily: 'Space Mono, monospace',
+  fontFamily: 'Schibsted Grotesk, sans-serif',
   fontSize: '0.7rem',
   fontWeight: 700 as const,
   letterSpacing: '0.08em',
@@ -181,17 +181,17 @@ export default function CoverLetterPage() {
             <div style={{ padding: '5rem 2rem 3rem' }}>
               <div style={{ maxWidth: '640px', margin: '0 auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                  <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75 }}>
+                  <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75 }}>
                     AI Career Tools
                   </p>
-                  <button onClick={openHistory} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em' }}>
+                  <button onClick={openHistory} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em' }}>
                     <Clock size={13} /> History
                   </button>
                 </div>
-                <h1 style={{ fontFamily: 'Space Mono, monospace', fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: ink, marginBottom: '1rem', lineHeight: 1.1 }}>
+                <h1 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: ink, marginBottom: '1rem', lineHeight: 1.1 }}>
                   Cover Letter Generator
                 </h1>
-                <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '1rem', color: muted, lineHeight: 1.7, maxWidth: '480px' }}>
+                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1rem', color: muted, lineHeight: 1.7, maxWidth: '480px' }}>
                   Tell us about the role and your background. We will write a cover letter that does not sound like every other application in the pile.
                 </p>
               </div>
@@ -208,7 +208,7 @@ export default function CoverLetterPage() {
                   placeholder="e.g. Boluwatife"
                   style={{
                     width: '100%', padding: '0.85rem 0',
-                    fontFamily: 'Space Mono, monospace',
+                    fontFamily: 'Schibsted Grotesk, sans-serif',
                     fontSize: '1.15rem', color: ink, backgroundColor: 'transparent',
                     border: 'none', borderBottom: '1.5px solid ' + rule, outline: 'none', boxSizing: 'border-box' as const,
                   }}
@@ -265,7 +265,7 @@ export default function CoverLetterPage() {
               {error && (
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
                   <AlertCircle size={15} style={{ color: accent, flexShrink: 0, marginTop: '2px' }} />
-                  <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', color: accent, margin: 0 }}>{error}</p>
+                  <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: accent, margin: 0 }}>{error}</p>
                 </div>
               )}
 
@@ -277,7 +277,7 @@ export default function CoverLetterPage() {
                   padding: '0.95rem 2.5rem',
                   backgroundColor: (loading || !form.targetRole || !form.employer) ? muted : ink,
                   color: cream, border: 'none',
-                  fontFamily: 'Space Mono, monospace', fontSize: '0.78rem', fontWeight: 700,
+                  fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 700,
                   letterSpacing: '0.1em', textTransform: 'uppercase' as const,
                   cursor: (loading || !form.targetRole || !form.employer) ? 'not-allowed' : 'pointer',
                   transition: 'background-color 0.2s ease',
@@ -287,55 +287,55 @@ export default function CoverLetterPage() {
                   ? <><Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> Writing your letter...</>
                   : <>Generate <ArrowRight size={15} /></>}
               </button>
-              <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', color: muted, marginTop: '1rem' }}>AI-generated draft. Review before sending.</p>
+              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', color: muted, marginTop: '1rem' }}>AI-generated draft. Review before sending.</p>
             </div>
           </>
         )}
 
         {result && (
           <div style={{ maxWidth: '640px', margin: '0 auto', padding: '5rem 2rem 6rem' }}>
-            <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', color: muted, marginBottom: '2.5rem' }}>AI-generated draft. Review before sending.</p>
+            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', color: muted, marginBottom: '2.5rem' }}>AI-generated draft. Review before sending.</p>
 
             <div style={{ marginBottom: '3rem' }}>
-              <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75, marginBottom: '0.5rem' }}>
+              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75, marginBottom: '0.5rem' }}>
                 Suggested subject line
               </p>
-              <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '1rem', color: ink, fontWeight: 500, borderBottom: '1px solid ' + rule, paddingBottom: '1.5rem' }}>
+              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1rem', color: ink, fontWeight: 500, borderBottom: '1px solid ' + rule, paddingBottom: '1.5rem' }}>
                 {result.subjectLine}
               </p>
             </div>
 
             <div style={{ marginBottom: '3rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: muted }}>
+                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: muted }}>
                   Your cover letter
                 </p>
-                <button onClick={handleCopy} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.875rem', backgroundColor: 'transparent', border: '0.5px solid ' + rule, fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', fontWeight: 600, color: muted, cursor: 'pointer' }}>
+                <button onClick={handleCopy} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.875rem', backgroundColor: 'transparent', border: '0.5px solid ' + rule, fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600, color: muted, cursor: 'pointer' }}>
                   {copied ? <><Check size={13} style={{ color: '#2D6A4F' }} /> Copied</> : <><Copy size={13} /> Copy</>}
                 </button>
               </div>
               {result.coverLetter.split('\n').map((para, i) => para.trim() ? (
-                <p key={i} style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.95rem', color: ink, lineHeight: 1.85, marginBottom: '1.25rem' }}>{para}</p>
+                <p key={i} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.95rem', color: ink, lineHeight: 1.85, marginBottom: '1.25rem' }}>{para}</p>
               ) : <div key={i} style={{ height: '0.5rem' }} />)}
             </div>
 
             {result.tipsForSending?.length > 0 && (
               <div style={{ borderTop: '1px solid ' + rule, paddingTop: '2rem', marginBottom: '3rem' }}>
-                <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: muted, marginBottom: '1.25rem' }}>
+                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: muted, marginBottom: '1.25rem' }}>
                   Tips for sending
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0.875rem' }}>
                   {result.tipsForSending.map((tip, i) => (
                     <div key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                      <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', fontWeight: 700, color: accent, flexShrink: 0, paddingTop: '2px' }}>{String(i + 1).padStart(2, '0')}</span>
-                      <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.88rem', color: ink, lineHeight: 1.7, margin: 0 }}>{tip}</p>
+                      <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 700, color: accent, flexShrink: 0, paddingTop: '2px' }}>{String(i + 1).padStart(2, '0')}</span>
+                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: ink, lineHeight: 1.7, margin: 0 }}>{tip}</p>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            <button onClick={handleReset} style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.78rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em', textDecoration: 'underline' }}>
+            <button onClick={handleReset} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em', textDecoration: 'underline' }}>
               Start over
             </button>
 
@@ -346,7 +346,7 @@ export default function CoverLetterPage() {
           <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(26,26,26,0.4)', zIndex: 200, display: 'flex', justifyContent: 'flex-end' }} onClick={() => setShowHistory(false)}>
             <div style={{ width: '100%', maxWidth: '420px', height: '100%', backgroundColor: cream, overflowY: 'auto' as const, padding: '2rem' }} onClick={e => e.stopPropagation()}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h3 style={{ fontFamily: 'Space Mono, monospace', fontSize: '1.3rem', fontWeight: 700, color: ink }}>Cover Letter History</h3>
+                <h3 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1.3rem', fontWeight: 700, color: ink }}>Cover Letter History</h3>
                 <button onClick={() => setShowHistory(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: muted }}>
                   <X size={18} />
                 </button>
@@ -355,14 +355,14 @@ export default function CoverLetterPage() {
               {historyLoading && <Loader2 size={18} className="animate-spin" style={{ color: muted }} />}
 
               {!historyLoading && history.length === 0 && (
-                <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', color: muted }}>No cover letters yet. Your past letters will appear here.</p>
+                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: muted }}>No cover letters yet. Your past letters will appear here.</p>
               )}
 
               <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0.75rem' }}>
                 {history.map(item => (
                   <button key={item.id} onClick={() => loadFromHistory(item)} style={{ textAlign: 'left' as const, padding: '1rem', backgroundColor: '#fff', border: '0.5px solid ' + rule, cursor: 'pointer' }}>
-                    <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', fontWeight: 600, color: ink, marginBottom: '0.25rem' }}>{item.target_role} at {item.employer}</p>
-                    <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.75rem', color: muted }}>
+                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', fontWeight: 600, color: ink, marginBottom: '0.25rem' }}>{item.target_role} at {item.employer}</p>
+                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', color: muted }}>
                       {new Date(item.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </p>
                   </button>

@@ -69,7 +69,7 @@ export default function Navbar() {
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Link href="/" style={{ textDecoration: 'none' }}>
-              <span className="space-mono-bold" style={{ fontSize: '1.35rem', color: '#FAF6F0', letterSpacing: '-0.02em' }}>
+              <span className="grotesk-bold" style={{ fontSize: '1.35rem', color: '#FAF6F0', letterSpacing: '-0.02em' }}>
                 Esquirely.
               </span>
             </Link>
@@ -79,7 +79,7 @@ export default function Navbar() {
                 <Link
                   key={href}
                   href={href}
-                  className="space-mono-regular nav-link"
+                  className="grotesk-regular nav-link"
                   style={{
                     fontSize: '0.8rem',
                     color: pathname === href ? '#FAF6F0' : 'rgba(255,255,255,0.7)',
@@ -102,7 +102,7 @@ export default function Navbar() {
               ))}
 
               <div style={{ position: 'relative', display: 'inline-block' }} onMouseEnter={() => setToolsOpen(true)} onMouseLeave={() => setToolsOpen(false)}>
-                <span className="space-mono-regular" style={{ fontSize: '0.8rem', color: isToolsActive ? '#FAF6F0' : 'rgba(255,255,255,0.7)', cursor: 'pointer', position: 'relative' }}>
+                <span className="grotesk-regular" style={{ fontSize: '0.8rem', color: isToolsActive ? '#FAF6F0' : 'rgba(255,255,255,0.7)', cursor: 'pointer', position: 'relative' }}>
                   AI Tools
                   {isToolsActive && (
                     <svg viewBox="0 0 60 8" preserveAspectRatio="none" style={{ position: 'absolute', bottom: '-5px', left: '-2px', width: 'calc(100% + 4px)', height: '6px' }}>
@@ -112,7 +112,7 @@ export default function Navbar() {
                 </span>
                 {toolsOpen && (
                   <div style={{ position: 'absolute', top: '28px', left: '50%', transform: 'translateX(-50%)', backgroundColor: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)', minWidth: '260px', padding: '6px', boxShadow: '0 8px 24px rgba(0,0,0,0.3)', zIndex: 200, paddingTop: '20px', borderRadius: '0.5rem', animation: 'dropdownIn 0.18s ease' }}>
-                    <p className="space-mono-regular" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', padding: '0 0.65rem 0.5rem' }}>Career Tools</p>
+                    <p className="grotesk-regular" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', padding: '0 0.65rem 0.5rem' }}>Career Tools</p>
                     {AI_TOOLS.map(({ href, label, description }) => (
                       <Link
                         key={href}
@@ -123,8 +123,8 @@ export default function Navbar() {
                         onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderLeftColor = 'transparent' }}
                       >
                         <div>
-                          <p className="space-mono-bold" style={{ fontSize: '0.8rem', color: '#FAF6F0', marginBottom: '1px' }}>{label}</p>
-                          <p className="space-mono-regular" style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.3 }}>{description}</p>
+                          <p className="grotesk-bold" style={{ fontSize: '0.8rem', color: '#FAF6F0', marginBottom: '1px' }}>{label}</p>
+                          <p className="grotesk-regular" style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.3 }}>{description}</p>
                         </div>
                       </Link>
                     ))}
@@ -136,19 +136,19 @@ export default function Navbar() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }} className="desktop-nav">
               {user ? (
                 <>
-                  <Link href="/dashboard" className="space-mono-regular" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
+                  <Link href="/dashboard" className="grotesk-regular" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
                     Dashboard
                   </Link>
-                  <button onClick={handleSignOut} className="space-mono-regular" style={{ fontSize: '0.75rem', color: '#FAF6F0', background: 'none', border: 'none', cursor: 'pointer' }}>
+                  <button onClick={handleSignOut} className="grotesk-regular" style={{ fontSize: '0.75rem', color: '#FAF6F0', background: 'none', border: 'none', cursor: 'pointer' }}>
                     Sign Out
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href="/auth/login" className="space-mono-regular" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
+                  <Link href="/auth/login" className="grotesk-regular" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
                     Sign In
                   </Link>
-                  <Link href="/auth/signup" className="space-mono-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.78rem', textDecoration: 'none' }}>
+                  <Link href="/auth/signup" className="grotesk-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.78rem', textDecoration: 'none' }}>
                     Join Esquirely
                   </Link>
                 </>
@@ -165,25 +165,25 @@ export default function Navbar() {
       {open && (
         <div style={{ margin: '0 1.5rem', backgroundColor: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.75rem', marginTop: '0.5rem', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', animation: 'mobileMenuIn 0.22s ease' }}>
           {NAV_LINKS.map(({ href, label }) => (
-            <Link key={href} href={href} onClick={() => setOpen(false)} className="space-mono-regular" style={{ fontSize: '0.9rem', color: pathname === href ? '#FAF6F0' : 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>
+            <Link key={href} href={href} onClick={() => setOpen(false)} className="grotesk-regular" style={{ fontSize: '0.9rem', color: pathname === href ? '#FAF6F0' : 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>
               {label}
             </Link>
           ))}
           {AI_TOOLS.map(({ href, label }) => (
-            <Link key={href} href={href} onClick={() => setOpen(false)} className="space-mono-regular" style={{ fontSize: '0.9rem', color: pathname === href ? '#FAF6F0' : 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>
+            <Link key={href} href={href} onClick={() => setOpen(false)} className="grotesk-regular" style={{ fontSize: '0.9rem', color: pathname === href ? '#FAF6F0' : 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>
               {label}
             </Link>
           ))}
           <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.1)' }} />
           {user ? (
             <>
-              <Link href="/dashboard" onClick={() => setOpen(false)} className="space-mono-regular" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>Dashboard</Link>
-              <button onClick={handleSignOut} className="space-mono-regular" style={{ fontSize: '0.9rem', color: '#FAF6F0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: '0' }}>Sign Out</button>
+              <Link href="/dashboard" onClick={() => setOpen(false)} className="grotesk-regular" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>Dashboard</Link>
+              <button onClick={handleSignOut} className="grotesk-regular" style={{ fontSize: '0.9rem', color: '#FAF6F0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: '0' }}>Sign Out</button>
             </>
           ) : (
             <>
-              <Link href="/auth/login" onClick={() => setOpen(false)} className="space-mono-regular" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>Sign In</Link>
-              <Link href="/auth/signup" onClick={() => setOpen(false)} className="space-mono-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.6rem', borderRadius: '0.5rem', fontSize: '0.85rem', textDecoration: 'none', textAlign: 'center' }}>Join Esquirely</Link>
+              <Link href="/auth/login" onClick={() => setOpen(false)} className="grotesk-regular" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>Sign In</Link>
+              <Link href="/auth/signup" onClick={() => setOpen(false)} className="grotesk-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.6rem', borderRadius: '0.5rem', fontSize: '0.85rem', textDecoration: 'none', textAlign: 'center' }}>Join Esquirely</Link>
             </>
           )}
         </div>

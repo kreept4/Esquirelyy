@@ -65,7 +65,7 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
           <Link
             href={`/jobs/${listing.slug}`}
             style={{
-              fontFamily: 'Space Mono, monospace',
+              fontFamily: 'Schibsted Grotesk, sans-serif',
               fontSize: '1.05rem',
               fontWeight: 600,
               color: '#1A1A1A',
@@ -84,7 +84,7 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
             <Link
               href={`/firms/${listing.firm.slug}`}
               style={{
-                fontFamily: 'Space Mono, monospace',
+                fontFamily: 'Schibsted Grotesk, sans-serif',
                 fontSize: '0.82rem',
                 color: '#1A1A1A',
                 textDecoration: 'none',
@@ -138,7 +138,7 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
         paddingTop: '0.75rem',
         borderTop: '0.5px solid #E8E0D5',
       }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#4A4A4A', fontSize: '0.78rem', fontFamily: 'Space Mono, monospace' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#4A4A4A', fontSize: '0.78rem', fontFamily: 'Schibsted Grotesk, sans-serif' }}>
           <MapPin size={12} />
           {listing.location}
           {listing.is_remote && ' · Remote'}
@@ -146,7 +146,7 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
         </span>
 
         {listing.practice_areas.length > 0 && (
-          <span style={{ color: '#4A4A4A', fontSize: '0.78rem', fontFamily: 'Space Mono, monospace' }}>
+          <span style={{ color: '#4A4A4A', fontSize: '0.78rem', fontFamily: 'Schibsted Grotesk, sans-serif' }}>
             {listing.practice_areas.slice(0, 2).join(' · ')}
           </span>
         )}
