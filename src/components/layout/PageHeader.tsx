@@ -33,7 +33,7 @@ export default function PageHeader({
         padding: '3.25rem 2rem 2.5rem',
       }}
     >
-      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+      <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto' }}>
         <AnimatedHeading
           text={heading}
           color={fg}

@@ -293,7 +293,7 @@ export default function TrackerPage() {
   return (
     <>
       <main style={{ backgroundColor: '#FAF7F2', minHeight: '100vh', paddingTop: '64px' }}>
-        <div style={{ borderBottom: '0.5px solid #E8E0D5', backgroundColor: '#FAF7F2', padding: '3rem 2rem 0', maxWidth: '1440px', margin: '0 auto' }}>
+        <div style={{ borderBottom: '0.5px solid #E8E0D5', backgroundColor: '#FAF7F2', padding: '3rem 2rem 0', maxWidth: 'min(1800px, 94vw)', margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem', paddingBottom: '2rem' }}>
             <div>
               <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#1A1A1A', opacity: 0.6, marginBottom: '0.4rem' }}>Application Tracker</p>
@@ -321,7 +321,7 @@ export default function TrackerPage() {
           </div>
         </div>
 
-        <div style={{ padding: '2rem', overflowX: 'auto', maxWidth: '1440px', margin: '0 auto' }}>
+        <div style={{ padding: '2rem', overflowX: 'auto', maxWidth: 'min(1800px, 94vw)', margin: '0 auto' }}>
           <div style={{ display: 'flex', gap: '1rem', minWidth: '900px', alignItems: 'flex-start' }}>
             {COLUMNS.map(col => {
               const colApps = apps.filter(a => a.status === col.status)
@@ -356,7 +356,7 @@ export default function TrackerPage() {
           </div>
         </div>
 
-        <div style={{ maxWidth: '1440px', margin: '0 auto 4rem', padding: '0 2rem' }}>
+        <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto 4rem', padding: '0 2rem' }}>
           <div style={{ backgroundColor: '#EBF0F7', border: '0.5px solid #C8D8EC', borderRadius: '3px', padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <div style={{ color: '#1A1A1A', flexShrink: 0 }}><IconSend size={18} /></div>
             <div style={{ flex: 1 }}>

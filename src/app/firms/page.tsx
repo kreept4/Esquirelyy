@@ -129,7 +129,7 @@ export default function FirmsPage() {
             </div>
         </PageHeader>
 
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem' }}>
+        <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '2rem' }}>
           {filtered.length === 0 ? (
             <div style={{ textAlign: 'center' as const, padding: '5rem 0' }}>
               <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1.5rem', color: '#1A1A1A', marginBottom: '0.5rem' }}>No firms match your filters.</p>

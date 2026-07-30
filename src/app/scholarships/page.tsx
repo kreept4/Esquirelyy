@@ -19,7 +19,7 @@ export default function ScholarshipsPage() {
           subcopy="Fully funded and partially funded opportunities for Nigerian law students and legal professionals, both at home and abroad."
         />
 
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '3rem 2rem' }}>
+        <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '3rem 2rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1.25rem' }}>
             {ALL_SCHOLARSHIPS.map((s) => {
               const statusStyle = STATUS_STYLE[s.status]

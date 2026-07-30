@@ -39,7 +39,7 @@ export default function FirmDetailPage({ params }: { params: { slug: string } })
 
         {/* Breadcrumb */}
         <div style={{ borderBottom: '0.5px solid #E8E0D5', padding: '0.875rem 2rem', backgroundColor: '#F2EBE1' }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto' }}>
             <Link href="/firms" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#4A4A4A', textDecoration: 'none' }}>
               <ArrowLeftIcon /> Firm Directory
             </Link>
@@ -48,7 +48,7 @@ export default function FirmDetailPage({ params }: { params: { slug: string } })
 
         {/* Header */}
         <div style={{ backgroundColor: '#FFFFFF', borderBottom: '0.5px solid #E8E0D5', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+          <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
               <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#1A1A1A' }}>
                 {firm.tier}
@@ -81,7 +81,7 @@ export default function FirmDetailPage({ params }: { params: { slug: string } })
         </div>
 
         {/* Body */}
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '3rem 2rem', display: 'grid', gridTemplateColumns: '1fr min(300px, 32%)', gap: '3rem', alignItems: 'start' }}>
+        <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '3rem 2rem', display: 'grid', gridTemplateColumns: '1fr min(300px, 32%)', gap: '3rem', alignItems: 'start' }}>
 
           {/* Left — details */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
