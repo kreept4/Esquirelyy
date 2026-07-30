@@ -274,15 +274,25 @@ function Preview({ kind }: { kind: string }) {
     )
   }
 
+  // One application, followed through all three tools. The notes used to be
+  // three unrelated critiques, which read as filler because nothing connected
+  // them; anchoring them to a single role makes the sequence legible.
   const notes = [
-    ['CV review', 'Your third bullet buries the result. Lead with the outcome, then the matter.'],
-    ['Cover letter', 'This opens with you. Open with the firm and what you noticed about their work.'],
-    ['Interview prep', 'Answer ran 90 seconds. Cut the preamble and start at the decision you made.'],
+    ['1 · CV review', 'Bullet three buries the result. Lead with what changed, then the matter.'],
+    ['2 · Cover letter', 'Opens with you. Open with their capital markets work instead.'],
+    ['3 · Interview prep', 'That answer ran long. Start at the decision, not the background.'],
   ]
   return (
     <Panel>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', paddingBottom: '0.85rem', borderBottom: `1px solid ${tone.line}` }}>
+        <Mark employer="Aluko & Oyebode" tone={tone} size={26} />
+        <div style={{ minWidth: 0 }}>
+          <p className="grotesk-bold" style={{ fontSize: '0.74rem', color: tone.fg, lineHeight: 1.2 }}>Associate, Corporate</p>
+          <p className="grotesk-regular" style={{ fontSize: '0.64rem', color: tone.soft }}>Aluko &amp; Oyebode · one application</p>
+        </div>
+      </div>
       {notes.map(([label, note], i) => (
-        <Row key={label} tone={tone} first={i === 0}>
+        <Row key={label} tone={tone} first={false}>
           <p className="grotesk-bold" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: tone.soft, marginBottom: '0.35rem' }}>{label}</p>
           <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: tone.fg, lineHeight: 1.5 }}>{note}</p>
         </Row>

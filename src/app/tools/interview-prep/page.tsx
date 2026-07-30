@@ -178,7 +178,7 @@ export default function InterviewPrepPage() {
                     <Clock size={13} /> History
                   </button>
                 </div>
-                <h1 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: ink, marginBottom: '1rem', lineHeight: 1.1 }}>
+                <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: ink, marginBottom: '1rem', lineHeight: 1.1 }}>
                   Interview Prep
                 </h1>
                 <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1rem', color: muted, lineHeight: 1.7, maxWidth: '480px' }}>
@@ -334,7 +334,7 @@ export default function InterviewPrepPage() {
             <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, marginBottom: '0.5rem' }}>
               {result.interviewerPersona}
             </p>
-            <h2 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1.8rem', fontWeight: 700, color: ink, marginBottom: '0.75rem', lineHeight: 1.2 }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: '1.8rem', fontWeight: 700, color: ink, marginBottom: '0.75rem', lineHeight: 1.2 }}>
               {result.inferredRole}
             </h2>
             <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginBottom: '2rem' }}>
@@ -376,7 +376,7 @@ export default function InterviewPrepPage() {
           <div onClick={() => setShowHistory(false)} style={{ position: 'fixed' as const, inset: 0, backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'flex-start' as const, justifyContent: 'center', padding: '4rem 1rem', zIndex: 50, overflowY: 'auto' as const }}>
             <div onClick={e => e.stopPropagation()} style={{ backgroundColor: cream, maxWidth: '600px', width: '100%', borderRadius: '4px', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1.3rem', fontWeight: 700, color: ink }}>Past Sessions</h3>
+                <h3 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: '1.3rem', fontWeight: 700, color: ink }}>Past Sessions</h3>
                 <button onClick={() => setShowHistory(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: muted, fontSize: '1.2rem' }}>×</button>
               </div>
               {historyLoading ? (

@@ -166,7 +166,7 @@ function AddModal({ onClose, onAdd }: { onClose: () => void; onAdd: (app: Omit<A
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
           <div>
             <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1A1A1A', opacity: 0.6, marginBottom: '0.2rem' }}>Application Tracker</p>
-            <h2 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1.4rem', fontWeight: 700, color: '#1A1A1A' }}>Log an application</h2>
+            <h2 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: '1.4rem', fontWeight: 700, color: '#1A1A1A' }}>Log an application</h2>
           </div>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#4A4A4A', padding: '4px' }}><IconX size={18} /></button>
         </div>
@@ -297,7 +297,7 @@ export default function TrackerPage() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem', paddingBottom: '2rem' }}>
             <div>
               <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#1A1A1A', opacity: 0.6, marginBottom: '0.4rem' }}>Application Tracker</p>
-              <h1 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.1, marginBottom: '0.5rem' }}>Where you stand.</h1>
+              <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.1, marginBottom: '0.5rem' }}>Where you stand.</h1>
               <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: '#6A6A6A', lineHeight: 1.6 }}>
                 Every application, every stage. Forward confirmations to{' '}
                 <code style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.8rem', backgroundColor: '#EBF0F7', padding: '1px 5px', borderRadius: '2px', color: '#1A1A1A' }}>you@mail.esquirely.app</code>

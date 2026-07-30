@@ -31,7 +31,7 @@ export default async function JobDetailPage({ params }: { params: { slug: string
               {listing.is_verified && <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#2D6A4F' }}>Verified</span>}
               {listing.is_closing_soon && <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#000000' }}>Closing Soon</span>}
             </div>
-            <h1 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 'clamp(1.5rem, 3vw, 2.2rem)', fontWeight: 700, color: '#1A1A1A', lineHeight: 1.2, marginBottom: '0.4rem' }}>{listing.title}</h1>
+            <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(1.5rem, 3vw, 2.2rem)', fontWeight: 700, color: '#1A1A1A', lineHeight: 1.2, marginBottom: '0.4rem' }}>{listing.title}</h1>
             <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '1rem' }}>{listing.employer}</p>
             <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' as const, marginBottom: '1.5rem' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: '#4A4A4A' }}><MapPin size={12} />{listing.location}</span>

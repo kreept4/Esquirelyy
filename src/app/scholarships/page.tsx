@@ -39,7 +39,7 @@ export default function ScholarshipsPage() {
                     </span>
                   </div>
 
-                  <h2 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1.4rem', fontWeight: 700, color: '#1A1A1A', marginBottom: '0.3rem' }}>
+                  <h2 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: '1.4rem', fontWeight: 700, color: '#1A1A1A', marginBottom: '0.3rem' }}>
                     {s.title}
                   </h2>
                   <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.82rem', color: '#1A1A1A', marginBottom: '0.85rem' }}>

@@ -69,7 +69,7 @@ export default function FirmDetailPage({ params }: { params: { slug: string } })
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '2rem', flexWrap: 'wrap' }}>
               <div style={{ paddingTop: '6px' }}><FirmAvatar logoFile={firm.logoFile} name={firm.name} /></div>
               <div>
-                <h1 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: 700, color: '#1A1A1A', lineHeight: 1.1, marginBottom: '0.75rem' }}>
+                <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: 700, color: '#1A1A1A', lineHeight: 1.1, marginBottom: '0.75rem' }}>
                   {firm.name}
                 </h1>
                 <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: '#4A4A4A', lineHeight: 1.7, maxWidth: '600px' }}>

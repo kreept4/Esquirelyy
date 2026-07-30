@@ -26,7 +26,7 @@ export default function NotFound() {
 
       <h1
         style={{
-          fontFamily: 'Schibsted Grotesk, sans-serif',
+          fontFamily: 'var(--font-display)', letterSpacing: '-0.025em',
           fontSize: '2rem',
           color: '#0A2342',
           marginBottom: '0.75rem',
