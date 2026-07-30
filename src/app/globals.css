@@ -537,3 +537,15 @@ html, body {
   mask-composite: exclude;
   pointer-events: none;
 }
+
+/* Firm globe: fixed viewport-relative height so the canvas has somewhere to
+   draw, and hidden on small screens where drag-to-spin fights page scroll. */
+.firm-globe {
+  position: relative;
+  height: clamp(420px, 62vh, 640px);
+  background: #1A1A1A;
+  overflow: hidden;
+}
+@media (max-width: 768px) {
+  .firm-globe { display: none; }
+}

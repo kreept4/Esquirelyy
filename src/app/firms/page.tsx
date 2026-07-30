@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/layout/PageHeader'
+import FirmGlobe from '@/components/features/FirmGlobe'
 import { ALL_FIRMS, type FirmTier } from '@/lib/firms-data'
 
 const STORAGE = 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/'
@@ -87,6 +88,11 @@ export default function FirmsPage() {
   return (
     <>
       <main style={{ backgroundColor: '#FAF7F2', paddingTop: '80px', minHeight: '100vh' }}>
+
+        {/* Showpiece only. The searchable, crawlable list still lives below it:
+            the sphere renders to a canvas, so nothing inside it is indexable or
+            reachable by keyboard, and the directory itself must be both. */}
+        <FirmGlobe />
 
         <PageHeader          heading="firm directory"
           subcopy="Profiles of Nigerian law firms with tier rankings, practice-area breakdowns, and hiring history."

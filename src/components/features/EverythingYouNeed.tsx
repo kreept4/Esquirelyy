@@ -304,10 +304,6 @@ function Preview({ kind }: { kind: string }) {
       <p className="grotesk-regular" style={{ fontSize: '0.88rem', color: tone.fg, lineHeight: 1.55 }}>
         &ldquo;Drafted share purchase agreements on a &#8358;2.1bn acquisition, closing three weeks ahead of schedule.&rdquo;
       </p>
-
-      <p className="grotesk-regular" style={{ fontSize: '0.7rem', color: tone.soft, marginTop: '1rem', paddingTop: '0.85rem', borderTop: `1px solid ${tone.line}` }}>
-        Same for your cover letter and interview answers.
-      </p>
     </Panel>
   )
 }
