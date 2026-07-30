@@ -65,7 +65,7 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
           <Link
             href={`/jobs/${listing.slug}`}
             style={{
-              fontFamily: 'Playfair Display, Georgia, serif',
+              fontFamily: 'Space Mono, monospace',
               fontSize: '1.05rem',
               fontWeight: 600,
               color: '#1A1A1A',
@@ -73,7 +73,7 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
               lineHeight: 1.3,
               display: 'block',
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#8B3A3A')}
+            onMouseEnter={e => (e.currentTarget.style.color = '#1A1A1A')}
             onMouseLeave={e => (e.currentTarget.style.color = '#1A1A1A')}
           >
             {listing.title}
@@ -84,9 +84,9 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
             <Link
               href={`/firms/${listing.firm.slug}`}
               style={{
-                fontFamily: 'DM Sans, sans-serif',
+                fontFamily: 'Space Mono, monospace',
                 fontSize: '0.82rem',
-                color: '#8B3A3A',
+                color: '#1A1A1A',
                 textDecoration: 'none',
                 display: 'block',
                 marginTop: '0.25rem',
@@ -115,8 +115,8 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
             transition: 'border-color 0.2s ease, color 0.2s ease',
           }}
           onMouseEnter={e => {
-            e.currentTarget.style.borderColor = '#8B3A3A'
-            e.currentTarget.style.color = '#8B3A3A'
+            e.currentTarget.style.borderColor = '#1A1A1A'
+            e.currentTarget.style.color = '#1A1A1A'
           }}
           onMouseLeave={e => {
             e.currentTarget.style.borderColor = '#E8E0D5'
@@ -138,7 +138,7 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
         paddingTop: '0.75rem',
         borderTop: '0.5px solid #E8E0D5',
       }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#4A4A4A', fontSize: '0.78rem', fontFamily: 'DM Sans, sans-serif' }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#4A4A4A', fontSize: '0.78rem', fontFamily: 'Space Mono, monospace' }}>
           <MapPin size={12} />
           {listing.location}
           {listing.is_remote && ' · Remote'}
@@ -146,7 +146,7 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
         </span>
 
         {listing.practice_areas.length > 0 && (
-          <span style={{ color: '#4A4A4A', fontSize: '0.78rem', fontFamily: 'DM Sans, sans-serif' }}>
+          <span style={{ color: '#4A4A4A', fontSize: '0.78rem', fontFamily: 'Space Mono, monospace' }}>
             {listing.practice_areas.slice(0, 2).join(' · ')}
           </span>
         )}

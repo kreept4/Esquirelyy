@@ -1,6 +1,5 @@
 'use client'
 import { useState, useRef } from 'react'
-import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { Clock, Loader2 } from 'lucide-react'
 import { useRequireAuth } from '../useRequireAuth'
@@ -19,7 +18,7 @@ const AREAS = [
   'Employment','Real Estate','Intellectual Property','General Practice',
 ]
 
-const accent = '#8B3A3A'
+const accent = '#1A1A1A'
 const ink = '#1A1A1A'
 const muted = '#8C8275'
 const cream = '#FAF6F0'
@@ -156,7 +155,6 @@ export default function InterviewPrepPage() {
   if (checking) {
     return (
       <div>
-        <Navbar />
         <main style={{ backgroundColor: cream, paddingTop: '80px', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Loader2 size={20} className="animate-spin" style={{ color: muted }} />
         </main>
@@ -166,7 +164,6 @@ export default function InterviewPrepPage() {
 
   return (
     <div>
-      <Navbar />
       <main style={{ backgroundColor: cream, paddingTop: '80px', minHeight: '100vh' }}>
 
         {!result && (
@@ -174,17 +171,17 @@ export default function InterviewPrepPage() {
             <div style={{ padding: '5rem 2rem 3rem' }}>
               <div style={{ maxWidth: '640px', margin: '0 auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75 }}>
+                  <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75 }}>
                     AI Career Tools
                   </p>
-                  <button onClick={openHistory} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em' }}>
+                  <button onClick={openHistory} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em' }}>
                     <Clock size={13} /> History
                   </button>
                 </div>
-                <h1 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: ink, marginBottom: '1rem', lineHeight: 1.1 }}>
+                <h1 style={{ fontFamily: 'Space Mono, monospace', fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: ink, marginBottom: '1rem', lineHeight: 1.1 }}>
                   Interview Prep
                 </h1>
-                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '1rem', color: muted, lineHeight: 1.7, maxWidth: '480px' }}>
+                <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '1rem', color: muted, lineHeight: 1.7, maxWidth: '480px' }}>
                   Generate tailored questions from a senior partner, HR director, or Nigerian firm partner perspective.
                 </p>
               </div>
@@ -200,7 +197,7 @@ export default function InterviewPrepPage() {
                     style={{
                       padding: '0.6rem 0',
                       marginRight: '1.75rem',
-                      fontFamily: 'DM Sans, sans-serif',
+                      fontFamily: 'Space Mono, monospace',
                       fontSize: '0.78rem',
                       fontWeight: 600,
                       border: 'none',
@@ -219,7 +216,7 @@ export default function InterviewPrepPage() {
               {mode === 'role' ? (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '2rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
+                    <label style={{ display: 'block', fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
                       Target role <span style={{ color: accent }}>*</span>
                     </label>
                     <input
@@ -227,17 +224,17 @@ export default function InterviewPrepPage() {
                       value={targetRole}
                       onChange={e => setTargetRole(e.target.value)}
                       placeholder="e.g. Associate, Banking & Finance"
-                      style={{ width: '100%', padding: '0.6rem 0', fontFamily: 'DM Sans, sans-serif', fontSize: '0.92rem', color: ink, backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid ' + rule, outline: 'none', boxSizing: 'border-box' as const }}
+                      style={{ width: '100%', padding: '0.6rem 0', fontFamily: 'Space Mono, monospace', fontSize: '0.92rem', color: ink, backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid ' + rule, outline: 'none', boxSizing: 'border-box' as const }}
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
+                    <label style={{ display: 'block', fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
                       Practice area <span style={{ fontWeight: 400, textTransform: 'none' as const, letterSpacing: 0, fontSize: '0.7rem' }}>(optional)</span>
                     </label>
                     <select
                       value={practiceArea}
                       onChange={e => setPracticeArea(e.target.value)}
-                      style={{ width: '100%', padding: '0.6rem 0', fontFamily: 'DM Sans, sans-serif', fontSize: '0.92rem', color: ink, backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid ' + rule, outline: 'none', boxSizing: 'border-box' as const }}
+                      style={{ width: '100%', padding: '0.6rem 0', fontFamily: 'Space Mono, monospace', fontSize: '0.92rem', color: ink, backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid ' + rule, outline: 'none', boxSizing: 'border-box' as const }}
                     >
                       <option value="">Any</option>
                       {AREAS.map(a => <option key={a}>{a}</option>)}
@@ -246,18 +243,18 @@ export default function InterviewPrepPage() {
                 </div>
               ) : (
                 <div style={{ marginBottom: '2rem' }}>
-                  <label style={{ display: 'block', fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
+                  <label style={{ display: 'block', fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
                     Your CV <span style={{ color: accent }}>*</span>
                   </label>
                   <div
                     onClick={() => fileRef.current?.click()}
                     style={{ border: '1px dashed ' + rule, borderRadius: '2px', padding: '1.5rem', textAlign: 'center', cursor: 'pointer', backgroundColor: cvFile ? '#F0F5EC' : 'transparent' }}
                   >
-                    <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', color: cvFile ? '#3D6B3D' : muted }}>
+                    <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', color: cvFile ? '#3D6B3D' : muted }}>
                       {cvFile ? cvFile.name : 'Click to upload PDF, DOCX, or TXT'}
                     </p>
                     {cvFile && (
-                      <button onClick={e => { e.stopPropagation(); setCvFile(null) }} style={{ marginTop: '0.4rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', color: accent, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>
+                      <button onClick={e => { e.stopPropagation(); setCvFile(null) }} style={{ marginTop: '0.4rem', fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', color: accent, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>
                         Remove
                       </button>
                     )}
@@ -267,7 +264,7 @@ export default function InterviewPrepPage() {
               )}
 
               <div style={{ marginBottom: '2rem' }}>
-                <label style={{ display: 'block', fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.75rem' }}>
+                <label style={{ display: 'block', fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.75rem' }}>
                   Interviewer persona
                 </label>
                 <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '0.5rem' }}>
@@ -278,7 +275,7 @@ export default function InterviewPrepPage() {
                       title={p.desc}
                       style={{
                         padding: '0.5rem 0.9rem',
-                        fontFamily: 'DM Sans, sans-serif',
+                        fontFamily: 'Space Mono, monospace',
                         fontSize: '0.78rem',
                         fontWeight: 600,
                         borderRadius: '2px',
@@ -294,7 +291,7 @@ export default function InterviewPrepPage() {
                 </div>
               </div>
 
-              {error && <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#B5451B', marginBottom: '1.25rem' }}>{error}</p>}
+              {error && <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.82rem', color: '#000000', marginBottom: '1.25rem' }}>{error}</p>}
 
               <button
                 onClick={handleGenerate}
@@ -302,7 +299,7 @@ export default function InterviewPrepPage() {
                 style={{
                   width: '100%',
                   padding: '0.9rem',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'Space Mono, monospace',
                   fontSize: '0.78rem',
                   fontWeight: 700,
                   letterSpacing: '0.06em',
@@ -321,7 +318,7 @@ export default function InterviewPrepPage() {
                   </>
                 ) : 'Generate Questions'}
               </button>
-              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginTop: '0.75rem' }}>
+              <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginTop: '0.75rem' }}>
                 AI-generated and may contain minor inaccuracies or mix-ups. Please review and edit before relying on it.
               </p>
             </div>
@@ -330,17 +327,17 @@ export default function InterviewPrepPage() {
 
         {result && (
           <div style={{ maxWidth: '640px', margin: '0 auto', padding: '4rem 2rem 6rem' }}>
-            <button onClick={handleReset} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', marginBottom: '2rem' }}>
+            <button onClick={handleReset} style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.78rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', marginBottom: '2rem' }}>
               ← New session
             </button>
 
-            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, marginBottom: '0.5rem' }}>
+            <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, marginBottom: '0.5rem' }}>
               {result.interviewerPersona}
             </p>
-            <h2 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1.8rem', fontWeight: 700, color: ink, marginBottom: '0.75rem', lineHeight: 1.2 }}>
+            <h2 style={{ fontFamily: 'Space Mono, monospace', fontSize: '1.8rem', fontWeight: 700, color: ink, marginBottom: '0.75rem', lineHeight: 1.2 }}>
               {result.inferredRole}
             </h2>
-            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginBottom: '2rem' }}>
+            <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginBottom: '2rem' }}>
               These questions are AI-generated and may contain minor inaccuracies or mix-ups. Review and adapt them to your real background before an interview.
             </p>
 
@@ -351,22 +348,22 @@ export default function InterviewPrepPage() {
                     onClick={() => setExpandedQ(expandedQ === q.id ? null : q.id)}
                     style={{ width: '100%', padding: '1rem 1.1rem', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' as const, display: 'flex', gap: '0.9rem', alignItems: 'flex-start' }}
                   >
-                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, color: accent, flexShrink: 0, marginTop: '3px' }}>
+                    <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.65rem', fontWeight: 700, color: accent, flexShrink: 0, marginTop: '3px' }}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div style={{ flex: 1 }}>
-                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.9rem', color: ink, lineHeight: 1.6, marginBottom: '0.4rem' }}>{q.question}</p>
-                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' as const, color: categoryColor(q.category) }}>
+                      <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.9rem', color: ink, lineHeight: 1.6, marginBottom: '0.4rem' }}>{q.question}</p>
+                      <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' as const, color: categoryColor(q.category) }}>
                         {q.category}
                       </span>
                     </div>
                   </button>
                   {expandedQ === q.id && (
                     <div style={{ padding: '0 1.1rem 1rem 2.9rem', borderTop: '1px solid #F0EBE3' }}>
-                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginTop: '0.8rem', marginBottom: '0.3rem' }}>
+                      <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginTop: '0.8rem', marginBottom: '0.3rem' }}>
                         Why they ask this
                       </p>
-                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#4A4A4A', lineHeight: 1.65 }}>{q.whyTheyAsk}</p>
+                      <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.82rem', color: '#4A4A4A', lineHeight: 1.65 }}>{q.whyTheyAsk}</p>
                     </div>
                   )}
                 </div>
@@ -379,13 +376,13 @@ export default function InterviewPrepPage() {
           <div onClick={() => setShowHistory(false)} style={{ position: 'fixed' as const, inset: 0, backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'flex-start' as const, justifyContent: 'center', padding: '4rem 1rem', zIndex: 50, overflowY: 'auto' as const }}>
             <div onClick={e => e.stopPropagation()} style={{ backgroundColor: cream, maxWidth: '600px', width: '100%', borderRadius: '4px', padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1.3rem', fontWeight: 700, color: ink }}>Past Sessions</h3>
+                <h3 style={{ fontFamily: 'Space Mono, monospace', fontSize: '1.3rem', fontWeight: 700, color: ink }}>Past Sessions</h3>
                 <button onClick={() => setShowHistory(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: muted, fontSize: '1.2rem' }}>×</button>
               </div>
               {historyLoading ? (
                 <Loader2 size={18} className="animate-spin" style={{ color: muted }} />
               ) : history.length === 0 ? (
-                <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', color: muted }}>No past sessions yet.</p>
+                <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', color: muted }}>No past sessions yet.</p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0.6rem' }}>
                   {history.map(h => (
@@ -394,10 +391,10 @@ export default function InterviewPrepPage() {
                       onClick={() => loadFromHistory(h)}
                       style={{ textAlign: 'left' as const, padding: '0.85rem 1rem', border: '1px solid ' + rule, borderRadius: '2px', background: '#fff', cursor: 'pointer' }}
                     >
-                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', fontWeight: 600, color: ink }}>
+                      <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', fontWeight: 600, color: ink }}>
                         {h.target_role || 'CV-based session'}
                       </p>
-                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: muted, marginTop: '0.2rem' }}>
+                      <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', color: muted, marginTop: '0.2rem' }}>
                         {PERSONAS.find(p => p.id === h.interviewer_persona)?.label || h.interviewer_persona} · {new Date(h.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </p>
                     </button>

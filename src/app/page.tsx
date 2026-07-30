@@ -1,15 +1,16 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
-import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { ArrowRight } from 'lucide-react'
 import HomeIcons from './HomeIcons'
 import FadeSection from './FadeSection'
+import HeroSection from './HeroSection'
+import { ALL_FIRMS, logoUrl } from '@/lib/firms-data'
 
 export const revalidate = 3600
 
 const SECTOR_ACCENT: Record<string, string> = {
-  law_firm: '#8B3A3A', banking: '#8B3A3A', energy: '#7A3B00', fintech: '#0E5C3A', other: '#3B3B3B'
+  law_firm: '#1A1A1A', banking: '#1A1A1A', energy: '#7A3B00', fintech: '#0E5C3A', other: '#3B3B3B'
 }
 
 export default async function HomePage() {
@@ -20,47 +21,35 @@ export default async function HomePage() {
   const tickerItems = listings.slice(0, 8).map((j: any) => j.employer + ', ' + j.title)
 
   return (
-    <div className="min-h-screen bg-cream font-sans" style={{ paddingTop: '80px' }}>
-      <Navbar />
+    <div className="min-h-screen bg-cream font-sans">
       <style>{`
-        ::selection { background: #8B3A3A; color: #FAF6F0; }
-        ::-moz-selection { background: #8B3A3A; color: #FAF6F0; }
+        ::selection { background: #1A1A1A; color: #FAF6F0; }
+        ::-moz-selection { background: #1A1A1A; color: #FAF6F0; }
       `}</style>
 
+      <HeroSection />
+      <div style={{ height: '90px', background: 'linear-gradient(180deg, #000000 0%, #0A0A0A 55%, #F2EBE1 100%)' }} />
       <div className="border-b border-cream-border bg-cream-dark overflow-hidden">
-        <div className="flex animate-ticker whitespace-nowrap py-3">
-          {[...tickerItems, ...tickerItems].map((item: string, i: number) => (
-            <span key={i} className="inline-flex items-center gap-3 px-6 text-sm text-charcoal/70">
-              <span className="w-1 h-1 rounded-full bg-ink inline-block" />
-              {item}
-            </span>
-          ))}
+        <div className="flex animate-ticker whitespace-nowrap py-6 items-center" style={{ width: 'max-content' }}>
+          {[...ALL_FIRMS, ...ALL_FIRMS].map((firm, i) => {
+            const src = logoUrl(firm.logoFile)
+            if (!src) return null
+            return (
+              <span key={firm.slug + i} className="inline-flex items-center px-8 shrink-0">
+                <img
+                  src={src}
+                  alt={firm.shortName}
+                  width={140}
+                  height={42}
+                  className="h-[42px] w-auto object-contain"
+                />
+              </span>
+            )
+          })}
         </div>
       </div>
 
-      <section className="border-b border-cream-border">
-        <div className="max-w-7xl mx-auto px-6 py-16 lg:py-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <h1 className="font-serif text-5xl lg:text-6xl font-bold text-charcoal leading-[1.1] mb-5 tracking-tight max-w-lg">
-              Your legal career starts here.
-            </h1>
-            <p className="text-lg text-charcoal/60 leading-relaxed mb-3 max-w-md">
-              Jobs, vacation schemes, pupillages, and scholarships across law firms, corporates, and institutions, verified and updated daily.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link href="/jobs" className="inline-flex items-center justify-center gap-2 bg-ink text-cream px-6 py-3 rounded font-medium text-sm hover:bg-ink-light transition-colors">
-                Browse Opportunities <ArrowRight size={16} />
-              </Link>
-              <Link href="/tracker" className="inline-flex items-center justify-center gap-2 border border-cream-border text-charcoal px-6 py-3 rounded font-medium text-sm hover:border-ink/30 transition-colors">
-                Track Applications
-              </Link>
-            </div>
-          </div>
-          <div className="flex items-center justify-center">
-            <HomeIcons type="hero" />
-          </div>
-        </div>
-      </section>
+      
 
       <section className="border-b border-cream-border">
         <div className="max-w-7xl mx-auto px-6 py-16">

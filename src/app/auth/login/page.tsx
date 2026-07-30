@@ -42,13 +42,13 @@ function LoginForm() {
   return (
     <div className="auth-form-wrap">
       <Link href="/" style={{ textDecoration: 'none', display: 'block', marginBottom: '2.5rem' }}>
-        <span style={{ fontFamily: 'Playfair Display, Georgia, serif', fontWeight: 700, fontSize: '1.35rem', color: '#1A1A1A' }}>Esquirely.</span>
+        <span style={{ fontFamily: 'Space Mono, monospace', fontWeight: 700, fontSize: '1.35rem', color: '#1A1A1A' }}>Esquirely.</span>
       </Link>
 
-      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#8B3A3A', marginBottom: '0.6rem' }}>
+      <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#1A1A1A', marginBottom: '0.6rem' }}>
         Welcome back
       </p>
-      <h1 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 'clamp(1.6rem, 3vw, 2rem)', fontWeight: 700, color: '#1A1A1A', marginBottom: '2rem', lineHeight: 1.15 }}>
+      <h1 style={{ fontFamily: 'Space Mono, monospace', fontSize: 'clamp(1.6rem, 3vw, 2rem)', fontWeight: 700, color: '#1A1A1A', marginBottom: '2rem', lineHeight: 1.15 }}>
         Sign in to Esquirely.
       </h1>
 
@@ -64,19 +64,19 @@ function LoginForm() {
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
         <div style={{ flex: 1, height: '0.5px', backgroundColor: '#E8E0D5' }} />
-        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', color: '#9A9A9A', letterSpacing: '0.08em' }}>OR</span>
+        <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', color: '#9A9A9A', letterSpacing: '0.08em' }}>OR</span>
         <div style={{ flex: 1, height: '0.5px', backgroundColor: '#E8E0D5' }} />
       </div>
 
       <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         <div>
-          <label style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', fontWeight: 600, color: '#1A1A1A', letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>Email</label>
+          <label style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', fontWeight: 600, color: '#1A1A1A', letterSpacing: '0.08em', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>Email</label>
           <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com" className="auth-input" />
         </div>
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <label style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', fontWeight: 600, color: '#1A1A1A', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Password</label>
-            <Link href="/auth/forgot-password" style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: '#8B3A3A', textDecoration: 'none' }}>Forgot?</Link>
+            <label style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.7rem', fontWeight: 600, color: '#1A1A1A', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Password</label>
+            <Link href="/auth/forgot-password" style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', color: '#1A1A1A', textDecoration: 'none' }}>Forgot?</Link>
           </div>
           <div style={{ position: 'relative' }}>
             <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required placeholder="Min. 8 characters" className="auth-input" style={{ paddingRight: '2.75rem' }} />
@@ -86,15 +86,15 @@ function LoginForm() {
           </div>
         </div>
 
-        {error && <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: '#B5451B', backgroundColor: '#FDF0EB', padding: '0.65rem 0.875rem', borderRadius: '2px', border: '0.5px solid #EDCCC2', margin: 0 }}>{error}</p>}
+        {error && <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.8rem', color: '#000000', backgroundColor: '#FDF0EB', padding: '0.65rem 0.875rem', borderRadius: '2px', border: '0.5px solid #EDCCC2', margin: 0 }}>{error}</p>}
 
         <button type="submit" disabled={loading} className="auth-btn-primary" style={{ marginTop: '0.25rem' }}>
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
       </form>
 
-      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', color: '#4A4A4A', marginTop: '1.75rem' }}>
-        No account?{' '}<Link href="/auth/signup" style={{ color: '#8B3A3A', fontWeight: 600, textDecoration: 'none' }}>Create one</Link>
+      <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.82rem', color: '#4A4A4A', marginTop: '1.75rem' }}>
+        No account?{' '}<Link href="/auth/signup" style={{ color: '#1A1A1A', fontWeight: 600, textDecoration: 'none' }}>Create one</Link>
       </p>
     </div>
   )
@@ -154,7 +154,7 @@ function AuthStyles() {
         display:none;
         flex:1;
         position:relative;
-        background:radial-gradient(ellipse at 30% 20%, #9C4444 0%, #7A2E2E 60%, #6B2727 100%);
+        background:radial-gradient(ellipse at 30% 20%, #4D4D4D 0%, #262626 60%, #0D0D0D 100%);
         overflow:hidden;
         clip-path: polygon(40px 0, 100% 0, 100% 100%, 0 100%);
       }
@@ -171,7 +171,7 @@ function AuthStyles() {
         position:absolute;
         top:8%;
         left:10%;
-        font-family:'Playfair Display', Georgia, serif;
+        font-family:'Space Mono, monospace', Georgia, serif;
         font-size:5rem;
         font-weight:700;
         color:rgba(250,246,240,0.18);
@@ -186,7 +186,7 @@ function AuthStyles() {
         text-align:center;
       }
       .auth-panel-headline{
-        font-family:'Playfair Display', Georgia, serif;
+        font-family:'Space Mono, monospace', Georgia, serif;
         font-size:clamp(1.9rem, 3.2vw, 2.5rem);
         font-weight:700;
         color:#FAF6F0;
@@ -194,7 +194,7 @@ function AuthStyles() {
         margin-bottom:1.25rem;
       }
       .auth-panel-copy{
-        font-family:'DM Sans', sans-serif;
+        font-family:'Space Mono, monospace', sans-serif;
         font-size:0.92rem;
         color:rgba(250,246,240,0.7);
         line-height:1.8;
@@ -203,19 +203,19 @@ function AuthStyles() {
         position:absolute;
         bottom:2.5rem;
         z-index:1;
-        font-family:'Playfair Display', Georgia, serif;
+        font-family:'Space Mono, monospace', Georgia, serif;
         font-weight:700;
         font-size:1rem;
         color:rgba(250,246,240,0.45);
       }
 
-      .auth-input{width:100%;padding:0.75rem 1rem;background:#fff;border:0.5px solid #E8E0D5;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.875rem;color:#1A1A1A;outline:none;transition:border-color 0.2s ease}
-      .auth-input:focus{border-color:#8B3A3A}
-      .auth-btn-google{width:100%;padding:0.8rem;background:#fff;border:0.5px solid #E8E0D5;border-radius:2px;display:flex;align-items:center;justify-content:center;gap:0.75rem;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:500;color:#1A1A1A;cursor:pointer;transition:border-color 0.2s ease}
-      .auth-btn-google:hover{border-color:#8B3A3A}
-      .auth-btn-primary{width:100%;padding:0.875rem;background:#8B3A3A;color:#FAF6F0;border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:background-color 0.2s ease}
+      .auth-input{width:100%;padding:0.75rem 1rem;background:#fff;border:0.5px solid #E8E0D5;border-radius:2px;font-family:'Space Mono, monospace',sans-serif;font-size:0.875rem;color:#1A1A1A;outline:none;transition:border-color 0.2s ease}
+      .auth-input:focus{border-color:#1A1A1A}
+      .auth-btn-google{width:100%;padding:0.8rem;background:#fff;border:0.5px solid #E8E0D5;border-radius:2px;display:flex;align-items:center;justify-content:center;gap:0.75rem;font-family:'Space Mono, monospace',sans-serif;font-size:0.85rem;font-weight:500;color:#1A1A1A;cursor:pointer;transition:border-color 0.2s ease}
+      .auth-btn-google:hover{border-color:#1A1A1A}
+      .auth-btn-primary{width:100%;padding:0.875rem;background:#1A1A1A;color:#FAF6F0;border:none;border-radius:2px;font-family:'Space Mono, monospace',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:background-color 0.2s ease}
       .auth-btn-primary:disabled{background:#C47070;cursor:not-allowed}
-      .auth-btn-primary:hover:not(:disabled){background:#7A2E2E}
+      .auth-btn-primary:hover:not(:disabled){background:#262626}
 
       @media (min-width: 880px){
         .auth-panel-col{ display:block; }

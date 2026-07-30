@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
     }}>
       <Link href="/" style={{ textDecoration: 'none', marginBottom: '2.5rem' }}>
         <span style={{
-          fontFamily: 'Playfair Display, Georgia, serif',
+          fontFamily: 'Space Mono, monospace',
           fontWeight: 700,
           fontSize: '1.5rem',
           color: '#1A1A1A',
@@ -73,13 +73,13 @@ export default function ForgotPasswordPage() {
               justifyContent: 'center',
               margin: '0 auto 1.5rem',
             }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B3A3A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
             </div>
             <h2 style={{
-              fontFamily: 'Playfair Display, Georgia, serif',
+              fontFamily: 'Space Mono, monospace',
               fontSize: '1.35rem',
               fontWeight: 700,
               color: '#1A1A1A',
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
               Check your inbox
             </h2>
             <p style={{
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'Space Mono, monospace',
               fontSize: '0.875rem',
               color: '#4A4A4A',
               lineHeight: 1.7,
@@ -97,10 +97,10 @@ export default function ForgotPasswordPage() {
               If an account exists for <strong>{email}</strong>, you will receive a password reset link shortly.
             </p>
             <Link href="/auth/login" style={{
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'Space Mono, monospace',
               fontSize: '0.78rem',
               fontWeight: 600,
-              color: '#8B3A3A',
+              color: '#1A1A1A',
               textDecoration: 'none',
               letterSpacing: '0.06em',
             }}>
@@ -110,7 +110,7 @@ export default function ForgotPasswordPage() {
         ) : (
           <>
             <h1 style={{
-              fontFamily: 'Playfair Display, Georgia, serif',
+              fontFamily: 'Space Mono, monospace',
               fontSize: '1.5rem',
               fontWeight: 700,
               color: '#1A1A1A',
@@ -120,7 +120,7 @@ export default function ForgotPasswordPage() {
               Reset your password
             </h1>
             <p style={{
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'Space Mono, monospace',
               fontSize: '0.85rem',
               color: '#4A4A4A',
               marginBottom: '2rem',
@@ -132,7 +132,7 @@ export default function ForgotPasswordPage() {
             <form onSubmit={handleReset} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>
                 <label style={{
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'Space Mono, monospace',
                   fontSize: '0.72rem',
                   fontWeight: 600,
                   color: '#1A1A1A',
@@ -155,7 +155,7 @@ export default function ForgotPasswordPage() {
                     backgroundColor: '#FAF7F2',
                     border: '0.5px solid #E8E0D5',
                     borderRadius: '2px',
-                    fontFamily: 'DM Sans, sans-serif',
+                    fontFamily: 'Space Mono, monospace',
                     fontSize: '0.875rem',
                     color: '#1A1A1A',
                     outline: 'none',
@@ -166,9 +166,9 @@ export default function ForgotPasswordPage() {
 
               {error && (
                 <p style={{
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'Space Mono, monospace',
                   fontSize: '0.8rem',
-                  color: '#B5451B',
+                  color: '#000000',
                   backgroundColor: '#FDF0EB',
                   padding: '0.6rem 0.75rem',
                   borderRadius: '2px',
@@ -184,11 +184,11 @@ export default function ForgotPasswordPage() {
                 style={{
                   width: '100%',
                   padding: '0.8rem',
-                  backgroundColor: loading ? '#6B8CAE' : '#8B3A3A',
+                  backgroundColor: loading ? '#6B8CAE' : '#1A1A1A',
                   color: '#FAF7F2',
                   border: 'none',
                   borderRadius: '2px',
-                  fontFamily: 'DM Sans, sans-serif',
+                  fontFamily: 'Space Mono, monospace',
                   fontSize: '0.78rem',
                   fontWeight: 600,
                   letterSpacing: '0.1em',
@@ -202,13 +202,13 @@ export default function ForgotPasswordPage() {
             </form>
 
             <p style={{
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'Space Mono, monospace',
               fontSize: '0.82rem',
               color: '#4A4A4A',
               marginTop: '1.5rem',
               textAlign: 'center',
             }}>
-              <Link href="/auth/login" style={{ color: '#8B3A3A', fontWeight: 600, textDecoration: 'none' }}>
+              <Link href="/auth/login" style={{ color: '#1A1A1A', fontWeight: 600, textDecoration: 'none' }}>
                 Back to sign in
               </Link>
             </p>

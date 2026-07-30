@@ -44,7 +44,7 @@ export default function Footer() {
       }}>
         <div>
           <span style={{
-            fontFamily: 'Playfair Display, Georgia, serif',
+            fontFamily: 'Space Mono, monospace',
             fontWeight: 700,
             fontSize: '1.25rem',
             color: '#FAF6F0',
@@ -54,7 +54,7 @@ export default function Footer() {
             Esquirely.
           </span>
           <p style={{
-            fontFamily: 'DM Sans, sans-serif',
+            fontFamily: 'Space Mono, monospace',
             fontSize: '0.8rem',
             color: 'rgba(250,246,240,0.45)',
             lineHeight: 1.7,
@@ -67,7 +67,7 @@ export default function Footer() {
         {Object.entries(FOOTER_LINKS).map(([section, links]) => (
           <div key={section}>
             <p style={{
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'Space Mono, monospace',
               fontSize: '0.62rem',
               fontWeight: 600,
               letterSpacing: '0.18em',
@@ -81,7 +81,7 @@ export default function Footer() {
               {links.map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} style={{
-                    fontFamily: 'DM Sans, sans-serif',
+                    fontFamily: 'Space Mono, monospace',
                     fontSize: '0.82rem',
                     color: 'rgba(250,246,240,0.6)',
                     textDecoration: 'none',
@@ -111,14 +111,14 @@ export default function Footer() {
         gap: '1rem',
       }}>
         <p style={{
-          fontFamily: 'DM Sans, sans-serif',
+          fontFamily: 'Space Mono, monospace',
           fontSize: '0.72rem',
           color: 'rgba(250,246,240,0.3)',
         }}>
           &copy; {new Date().getFullYear()} Esquirely. All rights reserved.
         </p>
         <p style={{
-          fontFamily: 'DM Sans, sans-serif',
+          fontFamily: 'Space Mono, monospace',
           fontSize: '0.72rem',
           color: 'rgba(250,246,240,0.3)',
         }}>

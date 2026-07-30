@@ -41,7 +41,7 @@ export default function FadeSection() {
       transition: 'background-color 0.05s linear',
     }}>
       <h2 style={{
-        fontFamily: 'Playfair Display, Georgia, serif',
+        fontFamily: 'Space Mono, monospace',
         fontSize: 'clamp(2.5rem, 6vw, 5rem)',
         fontWeight: 900,
         lineHeight: 1.1,

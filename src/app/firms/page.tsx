@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import { ALL_FIRMS, type FirmTier } from '@/lib/firms-data'
 
@@ -42,7 +41,7 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
       width: '48px', height: '48px', flexShrink: 0, borderRadius: '2px',
       border: '0.5px solid #E8E0D5', overflow: 'hidden',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      backgroundColor: url ? '#FFFFFF' : '#8B3A3A',
+      backgroundColor: url ? '#FFFFFF' : '#1A1A1A',
     }}>
       {url ? (
         <img src={url} alt={name} width={48} height={48}
@@ -50,7 +49,7 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
           onError={() => setFailed(true)} />
       ) : (
         <span style={{
-          fontFamily: 'Playfair Display, Georgia, serif',
+          fontFamily: 'Space Mono, monospace',
           fontWeight: 700, fontSize: '0.75rem', color: '#FAF7F2',
         }}>{monogram}</span>
       )}
@@ -84,15 +83,14 @@ export default function FirmsPage() {
 
   return (
     <>
-      <Navbar />
       <main style={{ backgroundColor: '#FAF7F2', paddingTop: '80px', minHeight: '100vh' }}>
 
         <div style={{ backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5', padding: '3rem 2rem 2rem' }}>
           <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.5, marginBottom: '0.4rem' }}>
+            <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#1A1A1A', opacity: 0.5, marginBottom: '0.4rem' }}>
               {filtered.length} firm{filtered.length !== 1 ? 's' : ''}
             </p>
-            <h1 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, color: '#1A1A1A', marginBottom: '1.5rem', lineHeight: 1.1 }}>
+            <h1 style={{ fontFamily: 'Space Mono, monospace', fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, color: '#1A1A1A', marginBottom: '1.5rem', lineHeight: 1.1 }}>
               Firm Directory
             </h1>
 
@@ -104,7 +102,7 @@ export default function FirmsPage() {
                   placeholder="Search firms or practice areas"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  style={{ width: '100%', padding: '0.65rem 1rem 0.65rem 2.25rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', color: '#1A1A1A', backgroundColor: '#FAF7F2', border: '0.5px solid #E8E0D5', borderRadius: '2px', outline: 'none', boxSizing: 'border-box' as const }}
+                  style={{ width: '100%', padding: '0.65rem 1rem 0.65rem 2.25rem', fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', color: '#1A1A1A', backgroundColor: '#FAF7F2', border: '0.5px solid #E8E0D5', borderRadius: '2px', outline: 'none', boxSizing: 'border-box' as const }}
                 />
               </div>
 
@@ -113,20 +111,20 @@ export default function FirmsPage() {
                 { value: city, setter: setCity, options: CITY_OPTIONS, placeholder: 'City' },
               ].map(({ value, setter, options, placeholder }) => (
                 <select key={placeholder} value={value} onChange={e => setter(e.target.value)}
-                  style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: value ? '#8B3A3A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${value ? '#8B3A3A' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
+                  style={{ padding: '0.65rem 1rem', fontFamily: 'Space Mono, monospace', fontSize: '0.8rem', color: value ? '#1A1A1A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${value ? '#1A1A1A' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
                   {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               ))}
 
               <select value={practiceArea} onChange={e => setPracticeArea(e.target.value)}
-                style={{ padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: practiceArea ? '#8B3A3A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${practiceArea ? '#8B3A3A' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
+                style={{ padding: '0.65rem 1rem', fontFamily: 'Space Mono, monospace', fontSize: '0.8rem', color: practiceArea ? '#1A1A1A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${practiceArea ? '#1A1A1A' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
                 <option value="">All Practice Areas</option>
                 {PRACTICE_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
 
               {hasFilters && (
                 <button onClick={() => { setTier(''); setCity(''); setPracticeArea('') }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.65rem 1rem', fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', color: '#B5451B', backgroundColor: 'transparent', border: '0.5px solid rgba(181,69,27,0.3)', borderRadius: '2px', cursor: 'pointer' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.65rem 1rem', fontFamily: 'Space Mono, monospace', fontSize: '0.78rem', color: '#000000', backgroundColor: 'transparent', border: '0.5px solid rgba(181,69,27,0.3)', borderRadius: '2px', cursor: 'pointer' }}>
                   <XIcon /> Clear
                 </button>
               )}
@@ -137,8 +135,8 @@ export default function FirmsPage() {
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem' }}>
           {filtered.length === 0 ? (
             <div style={{ textAlign: 'center' as const, padding: '5rem 0' }}>
-              <p style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1.5rem', color: '#1A1A1A', marginBottom: '0.5rem' }}>No firms match your filters.</p>
-              <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', color: '#4A4A4A' }}>Try broadening your search.</p>
+              <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '1.5rem', color: '#1A1A1A', marginBottom: '0.5rem' }}>No firms match your filters.</p>
+              <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.85rem', color: '#4A4A4A' }}>Try broadening your search.</p>
             </div>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '1px', backgroundColor: '#E8E0D5', border: '0.5px solid #E8E0D5' }}>
@@ -152,42 +150,42 @@ export default function FirmsPage() {
                     <FirmAvatar logoFile={firm.logoFile} name={firm.name} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem', flexWrap: 'wrap' as const }}>
-                        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#8B3A3A', opacity: 0.5 }}>
+                        <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#1A1A1A', opacity: 0.5 }}>
                           {firm.tier}
                         </span>
-                        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#2D6A4F' }}>
+                        <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#2D6A4F' }}>
                           Verified
                         </span>
                       </div>
-                      <p style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '0.95rem', fontWeight: 600, color: '#1A1A1A', lineHeight: 1.2 }}>{firm.name}</p>
+                      <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.95rem', fontWeight: 600, color: '#1A1A1A', lineHeight: 1.2 }}>{firm.name}</p>
                     </div>
                   </div>
 
-                  <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: '#4A4A4A', lineHeight: 1.65, marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
+                  <p style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.8rem', color: '#4A4A4A', lineHeight: 1.65, marginBottom: '1rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}>
                     {firm.description}
                   </p>
 
                   <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' as const, marginBottom: '1rem' }}>
                     {firm.practiceAreas.slice(0, 3).map((area: string) => (
-                      <span key={area} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem', backgroundColor: '#F0EBE3', color: '#4A4A4A', padding: '2px 7px', borderRadius: '2px' }}>{area}</span>
+                      <span key={area} style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.68rem', backgroundColor: '#F0EBE3', color: '#4A4A4A', padding: '2px 7px', borderRadius: '2px' }}>{area}</span>
                     ))}
                     {firm.practiceAreas.length > 3 && (
-                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.68rem', color: '#4A4A4A', padding: '2px 4px' }}>+{firm.practiceAreas.length - 3} more</span>
+                      <span style={{ fontFamily: 'Space Mono, monospace', fontSize: '0.68rem', color: '#4A4A4A', padding: '2px 4px' }}>+{firm.practiceAreas.length - 3} more</span>
                     )}
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.75rem', borderTop: '0.5px solid #E8E0D5' }}>
                     <div style={{ display: 'flex', gap: '1rem' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: '#4A4A4A' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', color: '#4A4A4A' }}>
                         <MapPinIcon />{firm.offices.map((o: { city: string; address: string }) => o.city).join(' · ')}
                       </span>
                       {firm.openRoles > 0 && (
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'DM Sans, sans-serif', fontSize: '0.72rem', color: '#2D6A4F', fontWeight: 600 }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Space Mono, monospace', fontSize: '0.72rem', color: '#2D6A4F', fontWeight: 600 }}>
                           <BriefcaseIcon />{firm.openRoles} open role{firm.openRoles !== 1 ? 's' : ''}
                         </span>
                       )}
                     </div>
-                    <span style={{ color: '#8B3A3A' }}><ArrowRightIcon /></span>
+                    <span style={{ color: '#1A1A1A' }}><ArrowRightIcon /></span>
                   </div>
                 </Link>
               ))}

@@ -26,7 +26,7 @@ export default function NotFound() {
 
       <h1
         style={{
-          fontFamily: 'Playfair Display, serif',
+          fontFamily: 'Space Mono, monospace',
           fontSize: '2rem',
           color: '#0A2342',
           marginBottom: '0.75rem',
@@ -37,7 +37,7 @@ export default function NotFound() {
 
       <p
         style={{
-          fontFamily: 'DM Sans, sans-serif',
+          fontFamily: 'Space Mono, monospace',
           fontSize: '1rem',
           color: '#0A2342',
           opacity: 0.7,
@@ -51,7 +51,7 @@ export default function NotFound() {
       <Link
         href="/"
         style={{
-          fontFamily: 'DM Sans, sans-serif',
+          fontFamily: 'Space Mono, monospace',
           fontSize: '0.9rem',
           fontWeight: 600,
           color: '#FAF7F2',

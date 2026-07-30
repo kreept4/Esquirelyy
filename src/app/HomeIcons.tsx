@@ -5,7 +5,7 @@ export default function HomeIcons({ type }: { type: string }) {
     <img src='/job-hunt-hero.svg' alt='Legal career illustration' className='w-full max-w-lg' />
   )
 
-  const S = '#8B3A3A'
+  const S = '#1A1A1A'
   const W = '1.5'
   const props = { fill: 'none', stroke: S, strokeWidth: W, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
 

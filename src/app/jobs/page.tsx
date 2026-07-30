@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js'
-import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import JobsClient from './JobsClient'
 export const revalidate = 0
@@ -14,7 +13,6 @@ export default async function JobsPage() {
   console.log('jobs count:', jobs?.length, 'error:', error?.message)
   return (
     <div>
-      <Navbar />
       <JobsClient jobs={jobs || []} />
       <Footer />
     </div>
