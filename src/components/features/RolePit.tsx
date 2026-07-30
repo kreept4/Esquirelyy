@@ -33,6 +33,17 @@ const TYPE_LABELS: Record<string, string> = {
   pupillage: 'Pupillage',
 }
 
+/** Most employers here are banks, fintechs and corporates with no logo asset in
+ *  the directory. Initials on a white ball read as an empty circle, so those get
+ *  a filled ball in their sector colour instead — designed, not missing. */
+const SECTOR_FILL: Record<string, string> = {
+  law_firm: '#1A1A1A',
+  banking: '#0EA5E9',
+  energy: '#F97316',
+  fintech: '#22C55E',
+  other: '#EF4444',
+}
+
 function initials(name: string) {
   return name
     .split(/\s+/)
@@ -189,6 +200,8 @@ export default function RolePit({ listings }: { listings: any[] }) {
         <div ref={wrapRef} className="role-pit" onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
           {roles.map((l, i) => {
             const url = logoForEmployer(l.employer)
+            const fill = SECTOR_FILL[l.sector] || SECTOR_FILL.other
+            const size = ballsRef.current[i]?.r ? ballsRef.current[i].r * 2 : 90
             return (
               <button
                 key={l.id}
@@ -197,12 +210,14 @@ export default function RolePit({ listings }: { listings: any[] }) {
                 onPointerDown={e => onPointerDown(e, i)}
                 onClick={() => setOpen(open === i ? null : i)}
                 aria-label={`${l.title} at ${l.employer}`}
-                style={{ width: ballsRef.current[i]?.r ? ballsRef.current[i].r * 2 : 90, height: ballsRef.current[i]?.r ? ballsRef.current[i].r * 2 : 90 }}
+                style={{ width: size, height: size, backgroundColor: url ? '#FFFFFF' : fill }}
               >
                 {url ? (
-                  <img src={url} alt="" style={{ maxWidth: '62%', maxHeight: '62%', objectFit: 'contain' }} />
+                  <img src={url} alt="" style={{ maxWidth: '68%', maxHeight: '68%', objectFit: 'contain' }} />
                 ) : (
-                  <span className="display-bold" style={{ fontSize: '0.95rem', color: INK }}>{initials(l.employer)}</span>
+                  <span className="display-black" style={{ fontSize: size * 0.3, color: '#FFF8E5', letterSpacing: '-0.02em' }}>
+                    {initials(l.employer)}
+                  </span>
                 )}
               </button>
             )
