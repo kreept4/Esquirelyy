@@ -40,14 +40,14 @@ function Mark({ employer, size = 34 }: { employer: string; size?: number }) {
     .join('')
     .toUpperCase()
   return (
-    // One treatment for every employer: white plate, thin rule. Most employers
-    // in the jobs table are not firms in the directory and have no logo asset,
-    // so a differently-coloured fallback made the list look half-broken.
-    <span style={{ width: size, height: size, borderRadius: '999px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF', border: `0.5px solid ${BORDER}` }}>
+    // One treatment for every employer: white landscape plate, thin rule. These
+    // are mostly wide wordmarks, so a circular plate shrank them to its inscribed
+    // width and left a small rectangle floating in a round hole.
+    <span style={{ width: Math.round(size * 1.6), height: size, borderRadius: '6px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF', border: `0.5px solid ${BORDER}`, padding: '3px' }}>
       {url ? (
-        <img src={url} alt={employer} width={size} height={size} style={{ objectFit: 'contain', maxWidth: '80%', maxHeight: '80%', width: 'auto', height: 'auto' }} />
+        <img src={url} alt={employer} style={{ objectFit: 'contain', maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }} />
       ) : (
-        <span className="display-bold" style={{ fontSize: size * 0.34, color: INK, letterSpacing: '-0.02em' }}>{initials}</span>
+        <span className="display-bold" style={{ fontSize: size * 0.36, color: INK, letterSpacing: '-0.02em' }}>{initials}</span>
       )}
     </span>
   )

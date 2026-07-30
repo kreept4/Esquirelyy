@@ -10,9 +10,10 @@ import { logoUrl, logoForEmployer } from '@/lib/firms-data'
  * background between bright colour stops while each block's copy and preview
  * glide in from opposite sides.
  *
- * Foreground colour is derived from the live background's luminance rather than
- * hardcoded, so cream text never lands on sky blue and dark text never lands on
- * ink as the colours cross over mid-scroll.
+ * Headline and body colour are derived from the live background's luminance
+ * rather than hardcoded, so cream text never lands on sky blue and dark text
+ * never lands on ink as the colours cross over mid-scroll. The preview panels
+ * are a fixed carton brown, so their contents are measured against that instead.
  */
 
 type RGB = [number, number, number]
@@ -40,11 +41,28 @@ function isLight([r, g, b]: RGB) {
 
 type Tone = { fg: string; soft: string; line: string; fill: string; chipBg: string; chipFg: string }
 
+/** Tone for the headline and body copy, which sit directly on the changing
+ *  background and so have to follow its luminance. */
 function toneFor(rgb: RGB): Tone {
   const light = isLight(rgb)
   return light
     ? { fg: INK, soft: 'rgba(18,16,14,0.68)', line: 'rgba(18,16,14,0.14)', fill: 'rgba(255,255,255,0.55)', chipBg: INK, chipFg: CREAM }
     : { fg: CREAM, soft: 'rgba(250,246,240,0.66)', line: 'rgba(250,246,240,0.16)', fill: 'rgba(250,246,240,0.07)', chipBg: CREAM, chipFg: INK }
+}
+
+/** Panels are solid carton stock rather than glass, so everything inside them is
+ *  measured against that fixed colour instead of the section background.
+ *  #FFF8E5 with a black rule is the "Speak to a Lawyer" button from the law-firm
+ *  project; on a light panel the contents run ink, not cream. */
+const CARTON = '#FFF8E5'
+const CARTON_RULE = '#000000'
+const PANEL_TONE: Tone = {
+  fg: '#12100E',
+  soft: 'rgba(18,16,14,0.66)',
+  line: 'rgba(18,16,14,0.16)',
+  fill: 'rgba(18,16,14,0.04)',
+  chipBg: '#12100E',
+  chipFg: CARTON,
 }
 
 const BLOCKS = [
@@ -57,10 +75,50 @@ const BLOCKS = [
 
 /* ---------------- previews: real UI, real copy ---------------- */
 
-function Panel({ tone, children, pad = '1.1rem' }: { tone: Tone; children: React.ReactNode; pad?: string }) {
+function Panel({ children, pad = '1.1rem' }: { children: React.ReactNode; pad?: string }) {
   return (
-    <div style={{ border: `1px solid ${tone.line}`, borderRadius: '14px', backgroundColor: tone.fill, padding: pad, backdropFilter: 'blur(10px)', boxShadow: '0 18px 50px rgba(0,0,0,0.16)' }}>
+    // Solid carton stock, no backdrop blur. The glass finish read as generic and
+    // fought the bright stops behind it; a flat card with a hard black rule holds
+    // its own against every colour in the sequence.
+    <div style={{ backgroundColor: CARTON, border: `1.5px solid ${CARTON_RULE}`, borderRadius: '10px', padding: pad, boxShadow: '6px 8px 0 rgba(0,0,0,0.85)' }}>
       {children}
+    </div>
+  )
+}
+
+/** Dotted spiral linking one block to the next, so the eye is led down the
+ *  narrative instead of jumping. Mirrored to follow the alternating layout.
+ *  The arrowhead is a marker with orient="auto" so it stays aligned to the curve
+ *  (and to the mirrored curve) instead of being hand-placed and drifting. */
+function Connector({ flip, id }: { flip: boolean; id: string }) {
+  const head = `arrow-${id}`
+  return (
+    <div aria-hidden="true" className="glide-connector">
+      {/* Spans the full block width so the stem leaves the panel above (x≈760 in
+          viewBox units, the centre of the right-hand column) and the head lands
+          on the panel below (x≈268, the left column). Mirrored on alternate
+          blocks because the panels swap sides. */}
+      <svg viewBox="0 0 1000 130" fill="none" className="glide-connector-svg" style={{ transform: flip ? 'scaleX(-1)' : 'none', overflow: 'visible' }}>
+        <defs>
+          <marker id={head} viewBox="0 0 16 16" refX="11" refY="8" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M2 1.5 L13 8 L2 14.5" fill="none" stroke="#000000" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+          </marker>
+        </defs>
+        <path
+          d="M760 2
+             C762 28 720 46 660 54
+             C590 63 520 46 470 56
+             C432 64 428 92 462 96
+             C492 99 500 74 478 64
+             C450 51 396 62 356 76
+             C320 89 292 104 268 120"
+          stroke="#000000"
+          strokeWidth="2.6"
+          strokeLinecap="round"
+          strokeDasharray="0.1 11"
+          markerEnd={`url(#${head})`}
+        />
+      </svg>
     </div>
   )
 }
@@ -88,20 +146,24 @@ function Mark({ employer, tone, size = 30 }: { employer: string; tone: Tone; siz
     .map(w => w[0])
     .join('')
     .toUpperCase()
+  // Landscape plate, not a circle. Most of these marks are wide wordmarks, and a
+  // circle forces them to shrink to its inscribed width, which is what left small
+  // rectangles floating in big round holes.
+  const w = Math.round(size * 1.6)
   return (
-    // Solid white plate with its own shadow: most marks are dark-on-transparent,
-    // so they vanish against the translucent panel fill without one.
-    <span style={{ width: size, height: size, borderRadius: '999px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: url ? '#FFFFFF' : tone.chipBg, border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.14)' }}>
+    <span style={{ width: w, height: size, borderRadius: '6px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: url ? '#FFFFFF' : tone.chipBg, border: '1px solid rgba(0,0,0,0.1)', padding: '3px' }}>
       {url ? (
-        <img src={url} alt={employer} width={size} height={size} style={{ objectFit: 'contain', maxWidth: '84%', maxHeight: '84%', width: 'auto', height: 'auto' }} />
+        <img src={url} alt={employer} style={{ objectFit: 'contain', maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }} />
       ) : (
-        <span className="grotesk-bold" style={{ fontSize: size * 0.34, color: tone.chipFg }}>{initials}</span>
+        <span className="grotesk-bold" style={{ fontSize: size * 0.36, color: tone.chipFg, letterSpacing: '0.02em' }}>{initials}</span>
       )}
     </span>
   )
 }
 
-function Preview({ kind, tone }: { kind: string; tone: Tone }) {
+function Preview({ kind }: { kind: string }) {
+  const tone = PANEL_TONE
+
   if (kind === 'jobs') {
     const rows = [
       ['Associate, Corporate & Commercial', 'Aluko & Oyebode', 'Lagos', 'Verified'],
@@ -109,7 +171,7 @@ function Preview({ kind, tone }: { kind: string; tone: Tone }) {
       ['Legal Trainee, Compliance', 'Zenith Bank Plc', 'Lagos', 'Rolling'],
     ]
     return (
-      <Panel tone={tone}>
+      <Panel>
         <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.9rem' }}>
           <Chip tone={tone} label="Law firm" solid />
           <Chip tone={tone} label="Lagos" />
@@ -140,7 +202,7 @@ function Preview({ kind, tone }: { kind: string; tone: Tone }) {
       ['Offer', ['Aluko & Oyebode']],
     ]
     return (
-      <Panel tone={tone}>
+      <Panel>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.6rem' }}>
           {cols.map(([label, items]) => (
             <div key={label}>
@@ -171,7 +233,7 @@ function Preview({ kind, tone }: { kind: string; tone: Tone }) {
       ['Fordham International Law', 'Fordham Law', 'Partial tuition', 'Feb 1'],
     ]
     return (
-      <Panel tone={tone}>
+      <Panel>
         {rows.map(([name, provider, amount, status], i) => (
           <Row key={name} tone={tone} first={i === 0}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
@@ -195,7 +257,7 @@ function Preview({ kind, tone }: { kind: string; tone: Tone }) {
       ['Detail Solicitors', 'Boutique', 'Energy · Dispute resolution'],
     ]
     return (
-      <Panel tone={tone}>
+      <Panel>
         {rows.map(([name, tier, areas], i) => (
           <Row key={name} tone={tone} first={i === 0}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem' }}>
@@ -218,7 +280,7 @@ function Preview({ kind, tone }: { kind: string; tone: Tone }) {
     ['Interview prep', 'Answer ran 90 seconds. Cut the preamble and start at the decision you made.'],
   ]
   return (
-    <Panel tone={tone}>
+    <Panel>
       {notes.map(([label, note], i) => (
         <Row key={label} tone={tone} first={i === 0}>
           <p className="grotesk-bold" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: tone.soft, marginBottom: '0.35rem' }}>{label}</p>
@@ -265,7 +327,7 @@ function Block({ block, flip, tone }: { block: (typeof BLOCKS)[number]; flip: bo
   })
 
   return (
-    <div ref={ref} className="glide-block" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', padding: '7rem 0' }}>
+    <div ref={ref} className="glide-block" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', padding: '4.5rem 0 3rem' }}>
       <div style={{ ...glide(flip ? 40 : -40), order: flip ? 2 : 1 }}>
         <h3 className="display-black" style={{ fontSize: 'clamp(1.75rem, 3.6vw, 2.9rem)', color: tone.fg, lineHeight: 1.08, marginBottom: '1rem' }}>
           {block.title}
@@ -278,7 +340,7 @@ function Block({ block, flip, tone }: { block: (typeof BLOCKS)[number]; flip: bo
         </Link>
       </div>
       <div style={{ ...glide(flip ? -40 : 40), order: flip ? 1 : 2 }}>
-        <Preview kind={block.preview} tone={tone} />
+        <Preview kind={block.preview} />
       </div>
     </div>
   )
@@ -328,7 +390,10 @@ export default function EverythingYouNeed() {
       </div>
       <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '0 1.5rem 4rem' }}>
         {BLOCKS.map((b, idx) => (
-          <Block key={b.title} block={b} flip={idx % 2 === 1} tone={tone} />
+          <div key={b.title}>
+            <Block block={b} flip={idx % 2 === 1} tone={tone} />
+            {idx < BLOCKS.length - 1 && <Connector flip={idx % 2 === 1} id={String(idx)} />}
+          </div>
         ))}
       </div>
     </section>

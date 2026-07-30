@@ -478,6 +478,14 @@ html, body {
 }
 
 /* Feature narrative glide */
+.glide-connector { margin: -2.5rem 0 -1.5rem; }
+.glide-connector-svg { display: block; width: 100%; height: auto; }
+@media (max-width: 860px) {
+  /* Stacked layout: panels are no longer left/right, so a cross-column sweep
+     makes no sense. A short centred hop reads correctly instead. */
+  .glide-connector { margin: 0.25rem 0 1rem; display: flex; justify-content: center; }
+  .glide-connector-svg { width: 210px; }
+}
 .glide-cta {
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
