@@ -90,7 +90,7 @@ export const ALL_OPPORTUNITIES: Opportunity[] = [
   // Graduate trainee — Banking
   {
     id: 'zenith-bank-legal-trainee',
-    title: 'Legal Trainee — Compliance & Regulatory',
+    title: 'Legal Trainee, Compliance & Regulatory',
     organisation: 'Zenith Bank Plc',
     category: 'grad_trainee_banking',
     eligibility: ['law_graduate'],
@@ -160,7 +160,7 @@ export const ALL_OPPORTUNITIES: Opportunity[] = [
 export const CATEGORY_META = {
   internship_law: {
     label: 'Law Firm Internships',
-    description: 'Structured placements at leading Nigerian law firms — for law undergraduates.',
+    description: 'Structured placements at leading Nigerian law firms, for law undergraduates.',
     eligibility: 'Law undergraduates (300–500 level)',
     icon: 'building',
   },

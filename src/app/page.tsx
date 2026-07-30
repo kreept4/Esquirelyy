@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react'
 import HeroSection from './HeroSection'
 import ScrollColorSection from '@/components/layout/ScrollColorSection'
 import QuickQuestions from '@/components/features/QuickQuestions'
+import FeaturedOpportunities from '@/components/features/FeaturedOpportunities'
 import EverythingYouNeed from '@/components/features/EverythingYouNeed'
 import { FIRMS_WITH_LOGOS, logoUrl } from '@/lib/firms-data'
 
@@ -50,58 +51,7 @@ export default async function HomePage() {
 
       
 
-      <section className="border-b border-cream-border">
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="flex items-center justify-between mb-10">
-            <div>
-              <h2 className="font-serif text-4xl font-bold text-charcoal mb-1 tracking-tight">Featured Opportunities</h2>
-              <p className="text-charcoal/50 text-sm">Latest verified roles across Nigeria</p>
-            </div>
-            <Link href="/jobs" className="hidden sm:inline-flex items-center gap-2 text-sm text-ink font-medium hover:underline">
-              View all <ArrowRight size={14} />
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {featured.map((listing: any) => {
-              const accent = SECTOR_ACCENT[listing.sector] || '#3B3B3B'
-              return (
-                <Link key={listing.id} href={'/jobs/' + listing.slug} className="group border border-cream-border rounded p-5 bg-cream hover:border-ink/30 hover:shadow-md transition-all block" style={{ borderLeft: '3px solid ' + accent }}>
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2 flex-wrap">
-                        {listing.is_verified && <span className="text-xs font-medium text-verified bg-verified/10 px-2 py-0.5 rounded-sm">Verified</span>}
-                        {listing.is_closing_soon && <span className="text-xs font-medium text-closing bg-closing/10 px-2 py-0.5 rounded-sm">Closing Soon</span>}
-                      </div>
-                      <h3 className="font-bold text-charcoal text-sm group-hover:text-ink transition-colors leading-snug mb-0.5">{listing.title}</h3>
-                      <p className="text-xs font-medium text-ink/70">{listing.employer}</p>
-                    </div>
-                    {listing.tier && <span className="text-xs border border-ink/15 px-2 py-1 rounded-sm text-charcoal/50 shrink-0 ml-3 bg-ink/3 font-medium">{listing.tier}</span>}
-                  </div>
-                  {listing.practice_areas?.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mb-4">
-                      {listing.practice_areas.slice(0, 2).map((area: string) => (
-                        <span key={area} className="text-xs bg-ink/5 border border-ink/10 px-2 py-0.5 rounded-sm text-charcoal/70 font-medium">{area}</span>
-                      ))}
-                    </div>
-                  )}
-                  <div className="pt-3 border-t border-cream-border flex items-center justify-between text-xs text-charcoal/40">
-                    <span className="font-medium">{listing.type}</span>
-                    <span>{listing.location}</span>
-                    <span className={listing.is_closing_soon ? 'text-closing font-semibold' : 'font-medium'}>
-                      {listing.is_rolling ? 'Rolling' : listing.deadline ? new Date(listing.deadline).toLocaleDateString('en-NG', { day: 'numeric', month: 'short' }) : 'Open'}
-                    </span>
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-          <div className="mt-6 sm:hidden text-center">
-            <Link href="/jobs" className="inline-flex items-center gap-2 text-sm text-ink font-medium">
-              View all opportunities <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
+      <FeaturedOpportunities listings={featured} />
 
       <QuickQuestions />
 

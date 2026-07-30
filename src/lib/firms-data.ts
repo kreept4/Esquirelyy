@@ -492,3 +492,32 @@ export const ALL_FIRMS: Firm[] = [...FIRMS_UNSORTED].sort((a, b) =>
 /** Firms that actually have a logo asset — used by the home page logo loop so
  *  the marquee has no empty slots and its 50% translate stays exact. */
 export const FIRMS_WITH_LOGOS: Firm[] = ALL_FIRMS.filter(f => !!f.logoFile)
+
+/** Best-effort logo for a free-text employer name coming from Supabase.
+ *  Matches on name, shortName, or slug shape so 'Aluko & Oyebode', 'Aluko and
+ *  Oyebode' and 'aluko-oyebode' all resolve. Returns null when the employer is
+ *  not a firm in the directory (banks, fintechs, corporates). */
+export function logoForEmployer(employer?: string | null): string | null {
+  if (!employer) return null
+  const norm = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '')
+  const target = norm(employer)
+  if (!target) return null
+  const hit = ALL_FIRMS.find(
+    f => norm(f.name) === target || norm(f.shortName) === target || norm(f.slug) === target
+  ) || ALL_FIRMS.find(
+    f => norm(f.name).startsWith(target) || target.startsWith(norm(f.shortName))
+  )
+  if (hit) return logoUrl(hit.logoFile)
+  return EMPLOYER_LOGOS[target] || null
+}
+
+/** Non-firm employers (banks, fintechs, corporates) are not in the directory,
+ *  so their marks live in /public/employer-logos. Drop a file in that folder
+ *  and add the key here; the key is the normalised employer name. */
+const EMPLOYER_LOGOS: Record<string, string> = {
+  zenithbankplc: '/employer-logos/zenith-bank.png',
+  zenithbank: '/employer-logos/zenith-bank.png',
+  mtnnigeria: '/employer-logos/mtn.png',
+  flutterwave: '/employer-logos/flutterwave.png',
+  moniepointinc: '/employer-logos/moniepoint.png',
+}

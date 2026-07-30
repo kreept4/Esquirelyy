@@ -114,7 +114,7 @@ export default function OpportunitiesPage() {
       <main style={{ backgroundColor: '#FAF7F2', paddingTop: '64px', minHeight: '100vh' }}>
 
         <PageHeader          heading="opportunities"
-          subcopy="Internships and scholarships for law undergraduates. Graduate trainee and in-house roles at banks, energy companies, fintechs, and more — for fresh graduates and experienced lawyers."
+          subcopy="Internships and scholarships for law undergraduates. Graduate trainee and in-house roles at banks, energy companies, fintechs, and more, for fresh graduates and experienced lawyers."
         >
 
             {/* Search */}
@@ -377,7 +377,7 @@ function OpportunityCard({ opp }: { opp: typeof ALL_OPPORTUNITIES[0] }) {
           </a>
         ) : opp.applyEmail ? (
           <a
-            href={`mailto:${opp.applyEmail}?subject=Application — ${opp.title}`}
+            href={`mailto:${opp.applyEmail}?subject=Application: ${opp.title}`}
             className="btn-primary"
             style={{ padding: '0.45rem 1rem', fontSize: '0.7rem', whiteSpace: 'nowrap' }}
           >

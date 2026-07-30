@@ -88,27 +88,12 @@ export default function Navbar() {
                   }}
                 >
                   {label}
-                  {pathname !== href && (
-                    <svg viewBox="0 0 60 8" preserveAspectRatio="none" className="nav-underline" style={{ position: 'absolute', bottom: '-5px', left: '-2px', width: 'calc(100% + 4px)', height: '6px' }}>
-                      <path d="M2,5 Q10,1 20,4 Q35,7 45,3 Q52,1 58,4" stroke="#FAF6F0" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-                    </svg>
-                  )}
-                  {pathname === href && (
-                    <svg viewBox="0 0 60 8" preserveAspectRatio="none" style={{ position: 'absolute', bottom: '-5px', left: '-2px', width: 'calc(100% + 4px)', height: '6px' }}>
-                      <path d="M2,5 Q10,1 20,4 Q35,7 45,3 Q52,1 58,4" stroke="#FAF6F0" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-                    </svg>
-                  )}
                 </Link>
               ))}
 
               <div style={{ position: 'relative', display: 'inline-block' }} onMouseEnter={() => setToolsOpen(true)} onMouseLeave={() => setToolsOpen(false)}>
                 <span className="grotesk-regular" style={{ fontSize: '0.8rem', color: isToolsActive ? '#FAF6F0' : 'rgba(255,255,255,0.7)', cursor: 'pointer', position: 'relative' }}>
                   AI Tools
-                  {isToolsActive && (
-                    <svg viewBox="0 0 60 8" preserveAspectRatio="none" style={{ position: 'absolute', bottom: '-5px', left: '-2px', width: 'calc(100% + 4px)', height: '6px' }}>
-                      <path d="M2,5 Q10,1 20,4 Q35,7 45,3 Q52,1 58,4" stroke="#FAF6F0" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-                    </svg>
-                  )}
                 </span>
                 {toolsOpen && (
                   <div style={{ position: 'absolute', top: '28px', left: '50%', transform: 'translateX(-50%)', backgroundColor: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)', minWidth: '260px', padding: '6px', boxShadow: '0 8px 24px rgba(0,0,0,0.3)', zIndex: 200, paddingTop: '20px', borderRadius: '0.5rem', animation: 'dropdownIn 0.18s ease' }}>
@@ -148,7 +133,7 @@ export default function Navbar() {
                   <Link href="/auth/login" className="grotesk-regular" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
                     Sign In
                   </Link>
-                  <Link href="/auth/signup" className="grotesk-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.78rem', textDecoration: 'none' }}>
+                  <Link href="/auth/signup" className="grotesk-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.5rem 1.35rem', borderRadius: '999px', fontSize: '0.78rem', textDecoration: 'none' }}>
                     Join Esquirely
                   </Link>
                 </>
@@ -193,8 +178,6 @@ export default function Navbar() {
         @media (max-width: 768px) { .desktop-nav { display: none !important; } }
         @media (min-width: 769px) { .mobile-menu-btn { display: none !important; } }
         .nav-link { overflow: visible; }
-        .nav-underline { opacity: 0; transition: opacity 0.25s ease; }
-        .nav-link:hover .nav-underline { opacity: 0.6; }
         @keyframes dropdownIn { from { opacity: 0; transform: translate(-50%, -4px); } to { opacity: 1; transform: translate(-50%, 0); } }
         @keyframes mobileMenuIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
