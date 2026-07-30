@@ -89,11 +89,13 @@ function Mark({ employer, tone, size = 30 }: { employer: string; tone: Tone; siz
     .join('')
     .toUpperCase()
   return (
-    <span style={{ width: size, height: size, borderRadius: '999px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: url ? '#FFFFFF' : tone.chipBg, border: `1px solid ${tone.line}` }}>
+    // Solid white plate with its own shadow: most marks are dark-on-transparent,
+    // so they vanish against the translucent panel fill without one.
+    <span style={{ width: size, height: size, borderRadius: '999px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: url ? '#FFFFFF' : tone.chipBg, border: '1px solid rgba(0,0,0,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.14)' }}>
       {url ? (
-        <img src={url} alt={employer} width={size} height={size} style={{ objectFit: 'contain', maxWidth: '76%', maxHeight: '76%', width: 'auto', height: 'auto' }} />
+        <img src={url} alt={employer} width={size} height={size} style={{ objectFit: 'contain', maxWidth: '84%', maxHeight: '84%', width: 'auto', height: 'auto' }} />
       ) : (
-        <span className="grotesk-bold" style={{ fontSize: size * 0.32, color: tone.chipFg }}>{initials}</span>
+        <span className="grotesk-bold" style={{ fontSize: size * 0.34, color: tone.chipFg }}>{initials}</span>
       )}
     </span>
   )
@@ -147,9 +149,12 @@ function Preview({ kind, tone }: { kind: string; tone: Tone }) {
                 <span className="grotesk-regular" style={{ fontSize: '0.6rem', color: tone.soft }}>{items.length}</span>
               </div>
               {items.map((n) => (
-                <div key={n} style={{ border: `1px solid ${tone.line}`, borderRadius: '8px', padding: '0.5rem 0.55rem', marginBottom: '5px', backgroundColor: tone.fill, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <Mark employer={n} tone={tone} size={18} />
-                  <p className="grotesk-regular" style={{ fontSize: '0.62rem', color: tone.fg, lineHeight: 1.2, minWidth: 0 }}>{n}</p>
+                // Logo above the name rather than beside it: three columns inside
+                // the panel leaves no horizontal room, and an inline mark shrank
+                // to about 13px, which is why it was barely visible.
+                <div key={n} style={{ border: `1px solid ${tone.line}`, borderRadius: '10px', padding: '0.6rem', marginBottom: '6px', backgroundColor: tone.fill }}>
+                  <Mark employer={n} tone={tone} size={30} />
+                  <p className="grotesk-regular" style={{ fontSize: '0.64rem', color: tone.fg, lineHeight: 1.25, marginTop: '0.45rem' }}>{n}</p>
                 </div>
               ))}
             </div>

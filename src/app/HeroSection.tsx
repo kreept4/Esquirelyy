@@ -26,9 +26,11 @@ export default function HeroSection() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',
-          padding: '0 1.5rem 3rem',
-          maxWidth: '1280px',
-          margin: '0 auto',
+          alignItems: 'flex-start',
+          // Deliberately NOT a centred max-width box: the headline should sit in
+          // the real bottom-left corner of the viewport, not at the left edge of
+          // a centred column, which is what made it read as centred on wide screens.
+          padding: '0 clamp(1.25rem, 4vw, 4rem) clamp(2rem, 5vh, 3.5rem)',
           opacity: overlayOpacity,
         }}
       >
@@ -38,10 +40,10 @@ export default function HeroSection() {
               text={'Your legal career\nstarts here.'}
               scrollYProgress={scrollYProgress}
               color="#FAF6F0"
-              fontSize="clamp(2.5rem, 6vw, 5rem)"
+              fontSize="clamp(3rem, 8.5vw, 7.5rem)"
               charDelay={30}
               baseDelay={200}
-              style={{ marginBottom: '1.25rem' }}
+              style={{ marginBottom: '1.5rem', letterSpacing: '-0.04em', lineHeight: 0.95, textShadow: '0 2px 40px rgba(0,0,0,0.35)' }}
             />
             <FadeIn delay={800} duration={1000}>
               <p className="grotesk-regular" style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.75)', maxWidth: '480px', marginBottom: '1.5rem', lineHeight: 1.6 }}>
