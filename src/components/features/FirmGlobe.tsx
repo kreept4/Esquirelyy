@@ -31,10 +31,10 @@ export default function FirmGlobe() {
           told about reads as a broken embed. The canvas itself stays hidden from
           assistive tech — the directory below is the accessible route. */}
       <div className="firm-globe-caption">
-        <p className="display-bold" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)', color: '#FAF6F0', lineHeight: 1.15 }}>
+        <p className="display-bold" style={{ fontSize: 'clamp(1.1rem, 2vw, 1.5rem)', color: '#1A1A1A', lineHeight: 1.15 }}>
           spin to explore
         </p>
-        <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: 'rgba(250,246,240,0.6)', marginTop: '0.3rem' }}>
+        <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: '#8A8378', marginTop: '0.3rem' }}>
           Drag the globe. {items.length} firms, tap any to open its profile.
         </p>
       </div>

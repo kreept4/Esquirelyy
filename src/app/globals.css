@@ -542,14 +542,17 @@ html, body {
    draw, and hidden on small screens where drag-to-spin fights page scroll. */
 .firm-globe {
   position: relative;
-  height: clamp(420px, 62vh, 620px);
-  background: #1A1A1A;
+  /* Taller than before: the sphere was cropped and the focused item's title had
+     nowhere to sit. */
+  height: clamp(560px, 82vh, 820px);
+  background: #F0EBE3;
   overflow: hidden;
+  border-top: 0.5px solid #E8E0D5;
   border-bottom: 0.5px solid #E8E0D5;
 }
 .firm-globe-caption {
   position: absolute;
-  top: 1.75rem;
+  top: 2.5rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;

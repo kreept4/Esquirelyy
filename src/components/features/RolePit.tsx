@@ -76,15 +76,23 @@ export default function RolePit({ listings }: { listings: any[] }) {
     if (!wrap) return
     const { width, height } = wrap.getBoundingClientRect()
     const r = Math.max(34, Math.min(58, width / 16))
+    const perRow = Math.max(1, Math.floor((width - r) / (r * 2.2)))
     ballsRef.current = roles.map((_, i) => ({
-      // Spread the drop across the width and stagger the start height so they
-      // fall in as a shower rather than a single clump.
-      x: ((i + 0.5) / roles.length) * (width - r * 2) + r,
-      y: -r - (i % 4) * r * 1.6,
+      // Start inside the box, laid out in rows. They used to start above the
+      // container and only became visible once the simulation dropped them in,
+      // so any frame the loop did not run — throttled tab, reduced motion, a
+      // slow first paint — showed an empty pit.
+      x: r + (i % perRow) * r * 2.2 + (Math.random() - 0.5) * r * 0.3,
+      y: r + Math.floor(i / perRow) * r * 2.2,
       vx: (Math.random() - 0.5) * 2.4,
       vy: 0,
       r,
     }))
+    // Paint the starting positions immediately rather than waiting for frame one.
+    ballsRef.current.forEach((b, i) => {
+      const node = nodesRef.current[i]
+      if (node) node.style.transform = `translate3d(${b.x - b.r}px, ${b.y - b.r}px, 0)`
+    })
     if (height) setReady(true)
   }, [roles])
 
@@ -193,11 +201,7 @@ export default function RolePit({ listings }: { listings: any[] }) {
             View all roles
           </Link>
         </div>
-        <p className="grotesk-regular" style={{ fontSize: '0.85rem', color: MUTED, marginBottom: '1.5rem' }}>
-          {roles.length} live openings. Tap one, or throw them around.
-        </p>
-
-        <div ref={wrapRef} className="role-pit" onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
+        <div ref={wrapRef} className="role-pit" style={{ marginTop: '1.5rem' }} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
           {roles.map((l, i) => {
             const url = logoForEmployer(l.employer)
             const fill = SECTOR_FILL[l.sector] || SECTOR_FILL.other

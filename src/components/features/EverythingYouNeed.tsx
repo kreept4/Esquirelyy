@@ -151,9 +151,9 @@ function Mark({ employer, tone, size = 30 }: { employer: string; tone: Tone; siz
   // rectangles floating in big round holes.
   const w = Math.round(size * 1.6)
   return (
-    <span style={{ width: w, height: size, borderRadius: '6px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: url ? '#FFFFFF' : tone.chipBg, border: '1px solid rgba(0,0,0,0.1)', padding: '3px' }}>
+    <span style={{ width: w, height: size, borderRadius: '6px', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: url ? '#FFFFFF' : tone.chipBg, border: '1px solid rgba(0,0,0,0.1)' }}>
       {url ? (
-        <img src={url} alt={employer} style={{ objectFit: 'contain', maxWidth: '100%', maxHeight: '100%', width: 'auto', height: 'auto' }} />
+        <img src={url} alt={employer} style={{ objectFit: 'contain', width: '100%', height: '100%' }} />
       ) : (
         <span className="grotesk-bold" style={{ fontSize: size * 0.36, color: tone.chipFg, letterSpacing: '0.02em' }}>{initials}</span>
       )}

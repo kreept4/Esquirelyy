@@ -20,7 +20,10 @@ export default async function HomePage() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
   const { data: jobs } = await supabase.from('jobs').select('*').order('created_at', { ascending: false })
   const listings = jobs || []
-  const seen = new Set(); const featured = listings.filter((j: any) => { if (seen.has(j.employer)) return false; seen.add(j.employer); return true; })
+  // 'Open right now' must mean it. Anything past its deadline is excluded;
+  // rolling roles and roles with no stated deadline stay.
+  const today = new Date().toISOString().slice(0, 10)
+  const openRoles = listings.filter((j: any) => j.is_rolling || !j.deadline || j.deadline >= today)
   const tickerItems = listings.slice(0, 8).map((j: any) => j.employer + ', ' + j.title)
 
   return (
@@ -52,7 +55,7 @@ export default async function HomePage() {
 
       
 
-      <RolePit listings={featured} />
+      <RolePit listings={openRoles} />
 
       <QuickQuestions />
 
