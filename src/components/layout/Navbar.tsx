@@ -1,186 +1,116 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import StaggeredMenu from './StaggeredMenu'
+import './StaggeredMenu.css'
 
-const NAV_LINKS = [
-  { href: '/jobs', label: 'Jobs' },
-  { href: '/opportunities', label: 'Opportunities' },
-  { href: '/firms', label: 'Firms' },
-  { href: '/scholarships', label: 'Scholarships' },
-  { href: '/tracker', label: 'Tracker' },
-]
+/**
+ * Site navigation. The glass bar with inline links is gone: the header is now
+ * just the wordmark and a Menu toggle, and every destination lives in the
+ * staggered panel. Auth links go in the panel too, so signing in stays reachable
+ * without a second row of controls.
+ */
 
-const AI_TOOLS = [
-  { href: '/tools/cv-review', label: 'CV Review', description: 'Get honest, specific feedback on your CV' },
-  { href: '/tools/cover-letter', label: 'Cover Letter', description: 'Generate a cover letter that stands out' },
-  { href: '/tools/interview-prep', label: 'Interview Prep', description: 'Practice answers and get honest feedback' },
+const NAV_ITEMS = [
+  { label: 'Jobs', ariaLabel: 'Browse legal jobs', link: '/jobs' },
+  { label: 'Opportunities', ariaLabel: 'Browse opportunities', link: '/opportunities' },
+  { label: 'Firms', ariaLabel: 'Browse the firm directory', link: '/firms' },
+  { label: 'Scholarships', ariaLabel: 'Browse scholarships', link: '/scholarships' },
+  { label: 'Tracker', ariaLabel: 'Open your application tracker', link: '/tracker' },
+  { label: 'CV Review', ariaLabel: 'Get your CV reviewed', link: '/tools/cv-review' },
+  { label: 'Cover Letter', ariaLabel: 'Draft a cover letter', link: '/tools/cover-letter' },
+  { label: 'Interview Prep', ariaLabel: 'Practise for interviews', link: '/tools/interview-prep' },
 ]
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false)
-  const [toolsOpen, setToolsOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const pathname = usePathname()
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 20)
-    handler()
-    window.addEventListener('scroll', handler)
-    return () => window.removeEventListener('scroll', handler)
-  }, [])
-
-  useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }) => setUser(data.user))
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user ?? null)
     })
     return () => subscription.unsubscribe()
   }, [])
 
-  async function handleSignOut() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    setUser(null)
-    router.push('/')
-  }
+  // The panel renders its items as plain anchors, so Sign Out is delegated:
+  // catch the click before the browser follows the placeholder href.
+  useEffect(() => {
+    const onClick = async (e: MouseEvent) => {
+      const el = (e.target as HTMLElement)?.closest('a[href="#sign-out"]')
+      if (!el) return
+      e.preventDefault()
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      setUser(null)
+      router.push('/')
+    }
+    document.addEventListener('click', onClick)
+    return () => document.removeEventListener('click', onClick)
+  }, [router])
 
-  const isToolsActive = AI_TOOLS.some(t => pathname === t.href)
+  const authItems = user
+    ? [{ label: 'Dashboard', link: '/dashboard' }, { label: 'Sign Out', link: '#sign-out' }]
+    : [{ label: 'Sign In', link: '/auth/login' }, { label: 'Join Esquirely', link: '/auth/signup' }]
 
   return (
-    <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 110 }}>
-      <div style={{ padding: '1.5rem 1.5rem 0' }}>
-        <nav
-          className="liquid-glass"
-          style={{
-            borderRadius: '0.75rem',
-            padding: '0.6rem 1.25rem',
-            maxWidth: '1280px',
-            margin: '0 auto',
-            background: scrolled ? 'rgba(0,0,0,0.65)' : 'rgba(0,0,0,0.4)',
-            transition: 'background 0.3s ease',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Link href="/" style={{ textDecoration: 'none' }}>
-              <span className="grotesk-bold" style={{ fontSize: '1.35rem', color: '#FAF6F0', letterSpacing: '-0.02em' }}>
-                Esquirely.
-              </span>
-            </Link>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }} className="desktop-nav">
-              {NAV_LINKS.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="grotesk-regular nav-link"
-                  style={{
-                    fontSize: '0.8rem',
-                    color: pathname === href ? '#FAF6F0' : 'rgba(255,255,255,0.7)',
-                    textDecoration: 'none',
-                    position: 'relative',
-                  }}
-                >
-                  {label}
-                </Link>
-              ))}
-
-              <div style={{ position: 'relative', display: 'inline-block' }} onMouseEnter={() => setToolsOpen(true)} onMouseLeave={() => setToolsOpen(false)}>
-                <span className="grotesk-regular" style={{ fontSize: '0.8rem', color: isToolsActive ? '#FAF6F0' : 'rgba(255,255,255,0.7)', cursor: 'pointer', position: 'relative' }}>
-                  AI Tools
-                </span>
-                {toolsOpen && (
-                  <div style={{ position: 'absolute', top: '28px', left: '50%', transform: 'translateX(-50%)', backgroundColor: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)', minWidth: '260px', padding: '6px', boxShadow: '0 8px 24px rgba(0,0,0,0.3)', zIndex: 200, paddingTop: '20px', borderRadius: '0.5rem', animation: 'dropdownIn 0.18s ease' }}>
-                    <p className="grotesk-regular" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', padding: '0 0.65rem 0.5rem' }}>Career Tools</p>
-                    {AI_TOOLS.map(({ href, label, description }) => (
-                      <Link
-                        key={href}
-                        href={href}
-                        onClick={() => setToolsOpen(false)}
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 0.65rem', textDecoration: 'none', borderRadius: '999px', borderLeft: '2px solid transparent', cursor: 'pointer', transition: 'background-color 0.15s, border-color 0.15s' }}
-                        onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderLeftColor = '#FAF6F0' }}
-                        onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderLeftColor = 'transparent' }}
-                      >
-                        <div>
-                          <p className="grotesk-bold" style={{ fontSize: '0.8rem', color: '#FAF6F0', marginBottom: '1px' }}>{label}</p>
-                          <p className="grotesk-regular" style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.55)', lineHeight: 1.3 }}>{description}</p>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }} className="desktop-nav">
-              {user ? (
-                <>
-                  <Link href="/dashboard" className="grotesk-regular" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
-                    Dashboard
-                  </Link>
-                  <button onClick={handleSignOut} className="grotesk-regular" style={{ fontSize: '0.75rem', color: '#FAF6F0', background: 'none', border: 'none', cursor: 'pointer' }}>
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/auth/login" className="grotesk-regular" style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>
-                    Sign In
-                  </Link>
-                  <Link href="/auth/signup" className="grotesk-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.5rem 1.35rem', borderRadius: '999px', fontSize: '0.78rem', textDecoration: 'none' }}>
-                    Join Esquirely
-                  </Link>
-                </>
-              )}
-            </div>
-
-            <button onClick={() => setOpen(!open)} className="mobile-menu-btn" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#FAF6F0', padding: '4px' }}>
-              {open ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </nav>
-      </div>
-
-      {open && (
-        <div style={{ margin: '0 1.5rem', backgroundColor: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.75rem', marginTop: '0.5rem', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', animation: 'mobileMenuIn 0.22s ease' }}>
-          {NAV_LINKS.map(({ href, label }) => (
-            <Link key={href} href={href} onClick={() => setOpen(false)} className="grotesk-regular" style={{ fontSize: '0.9rem', color: pathname === href ? '#FAF6F0' : 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>
-              {label}
-            </Link>
-          ))}
-          {AI_TOOLS.map(({ href, label }) => (
-            <Link key={href} href={href} onClick={() => setOpen(false)} className="grotesk-regular" style={{ fontSize: '0.9rem', color: pathname === href ? '#FAF6F0' : 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>
-              {label}
-            </Link>
-          ))}
-          <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.1)' }} />
-          {user ? (
-            <>
-              <Link href="/dashboard" onClick={() => setOpen(false)} className="grotesk-regular" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>Dashboard</Link>
-              <button onClick={handleSignOut} className="grotesk-regular" style={{ fontSize: '0.9rem', color: '#FAF6F0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', padding: '0' }}>Sign Out</button>
-            </>
-          ) : (
-            <>
-              <Link href="/auth/login" onClick={() => setOpen(false)} className="grotesk-regular" style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.75)', textDecoration: 'none' }}>Sign In</Link>
-              <Link href="/auth/signup" onClick={() => setOpen(false)} className="grotesk-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.6rem', borderRadius: '0.5rem', fontSize: '0.85rem', textDecoration: 'none', textAlign: 'center' }}>Join Esquirely</Link>
-            </>
-          )}
-        </div>
-      )}
+    <>
+      <StaggeredMenu
+        position="right"
+        isFixed
+        items={NAV_ITEMS}
+        socialItems={authItems}
+        displaySocials
+        displayItemNumbering
+        changeMenuColorOnOpen
+        menuButtonColor="#FAF6F0"
+        openMenuButtonColor="#1A1A1A"
+        accentColor="#EF4444"
+        colors={['#38BDF8', '#F97316', '#22C55E']}
+        logo={
+          <Link href="/" style={{ textDecoration: 'none' }}>
+            <span className="display-black sm-wordmark" style={{ fontSize: '1.4rem', letterSpacing: '-0.03em' }}>
+              Esquirely.
+            </span>
+          </Link>
+        }
+      />
 
       <style>{`
-        @media (max-width: 768px) { .desktop-nav { display: none !important; } }
-        @media (min-width: 769px) { .mobile-menu-btn { display: none !important; } }
-        .nav-link { overflow: visible; }
-        @keyframes dropdownIn { from { opacity: 0; transform: translate(-50%, -4px); } to { opacity: 1; transform: translate(-50%, 0); } }
-        @keyframes mobileMenuIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        /* Brand overrides for the vendored ReactBits panel. */
+        .sm-wordmark { color: #FAF6F0; transition: color 0.3s ease; }
+        .staggered-menu-wrapper[data-open] .sm-wordmark { color: #1A1A1A; }
+        .staggered-menu-header { padding: 1.5rem 1.75rem; }
+        .staggered-menu-panel {
+          background: #FAF6F0;
+          padding: 7rem 2.5rem 2.5rem;
+        }
+        .sm-panel-item {
+          font-family: var(--font-display);
+          color: #1A1A1A;
+          text-transform: none;
+          letter-spacing: -0.03em;
+          font-size: clamp(2rem, 5vw, 3.25rem);
+        }
+        .sm-panel-list[data-numbering] .sm-panel-item::after {
+          font-family: var(--font-sans);
+          font-size: 0.7rem;
+        }
+        .sm-socials-title { font-family: var(--font-sans); font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; }
+        .sm-socials-link { font-family: var(--font-sans); font-size: 0.95rem; }
+        .sm-toggle { font-family: var(--font-sans); font-size: 0.8rem; letter-spacing: 0.02em; }
+
+        @media (max-width: 640px) {
+          .staggered-menu-header { padding: 1.1rem 1.15rem; }
+          .staggered-menu-panel { padding: 6rem 1.5rem 2rem; }
+          .sm-panel-item { font-size: clamp(1.75rem, 9vw, 2.5rem); }
+        }
       `}</style>
-    </header>
+    </>
   )
 }
