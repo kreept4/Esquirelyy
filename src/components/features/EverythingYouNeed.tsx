@@ -274,29 +274,40 @@ function Preview({ kind }: { kind: string }) {
     )
   }
 
-  // One application, followed through all three tools. The notes used to be
-  // three unrelated critiques, which read as filler because nothing connected
-  // them; anchoring them to a single role makes the sequence legible.
-  const notes = [
-    ['1 · CV review', 'Bullet three buries the result. Lead with what changed, then the matter.'],
-    ['2 · Cover letter', 'Opens with you. Open with their capital markets work instead.'],
-    ['3 · Interview prep', 'That answer ran long. Start at the decision, not the background.'],
-  ]
+  // A before/after on one CV line, not a case study. Naming a firm implied an
+  // endorsement and made the reader work out why that firm mattered; three
+  // abstract critiques asked them to imagine a scenario they'd never seen. One
+  // rewritten bullet shows the value in the time it takes to read it.
+  const label: React.CSSProperties = {
+    fontSize: '0.58rem',
+    letterSpacing: '0.14em',
+    textTransform: 'uppercase',
+    color: tone.soft,
+    marginBottom: '0.4rem',
+  }
   return (
-    <Panel>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', paddingBottom: '0.85rem', borderBottom: `1px solid ${tone.line}` }}>
-        <Mark employer="Aluko & Oyebode" tone={tone} size={26} />
-        <div style={{ minWidth: 0 }}>
-          <p className="grotesk-bold" style={{ fontSize: '0.74rem', color: tone.fg, lineHeight: 1.2 }}>Associate, Corporate</p>
-          <p className="grotesk-regular" style={{ fontSize: '0.64rem', color: tone.soft }}>Aluko &amp; Oyebode · one application</p>
-        </div>
+    <Panel pad="1.3rem">
+      <p className="grotesk-bold" style={label}>What you wrote</p>
+      <p className="grotesk-regular" style={{ fontSize: '0.85rem', color: tone.soft, lineHeight: 1.55, fontStyle: 'italic' }}>
+        &ldquo;Assisted with various corporate matters and general legal research.&rdquo;
+      </p>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', margin: '1rem 0' }}>
+        <span style={{ flex: 1, height: '1px', backgroundColor: tone.line }} />
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={tone.fg} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 5v14M6 13l6 6 6-6" />
+        </svg>
+        <span style={{ flex: 1, height: '1px', backgroundColor: tone.line }} />
       </div>
-      {notes.map(([label, note], i) => (
-        <Row key={label} tone={tone} first={false}>
-          <p className="grotesk-bold" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: tone.soft, marginBottom: '0.35rem' }}>{label}</p>
-          <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: tone.fg, lineHeight: 1.5 }}>{note}</p>
-        </Row>
-      ))}
+
+      <p className="grotesk-bold" style={label}>What we&rsquo;d send</p>
+      <p className="grotesk-regular" style={{ fontSize: '0.88rem', color: tone.fg, lineHeight: 1.55 }}>
+        &ldquo;Drafted share purchase agreements on a &#8358;2.1bn acquisition, closing three weeks ahead of schedule.&rdquo;
+      </p>
+
+      <p className="grotesk-regular" style={{ fontSize: '0.7rem', color: tone.soft, marginTop: '1rem', paddingTop: '0.85rem', borderTop: `1px solid ${tone.line}` }}>
+        Same for your cover letter and interview answers.
+      </p>
     </Panel>
   )
 }
