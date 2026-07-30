@@ -518,6 +518,9 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',
   mtnnigeria: '/employer-logos/mtn.png',
-  flutterwave: '/employer-logos/flutterwave.png',
-  moniepointinc: '/employer-logos/moniepoint.png',
+  flutterwave: '/employer-logos/flutterwave.jpg',
+  moniepointinc: '/employer-logos/moniepoint.jpg',
+  moniepoint: '/employer-logos/moniepoint.jpg',
+  accessbank: '/employer-logos/access-bank.png',
+  accessbankplc: '/employer-logos/access-bank.png',
 }
