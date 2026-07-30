@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
+import PageHeader from '@/components/layout/PageHeader'
 import { ALL_FIRMS, type FirmTier } from '@/lib/firms-data'
 
 const STORAGE = 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/'
@@ -44,8 +45,10 @@ function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string
       backgroundColor: url ? '#FFFFFF' : '#1A1A1A',
     }}>
       {url ? (
+        /* Contain within the box instead of forcing 80% on both axes, which
+           squashed wide wordmarks and floated square marks off-centre. */
         <img src={url} alt={name} width={48} height={48}
-          style={{ objectFit: 'contain', width: '80%', height: '80%' }}
+          style={{ objectFit: 'contain', maxWidth: '82%', maxHeight: '82%', width: 'auto', height: 'auto' }}
           onError={() => setFailed(true)} />
       ) : (
         <span style={{
@@ -85,14 +88,9 @@ export default function FirmsPage() {
     <>
       <main style={{ backgroundColor: '#FAF7F2', paddingTop: '80px', minHeight: '100vh' }}>
 
-        <div style={{ backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5', padding: '3rem 2rem 2rem' }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#1A1A1A', opacity: 0.5, marginBottom: '0.4rem' }}>
-              {filtered.length} firm{filtered.length !== 1 ? 's' : ''}
-            </p>
-            <h1 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 700, color: '#1A1A1A', marginBottom: '1.5rem', lineHeight: 1.1 }}>
-              Firm Directory
-            </h1>
+        <PageHeader          heading="firm directory"
+          subcopy="Profiles of Nigerian law firms with tier rankings, practice-area breakdowns, and hiring history."
+        >
 
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' as const }}>
               <div style={{ position: 'relative' as const, flex: '1 1 280px' }}>
@@ -111,26 +109,25 @@ export default function FirmsPage() {
                 { value: city, setter: setCity, options: CITY_OPTIONS, placeholder: 'City' },
               ].map(({ value, setter, options, placeholder }) => (
                 <select key={placeholder} value={value} onChange={e => setter(e.target.value)}
-                  style={{ padding: '0.65rem 1rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: value ? '#1A1A1A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${value ? '#1A1A1A' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
+                  style={{ padding: '0.65rem 1rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: value ? '#1A1A1A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${value ? '#1A1A1A' : '#E8E0D5'}`, borderRadius: '999px', outline: 'none', cursor: 'pointer' }}>
                   {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               ))}
 
               <select value={practiceArea} onChange={e => setPracticeArea(e.target.value)}
-                style={{ padding: '0.65rem 1rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: practiceArea ? '#1A1A1A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${practiceArea ? '#1A1A1A' : '#E8E0D5'}`, borderRadius: '2px', outline: 'none', cursor: 'pointer' }}>
+                style={{ padding: '0.65rem 1rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: practiceArea ? '#1A1A1A' : '#4A4A4A', backgroundColor: '#FAF7F2', border: `0.5px solid ${practiceArea ? '#1A1A1A' : '#E8E0D5'}`, borderRadius: '999px', outline: 'none', cursor: 'pointer' }}>
                 <option value="">All Practice Areas</option>
                 {PRACTICE_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
 
               {hasFilters && (
                 <button onClick={() => { setTier(''); setCity(''); setPracticeArea('') }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.65rem 1rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', color: '#000000', backgroundColor: 'transparent', border: '0.5px solid rgba(181,69,27,0.3)', borderRadius: '2px', cursor: 'pointer' }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0.65rem 1rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', color: '#000000', backgroundColor: 'transparent', border: '0.5px solid rgba(181,69,27,0.3)', borderRadius: '999px', cursor: 'pointer' }}>
                   <XIcon /> Clear
                 </button>
               )}
             </div>
-          </div>
-        </div>
+        </PageHeader>
 
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem' }}>
           {filtered.length === 0 ? (

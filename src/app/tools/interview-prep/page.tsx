@@ -248,7 +248,7 @@ export default function InterviewPrepPage() {
                   </label>
                   <div
                     onClick={() => fileRef.current?.click()}
-                    style={{ border: '1px dashed ' + rule, borderRadius: '2px', padding: '1.5rem', textAlign: 'center', cursor: 'pointer', backgroundColor: cvFile ? '#F0F5EC' : 'transparent' }}
+                    style={{ border: '1px dashed ' + rule, borderRadius: '999px', padding: '1.5rem', textAlign: 'center', cursor: 'pointer', backgroundColor: cvFile ? '#F0F5EC' : 'transparent' }}
                   >
                     <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: cvFile ? '#3D6B3D' : muted }}>
                       {cvFile ? cvFile.name : 'Click to upload PDF, DOCX, or TXT'}
@@ -278,7 +278,7 @@ export default function InterviewPrepPage() {
                         fontFamily: 'Schibsted Grotesk, sans-serif',
                         fontSize: '0.78rem',
                         fontWeight: 600,
-                        borderRadius: '2px',
+                        borderRadius: '999px',
                         border: persona === p.id ? '1px solid ' + ink : '1px solid ' + rule,
                         backgroundColor: persona === p.id ? ink : 'transparent',
                         color: persona === p.id ? cream : ink,
@@ -389,7 +389,7 @@ export default function InterviewPrepPage() {
                     <button
                       key={h.id}
                       onClick={() => loadFromHistory(h)}
-                      style={{ textAlign: 'left' as const, padding: '0.85rem 1rem', border: '1px solid ' + rule, borderRadius: '2px', background: '#fff', cursor: 'pointer' }}
+                      style={{ textAlign: 'left' as const, padding: '0.85rem 1rem', border: '1px solid ' + rule, borderRadius: '999px', background: '#fff', cursor: 'pointer' }}
                     >
                       <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', fontWeight: 600, color: ink }}>
                         {h.target_role || 'CV-based session'}

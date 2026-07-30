@@ -28,7 +28,8 @@ module.exports = {
         new: '#1A1A1A',
       },
       fontFamily: {
-        serif: ['Schibsted Grotesk', 'sans-serif'],
+        display: ['Hanken Grotesk', 'sans-serif'],
+        serif: ['Hanken Grotesk', 'sans-serif'],
         sans: ['Schibsted Grotesk', 'sans-serif'],
         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },

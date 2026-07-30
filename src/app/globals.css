@@ -23,8 +23,12 @@
   --verified: #2D6A4F;
   --closing: #000000;
 
-  /* Typography scale */
-  --font-serif: 'Schibsted Grotesk', sans-serif;
+  /* Typography scale.
+     Hanken Grotesk carries display/headings, Schibsted Grotesk carries body
+     and UI. --font-serif is kept as an alias for --font-display so the older
+     .heading-* utilities and font-serif Tailwind class keep working. */
+  --font-display: 'Hanken Grotesk', sans-serif;
+  --font-serif: 'Hanken Grotesk', sans-serif;
   --font-sans: 'Schibsted Grotesk', sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
@@ -120,6 +124,7 @@ body {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 0.75rem 1.75rem;
+    border-radius: 999px;
     border: 1px solid var(--ink);
     transition: background 0.2s ease, color 0.2s ease;
     cursor: pointer;
@@ -140,6 +145,7 @@ body {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 0.75rem 1.75rem;
+    border-radius: 999px;
     border: 1px solid var(--ink);
     transition: background 0.2s ease, color 0.2s ease;
     cursor: pointer;
@@ -414,7 +420,19 @@ html, body {
   }
 }
 
-/* --- Hero facelift: liquid glass + Schibsted Grotesk --- */
+/* --- Type helpers. `display-*` = Hanken Grotesk, `grotesk-*` = Schibsted --- */
+.display-bold {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: -0.02em;
+}
+.display-black {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: normal;
+  letter-spacing: -0.03em;
+}
 .grotesk-regular {
   font-family: 'Schibsted Grotesk', sans-serif;
   font-weight: 400;
@@ -439,6 +457,51 @@ html, body {
   font-family: 'Schibsted Grotesk', sans-serif;
   font-weight: 700;
   font-style: italic;
+}
+
+/* Bento feature grid */
+.bento-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.bento-card:hover {
+  border-color: rgba(26, 26, 26, 0.35);
+  box-shadow: 0 6px 28px rgba(26, 26, 26, 0.07);
+  transform: translateY(-2px);
+}
+@media (max-width: 900px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .bento-grid > * {
+    grid-column: span 2 !important;
+  }
+}
+
+/* Feature narrative glide */
+.glide-cta {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.glide-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+@media (max-width: 860px) {
+  .glide-block {
+    grid-template-columns: 1fr !important;
+    gap: 2.25rem !important;
+    padding: 4rem 0 !important;
+  }
+  .glide-block > * {
+    order: initial !important;
+  }
+}
+
+.quick-q-option {
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+.quick-q-option:hover:not(:disabled) {
+  background-color: rgba(250, 246, 240, 0.12);
+  border-color: rgba(250, 246, 240, 0.55);
 }
 
 .liquid-glass {

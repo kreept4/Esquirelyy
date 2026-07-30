@@ -107,7 +107,7 @@ export default function ListingCard({ listing, showFirm = true, animate = false,
           style={{
             background: 'none',
             border: '0.5px solid #E8E0D5',
-            borderRadius: '2px',
+            borderRadius: '999px',
             padding: '6px',
             cursor: 'pointer',
             color: '#4A4A4A',

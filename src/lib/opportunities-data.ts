@@ -32,7 +32,7 @@ export interface Opportunity {
 export const ALL_OPPORTUNITIES: Opportunity[] = [
   // Law firm internships
   {
-    id: 'aluko-intern-2025',
+    id: 'aluko-intern',
     title: 'Student Attachment Programme',
     organisation: 'Aluko & Oyebode',
     category: 'internship_law',

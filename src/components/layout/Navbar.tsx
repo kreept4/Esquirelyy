@@ -118,7 +118,7 @@ export default function Navbar() {
                         key={href}
                         href={href}
                         onClick={() => setToolsOpen(false)}
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 0.65rem', textDecoration: 'none', borderRadius: '4px', borderLeft: '2px solid transparent', cursor: 'pointer', transition: 'background-color 0.15s, border-color 0.15s' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.6rem 0.65rem', textDecoration: 'none', borderRadius: '999px', borderLeft: '2px solid transparent', cursor: 'pointer', transition: 'background-color 0.15s, border-color 0.15s' }}
                         onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'; e.currentTarget.style.borderLeftColor = '#FAF6F0' }}
                         onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.borderLeftColor = 'transparent' }}
                       >

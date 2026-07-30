@@ -2,10 +2,11 @@ import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { ArrowRight } from 'lucide-react'
-import HomeIcons from './HomeIcons'
-import FadeSection from './FadeSection'
 import HeroSection from './HeroSection'
-import { ALL_FIRMS, logoUrl } from '@/lib/firms-data'
+import ScrollColorSection from '@/components/layout/ScrollColorSection'
+import QuickQuestions from '@/components/features/QuickQuestions'
+import EverythingYouNeed from '@/components/features/EverythingYouNeed'
+import { FIRMS_WITH_LOGOS, logoUrl } from '@/lib/firms-data'
 
 export const revalidate = 3600
 
@@ -31,21 +32,19 @@ export default async function HomePage() {
       <div style={{ height: '90px', background: 'linear-gradient(180deg, #000000 0%, #0A0A0A 55%, #F2EBE1 100%)' }} />
       <div className="border-b border-cream-border bg-cream-dark overflow-hidden">
         <div className="flex animate-ticker whitespace-nowrap py-6 items-center" style={{ width: 'max-content' }}>
-          {[...ALL_FIRMS, ...ALL_FIRMS].map((firm, i) => {
-            const src = logoUrl(firm.logoFile)
-            if (!src) return null
-            return (
-              <span key={firm.slug + i} className="inline-flex items-center px-8 shrink-0">
-                <img
-                  src={src}
-                  alt={firm.shortName}
-                  width={140}
-                  height={42}
-                  className="h-[42px] w-auto object-contain"
-                />
-              </span>
-            )
-          })}
+          {[...FIRMS_WITH_LOGOS, ...FIRMS_WITH_LOGOS].map((firm, i) => (
+            /* Fixed-width slot: logos vary wildly in aspect ratio, and letting
+               each one size the slot made the marquee spacing lurch. */
+            <span key={firm.slug + i} className="inline-flex items-center justify-center shrink-0 w-[168px]">
+              <img
+                src={logoUrl(firm.logoFile)!}
+                alt={firm.shortName}
+                width={140}
+                height={40}
+                className="max-h-[40px] max-w-[132px] w-auto h-auto object-contain"
+              />
+            </span>
+          ))}
         </div>
       </div>
 
@@ -104,33 +103,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-cream-border bg-cream-dark">
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="text-center mb-12">
-            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal mb-3 tracking-tight">Everything you need</h2>
-            <p className="text-charcoal/50 text-sm max-w-md mx-auto">Built for Nigerian legal professionals at every stage, from law school through senior practice.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[
-              { type: 'search', title: 'Smart Job Board', desc: 'Filter by employer type, practice area, location, and role type across law firms, banks, fintechs, NGOs, and more.' },
-              { type: 'tracker', title: 'Application Tracker', desc: 'Forward confirmation emails to your unique tracker address. Status updates automatically.' },
-              { type: 'scholarship', title: 'Scholarships', desc: 'Local and international scholarships for Nigerian law students, curated and deadline-tracked.' },
-              { type: 'firm', title: 'Firm Directory', desc: 'Profiles of Nigerian law firms with tier rankings, practice area breakdowns, and hiring history.' },
-              { type: 'alert', title: 'Job Alerts', desc: 'Get notified instantly when roles matching your criteria are posted. Never miss a deadline again.' },
-              { type: 'ai', title: 'AI Career Tools', desc: 'CV reviews, cover letter drafts, and interview prep tailored to the Nigerian legal market.' },
-            ].map((feature) => (
-              <div key={feature.title} className="border border-cream-border rounded p-6 bg-cream hover:border-ink/20 hover:shadow-sm transition-all">
-                <div className="w-10 h-10 rounded bg-ink/6 flex items-center justify-center mb-4 border border-ink/8">
-                  <HomeIcons type={feature.type} />
-                </div>
-                <h3 className="font-semibold text-charcoal mb-2">{feature.title}</h3>
-                <p className="text-sm text-charcoal/55 leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      <FadeSection />
+      <QuickQuestions />
+
+      <EverythingYouNeed />
+      <ScrollColorSection>
+        Every opportunity.<br />One platform.
+      </ScrollColorSection>
 
       <Footer />
     </div>

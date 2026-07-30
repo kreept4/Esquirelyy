@@ -1,72 +1,16 @@
 'use client'
 
-import { useRef, useEffect, useState } from 'react'
-import { motion, useScroll, useTransform, MotionValue } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
+import { AnimatedHeading, FadeIn } from '@/components/motion/AnimatedText'
 
 const HERO_VIDEO_URL = 'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260403_050628_c4e32401-fab4-4a27-b7a8-6e9291cd5959.mp4'
-
-const NAV_LINKS = [
-  { href: '/jobs', label: 'Jobs' },
-  { href: '/firms', label: 'Firms' },
-  { href: '/tools/cv-review', label: 'Tools' },
-  { href: '/opportunities', label: 'Opportunities' },
-]
-
-function FadeIn({ children, delay = 0, duration = 1000 }: { children: React.ReactNode; delay?: number; duration?: number }) {
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), delay)
-    return () => clearTimeout(t)
-  }, [delay])
-  return (
-    <div className="transition-opacity" style={{ opacity: visible ? 1 : 0, transitionDuration: `${duration}ms` }}>
-      {children}
-    </div>
-  )
-}
-
-function AnimatedChar({ char, delay, scrollYProgress, charIndex }: { char: string; delay: number; scrollYProgress: MotionValue<number>; charIndex: number }) {
-  const waveY = useTransform(scrollYProgress, (v) => Math.sin(v * Math.PI * 2 + charIndex * 0.35) * 14 * v)
-  return (
-    <motion.span
-      initial={{ opacity: 0, x: -18 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: delay / 1000, ease: 'easeOut' }}
-      style={{ display: 'inline-block', y: waveY }}
-    >
-      {char}
-    </motion.span>
-  )
-}
-
-function AnimatedHeading({ text, scrollYProgress }: { text: string; scrollYProgress: MotionValue<number> }) {
-  const lines = text.split('\n')
-  const charDelay = 30
-  const baseDelay = 200
-  let globalIndex = 0
-  return (
-    <h1 className="grotesk-bold" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', letterSpacing: '-0.02em', lineHeight: 1.05, color: '#FAF6F0', marginBottom: '1.25rem' }}>
-      {lines.map((line, lineIdx) => (
-        <div key={lineIdx}>
-          {line.split(' ').map((word, wordIdx, wordsArr) => (
-            <span key={wordIdx} style={{ display: 'inline-block', whiteSpace: 'nowrap', marginRight: wordIdx < wordsArr.length - 1 ? '0.28em' : 0 }}>
-              {word.split('').map((char) => {
-                const delay = baseDelay + (lineIdx * line.length * charDelay) + (globalIndex * charDelay)
-                const idx = globalIndex++
-                return <AnimatedChar key={idx} char={char} delay={delay} scrollYProgress={scrollYProgress} charIndex={idx} />
-              })}
-            </span>
-          ))}
-        </div>
-      ))}
-    </h1>
-  )
-}
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end start'] })
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.35], [1, 0])
 
   return (
     <div ref={containerRef} style={{ position: 'relative', height: '100vh', overflow: 'hidden', backgroundColor: '#000' }}>
@@ -74,10 +18,31 @@ export default function HeroSection() {
         <source src={HERO_VIDEO_URL} type="video/mp4" />
       </video>
 
-      <motion.div style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', padding: '0 1.5rem 3rem', maxWidth: '1280px', margin: '0 auto', opacity: useTransform(scrollYProgress, [0, 0.35], [1, 0]) }}>
+      <motion.div
+        style={{
+          position: 'relative',
+          zIndex: 10,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          padding: '0 1.5rem 3rem',
+          maxWidth: '1280px',
+          margin: '0 auto',
+          opacity: overlayOpacity,
+        }}
+      >
         <div className="hero-grid" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem', alignItems: 'end' }}>
           <div>
-            <AnimatedHeading text={'Your legal career\nstarts here.'} scrollYProgress={scrollYProgress} />
+            <AnimatedHeading
+              text={'Your legal career\nstarts here.'}
+              scrollYProgress={scrollYProgress}
+              color="#FAF6F0"
+              fontSize="clamp(2.5rem, 6vw, 5rem)"
+              charDelay={30}
+              baseDelay={200}
+              style={{ marginBottom: '1.25rem' }}
+            />
             <FadeIn delay={800} duration={1000}>
               <p className="grotesk-regular" style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.75)', maxWidth: '480px', marginBottom: '1.5rem', lineHeight: 1.6 }}>
                 Jobs, vacation schemes, pupillages, and scholarships across law firms, corporates, and institutions, verified and updated daily.
@@ -96,8 +61,6 @@ export default function HeroSection() {
           </div>
         </div>
       </motion.div>
-
-
     </div>
   )
 }

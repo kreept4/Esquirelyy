@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
+import PageHeader from '@/components/layout/PageHeader'
 import { ALL_OPPORTUNITIES, CATEGORY_META, type OpportunityCategory, type EligibilityLevel } from '@/lib/opportunities-data'
 
 // SVG Icons
@@ -112,31 +113,9 @@ export default function OpportunitiesPage() {
     <>
       <main style={{ backgroundColor: '#FAF7F2', paddingTop: '64px', minHeight: '100vh' }}>
 
-        {/* Hero header */}
-        <div style={{
-          backgroundColor: '#F0EBE3',
-          borderBottom: '0.5px solid #E8E0D5',
-          padding: '3rem 2rem 2rem',
-        }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <p className="label-caps" style={{ color: '#1A1A1A', opacity: 0.6, marginBottom: '0.5rem' }}>
-              {filtered.length} opportunit{filtered.length !== 1 ? 'ies' : 'y'}
-            </p>
-            <h1 style={{
-              fontFamily: 'Schibsted Grotesk, sans-serif',
-              fontSize: 'clamp(1.8rem, 4vw, 3rem)',
-              fontWeight: 700, color: '#1A1A1A',
-              marginBottom: '0.5rem', lineHeight: 1.1,
-            }}>
-              Opportunities
-            </h1>
-            <p style={{
-              fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.9rem',
-              color: '#4A4A4A', lineHeight: 1.65, marginBottom: '2rem', maxWidth: '560px',
-            }}>
-              Internships and scholarships for law undergraduates. Graduate trainee and in-house roles at banks,
-              energy companies, fintechs, and more — for fresh graduates and experienced lawyers.
-            </p>
+        <PageHeader          heading="opportunities"
+          subcopy="Internships and scholarships for law undergraduates. Graduate trainee and in-house roles at banks, energy companies, fintechs, and more — for fresh graduates and experienced lawyers."
+        >
 
             {/* Search */}
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
@@ -166,7 +145,7 @@ export default function OpportunitiesPage() {
                   color: eligibility ? '#1A1A1A' : '#4A4A4A',
                   backgroundColor: '#FAF7F2',
                   border: `0.5px solid ${eligibility ? '#1A1A1A' : '#E8E0D5'}`,
-                  borderRadius: '2px', outline: 'none', cursor: 'pointer',
+                  borderRadius: '999px', outline: 'none', cursor: 'pointer',
                 }}
               >
                 {ELIGIBILITY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -181,7 +160,7 @@ export default function OpportunitiesPage() {
                   backgroundColor: internationalOnly ? '#1A1A1A' : '#FAF7F2',
                   color: internationalOnly ? '#FAF7F2' : '#4A4A4A',
                   border: `0.5px solid ${internationalOnly ? '#1A1A1A' : '#E8E0D5'}`,
-                  borderRadius: '2px', cursor: 'pointer',
+                  borderRadius: '999px', cursor: 'pointer',
                 }}
               >
                 <GlobeIcon /> International only
@@ -194,7 +173,7 @@ export default function OpportunitiesPage() {
                     padding: '0.65rem 1rem',
                     fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem',
                     color: '#000000', backgroundColor: 'transparent',
-                    border: '0.5px solid rgba(181,69,27,0.3)', borderRadius: '2px', cursor: 'pointer',
+                    border: '0.5px solid rgba(181,69,27,0.3)', borderRadius: '999px', cursor: 'pointer',
                   }}
                 >
                   <XIcon /> Clear
@@ -213,7 +192,7 @@ export default function OpportunitiesPage() {
                   backgroundColor: activeCategory === '' ? '#1A1A1A' : 'transparent',
                   color: activeCategory === '' ? '#FAF7F2' : '#4A4A4A',
                   border: `0.5px solid ${activeCategory === '' ? '#1A1A1A' : '#E8E0D5'}`,
-                  borderRadius: '2px', cursor: 'pointer',
+                  borderRadius: '999px', cursor: 'pointer',
                 }}
               >
                 All
@@ -229,15 +208,14 @@ export default function OpportunitiesPage() {
                     backgroundColor: activeCategory === cat ? '#1A1A1A' : 'transparent',
                     color: activeCategory === cat ? '#FAF7F2' : '#4A4A4A',
                     border: `0.5px solid ${activeCategory === cat ? '#1A1A1A' : '#E8E0D5'}`,
-                    borderRadius: '2px', cursor: 'pointer', whiteSpace: 'nowrap',
+                    borderRadius: '999px', cursor: 'pointer', whiteSpace: 'nowrap',
                   }}
                 >
                   {CATEGORY_META[cat].label}
                 </button>
               ))}
             </div>
-          </div>
-        </div>
+        </PageHeader>
 
         {/* Results */}
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2.5rem 2rem' }}>
@@ -382,7 +360,7 @@ function OpportunityCard({ opp }: { opp: typeof ALL_OPPORTUNITIES[0] }) {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.75rem' }}>
         <DeadlinePill deadline={opp.deadline} isRolling={opp.isRolling} isClosingSoon={opp.isClosingSoon} />
         <button style={{
-          background: 'none', border: '0.5px solid #E8E0D5', borderRadius: '2px',
+          background: 'none', border: '0.5px solid #E8E0D5', borderRadius: '999px',
           padding: '6px', cursor: 'pointer', color: '#4A4A4A',
         }} title="Save">
           <BookmarkIcon />

@@ -116,7 +116,7 @@ function AppCard({ app, onStatusChange, onDelete, onNoteChange }: {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' as const }}>
               <div style={{ position: 'relative' as const }}>
                 <button onClick={() => setShowStatusMenu(!showStatusMenu)}
-                  style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', fontWeight: 600, color: col.color, background: 'none', border: '0.5px solid currentColor', borderRadius: '2px', padding: '3px 8px', cursor: 'pointer', opacity: 0.85 }}>
+                  style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', fontWeight: 600, color: col.color, background: 'none', border: '0.5px solid currentColor', borderRadius: '999px', padding: '3px 8px', cursor: 'pointer', opacity: 0.85 }}>
                   Move to <IconChevronDown size={11} />
                 </button>
                 {showStatusMenu && (
@@ -305,7 +305,7 @@ export default function TrackerPage() {
               </p>
             </div>
             <button onClick={() => setShowModal(true)}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#1A1A1A', color: '#FAF7F2', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none', borderRadius: '2px', padding: '0.75rem 1.5rem', cursor: 'pointer', flexShrink: 0 }}
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#1A1A1A', color: '#FAF7F2', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none', borderRadius: '999px', padding: '0.75rem 1.5rem', cursor: 'pointer', flexShrink: 0 }}
               onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#0D2E57')}
               onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#1A1A1A')}>
               <IconPlus /> Log Application
@@ -363,7 +363,7 @@ export default function TrackerPage() {
               <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.82rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '0.2rem' }}>Auto-log with email forwarding</p>
               <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', color: '#4A6A8A', lineHeight: 1.5 }}>Forward any application confirmation to your Esquirely address and we parse the firm, role, and status automatically.</p>
             </div>
-            <button style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#1A1A1A', backgroundColor: 'transparent', border: '0.5px solid #1A1A1A', borderRadius: '2px', padding: '0.5rem 1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0, opacity: 0.8 }}>
+            <button style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#1A1A1A', backgroundColor: 'transparent', border: '0.5px solid #1A1A1A', borderRadius: '999px', padding: '0.5rem 1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0, opacity: 0.8 }}>
               Set Up Address <IconArrowRight size={12} />
             </button>
           </div>

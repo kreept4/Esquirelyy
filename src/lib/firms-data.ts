@@ -27,7 +27,7 @@ export function logoUrl(file?: string | null): string | null {
   return STORAGE + file.replace(/ /g, '%20')
 }
 
-export const ALL_FIRMS: Firm[] = [
+const FIRMS_UNSORTED: Firm[] = [
   {
     slug: 'acas-law',
     logoFile: 'ACAS.jpg',
@@ -474,3 +474,21 @@ export function getMonogram(name: string): string {
     .toUpperCase()
 }
 
+
+/** Sort key: ignore a leading initial ('G. Elias' -> 'Elias') and the '&'/'and'
+ *  noise so the directory and the logo loop read in true alphabetical order. */
+function sortKey(name: string): string {
+  return name
+    .replace(/^[A-Z].s+/, '')
+    .replace(/^(The|A)s+/i, '')
+    .toLowerCase()
+}
+
+/** Alphabetical by firm name. Every consumer reads from here. */
+export const ALL_FIRMS: Firm[] = [...FIRMS_UNSORTED].sort((a, b) =>
+  sortKey(a.name).localeCompare(sortKey(b.name), 'en')
+)
+
+/** Firms that actually have a logo asset — used by the home page logo loop so
+ *  the marquee has no empty slots and its 50% translate stays exact. */
+export const FIRMS_WITH_LOGOS: Firm[] = ALL_FIRMS.filter(f => !!f.logoFile)

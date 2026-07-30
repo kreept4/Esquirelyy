@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
+import PageHeader from '@/components/layout/PageHeader'
 import { ALL_SCHOLARSHIPS } from '@/lib/scholarships-data'
 
 const STATUS_STYLE: Record<string, { bg: string; color: string; label: string }> = {
@@ -13,19 +14,10 @@ export default function ScholarshipsPage() {
     <>
       <main style={{ backgroundColor: '#FAF7F2', paddingTop: '80px', minHeight: '100vh' }}>
 
-        <div style={{ backgroundColor: '#F0EBE3', borderBottom: '0.5px solid #E8E0D5', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: '#1A1A1A', opacity: 0.7, marginBottom: '0.5rem' }}>
-              {ALL_SCHOLARSHIPS.length} Listings
-            </p>
-            <h1 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 700, color: '#1A1A1A', marginBottom: '0.75rem', lineHeight: 1.1 }}>
-              Scholarships
-            </h1>
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.95rem', color: '#4A4A4A', lineHeight: 1.7, maxWidth: '600px' }}>
-              Fully funded and partially funded opportunities for Nigerian law students and legal professionals, both at home and abroad.
-            </p>
-          </div>
-        </div>
+        <PageHeader
+          heading="scholarships"
+          subcopy="Fully funded and partially funded opportunities for Nigerian law students and legal professionals, both at home and abroad."
+        />
 
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '3rem 2rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1.25rem' }}>

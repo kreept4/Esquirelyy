@@ -172,7 +172,7 @@ export default function OnboardingPage() {
                     padding: '1rem 1.25rem',
                     backgroundColor: selected ? '#1A1A1A' : '#fff',
                     border: selected ? '0.5px solid #1A1A1A' : '0.5px solid #E8E0D5',
-                    borderRadius: '3px',
+                    borderRadius: '999px',
                     cursor: 'pointer',
                     fontFamily: 'Schibsted Grotesk, sans-serif',
                     fontSize: '0.92rem',
