@@ -90,7 +90,7 @@ function Panel({ children, pad = '1.1rem' }: { children: React.ReactNode; pad?: 
  *  narrative instead of jumping. Mirrored to follow the alternating layout.
  *  The arrowhead is a marker with orient="auto" so it stays aligned to the curve
  *  (and to the mirrored curve) instead of being hand-placed and drifting. */
-function Connector({ flip, id }: { flip: boolean; id: string }) {
+function Connector({ flip, id, color }: { flip: boolean; id: string; color: string }) {
   const head = `arrow-${id}`
   return (
     <div aria-hidden="true" className="glide-connector">
@@ -101,7 +101,7 @@ function Connector({ flip, id }: { flip: boolean; id: string }) {
       <svg viewBox="0 0 1000 130" fill="none" className="glide-connector-svg" style={{ transform: flip ? 'scaleX(-1)' : 'none', overflow: 'visible' }}>
         <defs>
           <marker id={head} viewBox="0 0 16 16" refX="11" refY="8" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
-            <path d="M2 1.5 L13 8 L2 14.5" fill="none" stroke="#000000" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M2 1.5 L13 8 L2 14.5" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
           </marker>
         </defs>
         <path
@@ -112,7 +112,7 @@ function Connector({ flip, id }: { flip: boolean; id: string }) {
              C492 99 500 74 478 64
              C450 51 396 62 356 76
              C320 89 292 104 268 120"
-          stroke="#000000"
+          stroke={color}
           strokeWidth="2.6"
           strokeLinecap="round"
           strokeDasharray="0.1 11"
@@ -409,7 +409,7 @@ export default function EverythingYouNeed() {
         {BLOCKS.map((b, idx) => (
           <div key={b.title}>
             <Block block={b} flip={idx % 2 === 1} tone={tone} />
-            {idx < BLOCKS.length - 1 && <Connector flip={idx % 2 === 1} id={String(idx)} />}
+            {idx < BLOCKS.length - 1 && <Connector flip={idx % 2 === 1} id={String(idx)} color={tone.fg} />}
           </div>
         ))}
       </div>

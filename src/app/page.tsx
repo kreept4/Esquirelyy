@@ -5,7 +5,6 @@ import { ArrowRight } from 'lucide-react'
 import HeroSection from './HeroSection'
 import ScrollColorSection from '@/components/layout/ScrollColorSection'
 import QuickQuestions from '@/components/features/QuickQuestions'
-import FirmGlobe from '@/components/features/FirmGlobe'
 import RolePit from '@/components/features/RolePit'
 import EverythingYouNeed from '@/components/features/EverythingYouNeed'
 import { FIRMS_WITH_LOGOS, logoUrl } from '@/lib/firms-data'
@@ -64,7 +63,6 @@ export default async function HomePage() {
         Every opportunity.<br />One platform.
       </ScrollColorSection>
 
-      <FirmGlobe />
 
       <Footer />
     </div>
