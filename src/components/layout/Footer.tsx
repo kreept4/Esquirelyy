@@ -3,8 +3,8 @@
 import Link from 'next/link'
 
 /**
- * Footer: a slim action row, the link columns grouped by intent, and a base
- * line. No headline or watermark.
+ * Footer: link columns grouped by intent, then a base line. No headline,
+ * watermark or buttons -- every destination here already exists in the nav.
  */
 
 const INK = '#1A1A1A'
@@ -43,16 +43,6 @@ const FOOTER_LINKS: Record<string, { href: string; label: string }[]> = {
 export default function Footer() {
   return (
     <footer style={{ backgroundColor: INK, color: CREAM }}>
-      {/* Actions only: the headline and the oversized wordmark are gone. */}
-      <div className="footer-cta">
-        <Link href="/jobs" className="grotesk-bold footer-btn-solid">
-          Browse roles
-        </Link>
-        <Link href="/auth/signup" className="grotesk-bold footer-btn-ghost">
-          Create an account
-        </Link>
-      </div>
-
       {/* Links */}
       <div className="footer-links">
         {Object.entries(FOOTER_LINKS).map(([section, links]) => (
@@ -83,40 +73,17 @@ export default function Footer() {
       </div>
 
       <style>{`
-        .footer-cta,
-        .footer-links,
+                .footer-links,
         .footer-base {
           max-width: min(2200px, 94vw);
           margin: 0 auto;
         }
-        .footer-cta {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          flex-wrap: wrap;
-          padding: 3.25rem 1.5rem 2.75rem;
-          border-bottom: 1px solid ${RULE};
-        }
-        .footer-btn-solid,
-        .footer-btn-ghost {
-          display: inline-block;
-          padding: 0.85rem 2rem;
-          border-radius: 999px;
-          font-size: 0.82rem;
-          text-decoration: none;
-          transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease;
-        }
-        .footer-btn-solid { background: ${CREAM}; color: ${INK}; }
-        .footer-btn-ghost { border: 1px solid ${RULE}; color: ${CREAM}; }
-        .footer-btn-solid:hover,
-        .footer-btn-ghost:hover { transform: translateY(-2px); }
-        .footer-btn-ghost:hover { background: rgba(250,246,240,0.08); }
 
         .footer-links {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
           gap: 2.5rem;
-          padding: 3.5rem 1.5rem;
+          padding: 4rem 1.5rem 3.5rem;
         }
         .footer-link {
           color: rgba(250,246,240,0.72);
@@ -137,7 +104,6 @@ export default function Footer() {
         }
 
         @media (max-width: 640px) {
-          .footer-cta { padding: 3.5rem 1.25rem 2.5rem; }
           .footer-links { padding: 2.5rem 1.25rem; gap: 2rem; }
         }
       `}</style>
