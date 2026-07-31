@@ -35,7 +35,7 @@ export default function Footer() {
   return (
     <footer style={{ backgroundColor: '#1A1A1A', color: '#FAF6F0' }}>
       <div style={{
-        maxWidth: 'min(1800px, 94vw)',
+        maxWidth: 'min(2200px, 94vw)',
         margin: '0 auto',
         padding: '4rem 2rem 2rem',
         display: 'grid',
@@ -100,7 +100,7 @@ export default function Footer() {
       </div>
 
       <div style={{
-        maxWidth: 'min(1800px, 94vw)',
+        maxWidth: 'min(2200px, 94vw)',
         margin: '0 auto',
         padding: '1.5rem 2rem',
         borderTop: '0.5px solid rgba(250,246,240,0.08)',

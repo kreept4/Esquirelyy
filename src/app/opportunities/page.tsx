@@ -218,7 +218,7 @@ export default function OpportunitiesPage() {
         </PageHeader>
 
         {/* Results */}
-        <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '2.5rem 2rem' }}>
+        <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '2.5rem 2rem' }}>
           {filtered.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '5rem 0' }}>
               <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1.5rem', color: '#1A1A1A', marginBottom: '0.5rem' }}>

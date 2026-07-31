@@ -192,7 +192,7 @@ export default function RolePit({ listings }: { listings: any[] }) {
 
   return (
     <section style={{ borderBottom: `0.5px solid ${BORDER}`, backgroundColor: CREAM, overflow: 'hidden' }}>
-      <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '5rem 1.5rem 4rem' }}>
+      <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '5rem 1.5rem 4rem' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '2rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
           <h2 className="display-black" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.25rem)', color: INK, lineHeight: 1.05 }}>
             open right now.

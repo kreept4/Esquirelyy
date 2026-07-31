@@ -68,7 +68,7 @@ export default function FeaturedOpportunities({ listings }: { listings: any[] })
 
   return (
     <section style={{ borderBottom: `0.5px solid ${BORDER}`, backgroundColor: '#FAF7F2' }}>
-      <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '5.5rem 1.5rem' }}>
+      <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '5.5rem 1.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '2rem', marginBottom: '3rem' }}>
           <h2 className="display-black" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.25rem)', color: INK, lineHeight: 1.05, maxWidth: '14ch' }}>
             open right now.

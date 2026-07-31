@@ -38,6 +38,12 @@
 }
 
 html {
+  /* One fluid root size drives the whole scale. Nearly every size in this app is
+     expressed in rem, and rem reads from html, not body -- so this is the only
+     lever that actually reaches them. Tuned to 16px at a 1440px desktop, easing
+     up to 24px on a 4K TV, floored at 15px so a watch-sized viewport stays
+     legible. The old rules scaled body instead, which did nothing for rem. */
+  font-size: clamp(15px, 12.4px + 0.25vw, 24px);
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -47,7 +53,7 @@ body {
   background-color: var(--cream);
   color: var(--charcoal);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.6;
 }
 
@@ -353,138 +359,8 @@ body {
 
 /* Large desktop / TV */
 @media (min-width: 1800px) {
-  div[style*="maxWidth: '1280px'"] {
-    max-width: 1600px !important;
-  }
-
-  body {
-    font-size: 18px !important;
-  }
-
-  h1[style*="clamp"] {
-    font-size: clamp(2.5rem, 3vw, 4rem) !important;
-  }
-}
-
-/* Ultra-wide TV (4K) */
-@media (min-width: 2400px) {
-  div[style*="maxWidth: '1280px'"] {
-    max-width: 2000px !important;
-  }
-
-  body {
-    font-size: 20px !important;
-  }
-}
-
-/* Smooth transitions removed - was causing layout lag */
-
-/* Prevent horizontal overflow.
-   Must be `clip`, not `hidden`: overflow-x:hidden on body turns body into its
-   own scroll container, which pins window.scrollY to 0 and breaks every
-   scroll-driven effect (hero heading, navbar scrolled state, framer-motion
-   useScroll). `clip` crops without creating a scroll container. */
-html, body {
-  overflow-x: clip;
-  max-width: 100vw;
-}
-
-/* Fix flex wrapping on small screens */
-@media (max-width: 640px) {
-  div[style*="display: 'flex'"][style*="gap"] {
-    flex-wrap: wrap !important;
-  }
-
-  /* Stack filter row on mobile */
-  div[style*="flex: '1 1 280px'"] {
-    flex: 1 1 100% !important;
-  }
-
-  /* Ticker — smaller text on mobile */
-  .animate-ticker span {
-    font-size: 0.75rem !important;
-  }
-
-  .animate-ticker {
-    animation-duration: 22s !important;
-  }
-
-  /* Jobs page header padding */
-  div[style*="padding: '2.5rem 2rem 2rem'"] {
-    padding: 1.25rem 1rem 1rem !important;
-  }
-
-  /* Firm profile two-column body */
-  div[style*="repeat(auto-fit, minmax(300px, 1fr)"] {
-    grid-template-columns: 1fr !important;
-  }
-}
-
-/* --- Type helpers. `display-*` = Hanken Grotesk, `grotesk-*` = Schibsted --- */
-.display-bold {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-style: normal;
-  letter-spacing: -0.02em;
-}
-.display-black {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-style: normal;
-  letter-spacing: -0.03em;
-}
-.grotesk-regular {
-  font-family: 'Schibsted Grotesk', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-.grotesk-bold {
-  font-family: 'Schibsted Grotesk', sans-serif;
-  font-weight: 700;
-  font-style: normal;
-}
-.grotesk-black {
-  font-family: 'Schibsted Grotesk', sans-serif;
-  font-weight: 900;
-  font-style: normal;
-}
-.grotesk-regular-italic {
-  font-family: 'Schibsted Grotesk', sans-serif;
-  font-weight: 400;
-  font-style: italic;
-}
-.grotesk-bold-italic {
-  font-family: 'Schibsted Grotesk', sans-serif;
-  font-weight: 700;
-  font-style: italic;
-}
-
-/* Bento feature grid */
-.bento-card {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-.bento-card:hover {
-  border-color: rgba(26, 26, 26, 0.35);
-  box-shadow: 0 6px 28px rgba(26, 26, 26, 0.07);
-  transform: translateY(-2px);
-}
-@media (max-width: 900px) {
-  .bento-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-  .bento-grid > * {
-    grid-column: span 2 !important;
-  }
-}
-
-/* Feature narrative glide */
-.glide-connector { margin: -2.5rem 0 -1.5rem; }
-.glide-connector-svg { display: block; width: 100%; height: auto; }
-@media (max-width: 860px) {
-  /* Stacked layout: panels are no longer left/right, so a cross-column sweep
-     makes no sense. A short centred hop reads correctly instead. */
-  .glide-connector { margin: 0.25rem 0 1rem; display: flex; justify-content: center; }
-  .glide-connector-svg { width: 210px; }
+  /* Desktop and TV: the root scale above already grows the type. */
+  .glide-block { gap: 5rem !important; }
 }
 .glide-cta {
   transition: transform 0.18s ease, box-shadow 0.18s ease;

@@ -400,12 +400,12 @@ export default function EverythingYouNeed() {
 
   return (
     <section ref={ref} style={{ backgroundColor: `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`, transition: 'background-color 0.08s linear' }}>
-      <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '7rem 1.5rem 3rem' }}>
+      <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '7rem 1.5rem 3rem' }}>
         <h2 className="display-black" style={{ fontSize: 'clamp(2.2rem, 5.5vw, 4rem)', color: tone.fg, lineHeight: 1.05, maxWidth: '15ch' }}>
           everything you need, in one place.
         </h2>
       </div>
-      <div style={{ maxWidth: 'min(1800px, 94vw)', margin: '0 auto', padding: '0 1.5rem 4rem' }}>
+      <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '0 1.5rem 4rem' }}>
         {BLOCKS.map((b, idx) => (
           <div key={b.title}>
             <Block block={b} flip={idx % 2 === 1} tone={tone} />
