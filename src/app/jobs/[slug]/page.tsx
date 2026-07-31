@@ -8,9 +8,11 @@ const SA: Record<string,string> = { law_firm:'#1A1A1A', banking:'#1A1A1A', energ
 const SL: Record<string,string> = { law_firm:'Law Firm', banking:'Banking', energy:'Energy', fintech:'Tech & Fintech', other:'Industry' }
 const TL: Record<string,string> = { job:'Full-time', internship:'Internship', vacation_scheme:'Vacation Scheme', pupillage:'Pupillage' }
 const LL: Record<string,string> = { student:'Student', nysc:'NYSC', junior:'Junior (0-3 yrs PQE)', mid:'Mid-level (3-6 yrs PQE)', senior:'Senior (6+ yrs PQE)' }
-export default async function JobDetailPage({ params }: { params: { slug: string } }) {
+// `params` is a Promise in Next 16 — see the note on the firm detail page.
+export default async function JobDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
-  const { data: listing } = await supabase.from('jobs').select('*').eq('slug', params.slug).single()
+  const { data: listing } = await supabase.from('jobs').select('*').eq('slug', slug).single()
   if (!listing) return notFound()
   const accent = SA[listing.sector] || '#3B3B3B'
   const applyHref = listing.apply_url || (listing.apply_email ? 'mailto:' + listing.apply_email + '?subject=Application: ' + listing.title : null)

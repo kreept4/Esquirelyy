@@ -59,7 +59,7 @@ export default async function HomePage() {
       <QuickQuestions />
 
       <EverythingYouNeed />
-      <ScrollColorSection>
+      <ScrollColorSection animate={false}>
         Every opportunity.<br />One platform.
       </ScrollColorSection>
 

@@ -22,17 +22,22 @@ export default function ScrollColorSection({
   to = CREAM,
   textColor = INK,
   padding = '10rem 1.5rem',
+  animate = true,
 }: {
   children: React.ReactNode
   from?: RGB
   to?: RGB
   textColor?: RGB
   padding?: string
+  /** When false the block holds `from` as a flat background with cream type and
+   *  no scroll listener at all. */
+  animate?: boolean
 }) {
   const ref = useRef<HTMLElement>(null)
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
+    if (!animate) return
     const el = ref.current
     if (!el) return
     let frame = 0
@@ -56,12 +61,16 @@ export default function ScrollColorSection({
       window.removeEventListener('resize', onScroll)
       if (frame) cancelAnimationFrame(frame)
     }
-  }, [])
+  }, [animate])
 
   const mix = (a: number, b: number) => Math.round(a + (b - a) * progress)
-  const bg = `rgb(${mix(from[0], to[0])},${mix(from[1], to[1])},${mix(from[2], to[2])})`
+  const bg = animate
+    ? `rgb(${mix(from[0], to[0])},${mix(from[1], to[1])},${mix(from[2], to[2])})`
+    : `rgb(${from[0]},${from[1]},${from[2]})`
   const textOpacity = progress > 0.3 ? Math.min((progress - 0.3) / 0.7, 1) : 0
-  const color = `rgba(${textColor[0]},${textColor[1]},${textColor[2]},${textOpacity})`
+  const color = animate
+    ? `rgba(${textColor[0]},${textColor[1]},${textColor[2]},${textOpacity})`
+    : '#FAF6F0'
 
   return (
     <section

@@ -75,7 +75,10 @@ export default function RolePit({ listings }: { listings: any[] }) {
     const wrap = wrapRef.current
     if (!wrap) return
     const { width, height } = wrap.getBoundingClientRect()
-    const r = Math.max(34, Math.min(58, width / 16))
+    // Ball size tracks the pit, not the page. At full shell width the old
+    // width/16 hit its 58px ceiling and nine balls filled about 9% of the box,
+    // which read as an empty container rather than a pit.
+    const r = Math.max(32, Math.min(74, width / 9))
     const perRow = Math.max(1, Math.floor((width - r) / (r * 2.2)))
     ballsRef.current = roles.map((_, i) => ({
       // Start inside the box, laid out in rows. They used to start above the
@@ -194,14 +197,15 @@ export default function RolePit({ listings }: { listings: any[] }) {
     <section style={{ borderBottom: `0.5px solid ${BORDER}`, backgroundColor: CREAM, overflow: 'hidden' }}>
       <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '5rem 1.5rem 4rem' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '2rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
-          <h2 className="display-black" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.25rem)', color: INK, lineHeight: 1.05 }}>
-            open right now.
+          <h2 className="display-black" style={{ fontSize: 'clamp(2.6rem, 6.5vw, 5rem)', color: INK, lineHeight: 0.95, letterSpacing: '-0.045em' }}>
+            Check these out!
           </h2>
           <Link href="/jobs" className="grotesk-bold" style={{ fontSize: '0.78rem', color: INK, textDecoration: 'none', paddingBottom: '0.35rem', borderBottom: `1px solid ${INK}` }}>
             View all roles
           </Link>
         </div>
-        <div ref={wrapRef} className="role-pit" style={{ marginTop: '1.5rem' }} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
+        <div className="role-pit-layout">
+        <div ref={wrapRef} className="role-pit" onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
           {roles.map((l, i) => {
             const url = logoForEmployer(l.employer)
             const fill = SECTOR_FILL[l.sector] || SECTOR_FILL.other
@@ -228,21 +232,35 @@ export default function RolePit({ listings }: { listings: any[] }) {
           })}
         </div>
 
-        {active && (
-          <div className="role-pit-card" style={{ backgroundColor: CARTON, border: `1.5px solid ${INK}`, borderRadius: '10px', boxShadow: '6px 8px 0 rgba(0,0,0,0.85)' }}>
-            <button onClick={() => setOpen(null)} aria-label="Close" className="role-pit-close">×</button>
-            <p className="grotesk-bold" style={{ fontSize: '0.72rem', color: MUTED, marginBottom: '0.3rem' }}>{active.employer}</p>
-            <h3 className="display-bold" style={{ fontSize: 'clamp(1.15rem, 2vw, 1.6rem)', color: INK, lineHeight: 1.2, marginBottom: '0.75rem' }}>
-              {active.title}
-            </h3>
-            <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: '#4A4A4A', marginBottom: '1.1rem' }}>
-              {[TYPE_LABELS[active.type] || active.type, active.location, deadlineLabel(active)].filter(Boolean).join(' · ')}
-            </p>
-            <Link href={'/jobs/' + active.slug} className="grotesk-bold" style={{ display: 'inline-block', padding: '0.65rem 1.5rem', borderRadius: '999px', fontSize: '0.76rem', backgroundColor: INK, color: CARTON, textDecoration: 'none' }}>
-              View role
-            </Link>
-          </div>
-        )}
+        {/* The panel holds its column whether or not a ball is selected. Leaving
+            it empty is what made the section feel like something was missing. */}
+        <div className="role-pit-card" style={{ backgroundColor: active ? CARTON : 'transparent', border: active ? `1.5px solid ${INK}` : `1px dashed ${BORDER}`, borderRadius: '10px', boxShadow: active ? '6px 8px 0 rgba(0,0,0,0.85)' : 'none' }}>
+          {active ? (
+            <>
+              <button onClick={() => setOpen(null)} aria-label="Close" className="role-pit-close">×</button>
+              <p className="grotesk-bold" style={{ fontSize: '0.72rem', color: MUTED, marginBottom: '0.3rem' }}>{active.employer}</p>
+              <h3 className="display-bold" style={{ fontSize: 'clamp(1.15rem, 2vw, 1.6rem)', color: INK, lineHeight: 1.2, marginBottom: '0.75rem' }}>
+                {active.title}
+              </h3>
+              <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: '#4A4A4A', marginBottom: '1.1rem' }}>
+                {[TYPE_LABELS[active.type] || active.type, active.location, deadlineLabel(active)].filter(Boolean).join(' · ')}
+              </p>
+              <Link href={'/jobs/' + active.slug} className="grotesk-bold" style={{ display: 'inline-block', padding: '0.65rem 1.5rem', borderRadius: '999px', fontSize: '0.76rem', backgroundColor: INK, color: CARTON, textDecoration: 'none' }}>
+                View role
+              </Link>
+            </>
+          ) : (
+            <div className="role-pit-empty">
+              <p className="display-bold" style={{ fontSize: '1.05rem', color: INK, lineHeight: 1.25, marginBottom: '0.5rem' }}>
+                {roles.length} roles open.
+              </p>
+              <p className="grotesk-regular" style={{ fontSize: '0.82rem', color: MUTED, lineHeight: 1.6 }}>
+                Tap a ball to see the role, or throw them around first. Nobody&rsquo;s watching.
+              </p>
+            </div>
+          )}
+        </div>
+        </div>
       </div>
     </section>
   )
