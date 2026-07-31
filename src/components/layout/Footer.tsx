@@ -64,8 +64,13 @@ export default function Footer() {
       </div>
 
       <div className="footer-base">
+        <Link href="/" style={{ textDecoration: 'none' }}>
+          <span className="display-black" style={{ fontSize: '1.5rem', fontWeight: 900, letterSpacing: '-0.045em', color: CREAM }}>
+            Esquirely.
+          </span>
+        </Link>
         <p className="grotesk-regular" style={{ fontSize: '0.74rem', color: MUTED }}>
-          &copy; {new Date().getFullYear()} Esquirely. All rights reserved.
+          &copy; {new Date().getFullYear()} All rights reserved.
         </p>
         <p className="grotesk-regular" style={{ fontSize: '0.74rem', color: MUTED }}>
           Made for the Nigerian bar.

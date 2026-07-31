@@ -98,7 +98,8 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
           viewBox units, the centre of the right-hand column) and the head lands
           on the panel below (x≈268, the left column). Mirrored on alternate
           blocks because the panels swap sides. */}
-      <svg viewBox="0 0 1000 130" fill="none" className="glide-connector-svg" style={{ transform: flip ? 'scaleX(-1)' : 'none', overflow: 'visible' }}>
+      {/* Wide layout: sweeps across from the panel above to the one below. */}
+      <svg viewBox="0 0 1000 130" fill="none" className="glide-connector-svg glide-connector-h" style={{ transform: flip ? 'scaleX(-1)' : 'none', overflow: 'visible' }}>
         <defs>
           <marker id={head} viewBox="0 0 16 16" refX="11" refY="8" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
             <path d="M2 1.5 L13 8 L2 14.5" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -117,6 +118,29 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
           strokeLinecap="round"
           strokeDasharray="0.1 11"
           markerEnd={`url(#${head})`}
+        />
+      </svg>
+
+      {/* Stacked layout: same dotted spiral, turned to run top to bottom. A
+          left-to-right sweep between columns that no longer exist reads as an
+          error, but dropping the connector entirely loses the through-line. */}
+      <svg viewBox="0 0 180 210" fill="none" className="glide-connector-svg glide-connector-v" style={{ overflow: 'visible' }}>
+        <defs>
+          <marker id={`${head}-v`} viewBox="0 0 16 16" refX="11" refY="8" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+            <path d="M2 1.5 L13 8 L2 14.5" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+          </marker>
+        </defs>
+        <path
+          d="M92 4
+             C92 40 44 52 44 88
+             C44 112 94 112 94 88
+             C94 68 66 70 66 92
+             C66 132 108 152 100 198"
+          stroke={color}
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeDasharray="0.1 12"
+          markerEnd={`url(#${head}-v)`}
         />
       </svg>
     </div>

@@ -362,6 +362,65 @@ body {
   /* Desktop and TV: the root scale above already grows the type. */
   .glide-block { gap: 5rem !important; }
 }
+/* --- Type helpers. `display-*` = Hanken Grotesk, `grotesk-*` = Schibsted ---
+   These are load-bearing: hundreds of elements set only these classes for their
+   family and weight. */
+.display-bold {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: -0.02em;
+}
+.display-black {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: normal;
+  letter-spacing: -0.03em;
+}
+.grotesk-regular {
+  font-family: 'Schibsted Grotesk', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.grotesk-bold {
+  font-family: 'Schibsted Grotesk', sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+.grotesk-black {
+  font-family: 'Schibsted Grotesk', sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* Home page hero + featured list */
+.hero-grid { display: grid; }
+.featured-all { transition: opacity 0.18s ease; }
+.featured-all:hover { opacity: 0.6; }
+.featured-lead,
+.featured-row { transition: border-color 0.18s ease, background-color 0.18s ease; }
+.featured-lead:hover { border-color: rgba(26, 26, 26, 0.35); }
+.featured-row:hover { background-color: #F0EBE3; }
+@media (max-width: 860px) {
+  .featured-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+}
+
+/* Connector between feature blocks. Spans the full block width so the stem
+   leaves the panel above and the head lands on the one below. */
+.glide-connector {
+  margin: -2.5rem 0 -1.5rem;
+}
+.glide-connector-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* Only one orientation is ever shown; the other is swapped in at the same
+   breakpoint the blocks stack at. */
+.glide-connector-v {
+  display: none;
+}
+
 .glide-cta {
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
@@ -378,6 +437,11 @@ body {
   .glide-block > * {
     order: initial !important;
   }
+  /* Swap the cross-column sweep for the vertical spiral: same look, correct
+     direction for a stacked layout. */
+  .glide-connector { margin: -0.5rem 0 0.5rem; display: flex; justify-content: center; }
+  .glide-connector-h { display: none; }
+  .glide-connector-v { display: block; width: 150px; }
 }
 
 .quick-q-option {

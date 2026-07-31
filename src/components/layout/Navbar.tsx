@@ -81,7 +81,7 @@ export default function Navbar() {
         colors={['#38BDF8', '#F97316', '#22C55E']}
         logo={
           <Link href="/" style={{ textDecoration: 'none' }}>
-            <span className="display-black sm-wordmark" style={{ fontSize: '1.4rem', letterSpacing: '-0.03em', color: restColor }}>
+            <span className="display-black sm-wordmark" style={{ fontSize: '1.5rem', fontWeight: 900, letterSpacing: '-0.045em', color: restColor }}>
               Esquirely.
             </span>
           </Link>
