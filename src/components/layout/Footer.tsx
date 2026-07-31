@@ -3,9 +3,8 @@
 import Link from 'next/link'
 
 /**
- * Footer as a closing statement rather than a link dump. Three bands: a CTA that
- * gives the page somewhere to go, the link columns, and an oversized wordmark
- * that signs the page off.
+ * Footer: a slim action row, the link columns grouped by intent, and a base
+ * line. No headline or watermark.
  */
 
 const INK = '#1A1A1A'
@@ -44,19 +43,14 @@ const FOOTER_LINKS: Record<string, { href: string; label: string }[]> = {
 export default function Footer() {
   return (
     <footer style={{ backgroundColor: INK, color: CREAM }}>
-      {/* Closing CTA */}
+      {/* Actions only: the headline and the oversized wordmark are gone. */}
       <div className="footer-cta">
-        <h2 className="display-black" style={{ fontSize: 'clamp(2.2rem, 6vw, 4.5rem)', lineHeight: 0.98, letterSpacing: '-0.04em', maxWidth: '16ch' }}>
-          Your next role is already on here.
-        </h2>
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <Link href="/jobs" className="grotesk-bold footer-btn-solid">
-            Browse roles
-          </Link>
-          <Link href="/auth/signup" className="grotesk-bold footer-btn-ghost">
-            Create an account
-          </Link>
-        </div>
+        <Link href="/jobs" className="grotesk-bold footer-btn-solid">
+          Browse roles
+        </Link>
+        <Link href="/auth/signup" className="grotesk-bold footer-btn-ghost">
+          Create an account
+        </Link>
       </div>
 
       {/* Links */}
@@ -79,11 +73,6 @@ export default function Footer() {
         ))}
       </div>
 
-      {/* Oversized wordmark signs the page off */}
-      <div className="footer-mark" aria-hidden="true">
-        <span className="display-black">Esquirely.</span>
-      </div>
-
       <div className="footer-base">
         <p className="grotesk-regular" style={{ fontSize: '0.74rem', color: MUTED }}>
           &copy; {new Date().getFullYear()} Esquirely. All rights reserved.
@@ -102,11 +91,10 @@ export default function Footer() {
         }
         .footer-cta {
           display: flex;
-          align-items: flex-end;
-          justify-content: space-between;
-          gap: 2.5rem;
+          align-items: center;
+          gap: 0.75rem;
           flex-wrap: wrap;
-          padding: 5.5rem 1.5rem 4rem;
+          padding: 3.25rem 1.5rem 2.75rem;
           border-bottom: 1px solid ${RULE};
         }
         .footer-btn-solid,
@@ -137,21 +125,6 @@ export default function Footer() {
         }
         .footer-link:hover { color: ${CREAM}; padding-left: 4px; }
 
-        /* Wordmark scales with the viewport and is clipped to a sliver of
-           descender, so it reads as a watermark rather than a heading. */
-        .footer-mark {
-          overflow: hidden;
-          padding: 0 1.5rem;
-          line-height: 0.78;
-          user-select: none;
-        }
-        .footer-mark span {
-          display: block;
-          font-size: clamp(4rem, 17vw, 15rem);
-          letter-spacing: -0.05em;
-          color: rgba(250,246,240,0.07);
-          white-space: nowrap;
-        }
 
         .footer-base {
           display: flex;
