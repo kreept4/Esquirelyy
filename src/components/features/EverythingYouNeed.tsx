@@ -101,7 +101,7 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
       {/* Wide layout: sweeps across from the panel above to the one below. */}
       <svg viewBox="0 0 1000 130" fill="none" className="glide-connector-svg glide-connector-h" style={{ transform: flip ? 'scaleX(-1)' : 'none', overflow: 'visible' }}>
         <defs>
-          <marker id={head} viewBox="0 0 16 16" refX="11" refY="8" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <marker id={head} viewBox="0 0 16 16" refX="11" refY="8" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
             <path d="M2 1.5 L13 8 L2 14.5" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
           </marker>
         </defs>
@@ -114,9 +114,9 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
              C450 51 396 62 356 76
              C320 89 292 104 268 120"
           stroke={color}
-          strokeWidth="2.6"
+          strokeWidth="3.4"
           strokeLinecap="round"
-          strokeDasharray="0.1 11"
+          strokeDasharray="0.1 9"
           markerEnd={`url(#${head})`}
         />
       </svg>
@@ -126,7 +126,7 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
           error, but dropping the connector entirely loses the through-line. */}
       <svg viewBox="0 0 180 210" fill="none" className="glide-connector-svg glide-connector-v" style={{ overflow: 'visible' }}>
         <defs>
-          <marker id={`${head}-v`} viewBox="0 0 16 16" refX="11" refY="8" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <marker id={`${head}-v`} viewBox="0 0 16 16" refX="11" refY="8" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
             <path d="M2 1.5 L13 8 L2 14.5" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
           </marker>
         </defs>
@@ -137,9 +137,9 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
              C94 68 66 70 66 92
              C66 132 108 152 100 198"
           stroke={color}
-          strokeWidth="3"
+          strokeWidth="5.5"
           strokeLinecap="round"
-          strokeDasharray="0.1 12"
+          strokeDasharray="0.1 9"
           markerEnd={`url(#${head}-v)`}
         />
       </svg>

@@ -365,15 +365,18 @@ body {
 /* --- Type helpers. `display-*` = Hanken Grotesk, `grotesk-*` = Schibsted ---
    These are load-bearing: hundreds of elements set only these classes for their
    family and weight. */
+/* Headings are deliberately NOT heavy: Hanken at 500/600 reads as considered,
+   where 700/900 read as shouty at display sizes. The wordmark sets its own
+   inline weight of 900 and is the one place that stays black. */
 .display-bold {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 500;
   font-style: normal;
   letter-spacing: -0.02em;
 }
 .display-black {
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: 600;
   font-style: normal;
   letter-spacing: -0.03em;
 }
