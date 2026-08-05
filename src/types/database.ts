@@ -1,6 +1,9 @@
 export type FirmTier = 'tier_1' | 'tier_2' | 'tier_3' | 'boutique' | 'court' | 'institution'
 export type FirmType = 'law_firm' | 'chambers' | 'court' | 'ngo' | 'bank' | 'government' | 'academic'
-export type ListingType = 'job' | 'internship' | 'vacation_scheme' | 'clerkship' | 'fellowship' | 'pupillage'
+/** Vacation schemes are a UK convention. No Nigerian firm runs one, so the type
+ *  was never anything but a dead option in the filters. Removed rather than
+ *  hidden; nothing in the jobs table has ever used it. */
+export type ListingType = 'job' | 'internship' | 'clerkship' | 'fellowship' | 'pupillage'
 export type ListingLevel = 'student' | 'nysc' | 'junior' | 'mid' | 'senior' | 'partner'
 export type ApplicationStatus =
   | 'saved' | 'applied' | 'acknowledged' | 'assessment'
@@ -149,7 +152,6 @@ export const TIER_LABELS: Record<FirmTier, string> = {
 export const LISTING_TYPE_LABELS: Record<ListingType, string> = {
   job: 'Full-time',
   internship: 'Internship',
-  vacation_scheme: 'Vacation Scheme',
   clerkship: 'Clerkship',
   fellowship: 'Fellowship',
   pupillage: 'Pupillage',

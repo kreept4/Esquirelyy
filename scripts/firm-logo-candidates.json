@@ -1,0 +1,624 @@
+{
+  "acas-law": {
+    "site": "https://www.dentonsacaslaw.com/",
+    "candidates": [
+      {
+        "url": "https://www.dentonsacaslaw.com/Microsite/assets/images/image/searchicon.svg",
+        "score": 100
+      },
+      {
+        "url": "https://www.dentonsacaslaw.com/Microsite/assets/images/image/menu.svg",
+        "score": 100
+      },
+      {
+        "url": "https://www.dentonsacaslaw.com/assets/images/icon/cross-blueviolet.svg",
+        "score": 100
+      },
+      {
+        "url": "https://www.dentonsacaslaw.com/assets/images/gpof/Icons/Burger-Close.svg",
+        "score": 100
+      },
+      {
+        "url": "https://www.dentonsacaslaw.com/assets/images/Back-to-top-icon.svg",
+        "score": 100
+      }
+    ],
+    "inlineSvg": false
+  },
+  "aelex": {
+    "site": "https://aelex.com/",
+    "error": "HTTP 404",
+    "candidates": []
+  },
+  "aina-blankson": {
+    "site": "https://ainablankson.com/",
+    "candidates": [
+      {
+        "url": "https://ainablankson.com/wp-content/uploads/2024/06/ainablankson-logo.png",
+        "score": 30
+      },
+      {
+        "url": "https://ainablankson.com/wp-content/uploads/2024/06/cropped-New_Aina_Blankson_Logo-removebg-preview-192x192.png",
+        "score": 12.68
+      },
+      {
+        "url": "https://ainablankson.com/wp-content/uploads/2024/06/cropped-New_Aina_Blankson_Logo-removebg-preview-180x180.png",
+        "score": 12.200000000000003
+      },
+      {
+        "url": "https://ainablankson.com/wp-content/uploads/2024/06/cropped-New_Aina_Blankson_Logo-removebg-preview-32x32.png",
+        "score": 5
+      }
+    ],
+    "inlineSvg": false
+  },
+  "ajumogobia-okeke": {
+    "site": "https://www.ajumogobiaokeke.com/",
+    "candidates": [
+      {
+        "url": "https://www.ajumogobiaokeke.com/wp-content/uploads/2018/03/aologo.png",
+        "score": 30
+      },
+      {
+        "url": "https://www.ajumogobiaokeke.com/wp-content/uploads/2016/05/noimage-768x538.png",
+        "score": 5.719999999999999
+      }
+    ],
+    "inlineSvg": false
+  },
+  "aluko-oyebode": {
+    "site": "https://www.aluko-oyebode.com/",
+    "candidates": [
+      {
+        "url": "https://www.aluko-oyebode.com/wp-content/themes/ao/img/icon-search.svg",
+        "score": 40
+      },
+      {
+        "url": "https://www.aluko-oyebode.com/wp-content/themes/ao/img/icon-search-red.svg",
+        "score": 40
+      },
+      {
+        "url": "https://www.aluko-oyebode.com/wp-content/themes/ao/img/icon-toggle.svg",
+        "score": 40
+      },
+      {
+        "url": "https://www.aluko-oyebode.com/wp-content/themes/ao/img/icon-close.svg",
+        "score": 40
+      },
+      {
+        "url": "https://www.aluko-oyebode.com/wp-content/themes/ao/img/icon-msg.svg",
+        "score": 40
+      },
+      {
+        "url": "https://www.aluko-oyebode.com/wp-content/themes/ao/img/icon-twitter.svg",
+        "score": 40
+      }
+    ],
+    "inlineSvg": false
+  },
+  "banwo-ighodalo": {
+    "site": "https://www.banwo-ighodalo.com/",
+    "candidates": [
+      {
+        "url": "https://www.banwo-ighodalo.com/media-files/2023/04/logo-1w-1.png",
+        "score": 30
+      },
+      {
+        "url": "https://www.banwo-ighodalo.com/media-files/2023/06/BI-logo.webp",
+        "score": 30
+      },
+      {
+        "url": "https://www.banwo-ighodalo.com/media-files/2020/05/logo-white2x.png",
+        "score": 30
+      }
+    ],
+    "inlineSvg": false
+  },
+  "blackfriars-law": {
+    "site": "https://blackfriars-law.com/",
+    "candidates": [
+      {
+        "url": "https://blackfriars-law.com/img/blackfriars-logo.png",
+        "score": 30
+      }
+    ],
+    "inlineSvg": false
+  },
+  "bloomfield-law": {
+    "site": "https://www.bloomfield-law.com/",
+    "candidates": [
+      {
+        "url": "https://www.bloomfield-law.com/themes/custom/bloomfield/assets/images/logos/logo-new.svg",
+        "score": 130
+      },
+      {
+        "url": "https://www.bloomfield-law.com/themes/custom/bloomfield/assets/images/logos/logo-colour.svg",
+        "score": 130
+      }
+    ],
+    "inlineSvg": false
+  },
+  "dealhq-partners": {
+    "site": "https://dealhqpartners.com/",
+    "candidates": [
+      {
+        "url": "https://dealhqpartners.com/wp-content/uploads/2025/12/Picture2-847x1024.png",
+        "score": 40
+      },
+      {
+        "url": "https://dealhqpartners.com/wp-content/uploads/2026/05/DEALHQ-PARTNERS-AUDIT-COMPLAINCE-TRUSTMARK_page-0001-1-1024x1024.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://dealhqpartners.com/wp-content/uploads/2026/05/DEALHQ-PARTNERS-AUDIT-COMPLAINCE-TRUSTMARK_page-0001-1-1536x1536.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://dealhqpartners.com/wp-content/uploads/2026/05/DEALHQ-PARTNERS-AUDIT-COMPLAINCE-TRUSTMARK_page-0001-1-2048x2048.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://dealhqpartners.com/wp-content/uploads/2026/05/DEALHQ-PARTNERS-AUDIT-COMPLAINCE-TRUSTMARK_page-0001-1-1000x1000.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://dealhqpartners.com/wp-content/uploads/2018/11/LOGO.png",
+        "score": 30
+      }
+    ],
+    "inlineSvg": false
+  },
+  "detail-solicitors": {
+    "site": "https://www.detailsolicitors.com/",
+    "candidates": [
+      {
+        "url": "https://www.detailsolicitors.com/wp-content/uploads/2021/08/Detail-Management-Team-Room-Home-C-1280x853.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://www.detailsolicitors.com/wp-content/uploads/2026/07/Detail_Logo_Website-1.png",
+        "score": 30
+      },
+      {
+        "url": "https://www.detailsolicitors.com/wp-content/uploads/2026/07/Detail-Logo-White-400-B.png",
+        "score": 30
+      },
+      {
+        "url": "https://www.detailsolicitors.com/wp-content/uploads/2021/07/Detail-Solicitors-Event-600x337-1.jpg",
+        "score": 24
+      },
+      {
+        "url": "https://www.detailsolicitors.com/wp-content/uploads/2021/08/Detail-Management-Team-Room-Home-C-980x653.jpg",
+        "score": 14.200000000000003
+      },
+      {
+        "url": "https://www.detailsolicitors.com/wp-content/uploads/2021/06/Century-Quality-117x140-1.jpg",
+        "score": 5.6
+      }
+    ],
+    "inlineSvg": false
+  },
+  "famsville-solicitors": {
+    "site": "https://famsvillesolicitors.com/",
+    "error": "fetch failed",
+    "candidates": []
+  },
+  "g-elias": {
+    "site": "https://www.gelias.com/",
+    "candidates": [
+      {
+        "url": "https://www.gelias.com/images/AWA-WTR-LinkedIn-1024x499.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://www.gelias.com/images/G_Elias_Logo_-_July_-_2026_-_Black.png",
+        "score": 30
+      }
+    ],
+    "inlineSvg": false
+  },
+  "george-etomi": {
+    "site": "https://geplaw.com/",
+    "candidates": [
+      {
+        "url": "https://geplaw.com/wp-content/plugins/cookie-law-info/lite/frontend/images/revisit.svg",
+        "score": 100
+      },
+      {
+        "url": "https://geplaw.com/wp-content/plugins/cookie-law-info/lite/frontend/images/close.svg",
+        "score": 100
+      },
+      {
+        "url": "https://geplaw.com/wp-content/uploads/2022/05/cropped-logo-600x729.jpg",
+        "score": 34.16
+      },
+      {
+        "url": "https://geplaw.com/wp-content/uploads/2022/05/cropped-logo.jpg",
+        "score": 30
+      },
+      {
+        "url": "https://geplaw.com/wp-content/uploads/2022/05/cropped-logo-247x300.jpg",
+        "score": 17
+      },
+      {
+        "url": "https://geplaw.com/wp-content/uploads/2022/05/cropped-cropped-logo-192x192.jpg",
+        "score": 12.68
+      }
+    ],
+    "inlineSvg": false
+  },
+  "jackson-etti-edu": {
+    "site": "https://jee.africa/",
+    "candidates": [
+      {
+        "url": "https://jee.africa/favicon.svg",
+        "score": 40
+      },
+      {
+        "url": "https://a.storyblok.com/f/302089/1173x1349/756d0fc133/iflr1000-recommended-law-firm-2024.png",
+        "score": 40
+      },
+      {
+        "url": "https://a.storyblok.com/f/302089/2400x2400/b5065774c6/ip-star-top-tier-copyrights-2025.png",
+        "score": 40
+      },
+      {
+        "url": "https://a.storyblok.com/f/302089/2400x2400/d0d7c70ef1/ip-star-top-tier-ip-transaction.png",
+        "score": 40
+      },
+      {
+        "url": "https://a.storyblok.com/f/302089/2400x2400/9f6a4accb2/ip-star-top-tier-patent-2025.png",
+        "score": 40
+      },
+      {
+        "url": "https://a.storyblok.com/f/302089/2400x2400/0cbc5a12f4/ip-star-top-tier-trademark-2025.png",
+        "score": 40
+      }
+    ],
+    "inlineSvg": false
+  },
+  "kenna-partners": {
+    "site": "https://kennapartners.com/",
+    "candidates": [
+      {
+        "url": "https://kennapartners.com/home/kenna-wordmark-header-compact.svg",
+        "score": 110
+      },
+      {
+        "url": "https://kennapartners.com/home/figma-practice-section/read-more-arrow.svg",
+        "score": 100
+      },
+      {
+        "url": "https://kennapartners.com/home/kenna-wordmark-footer.svg",
+        "score": 95
+      },
+      {
+        "url": "https://kennapartners.com/favicon.svg",
+        "score": 40
+      },
+      {
+        "url": "https://kennapartners.com/apple-touch-icon.svg",
+        "score": 40
+      }
+    ],
+    "inlineSvg": false
+  },
+  "mike-igbokwe": {
+    "site": "https://mikeigbokwe.com/",
+    "candidates": [
+      {
+        "url": "https://mikeigbokwe.com/wp-content/uploads/2021/05/Mike-Igbokwe-SAN-1024x401.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://mikeigbokwe.com/wp-content/uploads/2021/05/Mike-Igbokwe-SAN-Co-1-1024x399.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://mikeigbokwe.com/wp-content/uploads/2021/05/Mike-Igbokwe-SAN-Co-1-1536x598.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://mikeigbokwe.com/wp-content/uploads/2024/10/pexels-pavel-danilyuk-8112193-1400x1040.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://mikeigbokwe.com/wp-content/uploads/2021/05/Mike-Igbokwe-SAN-768x301.jpg",
+        "score": 5.719999999999999
+      },
+      {
+        "url": "https://mikeigbokwe.com/wp-content/uploads/2021/05/Mike-Igbokwe-SAN-Co-1-768x299.jpg",
+        "score": 5.719999999999999
+      }
+    ],
+    "inlineSvg": false
+  },
+  "olajide-oyewole": {
+    "site": "https://www.dlapiperafrica.com/en/nigeria/",
+    "candidates": [
+      {
+        "url": "https://www.dlapiperafrica.com/export/system/modules/com.dlapiper.africa/resources/img/logos/dla-piper-africa-navy.svg",
+        "score": 130
+      },
+      {
+        "url": "https://www.dlapiperafrica.com/export/sites/africa/images/logos/olajide-oyewole-logo-dark-blue-02.svg_2063069299.svg",
+        "score": 130
+      }
+    ],
+    "inlineSvg": false
+  },
+  "olaniwun-ajayi": {
+    "site": "https://www.olaniwunajayi.net/",
+    "candidates": [
+      {
+        "url": "https://www.olaniwunajayi.net/wp-content/uploads/2024/04/oalp-logo-white-large.svg",
+        "score": 130
+      },
+      {
+        "url": "https://www.olaniwunajayi.net/wp-content/uploads/2024/04/logo-white.svg",
+        "score": 130
+      },
+      {
+        "url": "https://www.olaniwunajayi.net/wp-content/themes/magnuz/assets/imgs/star-shape.svg",
+        "score": 100
+      },
+      {
+        "url": "https://wpriverthemes.com/magnuz/wp-content/themes/magnuz/assets/imgs/star-shape.svg",
+        "score": 100
+      },
+      {
+        "url": "https://www.olaniwunajayi.net/wp-content/plugins/cookie-law-info/lite/frontend/images/revisit.svg",
+        "score": 100
+      },
+      {
+        "url": "https://www.olaniwunajayi.net/wp-content/plugins/cookie-law-info/lite/frontend/images/close.svg",
+        "score": 100
+      }
+    ],
+    "inlineSvg": false
+  },
+  "perchstone-graeys": {
+    "site": "https://www.perchstoneandgraeys.com/",
+    "candidates": [
+      {
+        "url": "https://perchstoneandgraeys.com/wp-content/uploads/2024/01/Perchstone-Graeys-Logo-1024x288.png",
+        "score": 70
+      },
+      {
+        "url": "https://perchstoneandgraeys.com/wp-content/uploads/2024/01/Perchstone-Graeys-Logo-1536x432.png",
+        "score": 70
+      },
+      {
+        "url": "https://perchstoneandgraeys.com/wp-content/uploads/2024/01/Perchstone-Graeys-Logo-2048x576.png",
+        "score": 70
+      },
+      {
+        "url": "https://perchstoneandgraeys.com/wp-content/uploads/2025/01/Mr-E-1024x954.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://perchstoneandgraeys.com/wp-content/uploads/2025/01/Tolulope-Aderemi-scaled-e1739447310366-1024x954.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://perchstoneandgraeys.com/wp-content/uploads/2025/01/Steve-Nwabueze-1024x954.jpg",
+        "score": 40
+      }
+    ],
+    "inlineSvg": false
+  },
+  "primera-africa": {
+    "site": "https://primeraal.com/",
+    "candidates": [
+      {
+        "url": "https://primeraal.com/wp-content/uploads/2024/04/PAL_Logo-1.png",
+        "score": 30
+      },
+      {
+        "url": "https://primeraal.com/wp-content/uploads/2024/04/Alfa-Logo.png",
+        "score": 30
+      },
+      {
+        "url": "https://primeraal.com/wp-content/uploads/2024/04/Company-Transaction11-416x296-1.jpg",
+        "score": 16.64
+      },
+      {
+        "url": "https://primeraal.com/wp-content/uploads/2024/04/Energy-Environment-and-Natural-Resources-416x296-1.jpg",
+        "score": 16.64
+      },
+      {
+        "url": "https://primeraal.com/wp-content/uploads/2024/04/Family-Law-and-Probate-Practice-Wills-Trust-Estates-Divorce-Custody_Adoption-416x296-1.jpg",
+        "score": 16.64
+      },
+      {
+        "url": "https://primeraal.com/wp-content/uploads/2024/04/Litigation-criminal-and-civil1-416x296-1.jpg",
+        "score": 16.64
+      }
+    ],
+    "inlineSvg": false
+  },
+  "punuka": {
+    "site": "https://punuka.com/",
+    "candidates": [
+      {
+        "url": "https://punuka.com/wp-content/uploads/2024/09/Punuka_logo_whitebg-1024x367.png",
+        "score": 70
+      },
+      {
+        "url": "https://punuka.com/wp-content/uploads/2024/09/Punuka_logo_whitebg-1536x550.png",
+        "score": 70
+      },
+      {
+        "url": "https://punuka.com/wp-content/uploads/2024/09/Punuka_logo_whitebg-2048x734.png",
+        "score": 70
+      },
+      {
+        "url": "https://punuka.com/wp-content/uploads/2024/09/Punuka_logo_new-1024x321.png",
+        "score": 70
+      },
+      {
+        "url": "https://punuka.com/wp-content/uploads/2018/11/NDPC-1024x306.png",
+        "score": 40
+      },
+      {
+        "url": "https://punuka.com/wp-content/uploads/2024/10/city-bg-1600x1068.jpg",
+        "score": 40
+      }
+    ],
+    "inlineSvg": false
+  },
+  "resolution-law": {
+    "site": "https://resolutionlawng.com/",
+    "candidates": [],
+    "inlineSvg": false
+  },
+  "simmons-cooper": {
+    "site": "https://www.scp-law.com/",
+    "candidates": [],
+    "inlineSvg": false
+  },
+  "spa-ajibade": {
+    "site": "https://spaajibade.com/",
+    "candidates": [
+      {
+        "url": "https://spaajibade.com/wp-content/uploads/2026/07/OFFICIAL-SPA-AJIBADE-LOGO-02-1024x191-1.png",
+        "score": 70
+      },
+      {
+        "url": "https://spaajibade.com/wp-content/uploads/2021/12/cropped-OFFICIAL_SPA_AJIBADE_LOGO-removebg-preview-192x192.png",
+        "score": 12.68
+      },
+      {
+        "url": "https://spaajibade.com/wp-content/uploads/2021/12/cropped-OFFICIAL_SPA_AJIBADE_LOGO-removebg-preview-180x180.png",
+        "score": 12.200000000000003
+      },
+      {
+        "url": "https://spaajibade.com/wp-content/uploads/2021/12/cropped-OFFICIAL_SPA_AJIBADE_LOGO-removebg-preview-32x32.png",
+        "score": 5
+      }
+    ],
+    "inlineSvg": false
+  },
+  "stren-blan-partners": {
+    "site": "https://strenandblan.com/",
+    "candidates": [
+      {
+        "url": "https://strenandblan.com/core/modules/7e4609f00f/lite/frontend/images/close.svg",
+        "score": 100
+      },
+      {
+        "url": "https://strenandblan.com/storage/2024/08/strenandblan-office-5000x3333.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://strenandblan.com/storage/2024/08/strenandblan-office-1280x854.jpg",
+        "score": 40
+      },
+      {
+        "url": "https://strenandblan.com/storage/2022/09/SB-logo-2.jpg",
+        "score": 30
+      },
+      {
+        "url": "https://strenandblan.com/storage/2026/02/WIPR-Logo.png",
+        "score": 30
+      },
+      {
+        "url": "https://strenandblan.com/storage/2026/02/WIPR-Logo2.png",
+        "score": 30
+      }
+    ],
+    "inlineSvg": false
+  },
+  "streamsowers-kohn": {
+    "site": "https://sskohn.com/",
+    "candidates": [
+      {
+        "url": "https://sskohn.com/wp-content/uploads/2021/05/SSKOHN-Homepage-Elements_PT.3-640x2527.png",
+        "score": 40
+      },
+      {
+        "url": "https://sskohn.com/wp-content/uploads/2021/05/SSKOHN-Homepage-Elements_PT.3-389x1536.png",
+        "score": 40
+      },
+      {
+        "url": "https://sskohn.com/wp-content/uploads/2021/05/SSKOHN-Homepage-Elements_PT.3-519x2048.png",
+        "score": 40
+      },
+      {
+        "url": "https://sskohn.com/wp-content/uploads/2021/05/SSKOHN-Homepage-Elements_PT.3-320x1264.png",
+        "score": 40
+      },
+      {
+        "url": "https://sskohn.com/wp-content/uploads/2024/03/SSK_Logo_White_web_1.png",
+        "score": 30
+      },
+      {
+        "url": "https://sskohn.com/wp-content/uploads/2024/03/SSK_Logo_Main_web2_1.png",
+        "score": 30
+      }
+    ],
+    "inlineSvg": false
+  },
+  "tayo-oyetibo": {
+    "site": "https://tayooyetibolaw.com/",
+    "candidates": [],
+    "inlineSvg": false
+  },
+  "templars": {
+    "site": "https://www.templars-law.com/",
+    "candidates": [
+      {
+        "url": "https://www.templars-law.com/app/uploads/2025/07/Protecting-Business-Brands-4@2x-aspect-ratio-400-250-1024x640.jpg",
+        "score": 50
+      },
+      {
+        "url": "https://www.templars-law.com/app/uploads/2025/07/Protecting-Business-Brands-4@2x-aspect-ratio-400-250-1000x625.jpg",
+        "score": 50
+      },
+      {
+        "url": "https://www.templars-law.com/app/uploads/2025/07/Protecting-Business-Brands-4@2x-aspect-ratio-400-250-1200x750.jpg",
+        "score": 50
+      },
+      {
+        "url": "https://www.templars-law.com/app/uploads/2025/07/Protecting-Business-Brands-4@2x-aspect-ratio-400-250-1600x1000.jpg",
+        "score": 50
+      },
+      {
+        "url": "https://www.templars-law.com/app/uploads/2025/07/Protecting-Business-Brands-4@2x-aspect-ratio-400-250-1920x1200.jpg",
+        "score": 50
+      },
+      {
+        "url": "https://www.templars-law.com/app/uploads/2023/02/Expertise-Block-Default-aspect-ratio-1920-1080-1024x576.jpg",
+        "score": 40
+      }
+    ],
+    "inlineSvg": false
+  },
+  "udo-udoma-bello-osagie": {
+    "site": "https://www.uubo.org/",
+    "candidates": [],
+    "inlineSvg": false
+  },
+  "wole-olanipekun": {
+    "site": "https://www.woleolanipekun.com/",
+    "candidates": [
+      {
+        "url": "https://www.woleolanipekun.com/wp-content/themes/law_firm/assets/img/logo.svg",
+        "score": 130
+      },
+      {
+        "url": "https://www.woleolanipekun.com/wp-content/themes/law_firm/assets/img/icons/soc2.svg",
+        "score": 100
+      },
+      {
+        "url": "https://www.woleolanipekun.com/wp-content/uploads/2024/07/linkedin.svg",
+        "score": 100
+      },
+      {
+        "url": "https://www.woleolanipekun.com/wp-content/uploads/2024/07/x.svg",
+        "score": 100
+      }
+    ],
+    "inlineSvg": false
+  }
+}

@@ -1,27 +1,35 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Footer from '@/components/layout/Footer'
-import { ALL_FIRMS } from '@/lib/firms-data'
+import { ALL_FIRMS, firmLogo, getMonogram, type Firm } from '@/lib/firms-data'
+import LogoFrame from '@/components/ui/LogoFrame'
 
-const STORAGE = 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/'
+/** Firm mark for the profile header.
+ *
+ *  This carried its own copy of the storage URL and keyed off `logoFile`
+ *  directly, which broke in two ways. Firms whose art was pulled from their own
+ *  site have a null `logoFile` and so rendered nothing at all here, even with a
+ *  perfectly good PNG in /public. And every other firm was served the untrimmed
+ *  bucket original rather than the trimmed art the rest of the site uses, so
+ *  this page sized its logos unlike the directory and the ticker.
+ *
+ *  Going through firmLogo() and LogoFrame fixes both, and means the three
+ *  surfaces stay in step from here. */
+function FirmAvatar({ firm }: { firm: Firm }) {
+  const url = firmLogo(firm)
 
-function FirmAvatar({ logoFile, name }: { logoFile?: string | null; name: string }) {
-  return (
-    <div style={{
-      width: '96px', height: '96px', flexShrink: 0, borderRadius: '3px',
-      border: '0.5px solid #E8E0D5', backgroundColor: '#FFFFFF',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
-    }}>
-      {logoFile ? (
-        <img src={STORAGE + logoFile.replace(/ /g, '%20')} alt={name}
-          style={{ objectFit: 'contain', width: '85%', height: '85%' }} />
-      ) : (
-        <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontWeight: 700, fontSize: '1.5rem', color: '#FAF6F0', backgroundColor: '#1A1A1A', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {name.split(' ').map((w: string) => w[0]).slice(0, 2).join('')}
-        </span>
-      )}
-    </div>
-  )
+  if (!url) {
+    /* Matches the directory's quiet placeholder rather than a solid ink block.
+     * At this size the filled version was the heaviest thing on the page,
+     * outweighing the firm's own name beside it. */
+    return (
+      <span className="firm-monogram firm-monogram-lg">
+        <span className="grotesk-bold">{getMonogram(firm.name)}</span>
+      </span>
+    )
+  }
+
+  return <LogoFrame src={url} alt={firm.name} capHeight={3} maxWidth={9} plate />
 }
 
 const MapPinIcon = () => (<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>)
@@ -36,46 +44,70 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
   const firm = ALL_FIRMS.find(f => f.slug === slug)
   if (!firm) return notFound()
 
+  /* Firms a reader of this page would plausibly want next: same tier, and at
+   * least one practice area in common. Ranked by how much practice overlap
+   * there is, so the suggestions are about the work rather than the alphabet.
+   * Falls back to tier alone for firms whose practice list is unusual, which
+   * keeps the row populated instead of collapsing on the narrow cases. */
+  const related = (() => {
+    const overlap = (f: Firm) =>
+      f.practiceAreas.filter(p => firm.practiceAreas.includes(p)).length
+
+    const pool = ALL_FIRMS.filter(f => f.slug !== firm.slug)
+    const scored = pool
+      .map(f => ({ f, score: overlap(f) + (f.tier === firm.tier ? 1.5 : 0) }))
+      .filter(x => x.score > 1.5)
+      .sort((a, b) => b.score - a.score)
+
+    const picked = scored.slice(0, 4).map(x => x.f)
+    if (picked.length >= 3) return picked
+    // Top up from the same tier so the row never renders half empty.
+    const filler = pool.filter(f => f.tier === firm.tier && !picked.includes(f))
+    return [...picked, ...filler].slice(0, 4)
+  })()
+
   return (
     <>
-      <main style={{ backgroundColor: '#FAF6F0', paddingTop: '64px', minHeight: '100vh' }}>
+      {/* No min-height. It was 100vh, which on a firm with one office and no
+          open roles left a full screen of empty cream between the last line of
+          content and the footer. The page is as long as it has things to say. */}
+      <main style={{ backgroundColor: '#FAF6F0', paddingTop: '64px' }}>
 
         {/* Breadcrumb */}
-        <div style={{ borderBottom: '0.5px solid #E8E0D5', padding: '0.875rem 2rem', backgroundColor: '#F2EBE1' }}>
+        <div style={{ borderBottom: '0.5px solid var(--cream-border)', padding: '0.875rem 2rem', backgroundColor: '#F2EBE1' }}>
           <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto' }}>
-            <Link href="/firms" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#4A4A4A', textDecoration: 'none' }}>
-              <ArrowLeftIcon /> Firm Directory
+            <Link href="/firms" className="back-link">
+              <ArrowLeftIcon /> Firm directory
             </Link>
           </div>
         </div>
 
-        {/* Header */}
-        <div style={{ backgroundColor: '#FFFFFF', borderBottom: '0.5px solid #E8E0D5', padding: '3rem 2rem' }}>
+        {/* Header. The name leads. It previously sat below a row of three
+            uppercase micro-labels, one of which was a green "Verified" chip
+            shown on every firm in the directory and so meaningless as a
+            distinction. Tier and founding year survive as a quiet meta line
+            under the name, where they belong: they qualify the firm, they are
+            not the headline. */}
+        <div style={{ backgroundColor: '#FFFFFF', borderBottom: '0.5px solid var(--cream-border)', padding: '3rem 2rem' }}>
           <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-              <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#1A1A1A' }}>
-                {firm.tier}
-              </span>
-              <span style={{ width: '3px', height: '3px', borderRadius: '50%', backgroundColor: '#C8BEB4', display: 'inline-block' }} />
-              <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#2D6A4F' }}>
-                Verified
-              </span>
-              {firm.foundedYear && (
-                <>
-                  <span style={{ width: '3px', height: '3px', borderRadius: '50%', backgroundColor: '#C8BEB4', display: 'inline-block' }} />
-                  <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', letterSpacing: '0.08em', color: '#4A4A4A' }}>
-                    Est. {firm.foundedYear}
-                  </span>
-                </>
-              )}
-            </div>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '2rem', flexWrap: 'wrap' }}>
-              <div style={{ paddingTop: '6px' }}><FirmAvatar logoFile={firm.logoFile} name={firm.name} /></div>
+              <div style={{ paddingTop: '6px' }}><FirmAvatar firm={firm} /></div>
               <div>
-                <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: 700, color: '#1A1A1A', lineHeight: 1.1, marginBottom: '0.75rem' }}>
+                <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: 700, color: 'var(--ink)', lineHeight: 1.1, marginBottom: '0.6rem' }}>
                   {firm.name}
                 </h1>
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: '#4A4A4A', lineHeight: 1.7, maxWidth: '600px' }}>
+                <div className="firm-profile-meta">
+                  <span>{firm.tier}</span>
+                  {firm.foundedYear && (
+                    <>
+                      <span className="firm-profile-dot" />
+                      <span>Established {firm.foundedYear}</span>
+                    </>
+                  )}
+                  <span className="firm-profile-dot" />
+                  <span>{firm.offices.length === 1 ? '1 office' : `${firm.offices.length} offices`}</span>
+                </div>
+                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.9rem', color: 'var(--ink-muted)', lineHeight: 1.7, maxWidth: '600px' }}>
                   {firm.description}
                 </p>
               </div>
@@ -89,32 +121,28 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
           {/* Left — details */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
 
-            {/* Practice Areas */}
             <section>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#4A4A4A', marginBottom: '1rem' }}>
-                Practice Areas
-              </p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <p className="firm-profile-section-heading">Practice areas</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                 {firm.practiceAreas.map((area: string) => (
-                  <span key={area} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', padding: '5px 12px', backgroundColor: '#F2EBE1', border: '0.5px solid #E8E0D5', borderRadius: '2px', color: '#1A1A1A' }}>
+                  <span key={area} className="tag-chip" style={{ fontSize: '0.76rem', padding: '5px 11px' }}>
                     {area}
                   </span>
                 ))}
               </div>
             </section>
 
-            {/* Offices */}
             <section>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#4A4A4A', marginBottom: '1rem' }}>
-                Offices
+              <p className="firm-profile-section-heading">
+                {firm.offices.length === 1 ? 'Office' : 'Offices'}
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
                 {firm.offices.map((office: any) => (
-                  <div key={office.city} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
-                    <span style={{ color: '#1A1A1A', marginTop: '2px', flexShrink: 0 }}><MapPinIcon /></span>
+                  <div key={office.city} style={{ display: 'flex', gap: '0.7rem', alignItems: 'flex-start' }}>
+                    <span style={{ color: 'var(--ink-muted)', marginTop: '3px', flexShrink: 0 }}><MapPinIcon /></span>
                     <div>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '0.15rem' }}>{office.city}</p>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', color: '#4A4A4A', lineHeight: 1.5 }}>{office.address}</p>
+                      <p className="firm-office-city">{office.city}</p>
+                      <p className="firm-office-address">{office.address}</p>
                     </div>
                   </div>
                 ))}
@@ -123,31 +151,64 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
 
           </div>
 
-          {/* Right — contact card */}
-          <div style={{ position: 'sticky', top: '88px' }}>
-            <div style={{ border: '0.5px solid #E8E0D5', borderTop: '3px solid #1A1A1A', backgroundColor: '#FFFFFF', padding: '1.5rem' }}>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.62rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#4A4A4A', marginBottom: '1.25rem' }}>
-                Apply Directly
-              </p>
+          {/* Right — contact card.
+              Was two full-width uppercase blocks of equal weight, one solid
+              black and one outlined, stacked under a 3px black rule. Three
+              competing heavy elements for what is really one action. The
+              application is the action; the website is a reference and now
+              reads as a link. */}
+          <div className="job-apply-wrap">
+            {/* Same carton card the job page uses for its apply panel. The flat
+                white box this replaced read as a form field rather than as the
+                one thing the page is asking you to do, and it was the only
+                surface in the product answering "how do I apply" in its own
+                visual language. */}
+            <div className="apply-card">
+              <p className="grotesk-bold apply-card-title">Apply directly</p>
+
               {firm.email && (
-                <a href={'mailto:' + firm.email} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '0.75rem', backgroundColor: '#1A1A1A', color: '#FAF6F0', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', borderRadius: '2px', marginBottom: '0.75rem', boxSizing: 'border-box' }}>
-                  <MailIcon /> Send Application
-                </a>
+                <>
+                  <a href={'mailto:' + firm.email} className="grotesk-bold apply-card-cta">
+                    <MailIcon /> Send your application
+                  </a>
+                  <p className="grotesk-regular apply-card-note">
+                    Nigerian firms take speculative applications year round. Send your CV and a
+                    short cover letter to{' '}
+                    <a href={'mailto:' + firm.email} className="apply-card-mail">{firm.email}</a>.
+                  </p>
+                </>
               )}
+
               {firm.website && (
-                <a href={firm.website} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '0.75rem', backgroundColor: 'transparent', color: '#1A1A1A', border: '0.5px solid #1A1A1A', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none', borderRadius: '2px', boxSizing: 'border-box' }}>
-                  <GlobeIcon /> Visit Website
+                <a href={firm.website} target="_blank" rel="noopener noreferrer" className="apply-card-link">
+                  <GlobeIcon /> Visit website
                 </a>
-              )}
-              {firm.email && (
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', color: '#4A4A4A', marginTop: '1rem', paddingTop: '1rem', borderTop: '0.5px solid #E8E0D5', lineHeight: 1.6 }}>
-                  Send your CV and cover letter to <a href={'mailto:' + firm.email} style={{ color: '#1A1A1A', fontWeight: 600 }}>{firm.email}</a>
-                </p>
               )}
             </div>
           </div>
 
         </div>
+
+        {/* Somewhere to go next. Without it the page is a cul-de-sac: read the
+            profile, then back-button. Uses only data already in the directory,
+            so nothing here is invented. */}
+        {related.length > 0 && (
+          <div style={{ borderTop: '0.5px solid var(--cream-border)' }}>
+            <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '2.5rem 2rem 3.5rem' }}>
+              <p className="firm-profile-section-heading">Similar firms</p>
+              <div className="firm-related">
+                {related.map(f => (
+                  <Link key={f.slug} href={`/firms/${f.slug}`} className="firm-related-card">
+                    <span className="grotesk-bold firm-related-name">{f.name}</span>
+                    <span className="grotesk-regular firm-related-meta">
+                      {f.tier} · {f.offices.map(o => o.city).join(' · ')}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </main>
       <Footer />
     </>

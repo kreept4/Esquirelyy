@@ -130,7 +130,7 @@ export default function SignupPage() {
           <span className="auth-panel-mark">"</span>
           <div className="auth-panel-content">
             <p className="auth-panel-headline">Every opportunity.<br/>One platform.</p>
-            <p className="auth-panel-copy">Jobs, vacation schemes, pupillages, and scholarships for Nigerian legal professionals, in one place.</p>
+            <p className="auth-panel-copy">Jobs, internships, and scholarships for Nigerian legal professionals, in one place.</p>
           </div>
           <p className="auth-panel-foot">Esquirely.</p>
         </div>

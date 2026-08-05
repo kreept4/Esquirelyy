@@ -47,7 +47,7 @@ export default function HeroSection() {
             />
             <FadeIn delay={800} duration={1000}>
               <p className="grotesk-regular" style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.75)', maxWidth: '480px', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-                Jobs, vacation schemes, pupillages, and scholarships across law firms, corporates, and institutions, verified and updated daily.
+                Jobs, internships, and scholarships across law firms, corporates, and institutions, verified and updated daily.
               </p>
             </FadeIn>
             <FadeIn delay={1200} duration={1000}>

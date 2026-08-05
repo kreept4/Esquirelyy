@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
 import { extractText as extractPdfText, getDocumentProxy } from 'unpdf'
 import mammoth from 'mammoth'
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+import { askClaude, parseJSON, friendlyError } from '@/lib/ai'
 
 export const runtime = 'nodejs'
-export const maxDuration = 60
+export const maxDuration = 300
 
 async function extractText(file: File): Promise<string> {
   const buffer = Buffer.from(await file.arrayBuffer())
@@ -106,33 +104,15 @@ export async function POST(req: NextRequest) {
       if (practiceArea) userPrompt += ' Practice area or specialisation: ' + practiceArea + '.'
     }
 
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 2048,
+    const responseText = await askClaude({
       system: systemPrompt,
-      messages: [{ role: 'user', content: userPrompt }],
+      prompt: userPrompt,
+      maxTokens: 2048,
     })
 
-    const responseText = message.content.map((b: any) => b.type === 'text' ? b.text : '').join('')
-    let cleaned = responseText.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '').trim()
-
-    let parsed: any
-    try {
-      parsed = JSON.parse(cleaned)
-    } catch {
-      const match = cleaned.match(/\{[\s\S]*\}/)
-      if (match) {
-        try { parsed = JSON.parse(match[0]) } catch {
-          return NextResponse.json({ error: 'Failed to generate questions. Please try again.' }, { status: 500 })
-        }
-      } else {
-        return NextResponse.json({ error: 'Failed to generate questions. Please try again.' }, { status: 500 })
-      }
-    }
-
-    return NextResponse.json(parsed)
+    return NextResponse.json(parseJSON(responseText))
   } catch (err: any) {
-    console.error('Interview prep error:', err)
-    return NextResponse.json({ error: err.message || 'Something went wrong.' }, { status: 500 })
+    const { error, status } = friendlyError(err, 'CV')
+    return NextResponse.json({ error }, { status })
   }
 }

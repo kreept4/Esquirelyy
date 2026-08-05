@@ -18,7 +18,6 @@ const VERIFIED = '#2D6A4F'
 const TYPE_LABELS: Record<string, string> = {
   job: 'Full-time',
   internship: 'Internship',
-  vacation_scheme: 'Vacation scheme',
   pupillage: 'Pupillage',
 }
 

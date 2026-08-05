@@ -27,6 +27,12 @@ export default function PageHeader({
 
   return (
     <header
+      /* The class carries the control inversion. `.field` and `.filter-pill`
+         are drawn for a cream ground, so on ink they would be dark text in a
+         dark box with an invisible border. Scoping the override to the header
+         means any page that switches to `tone="ink"` gets legible controls
+         without each one restyling its own filters. */
+      className={isInk ? 'page-header page-header-ink' : 'page-header'}
       style={{
         backgroundColor: isInk ? '#1A1A1A' : '#F0EBE3',
         borderBottom: isInk ? 'none' : '0.5px solid #E8E0D5',

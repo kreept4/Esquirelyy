@@ -18,7 +18,7 @@ const PREFS_KEY = 'esquirely:prefs'
 
 const STAGES = [
   { value: 'law_student', label: 'Law student', level: 'student' },
-  { value: 'nysc', label: 'NYSC', level: 'nysc' },
+  { value: 'nysc', label: 'Entry-level', level: 'junior' },
   { value: 'junior_associate', label: 'Junior associate', level: 'junior' },
   { value: 'senior_lawyer', label: 'Senior lawyer', level: 'senior' },
 ]
@@ -26,7 +26,7 @@ const STAGES = [
 const GOALS = [
   { value: 'jobs', label: 'Jobs and schemes', href: '/jobs' },
   { value: 'scholarships', label: 'Scholarships', href: '/scholarships' },
-  { value: 'all', label: 'All of the above', href: '/opportunities' },
+  { value: 'all', label: 'All of the above', href: '/jobs' },
 ]
 
 const CITIES = ['Lagos', 'Abuja', 'Port Harcourt', 'Ibadan', 'Anywhere']
@@ -38,11 +38,11 @@ const QUESTIONS: {
   question: string
   options: { value: string; label: string }[]
 }[] = [
-  { key: 'stage', question: 'where are you right now?', options: STAGES },
-  { key: 'goal', question: 'what are you looking for?', options: GOALS },
+  { key: 'stage', question: 'Where are you right now?', options: STAGES },
+  { key: 'goal', question: 'What are you looking for?', options: GOALS },
   {
     key: 'city',
-    question: 'where do you want to work?',
+    question: 'Where do you want to work?',
     options: CITIES.map((c) => ({ value: c, label: c })),
   },
 ]
@@ -107,8 +107,10 @@ export default function QuickQuestions() {
     setStep((s) => s - 1)
   }
 
+  // #1A1A1A left a faint seam where this met the black sections above it.
+  // The whole dark run shares one value now.
   return (
-    <section style={{ backgroundColor: '#1A1A1A', padding: '5rem 1.5rem' }}>
+    <section style={{ backgroundColor: '#000000', padding: '5rem 1.5rem' }}>
       <div style={{ maxWidth: '760px', margin: '0 auto' }}>
         <h2
           className="display-black"
@@ -119,7 +121,7 @@ export default function QuickQuestions() {
             marginBottom: '2.5rem',
           }}
         >
-          tell us what you want, we&rsquo;ll show you the rest.
+          Tell us what you want, we&rsquo;ll show you the rest.
         </h2>
 
         {/* Progress */}

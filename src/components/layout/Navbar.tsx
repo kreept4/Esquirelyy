@@ -16,7 +16,6 @@ import './StaggeredMenu.css'
 
 const NAV_ITEMS = [
   { label: 'Jobs', ariaLabel: 'Browse legal jobs', link: '/jobs' },
-  { label: 'Opportunities', ariaLabel: 'Browse opportunities', link: '/opportunities' },
   { label: 'Firms', ariaLabel: 'Browse the firm directory', link: '/firms' },
   { label: 'Scholarships', ariaLabel: 'Browse scholarships', link: '/scholarships' },
   { label: 'Tracker', ariaLabel: 'Open your application tracker', link: '/tracker' },
@@ -29,12 +28,68 @@ export default function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
   const [user, setUser] = useState<any>(null)
+  const [hidden, setHidden] = useState(false)
 
-  // Only the home page puts the header over the dark hero video. Everywhere else
-  // the page is cream, so a cream wordmark and toggle were invisible — there was
-  // no way back to the home page from an inner page.
-  const overHero = pathname === '/'
-  const restColor = overHero ? '#FAF6F0' : '#1A1A1A'
+  /**
+   * Hide the header on the way down, bring it back on the way up.
+   *
+   * Pinned-always meant the wordmark and toggle sat over the content the whole
+   * time; anchoring them to the top would put navigation out of reach on a long
+   * board. This gives an uncluttered read going down and instant navigation the
+   * moment you reverse.
+   *
+   * Notes on the guards. The read is deferred to rAF because scroll fires far
+   * more often than the browser paints, and doing work per event is what makes
+   * a header like this feel sticky. THRESHOLD swallows the small jitters of a
+   * trackpad, so it hides on a real gesture rather than a twitch. And it never
+   * hides within REVEAL_ABOVE of the top, since a header that vanishes on the
+   * first flick of the hero reads as a glitch.
+   */
+  useEffect(() => {
+    const THRESHOLD = 8
+    const REVEAL_ABOVE = 120
+    let last = window.scrollY
+    let ticking = false
+
+    const update = () => {
+      ticking = false
+      const y = window.scrollY
+      const delta = y - last
+      if (Math.abs(delta) < THRESHOLD) return
+      // Never hide near the top, and always reveal when scrolling up.
+      setHidden(y > REVEAL_ABOVE && delta > 0)
+      last = y
+    }
+
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(update)
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  // Opening the panel while the header is hidden would strand the close button
+  // off-screen, so any route change resets it.
+  useEffect(() => { setHidden(false) }, [pathname])
+
+  // The wordmark and toggle sit over the top of whatever the page opens with, so
+  // their colour has to follow that. Cream on a light page is invisible, which
+  // once left inner pages with no way back to the home page; ink on a dark one
+  // is the same fault in reverse.
+  //
+  // This used to be "home is dark, everything else is cream". That stopped being
+  // true when inner pages started opening with a full-bleed ink header, which is
+  // the device that ties the white product surfaces back to the homepage. Add
+  // each route to DARK_HEADER_ROUTES as it converts; once every inner page has
+  // one, this can collapse back to a constant.
+  // Prefix match, not equality: /jobs/<slug> carries the same ink header as
+  // /jobs, and an exact check left the wordmark invisible on every detail page.
+  const DARK_HEADER_ROUTES = ['/jobs', '/privacy', '/terms']
+  const overDark = pathname === '/' || DARK_HEADER_ROUTES.some(r => pathname.startsWith(r))
+  const restColor = overDark ? '#FAF6F0' : '#1A1A1A'
 
   useEffect(() => {
     const supabase = createClient()
@@ -68,6 +123,7 @@ export default function Navbar() {
   return (
     <>
       <StaggeredMenu
+        className={hidden ? 'nav-hidden' : undefined}
         position="right"
         isFixed
         items={NAV_ITEMS}

@@ -30,6 +30,66 @@
   z-index: 20;
 }
 
+/* The header floats over the page with no ground of its own, so the wordmark and
+   the Menu toggle used to collide with whatever scrolled beneath them: headings
+   ran straight through the wordmark.
+   A solid scrim is not an option because the header crosses both the black
+   sections and the cream ones, so any fixed colour is wrong for half the page.
+   Blur takes no colour position: it dims and softens whatever is behind, on any
+   ground, which is enough to separate the two layers. The mask fades it out
+   downward so there is no hard edge announcing a bar that is not there.
+   z-index -1 keeps it behind the wordmark and toggle; the header already
+   establishes a stacking context via its own z-index, so it cannot slip behind
+   the page itself. */
+/* Hide on the way down, reveal on the way up. Only the header moves, not the
+   wrapper, so the slide-open panel and its prelayers keep their own geometry.
+   Transform rather than top: it is compositor-only, so the header cannot cause
+   layout work on a scroll it is already reacting to. */
+.staggered-menu-wrapper .staggered-menu-header {
+  transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.24s ease;
+}
+.staggered-menu-wrapper.nav-hidden .staggered-menu-header {
+  transform: translateY(-110%);
+  opacity: 0;
+}
+/* Someone who has asked for less motion should not be given a sliding header;
+   leaving it put is the safer failure. */
+@media (prefers-reduced-motion: reduce) {
+  .staggered-menu-wrapper .staggered-menu-header { transition: none; }
+  .staggered-menu-wrapper.nav-hidden .staggered-menu-header {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.staggered-menu-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* brightness() alongside the blur is doing the contrast work, not just the
+     separation. The wordmark and toggle are cream, and the page runs them over
+     black, cream and the light blues of EverythingYouNeed; on the pale grounds
+     cream-on-pale was barely legible. Darkening the backdrop guarantees the
+     cream reads everywhere, and on the black sections it is close to a no-op
+     because there is nothing left to darken. */
+  backdrop-filter: blur(12px) brightness(0.55);
+  -webkit-backdrop-filter: blur(12px) brightness(0.55);
+  -webkit-mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 45%, transparent 100%);
+}
+
+/* Safari and Firefox without backdrop-filter get nothing from the rule above,
+   so the collision would come straight back. A faint neutral wash is a poor
+   substitute but it is legible on both grounds, and it only applies where the
+   blur is genuinely unsupported. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .staggered-menu-header::before {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.28), transparent);
+  }
+}
+
 .staggered-menu-header > * {
   pointer-events: auto;
 }

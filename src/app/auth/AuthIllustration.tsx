@@ -27,7 +27,7 @@ export default function AuthIllustration() {
           Every opportunity.<br />One platform.
         </p>
         <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: 'rgba(250,246,240,0.65)', lineHeight: 1.75, marginBottom: '3rem' }}>
-          Jobs, vacation schemes, pupillages, and scholarships for Nigerian legal professionals, in one place.
+          Jobs, internships, and scholarships for Nigerian legal professionals, in one place.
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {[

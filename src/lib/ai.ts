@@ -1,0 +1,220 @@
+import Anthropic from '@anthropic-ai/sdk'
+
+/**
+ * Shared plumbing for the four AI tool routes.
+ *
+ * All four were failing intermittently for the same three reasons, each of which
+ * looked to a user like "the tool is broken".
+ *
+ * The calls are slow. A cover letter takes about thirteen seconds and a CV
+ * review considerably longer, and they were issued non-streaming. A long
+ * non-streaming POST is the classic way to collect an HTTP timeout somewhere
+ * between the browser, the platform and the API, so every request is now
+ * streamed. Nothing consumes the individual deltas, we just want the connection
+ * producing bytes the whole time instead of going silent for half a minute.
+ *
+ * The connection is not reliable. Observed in one sitting: a genuine 500 from
+ * the API, and a dropped connection, on consecutive requests that were fine
+ * moments later. Transient faults are normal and the fix is to retry rather
+ * than to surface them.
+ *
+ * And when something did fail, the route handed the raw error straight to the
+ * page. Users were shown the string
+ *   500 {"type":"error","error":{"type":"api_error", ...}}
+ * which is not a message, it is a stack trace wearing a coat. Errors are now
+ * translated into something a person can act on.
+ */
+
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  // Two retries is the SDK default; the extra attempt is cheap next to making
+  // someone upload their CV again, and these calls are already slow enough that
+  // nobody notices one more round trip.
+  maxRetries: 4,
+})
+
+/**
+ * Per-request ceiling, in milliseconds.
+ *
+ * This is the number that was actually breaking CV review. A deliberately short
+ * one page test CV took fifty seconds to review, against a route ceiling of
+ * sixty, so any real two page CV ran out of time and the user got a failure
+ * after a minute of waiting. The routes now allow the platform maximum of five
+ * minutes, and this sits just inside it so that a genuine overrun comes back as
+ * our own sentence rather than as a dead connection.
+ */
+const REQUEST_TIMEOUT_MS = 290_000
+
+/** Thrown when the model was reached but its answer could not be used. */
+export class AIFormatError extends Error {}
+
+type AskOptions = {
+  system: string
+  prompt: string
+  maxTokens: number
+  model?: string
+}
+
+/**
+ * One streamed request, returning the assembled text.
+ *
+ * Sonnet 4.6 is deliberate. These are interactive tools where the user is
+ * watching a spinner, and it turns a cover letter around in about thirteen
+ * seconds against roughly twenty four for Opus 5. Opus 5 is the better writer
+ * and worth revisiting, but not before the CV review path is measured against
+ * the sixty second ceiling, since that one sends a whole CV and asks for four
+ * times as many tokens back.
+ */
+/**
+ * Does this look like the network rather than the request?
+ *
+ * The SDK's own retries only cover failures it sees before the response starts.
+ * Once bytes are flowing, a dropped connection surfaces as a bare undici error
+ * whose entire message is "terminated", which is not an Anthropic error class
+ * and so escapes every instanceof check. That exact failure was observed here
+ * on an otherwise valid request, so it is caught by name.
+ */
+function isTransient(err: any): boolean {
+  if (err instanceof Anthropic.APIConnectionError) return true
+  if (err instanceof Anthropic.RateLimitError) return true
+  if (err instanceof Anthropic.APIError) return (err.status ?? 0) >= 500
+  const msg = String(err?.message || '').toLowerCase()
+  const cause = String(err?.cause?.message || err?.cause?.code || '').toLowerCase()
+  return /terminated|socket|econnreset|etimedout|epipe|network|fetch failed/.test(msg + ' ' + cause)
+}
+
+const STREAM_ATTEMPTS = 3
+
+export async function askClaude({ system, prompt, maxTokens, model }: AskOptions): Promise<string> {
+  let lastErr: any
+
+  // Retry the whole stream, not just the connect. A generation that dies
+  // halfway has to be restarted from the top, because there is no way to
+  // resume a partial one, and a partial answer is useless to a JSON parser.
+  for (let attempt = 1; attempt <= STREAM_ATTEMPTS; attempt++) {
+    try {
+      const stream = anthropic.messages.stream(
+        {
+          model: model ?? 'claude-sonnet-4-6',
+          max_tokens: maxTokens,
+          system,
+          messages: [{ role: 'user', content: prompt }],
+        },
+        { timeout: REQUEST_TIMEOUT_MS }
+      )
+
+      const message = await stream.finalMessage()
+
+      // A truncated answer is never valid JSON, so say what actually happened
+      // rather than letting it fail later as an unhelpful parse error.
+      if (message.stop_reason === 'max_tokens') {
+        throw new AIFormatError('The response was cut short before it finished.')
+      }
+      if (message.stop_reason === 'refusal') {
+        throw new AIFormatError('That request could not be processed. Please rephrase and try again.')
+      }
+
+      return message.content.map(b => (b.type === 'text' ? b.text : '')).join('')
+    } catch (err: any) {
+      lastErr = err
+      if (err instanceof AIFormatError || !isTransient(err) || attempt === STREAM_ATTEMPTS) throw err
+
+      // Back off a little before retrying, so a brief outage has a moment to
+      // clear rather than being hit three times in the same second.
+      console.warn(`Claude stream attempt ${attempt} failed (${err?.message}), retrying`)
+      await new Promise(r => setTimeout(r, attempt * 1500))
+    }
+  }
+
+  throw lastErr
+}
+
+/**
+ * Parse the model's JSON.
+ *
+ * Every route asks for bare JSON and every route separately re-implemented the
+ * same two fallbacks, because models occasionally wrap the object in a code
+ * fence or prepend a line of commentary regardless of instructions. Both
+ * recoveries live here once.
+ */
+export function parseJSON<T = any>(raw: string): T {
+  const cleaned = raw
+    .trim()
+    .replace(/^```(?:json)?\s*/i, '')
+    .replace(/```\s*$/, '')
+    .trim()
+
+  try {
+    return JSON.parse(cleaned)
+  } catch {
+    // Salvage the outermost object if the model wrote anything around it.
+    const match = cleaned.match(/\{[\s\S]*\}/)
+    if (match) {
+      try {
+        return JSON.parse(match[0])
+      } catch {
+        /* fall through to the throw below */
+      }
+    }
+    console.error('Unparseable model response:', raw.slice(0, 2000))
+    throw new AIFormatError('The response came back malformed.')
+  }
+}
+
+/**
+ * Turn whatever went wrong into a sentence worth showing someone.
+ *
+ * The status codes matter here because the advice genuinely differs: a 429 means
+ * wait, a connection fault means try again now, and a 500 from the API is not
+ * something the user can do anything about but should still be told plainly
+ * rather than left staring at a spinner.
+ */
+export function friendlyError(err: any, noun: string): { error: string; status: number } {
+  if (err instanceof AIFormatError) {
+    return { error: `${err.message} Please try again.`, status: 502 }
+  }
+
+  if (err instanceof Anthropic.APIConnectionTimeoutError) {
+    return {
+      error: `This is taking longer than expected. Your ${noun} may be unusually long, or the connection is slow. Please try again.`,
+      status: 504,
+    }
+  }
+
+  if (err instanceof Anthropic.APIConnectionError) {
+    return {
+      error: 'Could not reach the writing service. Check your connection and try again.',
+      status: 503,
+    }
+  }
+
+  if (err instanceof Anthropic.RateLimitError) {
+    return { error: 'Too many requests right now. Please wait a moment and try again.', status: 429 }
+  }
+
+  if (err instanceof Anthropic.AuthenticationError || err instanceof Anthropic.PermissionDeniedError) {
+    // The user cannot fix this and should not see the API's wording for it.
+    console.error('Anthropic credentials rejected:', err.message)
+    return { error: 'The writing service is unavailable. Please try again later.', status: 503 }
+  }
+
+  if (err instanceof Anthropic.APIError) {
+    console.error(`Anthropic API error ${err.status}:`, err.message)
+    return { error: 'The writing service had a problem. Please try again in a moment.', status: 502 }
+  }
+
+  // A dropped connection that never became an SDK error class. Left to itself
+  // this reaches the user as the single word "terminated".
+  if (isTransient(err)) {
+    console.error('Transient network failure after retries:', err?.message)
+    return {
+      error: 'The connection dropped while writing. Please try again.',
+      status: 503,
+    }
+  }
+
+  // Our own thrown errors (unsupported file type, unreadable upload) already
+  // read as instructions, so they pass through as written.
+  console.error('Unexpected tool error:', err)
+  return { error: err?.message || 'Something went wrong. Please try again.', status: 500 }
+}

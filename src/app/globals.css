@@ -205,10 +205,900 @@ body {
   }
 }
 
+/* ============================================================
+   INNER PAGE PRIMITIVES
+
+   The inner pages were built from inline styles: hex colours retyped in place
+   of the variables that already existed, `fontFamily: 'Schibsted Grotesk,
+   sans-serif'` repeated a dozen times per file instead of .grotesk-regular, and
+   fixed pixel track sizes. That forced the RESPONSIVE OVERHAUL block further
+   down this file to reach back into the markup with attribute selectors like
+   div[style*="minmax(360px"] and override it all with !important.
+
+   These classes are what the pages convert TO, so those hacks can be deleted
+   rather than maintained. Everything here is rem, so it rides the fluid root
+   size, and the grids reflow on their own instead of at hand-picked
+   breakpoints.
+   ============================================================ */
+
+/* The standard page measure. Matches the home sections exactly. */
+.shell {
+  max-width: min(2200px, 94vw);
+  margin: 0 auto;
+}
+
+/* Auto-reflowing card grid. The min() is the whole trick: a track wants 22rem,
+   but never more than the container, so a narrow viewport collapses it to a
+   single column with no media query and no !important override. */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: 1px;
+  background: var(--cream-border);
+  border: 0.5px solid var(--cream-border);
+}
+
+.card-grid > * {
+  background: var(--cream);
+  padding: 1.75rem;
+  text-decoration: none;
+  display: block;
+  transition: background-color 0.15s ease;
+}
+
+/* Hover belonged in CSS, not in onMouseEnter/onMouseLeave handlers writing
+   inline styles on every card. */
+.card-grid > *:hover {
+  background: #ffffff;
+}
+
+/* Text input. */
+.field {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: var(--cream);
+  border: 0.5px solid var(--cream-border);
+  border-radius: 2px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.field:focus-visible {
+  border-color: var(--ink);
+}
+
+/* Filter control. Pill, per the design system: buttons round, cards square. */
+.filter-pill {
+  padding: 0.65rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  background: var(--cream);
+  border: 0.5px solid var(--cream-border);
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Native select chrome is the loudest cheap tell on the page: Chrome draws a
+   grey system chevron that matches nothing else and ignores the palette. Strip
+   it and paint our own hairline chevron, sized to the type around it. The
+   right padding reserves the space so a long option never runs under it. */
+select.filter-pill {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 1L5 5.5L9 1' stroke='%234A4A4A' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+}
+
+/* On ink the chevron has to invert too, or it disappears into the field. */
+.page-header-ink select.filter-pill {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 1L5 5.5L9 1' stroke='%23FAF7F2' stroke-opacity='0.6' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+/* An active filter flips to a cream fill, so the chevron goes back to ink. */
+.page-header-ink select.filter-pill[data-active='true'] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 1L5 5.5L9 1' stroke='%231A1A1A' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* Set when a filter holds a value, so an active control is legible at a glance
+   instead of being inferred from a ternary buried in a style prop. */
+.filter-pill[data-active='true'] {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+/* Shared controls, redrawn for an ink header.
+   These mirror the job board's own controls rather than inventing a third
+   treatment: translucent cream fill, hairline cream border, and an active
+   filter that flips to solid cream so an engaged filter reads at a glance.
+   Native select popups still paint with the OS palette, so `option` is set
+   back to ink-on-cream or the list is unreadable on some platforms. */
+/* background-color, not the `background` shorthand: the shorthand resets
+   background-image, which would wipe the custom select chevron set above. */
+.page-header-ink .field {
+  color: var(--cream);
+  background-color: rgba(250, 247, 242, 0.06);
+  border-color: rgba(250, 247, 242, 0.18);
+}
+.page-header-ink .field::placeholder {
+  color: rgba(250, 247, 242, 0.45);
+}
+.page-header-ink .field:focus-visible {
+  border-color: var(--cream);
+}
+
+.page-header-ink .filter-pill {
+  color: rgba(250, 247, 242, 0.75);
+  background-color: transparent;
+  border-color: rgba(250, 247, 242, 0.18);
+}
+.page-header-ink .filter-pill:hover {
+  color: var(--cream);
+  border-color: var(--cream);
+}
+.page-header-ink .filter-pill option {
+  color: var(--ink);
+  background: var(--cream);
+}
+.page-header-ink .filter-pill[data-active='true'] {
+  color: var(--ink);
+  background-color: var(--cream);
+  border-color: var(--cream);
+}
+
+/* The search glyph sits in a span carrying an inline ink colour, which the
+   svg would otherwise inherit and render near-invisible. Setting `color` on
+   the svg itself beats that inherited value, and `stroke="currentColor"`
+   resolves against it. Controls are excluded so an icon inside a pill tracks
+   its own label through hover and active rather than staying dimmed. */
+.page-header-ink svg {
+  color: rgba(250, 247, 242, 0.5);
+}
+.page-header-ink .filter-pill svg,
+.page-header-ink button svg {
+  color: inherit;
+}
+
+/* Small uppercase metadata label. */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Practice-area and similar tags. */
+.tag-chip {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  background: var(--cream-dark);
+  color: var(--ink-muted);
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+
+/* FIRM DIRECTORY CARD
+   Lifted out of inline style props so the card reads as one object with a
+   consistent vertical rhythm, rather than six sibling divs each carrying its
+   own margin. Cards use a flex column with the footer pushed down, so a firm
+   with a one line description sits flush with a firm that has three. */
+.card-grid > a {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.firm-card-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+/* Placeholder mark. Same footprint as LogoFrame so rows stay aligned whether
+   or not a firm has artwork. */
+.firm-monogram {
+  width: 5rem;
+  height: 3.04rem;
+  flex-shrink: 0;
+  border-radius: 2px;
+  background: var(--cream-dark);
+  border: 0.5px solid var(--cream-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.firm-monogram span {
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+
+/* Profile header size, matching that page's LogoFrame footprint. */
+.firm-monogram-lg {
+  width: 9rem;
+  height: 5.7rem;
+}
+.firm-monogram-lg span {
+  font-size: 1.2rem;
+}
+
+.firm-card-name {
+  font-size: 0.98rem;
+  color: var(--ink);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+/* Tier sits under the name as ordinary sentence case. It was an uppercase
+   micro-label above the name, which read as a system tag rather than as a
+   fact about the firm. */
+.firm-card-tier {
+  font-size: 0.74rem;
+  color: var(--ink-muted);
+  margin-top: 0.15rem;
+}
+
+.firm-card-desc {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  line-height: 1.65;
+  margin-bottom: 1.1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.firm-card-tags {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.1rem;
+}
+
+/* Bare "+2" rather than "+2 more": at this size the word is longer than the
+   information it carries, and it competes with the chips beside it. */
+.firm-card-more {
+  font-size: 0.68rem;
+  color: var(--ink-muted);
+  padding: 2px 4px;
+}
+
+/* margin-top:auto pins the footer to the bottom of the tallest card in the row. */
+.firm-card-foot {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 0.5px solid var(--cream-border);
+}
+
+.firm-card-roles {
+  color: var(--verified);
+  font-weight: 600;
+}
+
+/* Row of small icon + label pairs at the foot of a card. */
+.meta-line {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+/* Inner pages clear the fixed header. rem so it tracks the root scale. */
+.page-main {
+  background: var(--cream);
+  min-height: 100vh;
+  padding-top: 5rem;
+}
+
+/* ============================================================
+   JOB BOARD
+
+   White working surface, ink header. The dark block at the top is the point:
+   it repeats the homepage's statement-then-substance move on every inner page,
+   so a white product surface still reads as the same object as the hero rather
+   than as a generic table. Cream survives only as an accent (hover, chips), not
+   as a ground.
+   ============================================================ */
+
+/* The product ground is a barely-warm white, not #FFF.
+   The carton card (#FFF8E5) is a warm cream-yellow. Against pure neutral white
+   it read as dirty rather than deliberate: the eye takes the whitest thing on
+   screen as the reference for white, and judges everything warmer than it as
+   discoloured. Nudging the page a couple of steps along the same warm axis puts
+   both on one temperature, so the carton reads as a considered accent instead
+   of a stain. It is still unmistakably a white page, and nowhere near cream. */
+.jobs-page {
+  background: #FDFCFA;
+  min-height: 100vh;
+}
+
+.jobs-header {
+  background: #000000;
+  color: var(--cream);
+  padding: 8rem 1.5rem 2.75rem;
+}
+
+.jobs-title {
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  color: var(--cream);
+}
+
+.jobs-sub {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(250, 247, 242, 0.62);
+  max-width: 46ch;
+  margin-top: 1rem;
+}
+
+.jobs-controls {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
+.jobs-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 20rem;
+}
+.jobs-search svg {
+  position: absolute;
+  left: 0.9rem;
+  color: rgba(250, 247, 242, 0.5);
+  pointer-events: none;
+}
+.jobs-search input {
+  width: 100%;
+  padding: 0.7rem 1rem 0.7rem 2.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: var(--cream);
+  background: rgba(250, 247, 242, 0.06);
+  border: 0.5px solid rgba(250, 247, 242, 0.18);
+  border-radius: 999px;
+  outline: none;
+}
+.jobs-search input::placeholder { color: rgba(250, 247, 242, 0.45); }
+.jobs-search input:focus-visible { border-color: var(--cream); }
+
+.jobs-select {
+  padding: 0.7rem 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: rgba(250, 247, 242, 0.75);
+  background: transparent;
+  border: 0.5px solid rgba(250, 247, 242, 0.18);
+  border-radius: 999px;
+  cursor: pointer;
+  outline: none;
+}
+.jobs-select option { color: var(--ink); background: var(--cream); }
+/* An engaged filter should be obvious without reading it. */
+.jobs-select[data-active='true'] {
+  color: var(--ink);
+  background: var(--cream);
+  border-color: var(--cream);
+}
+
+.jobs-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.7rem 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: rgba(250, 247, 242, 0.75);
+  background: transparent;
+  border: 0.5px solid rgba(250, 247, 242, 0.18);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.jobs-clear:hover { color: var(--cream); border-color: var(--cream); }
+
+.jobs-count {
+  font-size: 0.78rem;
+  color: rgba(250, 247, 242, 0.5);
+  margin-top: 1.5rem;
+}
+
+.jobs-board-wrap { padding: 0 1.5rem 5rem; }
+
+/* One grid shared by the head row and every listing, so the columns actually
+   line up down the page instead of each row laying itself out. */
+.job-row {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) 10rem 9rem 7rem 4rem;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.15rem 0.75rem;
+  /* Warm hairline, matching the paper's temperature. The cream border was mixed
+     for a cream ground and reads slightly pink on near-white. */
+  border-bottom: 0.5px solid #EDE9E2;
+  transition: background-color 0.15s ease;
+}
+
+.job-row:not(.job-row-head):hover {
+  /* Cream demoted from surface to accent. */
+  background: var(--cream);
+}
+
+.job-row-head {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding-top: 2rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 0.5px solid var(--ink);
+}
+
+/* Closing soon earns a mark, rather than another tiny uppercase word. */
+.job-row[data-closing='true'] {
+  box-shadow: inset 3px 0 0 var(--ink);
+}
+
+.job-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 3rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.job-mark img {
+  max-width: 100%;
+  max-height: 78%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.job-mark-fallback {
+  background: var(--ink);
+  border-radius: 8px;
+  width: 3rem;
+}
+.job-mark-fallback span { font-size: 0.7rem; color: var(--cream); }
+
+.job-role { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.job-link {
+  font-size: 1.02rem;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1.25;
+}
+.job-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.job-employer { font-size: 0.82rem; color: var(--ink-muted); }
+
+.job-cell { font-size: 0.84rem; color: var(--ink-muted); }
+.job-deadline { color: var(--ink); }
+
+.job-actions { display: flex; align-items: center; gap: 0.75rem; justify-content: flex-end; }
+.job-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  color: #C0B8B0;
+}
+.job-actions button[aria-pressed='true'] { color: var(--ink); }
+.job-actions a { color: var(--ink); display: flex; }
+
+/* BACK LINK
+   One treatment for every "back to X" on the site. The arrow slides toward the
+   direction it points on hover, which is the whole animation: it reads as the
+   control acknowledging you rather than as decoration. Sentence case, because
+   the uppercase letter-spaced version of this read as a system breadcrumb
+   rather than as something to click.
+
+   The transform is on the glyph only, so the label stays put and the row does
+   not reflow. prefers-reduced-motion drops the movement and keeps the colour
+   change, which still confirms the hover. */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+.back-link svg {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.back-link:hover {
+  color: var(--ink);
+}
+.back-link:hover svg {
+  transform: translateX(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-link svg { transition: none; }
+  .back-link:hover svg { transform: none; }
+}
+
+/* FIRM PROFILE
+   Replaces a page built entirely from inline hex values and 0.62rem uppercase
+   micro-headings with 0.18em tracking. Those headings were smaller than the
+   body text they introduced and shouted at the same time, which is the specific
+   combination that reads as cheap. Section headings are now ordinary sentence
+   case at a legible size, and the palette comes from the design tokens. */
+.firm-profile-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  margin-bottom: 1.5rem;
+}
+.firm-profile-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--cream-border);
+}
+
+.firm-profile-section-heading {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+
+/* Similar-firms row at the foot of a profile. Same hairline-grid construction
+   as .card-grid so it reads as part of the directory, not a new component. */
+.firm-related {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 1px;
+  background: var(--cream-border);
+  border: 0.5px solid var(--cream-border);
+}
+.firm-related-card {
+  background: var(--cream);
+  padding: 1.1rem 1.25rem;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: background-color 0.15s ease;
+}
+.firm-related-card:hover { background: #ffffff; }
+.firm-related-name { font-size: 0.88rem; color: var(--ink); line-height: 1.3; }
+.firm-related-meta { font-size: 0.74rem; color: var(--ink-muted); }
+
+.firm-office-city {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.15rem;
+}
+.firm-office-address {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  line-height: 1.6;
+}
+
+/* SHARED EMPTY STATE
+   Used by the job board, scholarships and the firm directory, so a no-results
+   screen is the same object everywhere instead of three near-copies. */
+.empty-state {
+  padding: 4.5rem 1.5rem 5.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty-state-art {
+  width: min(100%, 19rem);
+  height: auto;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.empty-state-heading {
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state-body {
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  line-height: 1.65;
+  max-width: 32rem;
+}
+
+/* The clear-filters button inherits .jobs-clear, which is drawn for the ink
+   header. Here it sits on cream, so the colours have to come back. */
+.empty-state-action {
+  margin-top: 1.5rem;
+  color: var(--ink-muted);
+  border-color: var(--cream-border);
+}
+.empty-state-action:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.jobs-empty { padding: 6rem 0; text-align: center; }
+.jobs-empty .display-black { font-size: 1.6rem; color: var(--ink); margin-bottom: 0.5rem; }
+.jobs-empty .grotesk-regular { font-size: 0.9rem; color: var(--ink-muted); }
+.jobs-empty .jobs-clear {
+  margin-top: 1.5rem;
+  color: var(--ink);
+  border-color: var(--cream-border);
+}
+.jobs-empty .jobs-clear:hover { border-color: var(--ink); }
+
+/* Below the grid's comfortable width the columns stop helping, so the row
+   becomes a stacked block with the mark alongside the role. */
+@media (max-width: 900px) {
+  .jobs-header { padding-top: 6.5rem; }
+  .job-row {
+    grid-template-columns: 3.5rem minmax(0, 1fr) 2rem;
+    grid-template-areas:
+      'mark role actions'
+      'mark meta actions';
+    gap: 0.35rem 1rem;
+    align-items: start;
+  }
+  .job-row-head { display: none; }
+  .job-mark { grid-area: mark; width: 3.5rem; height: 2.4rem; }
+  .job-role { grid-area: role; }
+  .job-actions { grid-area: actions; align-self: center; }
+  .job-cell { grid-area: meta; display: inline; font-size: 0.78rem; }
+  /* Run the three meta values together as one line rather than three orphans. */
+  .job-cell + .job-cell::before { content: ' · '; }
+}
+
+/* ---- Single role ---------------------------------------------------------
+   Same ink-header-over-white-body as the board. Section headings are Schibsted
+   at a readable size: the old page set them at 0.65rem uppercase, which made
+   "About the Organisation" physically smaller than the paragraph under it.
+   -------------------------------------------------------------------------- */
+
+.job-detail-header { padding-bottom: 3rem; }
+
+/* Same arrow slide as .back-link, in the ink header's palette. Kept as its own
+   rule rather than folded into .back-link because the colours differ; the
+   motion is shared so both feel like the same control. */
+.job-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: rgba(250, 247, 242, 0.6);
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+.job-back svg {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.job-back:hover { color: var(--cream); }
+.job-back:hover svg { transform: translateX(-4px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .job-back svg { transition: none; }
+  .job-back:hover svg { transform: none; }
+}
+
+.job-detail-id {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+/* The mark keeps a light plate here because the header is ink: an opaque
+   white-backed logo needs the plate on dark, and only loses it on white. */
+.job-detail-mark {
+  width: 6rem;
+  height: 4rem;
+  background: var(--cream);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.job-detail-mark img { max-height: 68%; max-width: 82%; }
+.job-detail-mark .grotesk-bold { font-size: 1.1rem; color: var(--ink); }
+
+.job-detail-title {
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--cream);
+}
+.job-detail-employer {
+  font-size: 1rem;
+  color: rgba(250, 247, 242, 0.62);
+  margin-top: 0.5rem;
+}
+
+/* Facts as a definition list: it is genuinely term/value data, and it gives the
+   four attributes equal footing instead of a run-on line of icons. */
+.job-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 0.5px solid rgba(250, 247, 242, 0.18);
+}
+.job-facts dt {
+  font-size: 0.72rem;
+  color: rgba(250, 247, 242, 0.45);
+  margin-bottom: 0.3rem;
+}
+.job-facts dd { font-size: 0.92rem; color: var(--cream); margin: 0; }
+
+.job-detail-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 21rem;
+  gap: 4rem;
+  align-items: start;
+  padding: 3.5rem 1.5rem 5rem;
+}
+
+.job-detail-main { display: flex; flex-direction: column; gap: 2.75rem; }
+
+.job-section-heading {
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: 0.9rem;
+}
+
+.job-prose {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--ink-light);
+  max-width: 68ch;
+}
+
+.job-reqs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  max-width: 68ch;
+}
+.job-reqs li {
+  position: relative;
+  padding-left: 1.1rem;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--ink-light);
+}
+.job-reqs li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.job-areas { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.job-apply-wrap { position: sticky; top: 6rem; }
+
+/* The carton card, used once, on the only action the page is asking for. */
+/* Two further adjustments to settle the carton against the page.
+   The border and shadow were pure ink at full strength, which cut the card out
+   of the page like a sticker. A warm near-black at slightly lower weight keeps
+   the hard-offset signature from the home page while letting the card sit in
+   the paper rather than on top of it. */
+/* Renamed from .job-apply now that the firm profile uses it too. The two pages
+   ask the same question ("how do I apply to this?"), so they should be
+   answering it with the same object rather than with two cards that happen to
+   sit in the same place. */
+.apply-card {
+  background: #FFF8E5;
+  border: 1.5px solid #241F16;
+  border-radius: 10px;
+  box-shadow: 5px 6px 0 rgba(36, 31, 22, 0.82);
+  padding: 1.6rem;
+}
+.apply-card-title { font-size: 1rem; color: var(--ink); margin-bottom: 1.1rem; }
+
+.apply-card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  box-sizing: border-box;
+  background: var(--ink);
+  color: #FFF8E5;
+  font-size: 0.85rem;
+  text-decoration: none;
+  border-radius: 999px;
+  transition: transform 0.18s ease;
+}
+.apply-card-cta:hover { transform: translateY(-2px); }
+
+.apply-card-note {
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: var(--ink-muted);
+  margin-top: 1rem;
+}
+.apply-card-mail { color: var(--ink); font-weight: 600; }
+
+/* Secondary link inside the carton. The hairline sits on the card's own warm
+   ink rather than on the page's cream border, which is invisible against
+   #FFF8E5. */
+.apply-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 0.79rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(36, 31, 22, 0.28);
+  padding-bottom: 1px;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.apply-card-link:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .job-detail-body { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 2.5rem; }
+  .job-apply-wrap { position: static; }
+  .job-detail-id { gap: 1rem; }
+  .job-detail-mark { width: 4.5rem; height: 3rem; }
+}
+
 /* Ticker animation */
 @keyframes ticker {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+/* The logo plates are solid chips now, so they need air between them or they
+   butt into one continuous cream bar. The margin lands on both copies of the
+   list equally, so the 50% translate the marquee relies on stays exact. */
+.ticker-logo {
+  margin-right: 1.5rem;
 }
 
 .animate-ticker {
@@ -512,12 +1402,14 @@ body {
   align-items: stretch;
   margin-top: 1.5rem;
 }
+/* The pit sits on black now. A faint cream wash lifts the well off the page
+   ground just enough to read as a container, without becoming a grey box. */
 .role-pit {
   position: relative;
   height: clamp(340px, 44vh, 460px);
-  border: 0.5px solid #E8E0D5;
+  border: 0.5px solid rgba(250, 247, 242, 0.14);
   border-radius: 14px;
-  background: #F0EBE3;
+  background: rgba(250, 247, 242, 0.04);
   overflow: hidden;
   touch-action: none;
 }
@@ -528,7 +1420,9 @@ body {
   border-radius: 999px;
   background: #FFFFFF;
   border: 1.5px solid #1A1A1A;
-  box-shadow: 3px 4px 0 rgba(0,0,0,0.8);
+  /* Was a black hard shadow, which is invisible against a black section. The
+     sticker offset now reads in cream so the balls still sit proud. */
+  box-shadow: 3px 4px 0 rgba(250, 247, 242, 0.28);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -537,9 +1431,9 @@ body {
   will-change: transform;
   transition: box-shadow 0.15s ease;
 }
-.role-pit-ball:hover { box-shadow: 4px 6px 0 rgba(0,0,0,0.9); }
+.role-pit-ball:hover { box-shadow: 4px 6px 0 rgba(250, 247, 242, 0.42); }
 .role-pit-ball:active { cursor: grabbing; }
-.role-pit-ball:focus-visible { outline: 3px solid #1A1A1A; outline-offset: 3px; }
+.role-pit-ball:focus-visible { outline: 3px solid #FAF7F2; outline-offset: 3px; }
 .role-pit-card {
   position: relative;
   padding: 1.75rem;
@@ -569,3 +1463,468 @@ body {
   .role-pit { height: auto; display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 1.25rem; }
   .role-pit-ball { position: static; }
 }
+
+/* Attributed extract, so it reads as a quotation and not as our own copy. */
+.job-extract {
+  margin: 0;
+  padding-left: 1.1rem;
+  border-left: 2px solid var(--cream-border);
+}
+.job-extract-cite {
+  display: block;
+  margin-top: 0.7rem;
+  font-size: 0.76rem;
+  font-style: normal;
+  color: var(--ink-muted);
+}
+.job-extract-cite a { color: var(--ink); }
+
+.job-note {
+  margin-top: 0.9rem;
+  font-size: 0.76rem;
+  color: var(--ink-muted);
+}
+
+.job-note-link {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---- Legal pages ---------------------------------------------------------
+   Narrow measure: policy prose is read line by line, and the 2200px content
+   shell would run it to 150 characters a line.
+   -------------------------------------------------------------------------- */
+
+.legal-header { padding-bottom: 2.5rem; }
+.legal-updated {
+  font-size: 0.78rem;
+  color: rgba(250, 247, 242, 0.45);
+  margin-top: 1.75rem;
+}
+
+.legal-body { padding: 3.5rem 1.5rem 5rem; }
+
+/* Index left, prose right. The index column absorbs the width a single prose
+   column could not use, so the page fills the screen without pushing lines past
+   the point they stop being readable. The prose track is capped rather than
+   greedy for the same reason. */
+/* Three tracks, so the page genuinely occupies the screen: index, prose at a
+   readable measure, and a summary that earns the remaining width rather than
+   letting a single column stretch to 150 characters a line. */
+.legal-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 14rem) minmax(0, 44rem) minmax(0, 18rem);
+  gap: 3.5rem;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.legal-index { position: sticky; top: 7rem; }
+.legal-index-title {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 1rem;
+}
+.legal-index ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  border-left: 0.5px solid #EDE9E2;
+}
+.legal-index a {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.1rem 0 0.1rem 0.9rem;
+  margin-left: -0.5px;
+  border-left: 2px solid transparent;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  text-decoration: none;
+  /* transform-origin left so the item grows into the empty column rather than
+     shifting away from the rule it is anchored to. */
+  transform-origin: left center;
+  transition: color 0.22s ease, border-color 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.22s ease;
+  will-change: transform;
+}
+
+/* Hovering one item lifts it and recedes the others, so the list reads as a
+   single focused row rather than eleven equal ones. Dimming the siblings does
+   more work than enlarging the target: the contrast is what the eye follows. */
+.legal-index ol:hover a { opacity: 0.45; }
+.legal-index ol:hover a:hover,
+.legal-index a:focus-visible {
+  opacity: 1;
+  color: var(--ink);
+  border-left-color: var(--ink);
+  transform: scale(1.13);
+}
+.legal-index a:focus-visible { outline: none; }
+
+/* The effect is decorative. Anyone who has asked for less motion still gets the
+   colour change, which is what actually communicates the hover. */
+@media (prefers-reduced-motion: reduce) {
+  .legal-index a { transition: color 0.15s ease, border-color 0.15s ease; }
+  .legal-index ol:hover a { opacity: 1; }
+  .legal-index ol:hover a:hover { transform: none; }
+}
+
+/* A pointer-less device has no hover state to speak of, and leaving the rule in
+   makes every item look permanently dimmed on a tap. */
+@media (hover: none) {
+  .legal-index ol:hover a { opacity: 1; }
+  .legal-index ol:hover a:hover { transform: none; }
+}
+.legal-index-num { color: #B9B2A8; flex-shrink: 0; }
+
+.legal-measure { min-width: 0; }
+
+.legal-lead {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: var(--ink-light);
+  padding-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 0.5px solid #EDE9E2;
+}
+
+.legal-clause { margin-bottom: 2.75rem; }
+
+.legal-heading {
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: 0.9rem;
+}
+/* Hanging number, so the headings line up and a clause can be cited. */
+.legal-num { color: var(--ink-muted); margin-right: 0.4rem; }
+
+.legal-clause p,
+.legal-clause li {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--ink-light);
+}
+.legal-clause p { margin-bottom: 0.9rem; }
+.legal-clause p:last-child { margin-bottom: 0; }
+
+.legal-clause ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.legal-clause li { position: relative; padding-left: 1.1rem; }
+.legal-clause li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.68em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.legal-clause strong { color: var(--ink); font-weight: 600; }
+.legal-clause a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+.legal-clause code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--cream);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* Below the point where two columns fit, the index becomes a plain list above
+   the text rather than a cramped sidebar. */
+@media (max-width: 1080px) {
+  .legal-grid { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+  .legal-index { position: static; }
+  .legal-index ol {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    border-left: none;
+    padding-bottom: 1.75rem;
+    border-bottom: 0.5px solid #EDE9E2;
+  }
+  .legal-index a { padding: 0; border-left: none; }
+  .legal-index a:hover { border-left: none; }
+}
+
+/* Summary card, right column. Carton stock so it reads as the same family as
+   the apply panel, and clearly an aside rather than operative text. */
+.legal-aside { position: sticky; top: 7rem; }
+.legal-summary {
+  background: #FFF8E5;
+  border: 1.5px solid #241F16;
+  border-radius: 10px;
+  box-shadow: 5px 6px 0 rgba(36, 31, 22, 0.82);
+  padding: 1.4rem;
+}
+.legal-summary-heading { font-size: 0.95rem; color: var(--ink); margin-bottom: 0.9rem; }
+.legal-summary ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.legal-summary li {
+  position: relative;
+  padding-left: 1rem;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--ink-light);
+}
+.legal-summary li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.legal-summary-foot {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 0.5px solid rgba(36, 31, 22, 0.18);
+  font-size: 0.74rem;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+
+/* Drop the summary alongside the prose before it gets squeezed, then drop the
+   index above it. Two separate steps, because the aside runs out of room first. */
+@media (max-width: 1380px) {
+  .legal-grid { grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); }
+  .legal-aside { position: static; grid-column: 2; margin-top: 2.5rem; }
+}
+@media (max-width: 1080px) {
+  .legal-aside { grid-column: 1; }
+}
+
+/* ---- Scholarships --------------------------------------------------------
+   Same grid discipline as the job board: shared tracks so one attribute can be
+   read down the page. Status leads, because a closed scholarship is worthless
+   and you should see that before you read the name.
+   -------------------------------------------------------------------------- */
+
+.sch-row {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr) 11rem 13rem 12rem 6rem;
+  gap: 1.5rem;
+  align-items: start;
+  padding: 1.5rem 0.75rem;
+  border-bottom: 0.5px solid #EDE9E2;
+  transition: background-color 0.15s ease;
+}
+.sch-row:not(.sch-row-head):hover { background: var(--cream); }
+
+.sch-row-head {
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding-top: 2rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 0.5px solid var(--ink);
+  align-items: center;
+}
+
+/* Status as a dot plus a label, no filled chip.
+   Coloured pills are the default look of every dashboard template, which is
+   exactly why they read as cheap. Confining the colour to a 6px mark and
+   setting the label in ink at a small letterspaced size does the same job with
+   far more restraint, and it stops three saturated blocks competing with the
+   scholarship titles beside them. */
+.sch-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+  justify-self: start;
+  padding-top: 0.15rem;
+}
+
+.sch-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Open: solid, with a slow halo. The animation is the only motion on the page
+   and it is doing real work, marking the rows you can act on today. */
+.sch-status.is-open .sch-dot { background: var(--verified); }
+.sch-status.is-open .sch-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--verified);
+  opacity: 0;
+  animation: schPulse 2.8s ease-out infinite;
+}
+@keyframes schPulse {
+  0%   { transform: scale(0.6); opacity: 0.7; }
+  70%  { transform: scale(1.25); opacity: 0; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+
+/* Upcoming: hollow. Something is coming but there is nothing to click yet, and
+   an outline says that better than a second solid colour would. */
+.sch-status.is-upcoming .sch-dot {
+  background: transparent;
+  border: 1.5px solid #8B5E1F;
+}
+
+/* Closed: recedes. Still listed so a returning visitor can see the cycle
+   exists, but it should not compete with what is actionable. */
+.sch-status.is-closed { color: #8A8378; }
+.sch-status.is-closed .sch-dot { background: #C9C2B8; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sch-status.is-open .sch-dot::after { animation: none; opacity: 0.35; }
+}
+
+.sch-main { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.sch-title { font-size: 1rem; color: var(--ink); line-height: 1.3; }
+.sch-provider { font-size: 0.82rem; color: var(--ink-muted); }
+.sch-desc {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: var(--ink-light);
+  margin-top: 0.35rem;
+  max-width: 62ch;
+}
+.sch-elig { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.55rem; }
+
+.sch-cell { font-size: 0.84rem; line-height: 1.55; color: var(--ink-muted); }
+.sch-deadline { color: var(--ink); }
+
+.sch-action { justify-self: end; }
+.sch-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.76rem;
+  color: var(--cream);
+  background: var(--ink);
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.18s ease;
+}
+.sch-apply:hover { transform: translateY(-1px); }
+
+@media (max-width: 1100px) {
+  .sch-row {
+    grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+    grid-template-areas:
+      'status main action'
+      'meta   meta action';
+    gap: 0.75rem 1.25rem;
+  }
+  .sch-row-head { display: none; }
+  .sch-status { grid-area: status; }
+  .sch-main { grid-area: main; }
+  .sch-action { grid-area: action; align-self: start; }
+  /* The three facts run together as one line rather than three orphans. */
+  .sch-cell { grid-area: meta; display: inline; font-size: 0.78rem; }
+  .sch-cell + .sch-cell::before { content: ' · '; }
+}
+
+@media (max-width: 640px) {
+  .sch-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'status action'
+      'main   main'
+      'meta   meta';
+  }
+}
+
+/* Internship empty state. Left-aligned and wider than the generic one, because
+   it is guidance to be read rather than a one-line "nothing found". */
+.jobs-empty-internship {
+  text-align: left;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 5rem 0;
+}
+.jobs-empty-internship .display-black {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+}
+.jobs-empty-internship > .grotesk-regular {
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: var(--ink-light);
+  max-width: 60ch;
+}
+
+.jobs-empty-steps {
+  margin-top: 2.25rem;
+  padding: 1.5rem 1.6rem;
+  background: var(--cream);
+  border-radius: 10px;
+  border: 0.5px solid #EDE9E2;
+}
+.jobs-empty-steps > .grotesk-bold {
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+.jobs-empty-steps ol {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.jobs-empty-steps li {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--ink-light);
+  padding-left: 0.3rem;
+}
+.jobs-empty-steps a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+
+.jobs-empty-cta {
+  display: inline-flex;
+  margin-top: 1.75rem;
+  padding: 0.8rem 1.6rem;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: 0.82rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: transform 0.18s ease;
+}
+.jobs-empty-cta:hover { transform: translateY(-2px); }

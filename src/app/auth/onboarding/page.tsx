@@ -14,7 +14,7 @@ const CITIES = [
 
 const STAGES = [
   { value: 'law_student', label: 'Law Student' },
-  { value: 'nysc', label: 'NYSC' },
+  { value: 'nysc', label: 'Entry-level' },
   { value: 'junior_associate', label: 'Junior Associate' },
   { value: 'senior_lawyer', label: 'Senior Lawyer' },
 ]

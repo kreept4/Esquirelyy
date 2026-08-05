@@ -175,7 +175,7 @@ function AddModal({ onClose, onAdd }: { onClose: () => void; onAdd: (app: Omit<A
           <div style={{ gridColumn: '1 / -1' }}><label style={labelStyle}>Role</label><input value={form.role} onChange={e => field('role', e.target.value)} placeholder="e.g. Associate, Banking & Finance" style={inputStyle} /></div>
           <div><label style={labelStyle}>Type</label>
             <select value={form.type} onChange={e => field('type', e.target.value)} style={inputStyle}>
-              {['Full-time', 'Internship', 'Vacation Scheme', 'Pupillage', 'NYSC', 'Contract'].map(t => <option key={t}>{t}</option>)}
+              {['Full-time', 'Internship', 'Contract'].map(t => <option key={t}>{t}</option>)}
             </select>
           </div>
           <div><label style={labelStyle}>Status</label>

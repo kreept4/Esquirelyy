@@ -25,7 +25,7 @@ const CAREER_STAGES = [
   { value: '', label: 'Select your stage' },
   { value: 'Final year law student', label: 'Final year law student' },
   { value: 'Recently called to bar', label: 'Recently called to bar' },
-  { value: 'NYSC corps member', label: 'NYSC corps member' },
+  { value: 'Entry-level', label: 'Entry-level' },
   { value: '1-3 years post-call', label: '1-3 years post-call' },
   { value: '3-6 years post-call', label: '3-6 years post-call' },
   { value: '6+ years post-call', label: '6+ years post-call' },

@@ -2,65 +2,256 @@ import { createClient } from '@supabase/supabase-js'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
-import { ArrowLeft, MapPin, Clock, ExternalLink } from 'lucide-react'
+import { ArrowLeft, ExternalLink } from 'lucide-react'
+import { logoForEmployer, ballBgForEmployer } from '@/lib/firms-data'
+
 export const revalidate = 0
-const SA: Record<string,string> = { law_firm:'#1A1A1A', banking:'#1A1A1A', energy:'#7A3B00', fintech:'#0E5C3A', other:'#3B3B3B' }
-const SL: Record<string,string> = { law_firm:'Law Firm', banking:'Banking', energy:'Energy', fintech:'Tech & Fintech', other:'Industry' }
-const TL: Record<string,string> = { job:'Full-time', internship:'Internship', vacation_scheme:'Vacation Scheme', pupillage:'Pupillage' }
-const LL: Record<string,string> = { student:'Student', nysc:'NYSC', junior:'Junior (0-3 yrs PQE)', mid:'Mid-level (3-6 yrs PQE)', senior:'Senior (6+ yrs PQE)' }
+
+/**
+ * A single role.
+ *
+ * Rebuilt to match the board. Same ink header over white body, same rule about
+ * tiny uppercase words: the old page opened with a run of them (LAW FIRM /
+ * TIER 1 / FULL-TIME / VERIFIED / CLOSING SOON) and then used 0.65rem uppercase
+ * for every section heading, so "About the Organisation" was smaller than the
+ * text beneath it. Headings are Schibsted at a readable size now, and the
+ * status words are gone.
+ *
+ * The apply panel is the carton card: #FFF8E5 with a 1.5px ink border and the
+ * hard offset shadow, the same object the home page uses for its feature
+ * blocks. This is the one place on an inner page that earns it, because it is
+ * the single thing the page is asking you to do.
+ *
+ * Fonts follow the two-family rule: Hanken carries the role title and nothing
+ * else; Schibsted carries every heading, label and paragraph.
+ */
+
+const TYPE_LABELS: Record<string, string> = {
+  job: 'Full-time',
+  internship: 'Internship',
+  clerkship: 'Clerkship',
+  fellowship: 'Fellowship',
+}
+/** No PQE ranges here. They were our banding rather than the employer's, and a
+ *  candidate who reads "3 to 6 years" as a rule self-selects out of a job the
+ *  firm might well have wanted them for. Where a posting states a real minimum
+ *  it appears under Eligibility, in the employer's own terms. */
+const LEVEL_LABELS: Record<string, string> = {
+  student: 'Law student',
+  nysc: 'Entry-level',
+  junior: 'Entry-level',
+  mid: 'Mid-level',
+  senior: 'Senior',
+}
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(w => w.length > 2 && !['and', 'the', 'plc', 'inc', 'inc.'].includes(w.toLowerCase()))
+    .slice(0, 2)
+    .map(w => w[0])
+    .join('')
+    .toUpperCase()
+}
+
+/** `requirements` is a TEXT column, but earlier code treated it as an array and
+ *  called .map on it. Accept either, so a newline-separated string renders as a
+ *  list instead of throwing or rendering as one run-on paragraph. */
+function toList(value: unknown): string[] {
+  if (Array.isArray(value)) return value.filter(Boolean)
+  if (typeof value === 'string') {
+    return value
+      .split(/\r?\n|(?:^|\s)[•\-•]\s+/)
+      .map(s => s.trim())
+      .filter(Boolean)
+  }
+  return []
+}
+
+function longDate(d: string) {
+  return new Date(d).toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
 // `params` is a Promise in Next 16 — see the note on the firm detail page.
 export default async function JobDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
-  const { data: listing } = await supabase.from('jobs').select('*').eq('slug', slug).single()
-  if (!listing) return notFound()
-  const accent = SA[listing.sector] || '#3B3B3B'
-  const applyHref = listing.apply_url || (listing.apply_email ? 'mailto:' + listing.apply_email + '?subject=Application: ' + listing.title : null)
+  const { data: job } = await supabase.from('jobs').select('*').eq('slug', slug).single()
+  if (!job) return notFound()
+
+  const applyHref =
+    job.apply_url || (job.apply_email ? `mailto:${job.apply_email}?subject=Application: ${job.title}` : null)
+  const logo = logoForEmployer(job.employer)
+  const brand = ballBgForEmployer(job.employer)
+  const requirements = toList(job.requirements)
+
+  const closes = job.is_rolling ? 'Rolling applications' : job.deadline ? longDate(job.deadline) : 'Open'
+
   return (
     <div>
-      <main style={{ backgroundColor: '#FAF7F2', paddingTop: '80px', minHeight: '100vh' }}>
-        <div style={{ borderBottom: '0.5px solid #E8E0D5', padding: '1rem 2rem', backgroundColor: '#F0EBE3' }}>
-          <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <Link href='/jobs' style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: '#4A4A4A', textDecoration: 'none' }}><ArrowLeft size={13} /> Back to Listings</Link>
-          </div>
-        </div>
-        <div style={{ borderBottom: '0.5px solid #E8E0D5', borderLeft: '4px solid ' + accent, padding: '2.5rem 2rem', backgroundColor: '#FFFFFF' }}>
-          <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap' as const }}>
-              <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: accent }}>{SL[listing.sector] || 'Industry'}</span>
-              {listing.tier && <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#4A4A4A' }}>{listing.tier}</span>}
-              <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#4A4A4A' }}>{TL[listing.type] || listing.type}</span>
-              {listing.is_verified && <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#2D6A4F' }}>Verified</span>}
-              {listing.is_closing_soon && <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: '#000000' }}>Closing Soon</span>}
-            </div>
-            <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(1.5rem, 3vw, 2.2rem)', fontWeight: 700, color: '#1A1A1A', lineHeight: 1.2, marginBottom: '0.4rem' }}>{listing.title}</h1>
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '1rem' }}>{listing.employer}</p>
-            <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' as const, marginBottom: '1.5rem' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: '#4A4A4A' }}><MapPin size={12} />{listing.location}</span>
-              <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: '#4A4A4A' }}>{LL[listing.level] || listing.level}</span>
-              {listing.is_rolling ? <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', fontWeight: 600, color: '#4A4A4A' }}>Rolling applications</span> : listing.deadline ? <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: listing.is_closing_soon ? '#000000' : '#4A4A4A' }}><Clock size={12} />Deadline: {new Date(listing.deadline).toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' })}</span> : null}
-            </div>
-            {listing.practice_areas?.length > 0 && <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' as const }}>{listing.practice_areas.map((area: string) => <span key={area} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 500, padding: '3px 10px', backgroundColor: '#F0EBE3', border: '0.5px solid #E8E0D5', borderRadius: '2px', color: '#4A4A4A' }}>{area}</span>)}</div>}
-          </div>
-        </div>
-        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2.5rem 2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem', alignItems: 'start' }}>
-          <div>
-            {listing.about && <section style={{ marginBottom: '2rem' }}><h2 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4A4A4A', marginBottom: '0.75rem' }}>About the Organisation</h2><p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: '#1A1A1A', lineHeight: 1.7 }}>{listing.about}</p></section>}
-            {listing.role_desc && <section style={{ marginBottom: '2rem' }}><h2 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4A4A4A', marginBottom: '0.75rem' }}>The Role</h2><p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: '#1A1A1A', lineHeight: 1.7 }}>{listing.role_desc}</p></section>}
-            {listing.requirements?.length > 0 && <section><h2 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4A4A4A', marginBottom: '0.75rem' }}>Requirements</h2><ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column' as const, gap: '0.5rem' }}>{listing.requirements.map((req: string, i: number) => <li key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: '#1A1A1A', lineHeight: 1.5 }}><span style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: accent, flexShrink: 0, marginTop: '8px' }} />{req}</li>)}</ul></section>}
-          </div>
-          <div style={{ position: 'relative' as const, top: 'auto' }}>
-            <div style={{ border: '0.5px solid #E8E0D5', borderTop: '3px solid ' + accent, backgroundColor: '#FFFFFF', padding: '1.5rem' }}>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: '#4A4A4A', marginBottom: '1rem' }}>Apply for this role</p>
-              {applyHref && <a href={applyHref} target='_blank' rel='noopener noreferrer' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', padding: '0.75rem', boxSizing: 'border-box' as const, backgroundColor: '#1A1A1A', color: '#FAF7F2', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const, textDecoration: 'none', borderRadius: '2px', marginBottom: '0.75rem' }}><ExternalLink size={13} />{listing.apply_url ? 'Apply Now' : 'Apply via Email'}</a>}
-              <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '0.5px solid #E8E0D5' }}>
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', color: '#4A4A4A', lineHeight: 1.6 }}>
-                  {listing.apply_email && <span>Send your CV to <a href={'mailto:' + listing.apply_email} style={{ color: '#1A1A1A', fontWeight: 600 }}>{listing.apply_email}</a>. </span>}
-                  {listing.is_rolling ? 'Applications reviewed on a rolling basis.' : listing.deadline ? 'Deadline: ' + new Date(listing.deadline).toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' }) + '.' : ''}
-                </p>
+      <main className="jobs-page">
+        <header className="jobs-header job-detail-header">
+          <div className="shell">
+            <Link href="/jobs" className="grotesk-regular job-back">
+              <ArrowLeft size={14} /> All jobs
+            </Link>
+
+            <div className="job-detail-id">
+              <span className="job-mark job-detail-mark" style={brand ? { background: brand, borderRadius: '10px' } : undefined}>
+                {logo ? <img src={logo} alt="" /> : <span className="grotesk-bold">{initials(job.employer)}</span>}
+              </span>
+              <div>
+                <h1 className="display-black job-detail-title">{job.title}</h1>
+                <p className="grotesk-regular job-detail-employer">{job.employer}</p>
               </div>
             </div>
+
+            <dl className="job-facts">
+              <div>
+                <dt className="grotesk-regular">Location</dt>
+                <dd className="grotesk-bold">{job.location}</dd>
+              </div>
+              <div>
+                <dt className="grotesk-regular">Type</dt>
+                <dd className="grotesk-bold">{TYPE_LABELS[job.type] || job.type}</dd>
+              </div>
+              <div>
+                <dt className="grotesk-regular">Level</dt>
+                <dd className="grotesk-bold">{LEVEL_LABELS[job.level] || job.level}</dd>
+              </div>
+              <div>
+                <dt className="grotesk-regular">Closes</dt>
+                <dd className="grotesk-bold">{closes}</dd>
+              </div>
+            </dl>
           </div>
+        </header>
+
+        <div className="shell job-detail-body">
+          <div className="job-detail-main">
+            {/* The firm blurb that used to open this page is gone on purpose.
+                Someone here has already decided which employer they are looking
+                at; what they need is the role. Firm background lives in the
+                directory, one click away via the employer link in the header,
+                and keeping it in one place stops the two descriptions drifting
+                apart. */}
+            {/* A short, attributed extract rather than the employer's full copy.
+                Nigeria has fair dealing, not fair use: a closed list of purposes
+                that does not include republishing a posting so people can read
+                it here instead of at the source. Facts are free to state, a
+                brief quotation with attribution is defensible, reproducing the
+                whole thing is not. */}
+            {/* Our copy leads; the employer's words follow as a short quotation.
+                role_desc is written by us, `about` holds the capped excerpt. */}
+            {job.role_desc && (
+              <section>
+                <h2 className="grotesk-bold job-section-heading">The role</h2>
+                <p className="grotesk-regular job-prose">{job.role_desc}</p>
+              </section>
+            )}
+
+            {job.about && (
+              <section>
+                <h2 className="grotesk-bold job-section-heading">In their words</h2>
+                <blockquote className="job-extract">
+                  <p className="grotesk-regular job-prose">{job.about}</p>
+                  <cite className="grotesk-regular job-extract-cite">
+                    {job.employer}
+                    {job.apply_url && (
+                      <>
+                        {' · '}
+                        <a href={job.apply_url} target="_blank" rel="noopener noreferrer">
+                          read the full posting
+                        </a>
+                      </>
+                    )}
+                  </cite>
+                </blockquote>
+              </section>
+            )}
+
+            {requirements.length > 0 && (
+              <section>
+                <h2 className="grotesk-bold job-section-heading">Eligibility</h2>
+                <ul className="job-reqs">
+                  {requirements.map((req, i) => (
+                    <li key={i} className="grotesk-regular">
+                      {req}
+                    </li>
+                  ))}
+                </ul>
+                {/* "the full posting" was plain text asking people to go and
+                    check something we gave them no way to reach. */}
+                <p className="grotesk-regular job-note">
+                  Summarised from the employer&rsquo;s criteria. Check{' '}
+                  {applyHref ? (
+                    <a href={applyHref} target="_blank" rel="noopener noreferrer" className="job-note-link">
+                      the full posting
+                    </a>
+                  ) : (
+                    'the full posting'
+                  )}{' '}
+                  before applying.
+                </p>
+              </section>
+            )}
+
+            {!job.role_desc && !requirements.length && (
+              <section>
+                <p className="grotesk-regular job-prose">
+                  Full details for this role are on the employer&rsquo;s own posting.
+                </p>
+              </section>
+            )}
+
+            {job.practice_areas?.length > 0 && (
+              <section>
+                <h2 className="grotesk-bold job-section-heading">Practice areas</h2>
+                <div className="job-areas">
+                  {job.practice_areas.map((area: string) => (
+                    <span key={area} className="tag-chip">
+                      {area}
+                    </span>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+
+          <aside className="job-apply-wrap">
+            {/* The carton card. One per page, on the only thing the page is
+                actually asking you to do. */}
+            <div className="apply-card">
+              <p className="grotesk-bold apply-card-title">Apply for this role</p>
+
+              {applyHref ? (
+                <a href={applyHref} target="_blank" rel="noopener noreferrer" className="grotesk-bold apply-card-cta">
+                  {job.apply_url ? 'Apply now' : 'Apply by email'} <ExternalLink size={14} />
+                </a>
+              ) : (
+                <p className="grotesk-regular apply-card-note">
+                  No application link was published for this role.
+                </p>
+              )}
+
+              <p className="grotesk-regular apply-card-note">
+                {job.apply_email && (
+                  <>
+                    Send your CV to{' '}
+                    <a href={`mailto:${job.apply_email}`} className="apply-card-mail">
+                      {job.apply_email}
+                    </a>
+                    .{' '}
+                  </>
+                )}
+                {job.is_rolling
+                  ? 'Applications are reviewed as they arrive.'
+                  : job.deadline
+                    ? `Closes ${longDate(job.deadline)}.`
+                    : ''}
+              </p>
+            </div>
+          </aside>
         </div>
       </main>
       <Footer />

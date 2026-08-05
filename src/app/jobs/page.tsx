@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Footer from '@/components/layout/Footer'
 import JobsClient from './JobsClient'
@@ -13,7 +14,11 @@ export default async function JobsPage() {
   console.log('jobs count:', jobs?.length, 'error:', error?.message)
   return (
     <div>
-      <JobsClient jobs={jobs || []} />
+      {/* JobsClient reads useSearchParams to seed its filters from the URL, and
+          Next requires that to sit inside a Suspense boundary. */}
+      <Suspense fallback={null}>
+        <JobsClient jobs={jobs || []} />
+      </Suspense>
       <Footer />
     </div>
   )

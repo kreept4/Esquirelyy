@@ -66,11 +66,11 @@ const PANEL_TONE: Tone = {
 }
 
 const BLOCKS = [
-  { title: 'every role, one board', desc: 'Filter by employer type, practice area, location, and seniority across law firms, banks, fintechs, NGOs, and regulators. No endless scrolling.', href: '/jobs', cta: 'Browse roles', preview: 'jobs' },
-  { title: 'the whole pipeline, tracked', desc: 'Every application in one board, from first submission through assessment, interview, and offer. Nothing slips.', href: '/tracker', cta: 'Open tracker', preview: 'tracker' },
-  { title: 'funding, deadline-tracked', desc: 'Local and international scholarships for Nigerian law students and lawyers, curated and watched so you never miss a cycle.', href: '/scholarships', cta: 'See scholarships', preview: 'scholarships' },
-  { title: 'know the firm before you apply', desc: 'Tier rankings, practice-area breakdowns, office locations, and hiring history for Nigerian firms.', href: '/firms', cta: 'Browse firms', preview: 'firms' },
-  { title: 'feedback that says something', desc: 'CV reviews, cover letter drafts, and interview prep tuned to the Nigerian legal market: specific notes, not platitudes.', href: '/tools/cv-review', cta: 'Try the tools', preview: 'ai' },
+  { title: 'Every role, one board', desc: 'Filter by employer type, practice area, location, and seniority across law firms, banks, fintechs, NGOs, and regulators. No endless scrolling.', href: '/jobs', cta: 'Browse roles', preview: 'jobs' },
+  { title: 'The whole pipeline, tracked', desc: 'Every application in one board, from first submission through assessment, interview, and offer. Nothing slips.', href: '/tracker', cta: 'Open tracker', preview: 'tracker' },
+  { title: 'Funding, deadline-tracked', desc: 'Local and international scholarships for Nigerian law students and lawyers, curated and watched so you never miss a cycle.', href: '/scholarships', cta: 'See scholarships', preview: 'scholarships' },
+  { title: 'Know the firm before you apply', desc: 'Tier rankings, practice-area breakdowns, office locations, and hiring history for Nigerian firms.', href: '/firms', cta: 'Browse firms', preview: 'firms' },
+  { title: 'Feedback that says something', desc: 'CV reviews, cover letter drafts, and interview prep tuned to the Nigerian legal market: specific notes, not platitudes.', href: '/tools/cv-review', cta: 'Try the tools', preview: 'ai' },
 ]
 
 /* ---------------- previews: real UI, real copy ---------------- */
@@ -191,7 +191,7 @@ function Preview({ kind }: { kind: string }) {
   if (kind === 'jobs') {
     const rows = [
       ['Associate, Corporate & Commercial', 'Aluko & Oyebode', 'Lagos', 'Verified'],
-      ['Vacation Scheme 2027', 'Templars', 'Lagos', 'Closing soon'],
+      ['Associate, Capital Markets', 'Aluko & Oyebode', 'Lagos', 'Rolling'],
       ['Legal Trainee, Compliance', 'Zenith Bank Plc', 'Lagos', 'Rolling'],
     ]
     return (
@@ -426,7 +426,7 @@ export default function EverythingYouNeed() {
     <section ref={ref} style={{ backgroundColor: `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`, transition: 'background-color 0.08s linear' }}>
       <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '7rem 1.5rem 3rem' }}>
         <h2 className="display-black" style={{ fontSize: 'clamp(2.2rem, 5.5vw, 4rem)', color: tone.fg, lineHeight: 1.05, maxWidth: '15ch' }}>
-          everything you need, in one place.
+          Everything you need, in one place.
         </h2>
       </div>
       <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '0 1.5rem 4rem' }}>

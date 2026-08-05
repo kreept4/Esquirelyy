@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { logoForEmployer } from '@/lib/firms-data'
+import { logoForEmployer, ballBgForEmployer } from '@/lib/firms-data'
 
 /**
  * Ball pit of open roles. Each ball carries an employer mark; tap one and it
@@ -16,9 +16,15 @@ import { logoForEmployer } from '@/lib/firms-data'
 
 const INK = '#1A1A1A'
 const CREAM = '#FAF7F2'
-const BORDER = '#E8E0D5'
 const MUTED = '#8A8378'
 const CARTON = '#FFF8E5'
+
+/* The section sits inside the page's dark opening act now, so the palette is
+   inverted: cream type on black, and the hairlines become low-opacity cream
+   rather than the beige border that only existed to show up on cream. */
+const BLACK = '#000000'
+const ON_BLACK_LINE = 'rgba(250, 247, 242, 0.14)'
+const ON_BLACK_MUTED = 'rgba(250, 247, 242, 0.55)'
 
 const GRAVITY = 0.42
 const DAMPING = 0.986
@@ -29,19 +35,24 @@ type Ball = { x: number; y: number; vx: number; vy: number; r: number }
 const TYPE_LABELS: Record<string, string> = {
   job: 'Full-time',
   internship: 'Internship',
-  vacation_scheme: 'Vacation scheme',
-  pupillage: 'Pupillage',
 }
 
 /** Most employers here are banks, fintechs and corporates with no logo asset in
- *  the directory. Initials on a white ball read as an empty circle, so those get
- *  a filled ball in their sector colour instead — designed, not missing. */
-const SECTOR_FILL: Record<string, string> = {
-  law_firm: '#1A1A1A',
-  banking: '#0EA5E9',
-  energy: '#F97316',
-  fintech: '#22C55E',
-  other: '#EF4444',
+ *  the directory. Initials on a plain white ball read as an empty circle, so
+ *  those get a filled ball in their sector colour instead: designed, not
+ *  missing.
+ *
+ *  law_firm was #1A1A1A, which worked on the old cream ground and vanished
+ *  completely once the section went black. It is carton now, the same warm
+ *  off-white the detail card uses, so it stays the quiet one of the set without
+ *  disappearing. Each fill carries its own foreground so the initials keep
+ *  contrast whichever way the fill goes. */
+const SECTOR_FILL: Record<string, { bg: string; fg: string }> = {
+  law_firm: { bg: '#FFF8E5', fg: '#1A1A1A' },
+  banking: { bg: '#0EA5E9', fg: '#FFFFFF' },
+  energy: { bg: '#F97316', fg: '#1A1A1A' },
+  fintech: { bg: '#22C55E', fg: '#1A1A1A' },
+  other: { bg: '#EF4444', fg: '#FFFFFF' },
 }
 
 function initials(name: string) {
@@ -69,7 +80,30 @@ export default function RolePit({ listings }: { listings: any[] }) {
   const [open, setOpen] = useState<number | null>(null)
   const [ready, setReady] = useState(false)
 
-  const roles = useMemo(() => listings.slice(0, 11), [listings])
+  /**
+   * One ball per employer.
+   *
+   * Taking the first eleven listings meant the pit mirrored whoever happened to
+   * be hiring hardest: Aluko & Oyebode alone posted twelve roles, so the section
+   * became a wall of the same mark and read as though the board had one
+   * employer. Showing each employer once makes the pit do what it is for, which
+   * is signalling breadth at a glance; the count and the full list are a click
+   * away on the board.
+   *
+   * If that leaves room, the remaining slots are backfilled with additional
+   * roles so the pit never looks sparse.
+   */
+  const roles = useMemo(() => {
+    const seen = new Set<string>()
+    const firstPerEmployer: any[] = []
+    const rest: any[] = []
+    for (const l of listings) {
+      const key = (l.employer || '').toLowerCase().trim()
+      if (key && !seen.has(key)) { seen.add(key); firstPerEmployer.push(l) }
+      else rest.push(l)
+    }
+    return [...firstPerEmployer, ...rest].slice(0, 11)
+  }, [listings])
 
   const layout = useCallback(() => {
     const wrap = wrapRef.current
@@ -194,13 +228,21 @@ export default function RolePit({ listings }: { listings: any[] }) {
   const active = open !== null ? roles[open] : null
 
   return (
-    <section style={{ borderBottom: `0.5px solid ${BORDER}`, backgroundColor: CREAM, overflow: 'hidden' }}>
+    <section style={{ backgroundColor: BLACK, overflow: 'hidden' }}>
       <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '5rem 1.5rem 4rem' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '2rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
-          <h2 className="display-black" style={{ fontSize: 'clamp(2.6rem, 6.5vw, 5rem)', color: INK, lineHeight: 0.95, letterSpacing: '-0.045em' }}>
-            Check these out!
+          <h2
+            className="display-black"
+            /* Sized down from the old 5rem ceiling: this heading is twice the
+               length of the one it replaced, and at the previous scale it ran
+               the full width and crowded the "View all roles" link off its row.
+               The max-width lets it break to two lines on desktop, which is
+               where the phrase reads best anyway. */
+            style={{ fontSize: 'clamp(2.1rem, 4.8vw, 3.9rem)', color: CREAM, lineHeight: 0.95, letterSpacing: '-0.04em', maxWidth: '18ch' }}
+          >
+            You might want to check these out.
           </h2>
-          <Link href="/jobs" className="grotesk-bold" style={{ fontSize: '0.78rem', color: INK, textDecoration: 'none', paddingBottom: '0.35rem', borderBottom: `1px solid ${INK}` }}>
+          <Link href="/jobs" className="grotesk-bold" style={{ fontSize: '0.78rem', color: CREAM, textDecoration: 'none', paddingBottom: '0.35rem', borderBottom: `1px solid ${CREAM}` }}>
             View all roles
           </Link>
         </div>
@@ -209,6 +251,9 @@ export default function RolePit({ listings }: { listings: any[] }) {
           {roles.map((l, i) => {
             const url = logoForEmployer(l.employer)
             const fill = SECTOR_FILL[l.sector] || SECTOR_FILL.other
+            // Marks drawn on a solid brand field get a ball to match, so the
+            // field dissolves into the ball rather than reading as a box on it.
+            const brandBg = ballBgForEmployer(l.employer)
             const size = ballsRef.current[i]?.r ? ballsRef.current[i].r * 2 : 90
             return (
               <button
@@ -218,12 +263,12 @@ export default function RolePit({ listings }: { listings: any[] }) {
                 onPointerDown={e => onPointerDown(e, i)}
                 onClick={() => setOpen(open === i ? null : i)}
                 aria-label={`${l.title} at ${l.employer}`}
-                style={{ width: size, height: size, backgroundColor: url ? '#FFFFFF' : fill }}
+                style={{ width: size, height: size, backgroundColor: url ? (brandBg || '#FFFFFF') : fill.bg }}
               >
                 {url ? (
                   <img src={url} alt="" style={{ maxWidth: '68%', maxHeight: '68%', objectFit: 'contain' }} />
                 ) : (
-                  <span className="display-black" style={{ fontSize: size * 0.3, color: '#FFF8E5', letterSpacing: '-0.02em' }}>
+                  <span className="display-black" style={{ fontSize: size * 0.3, color: fill.fg, letterSpacing: '-0.02em' }}>
                     {initials(l.employer)}
                   </span>
                 )}
@@ -234,7 +279,10 @@ export default function RolePit({ listings }: { listings: any[] }) {
 
         {/* The panel holds its column whether or not a ball is selected. Leaving
             it empty is what made the section feel like something was missing. */}
-        <div className="role-pit-card" style={{ backgroundColor: active ? CARTON : 'transparent', border: active ? `1.5px solid ${INK}` : `1px dashed ${BORDER}`, borderRadius: '10px', boxShadow: active ? '6px 8px 0 rgba(0,0,0,0.85)' : 'none' }}>
+        {/* The carton card keeps its light ground: a lit panel against black is
+            the point. Its drop shadow was pure black, which is now invisible,
+            so the lift comes from a cream edge instead. */}
+        <div className="role-pit-card" style={{ backgroundColor: active ? CARTON : 'transparent', border: active ? `1.5px solid ${CARTON}` : `1px dashed ${ON_BLACK_LINE}`, borderRadius: '10px', boxShadow: active ? '6px 8px 0 rgba(250,247,242,0.22)' : 'none' }}>
           {active ? (
             <>
               <button onClick={() => setOpen(null)} aria-label="Close" className="role-pit-close">×</button>
@@ -251,10 +299,12 @@ export default function RolePit({ listings }: { listings: any[] }) {
             </>
           ) : (
             <div className="role-pit-empty">
-              <p className="display-bold" style={{ fontSize: '1.05rem', color: INK, lineHeight: 1.25, marginBottom: '0.5rem' }}>
-                {roles.length} roles open.
+              {/* The count moved up into the eyebrow, so this panel no longer
+                  repeats it and just does the inviting. */}
+              <p className="display-bold" style={{ fontSize: '1.05rem', color: CREAM, lineHeight: 1.25, marginBottom: '0.5rem' }}>
+                Pick one up.
               </p>
-              <p className="grotesk-regular" style={{ fontSize: '0.82rem', color: MUTED, lineHeight: 1.6 }}>
+              <p className="grotesk-regular" style={{ fontSize: '0.82rem', color: ON_BLACK_MUTED, lineHeight: 1.6 }}>
                 Tap a ball to see the role, or throw them around first. Nobody&rsquo;s watching.
               </p>
             </div>

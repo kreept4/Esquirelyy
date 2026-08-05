@@ -40,7 +40,7 @@ const SCORE_LABELS: Record<string, string> = {
 const CAREER_STAGES = [
   { value: '', label: 'Select your stage' },
   { value: 'student', label: 'Law Student' },
-  { value: 'nysc', label: 'NYSC Corps Member' },
+  { value: 'nysc', label: 'Entry-level' },
   { value: 'junior', label: 'Junior (0-3 yrs PQE)' },
   { value: 'mid', label: 'Mid-level (3-6 yrs PQE)' },
   { value: 'senior', label: 'Senior (6+ yrs PQE)' },
