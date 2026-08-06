@@ -71,6 +71,63 @@ function deadlineLabel(l: any) {
   return new Date(l.deadline).toLocaleDateString('en-NG', { day: 'numeric', month: 'short' })
 }
 
+/**
+ * Employer mark inside a ball, scaled by optical area rather than by a shared
+ * bounding box.
+ *
+ * The marks vary in aspect from 0.85 (Access Bank, upright) to 2.60 (Union
+ * Bank, a long wordmark). Capping every one at 68% of the ball meant the wide
+ * marks were width-bound and rendered about a quarter of the ball tall, while
+ * near-square marks filled it, so identical treatment produced wildly different
+ * visual weight around the pit.
+ *
+ * Normalising area instead gives each mark roughly the same amount of ink. The
+ * natural size is read on load rather than kept in a table, so a replaced or
+ * newly added logo corrects itself.
+ */
+function BallMark({ src }: { src: string }) {
+  const [ratio, setRatio] = useState<number | null>(null)
+
+  // The circle's inscribed square, as a fraction of the ball's box.
+  const S = 0.707
+  // Area a square mark should occupy inside that square. Everything else is
+  // matched to it. 0.82 puts a square mark at about 58% of the ball's width,
+  // which is the point where the mark reads as the ball's content rather than
+  // as something floating in the middle of it.
+  const FILL = 0.82
+  const AREA = (FILL * S) ** 2
+
+  let w = S * FILL
+  let h = S * FILL
+  if (ratio) {
+    h = Math.sqrt(AREA / ratio)
+    w = ratio * h
+    // A very wide or very tall mark hits the inscribed square before it reaches
+    // the target area; clamping keeps it inside the circle.
+    if (w > S) { w = S; h = S / ratio }
+    if (h > S) { h = S; w = S * ratio }
+  }
+
+  return (
+    <img
+      src={src}
+      alt=""
+      onLoad={e => {
+        const el = e.currentTarget
+        if (el.naturalWidth && el.naturalHeight) setRatio(el.naturalWidth / el.naturalHeight)
+      }}
+      style={{
+        width: `${w * 100}%`,
+        height: `${h * 100}%`,
+        objectFit: 'contain',
+        // Until the natural size is known the mark renders at the square
+        // default above, so it is never invisible and never jumps far.
+        transition: 'width 0.2s ease, height 0.2s ease',
+      }}
+    />
+  )
+}
+
 export default function RolePit({ listings }: { listings: any[] }) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const ballsRef = useRef<Ball[]>([])
@@ -81,28 +138,42 @@ export default function RolePit({ listings }: { listings: any[] }) {
   const [ready, setReady] = useState(false)
 
   /**
-   * One ball per employer.
+   * Round-robin across employers, at most two balls each.
    *
-   * Taking the first eleven listings meant the pit mirrored whoever happened to
-   * be hiring hardest: Aluko & Oyebode alone posted twelve roles, so the section
-   * became a wall of the same mark and read as though the board had one
-   * employer. Showing each employer once makes the pit do what it is for, which
-   * is signalling breadth at a glance; the count and the full list are a click
-   * away on the board.
+   * The previous version took one role per employer and then backfilled the
+   * remaining slots from whatever was left, which defeated the point: with four
+   * employers on the board and eleven slots, the backfill was seven more Aluko
+   * roles and the pit rendered as a wall of one mark. Breadth is the only thing
+   * this section communicates, so it cannot be the first casualty of padding.
    *
-   * If that leaves room, the remaining slots are backfilled with additional
-   * roles so the pit never looks sparse.
+   * Taking one from each employer, then a second from each, keeps the mix even
+   * however lopsided the board gets. The cap means a firm posting thirty roles
+   * still occupies two balls.
+   *
+   * A thinner pit is the accepted cost. Eight balls of four different firms
+   * says "this board has range"; eleven balls of one firm actively says the
+   * opposite, and the true count is one click away on the board anyway.
    */
   const roles = useMemo(() => {
-    const seen = new Set<string>()
-    const firstPerEmployer: any[] = []
-    const rest: any[] = []
+    const MAX_PER_EMPLOYER = 2
+    const MAX_BALLS = 11
+
+    const byEmployer = new Map<string, any[]>()
     for (const l of listings) {
-      const key = (l.employer || '').toLowerCase().trim()
-      if (key && !seen.has(key)) { seen.add(key); firstPerEmployer.push(l) }
-      else rest.push(l)
+      const key = (l.employer || '').toLowerCase().trim() || `__${byEmployer.size}`
+      const bucket = byEmployer.get(key)
+      if (bucket) bucket.push(l)
+      else byEmployer.set(key, [l])
     }
-    return [...firstPerEmployer, ...rest].slice(0, 11)
+
+    const picked: any[] = []
+    for (let round = 0; round < MAX_PER_EMPLOYER; round++) {
+      for (const bucket of byEmployer.values()) {
+        if (bucket[round]) picked.push(bucket[round])
+        if (picked.length >= MAX_BALLS) return picked
+      }
+    }
+    return picked
   }, [listings])
 
   const layout = useCallback(() => {
@@ -242,8 +313,11 @@ export default function RolePit({ listings }: { listings: any[] }) {
           >
             You might want to check these out.
           </h2>
-          <Link href="/jobs" className="grotesk-bold" style={{ fontSize: '0.78rem', color: CREAM, textDecoration: 'none', paddingBottom: '0.35rem', borderBottom: `1px solid ${CREAM}` }}>
+          <Link href="/jobs" className="grotesk-bold link-arrow link-arrow-cream">
             View all roles
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
           </Link>
         </div>
         <div className="role-pit-layout">
@@ -266,7 +340,7 @@ export default function RolePit({ listings }: { listings: any[] }) {
                 style={{ width: size, height: size, backgroundColor: url ? (brandBg || '#FFFFFF') : fill.bg }}
               >
                 {url ? (
-                  <img src={url} alt="" style={{ maxWidth: '68%', maxHeight: '68%', objectFit: 'contain' }} />
+                  <BallMark src={url} />
                 ) : (
                   <span className="display-black" style={{ fontSize: size * 0.3, color: fill.fg, letterSpacing: '-0.02em' }}>
                     {initials(l.employer)}

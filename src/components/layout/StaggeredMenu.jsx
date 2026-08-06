@@ -85,7 +85,7 @@ export const StaggeredMenu = ({
     itemEntranceTweenRef.current?.kill();
 
     const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel'));
-    const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
+    const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-itemWrap'));
     const socialTitle = panel.querySelector('.sm-socials-title');
     const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link'));
 
@@ -220,7 +220,7 @@ export const StaggeredMenu = ({
         if (itemEls.length) {
           gsap.set(itemEls, { yPercent: 140, rotate: 10 });
         }
-        const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-item'));
+        const numberEls = Array.from(panel.querySelectorAll('.sm-panel-list[data-numbering] .sm-panel-itemWrap'));
         if (numberEls.length) {
           gsap.set(numberEls, { '--sm-num-opacity': 0 });
         }
@@ -299,7 +299,26 @@ export const StaggeredMenu = ({
     textCycleAnimRef.current = gsap.to(inner, {
       yPercent: -finalShift,
       duration: 0.5 + lineCount * 0.07,
-      ease: 'power4.out'
+      ease: 'power4.out',
+      /**
+       * Collapse to a single stable line once the reel stops.
+       *
+       * This is the "Close showing while the menu is shut" bug. The reel leaves
+       * a multi-line strip in the DOM held in place purely by a transform, so
+       * the correct word is only visible while that transform survives. Any
+       * resize re-runs the layout effect, which resets yPercent to 0, and the
+       * strip snaps back to its FIRST line, which is the label the button had
+       * before the animation, i.e. the wrong one. A React re-render does the
+       * same thing.
+       *
+       * Reducing the strip to just the settled label means there is no longer a
+       * wrong line to fall back to, so the button cannot disagree with the menu
+       * whatever else happens to it.
+       */
+      onComplete: () => {
+        setTextLines([targetLabel]);
+        gsap.set(inner, { yPercent: 0 });
+      }
     });
   }, []);
 
@@ -403,9 +422,18 @@ export const StaggeredMenu = ({
               ))}
             </span>
           </span>
-          <span ref={iconRef} className="sm-icon" aria-hidden="true">
-            <span ref={plusHRef} className="sm-icon-line" />
-            <span ref={plusVRef} className="sm-icon-line sm-icon-line-v" />
+          {/* The wrapper exists so hover has somewhere to live.
+              GSAP owns the transform on .sm-icon (it spins to 225deg on open
+              and back to 0 on close) and writes it inline, so any CSS rotation
+              on that same element would simply be overwritten on the next
+              tween. Rotating the parent instead lets the two compose: the
+              hover spin rides on top of whatever state the toggle is in, and
+              works identically for the open "Close" state. */}
+          <span className="sm-icon-spin">
+            <span ref={iconRef} className="sm-icon" aria-hidden="true">
+              <span ref={plusHRef} className="sm-icon-line" />
+              <span ref={plusVRef} className="sm-icon-line sm-icon-line-v" />
+            </span>
           </span>
         </button>
       </header>

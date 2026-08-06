@@ -22,6 +22,8 @@ const NAV_ITEMS = [
   { label: 'CV Review', ariaLabel: 'Get your CV reviewed', link: '/tools/cv-review' },
   { label: 'Cover Letter', ariaLabel: 'Draft a cover letter', link: '/tools/cover-letter' },
   { label: 'Interview Prep', ariaLabel: 'Practise for interviews', link: '/tools/interview-prep' },
+  { label: 'Ambassador', ariaLabel: 'Become a campus ambassador', link: '/ambassador' },
+  { label: 'FAQ', ariaLabel: 'Read frequently asked questions', link: '/faq' },
 ]
 
 export default function Navbar() {
@@ -160,7 +162,7 @@ export default function Navbar() {
           letter-spacing: -0.03em;
           font-size: clamp(2rem, 5vw, 3.25rem);
         }
-        .sm-panel-list[data-numbering] .sm-panel-item::after {
+        .sm-panel-list[data-numbering] .sm-panel-itemWrap::after {
           font-family: var(--font-sans);
           font-size: 0.7rem;
         }

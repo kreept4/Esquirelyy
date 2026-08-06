@@ -18,12 +18,19 @@ import { logoUrl, logoForEmployer } from '@/lib/firms-data'
 
 type RGB = [number, number, number]
 
+/* Two stops added with the ambassador and FAQ blocks. Violet and teal were the
+ * gaps: sky, orange, red and green already cover most of the wheel, and both
+ * new colours are far enough from their neighbours that the ride does not
+ * flatten into one long stretch of the same hue mid-scroll. The run still
+ * opens and closes on ink so the section joins the dark bands either side. */
 const STOPS: RGB[] = [
   [26, 26, 26],   // ink
   [56, 189, 248], // sky blue
   [249, 115, 22], // orange
   [239, 68, 68],  // red
   [34, 197, 94],  // green
+  [139, 92, 246], // violet
+  [20, 184, 166], // teal
   [26, 26, 26],   // ink
 ]
 
@@ -71,6 +78,8 @@ const BLOCKS = [
   { title: 'Funding, deadline-tracked', desc: 'Local and international scholarships for Nigerian law students and lawyers, curated and watched so you never miss a cycle.', href: '/scholarships', cta: 'See scholarships', preview: 'scholarships' },
   { title: 'Know the firm before you apply', desc: 'Tier rankings, practice-area breakdowns, office locations, and hiring history for Nigerian firms.', href: '/firms', cta: 'Browse firms', preview: 'firms' },
   { title: 'Feedback that says something', desc: 'CV reviews, cover letter drafts, and interview prep tuned to the Nigerian legal market: specific notes, not platitudes.', href: '/tools/cv-review', cta: 'Try the tools', preview: 'ai' },
+  { title: 'Represent us on your campus', desc: 'Ambassadors run Esquirely where it matters most, inside university law faculties. You get early access, a signed reference, and a say in what we build next.', href: '/ambassador', cta: 'Become an ambassador', preview: 'ambassador' },
+  { title: 'Questions, answered plainly', desc: 'What the tools do with your CV, how firms get listed, what it costs, and whether we can get you a job. Short answers, no hedging.', href: '/faq', cta: 'Read the FAQ', preview: 'faq' },
 ]
 
 /* ---------------- previews: real UI, real copy ---------------- */
@@ -147,11 +156,46 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
   )
 }
 
+/**
+ * Tag, not a pill.
+ *
+ * These were fully rounded outlined capsules, which is the single most generic
+ * component shape on the web and read as placeholder UI wherever they appeared.
+ * They also disagreed with the rest of the product: the design language is
+ * round buttons and square cards, and the tag treatment everywhere else
+ * (.tag-chip on the job board and the firm directory) is a 2px radius on a
+ * filled ground. Matching that makes the previews look like screenshots of the
+ * real thing, which is the entire point of a preview.
+ *
+ * `solid` marks the one that is actually engaged, so an active filter still
+ * reads as active without the whole row shouting.
+ */
 function Chip({ tone, label, solid = false }: { tone: Tone; label: string; solid?: boolean }) {
   return (
-    <span className="grotesk-regular" style={{ fontSize: '0.68rem', padding: '4px 12px', borderRadius: '999px', whiteSpace: 'nowrap', color: solid ? tone.chipFg : tone.fg, backgroundColor: solid ? tone.chipBg : 'transparent', border: `1px solid ${solid ? tone.chipBg : tone.line}` }}>
+    <span
+      className="grotesk-regular"
+      style={{
+        fontSize: '0.7rem',
+        padding: '3px 9px',
+        borderRadius: '2px',
+        whiteSpace: 'nowrap',
+        color: solid ? tone.chipFg : tone.fg,
+        backgroundColor: solid ? tone.chipBg : tone.fill,
+        border: `1px solid ${solid ? tone.chipBg : tone.line}`,
+      }}
+    >
       {label}
     </span>
+  )
+}
+
+/** Inline list, middot separated. For a set of plain facts, a row of tags adds
+ *  five borders and five fills to say what a single line of type says better. */
+function FactLine({ tone, items }: { tone: Tone; items: string[] }) {
+  return (
+    <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: tone.soft, lineHeight: 1.6 }}>
+      {items.join('  ·  ')}
+    </p>
   )
 }
 
@@ -189,10 +233,16 @@ function Preview({ kind }: { kind: string }) {
   const tone = PANEL_TONE
 
   if (kind === 'jobs') {
+    /* Three different firms, all of them law firms.
+     *
+     * The filter chip above these rows reads "Law firm", and the third row used
+     * to be Zenith Bank, so the preview was showing a bank under a law firm
+     * filter. Two of the three were also the same firm, which made the board
+     * look thin rather than broad. */
     const rows = [
       ['Associate, Corporate & Commercial', 'Aluko & Oyebode', 'Lagos', 'Verified'],
-      ['Associate, Capital Markets', 'Aluko & Oyebode', 'Lagos', 'Rolling'],
-      ['Legal Trainee, Compliance', 'Zenith Bank Plc', 'Lagos', 'Rolling'],
+      ['Associate, Capital Markets', 'G. Elias & Co', 'Lagos', 'Rolling'],
+      ['Associate, Dispute Resolution', 'Kenna Partners', 'Lagos', 'Rolling'],
     ]
     return (
       <Panel>
@@ -223,7 +273,7 @@ function Preview({ kind }: { kind: string }) {
     const cols: [string, string[]][] = [
       ['Applied', ['Banwo & Ighodalo', 'Detail Solicitors', 'MTN Nigeria']],
       ['Interview', ['Templars', 'Flutterwave']],
-      ['Offer', ['Aluko & Oyebode']],
+      ['Offer', ['Olaniwun Ajayi LP']],
     ]
     return (
       <Panel>
@@ -231,7 +281,7 @@ function Preview({ kind }: { kind: string }) {
           {cols.map(([label, items]) => (
             <div key={label}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
-                <span className="grotesk-bold" style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: tone.soft }}>{label}</span>
+                <span className="grotesk-bold" style={{ fontSize: '0.72rem', color: tone.fg }}>{label}</span>
                 <span className="grotesk-regular" style={{ fontSize: '0.6rem', color: tone.soft }}>{items.length}</span>
               </div>
               {items.map((n) => (
@@ -274,11 +324,17 @@ function Preview({ kind }: { kind: string }) {
   }
 
   if (kind === 'firms') {
-    // Names only: Mark resolves the logo from the directory.
+    /* Names only: Mark resolves the logo from the directory.
+     *
+     * Aluko led this list too, and between here, the board preview and the
+     * tracker it was appearing three times in one scroll, which made the whole
+     * section look like it had one client. Tier and practice areas now match
+     * what the directory actually records for each firm, so the preview is not
+     * quietly contradicting the page it links to. */
     const rows = [
-      ['Aluko & Oyebode', 'Tier 1', 'Corporate · Energy · Capital markets'],
-      ['Banwo & Ighodalo', 'Tier 1', 'Banking · Capital markets'],
-      ['Detail Solicitors', 'Boutique', 'Energy · Dispute resolution'],
+      ['Templars', 'Tier 1', 'Energy · Corporate · Disputes'],
+      ['Banwo & Ighodalo', 'Tier 1', 'Capital markets · Banking'],
+      ['Detail Solicitors', 'Tier 1', 'Corporate · IP · Tax'],
     ]
     return (
       <Panel>
@@ -298,15 +354,88 @@ function Preview({ kind }: { kind: string }) {
     )
   }
 
+  if (kind === 'ambassador') {
+    /* What the role actually involves, as a checklist. An ambassador programme
+     * is easy to describe in words nobody can picture ("represent the brand",
+     * "build community"), so the panel states the four concrete things and what
+     * you get back, which is the only part a student is really weighing. */
+    const duties = [
+      'Host one one-hour workshop a semester',
+      'Share openings in your faculty groups',
+      'Tell us what your year actually needs',
+    ]
+    const perks = ['Early access', 'Written reference', 'Direct line to the team']
+    return (
+      <Panel>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.9rem', flexWrap: 'wrap' }}>
+          <Chip tone={tone} label="Campus ambassador" solid />
+          <Chip tone={tone} label="One term" />
+        </div>
+
+        {duties.map((d, i) => (
+          <Row key={d} tone={tone} first={i === 0}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={tone.fg} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+              <span className="grotesk-regular" style={{ fontSize: '0.8rem', color: tone.fg }}>{d}</span>
+            </div>
+          </Row>
+        ))}
+
+        <div style={{ marginTop: '1rem', paddingTop: '0.9rem', borderTop: `1px solid ${tone.line}` }}>
+          <p className="grotesk-bold" style={{ fontSize: '0.72rem', color: tone.fg, marginBottom: '0.55rem' }}>
+            What you get
+          </p>
+          <FactLine tone={tone} items={perks} />
+        </div>
+      </Panel>
+    )
+  }
+
+  if (kind === 'faq') {
+    /* Real questions with the answer already visible on the first one. A row of
+     * collapsed question titles would look like a FAQ but tell the reader
+     * nothing; showing one answered proves the answers are short and direct,
+     * which is the actual claim being made in the copy beside it. */
+    const rest = ['How do firms get listed?', 'Is any of this free?', 'Can you get me a job?']
+    return (
+      <Panel>
+        <Row tone={tone} first>
+          <div style={{ display: 'flex', gap: '0.55rem', alignItems: 'flex-start' }}>
+            <span className="grotesk-bold" style={{ fontSize: '0.8rem', color: tone.fg, lineHeight: 1.45, flex: 1 }}>
+              Do you keep my CV?
+            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={tone.fg} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '3px' }}>
+              <path d="m18 15-6-6-6 6" />
+            </svg>
+          </div>
+          <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: tone.soft, lineHeight: 1.6, marginTop: '0.5rem' }}>
+            No. The file is read to produce your review and never written to disk. Only the review text is saved, to your account.
+          </p>
+        </Row>
+
+        {rest.map(q => (
+          <Row key={q} tone={tone} first={false}>
+            <div style={{ display: 'flex', gap: '0.55rem', alignItems: 'center' }}>
+              <span className="grotesk-regular" style={{ fontSize: '0.8rem', color: tone.fg, flex: 1 }}>{q}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={tone.soft} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </div>
+          </Row>
+        ))}
+      </Panel>
+    )
+  }
+
   // A before/after on one CV line, not a case study. Naming a firm implied an
   // endorsement and made the reader work out why that firm mattered; three
   // abstract critiques asked them to imagine a scenario they'd never seen. One
   // rewritten bullet shows the value in the time it takes to read it.
   const label: React.CSSProperties = {
-    fontSize: '0.58rem',
-    letterSpacing: '0.14em',
-    textTransform: 'uppercase',
-    color: tone.soft,
+    fontSize: '0.72rem',
+    color: tone.fg,
     marginBottom: '0.4rem',
   }
   return (

@@ -153,6 +153,18 @@
   line-height: 1;
 }
 
+/* Hover spin. Lives on a wrapper because GSAP owns .sm-icon's transform. */
+.sm-icon-spin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sm-toggle:hover .sm-icon-spin,
+.sm-toggle:focus-visible .sm-icon-spin {
+  transform: rotate(90deg);
+}
+
 .sm-icon {
   position: relative;
   width: 14px;
@@ -162,6 +174,12 @@
   align-items: center;
   justify-content: center;
   will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sm-icon-spin { transition: none; }
+  .sm-toggle:hover .sm-icon-spin,
+  .sm-toggle:focus-visible .sm-icon-spin { transform: none; }
 }
 
 .sm-panel-itemWrap {
@@ -376,12 +394,30 @@
   counter-reset: smItem;
 }
 
-.sm-panel-list[data-numbering] .sm-panel-item::after {
+/**
+ * Numbers in a right-aligned column, off the list item rather than the link.
+ *
+ * They used to hang at `right: 2.8em` on the anchor, and an anchor is only as
+ * wide as its own label, so the offset was measured from a different place for
+ * every row. The numbers came out ragged, and the two longest labels
+ * (Scholarships, Ambassador) pushed theirs so far right that it landed in the
+ * panel gutter and read as missing.
+ *
+ * Anchoring to the full-width list item instead gives one column for every
+ * number regardless of label length, which is also how a numbered index should
+ * be set. The padding on the link reserves the column so a long label can never
+ * run underneath it.
+ */
+.sm-panel-list[data-numbering] .sm-panel-itemWrap { position: relative; }
+
+.sm-panel-list[data-numbering] .sm-panel-item { padding-right: 2.6em; }
+
+.sm-panel-list[data-numbering] .sm-panel-itemWrap::after {
   counter-increment: smItem;
   content: counter(smItem, decimal-leading-zero);
   position: absolute;
-  top: 0.1em;
-  right: 2.8em;
+  top: 0.35em;
+  right: 0.2em;
   font-size: 18px;
   font-weight: 400;
   color: var(--sm-accent, #5227ff);

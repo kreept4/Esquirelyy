@@ -40,6 +40,8 @@ const FOOTER_LINKS: Record<string, { href: string; label: string }[]> = {
     { href: '/tracker', label: 'Application tracker' },
   ],
   Company: [
+    { href: '/ambassador', label: 'Be an ambassador' },
+    { href: '/faq', label: 'FAQ' },
     { href: '/advertise', label: 'Post a role' },
     { href: '/contact', label: 'Contact' },
     { href: '/privacy', label: 'Privacy policy' },
@@ -67,7 +69,7 @@ export default function Footer() {
         <div className="footer-cols">
           {Object.entries(FOOTER_LINKS).map(([section, links]) => (
             <div key={section}>
-              <p className="grotesk-bold" style={{ fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: MUTED, marginBottom: '1.1rem' }}>
+              <p className="grotesk-bold" style={{ fontSize: '0.8rem', color: 'rgba(250,246,240,0.85)', marginBottom: '1.1rem' }}>
                 {section}
               </p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>

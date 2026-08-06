@@ -706,6 +706,551 @@ select.filter-pill {
 .job-actions button[aria-pressed='true'] { color: var(--ink); }
 .job-actions a { color: var(--ink); display: flex; }
 
+/* FORWARD LINK
+   The counterpart to .back-link, for "go on to the full thing" links. Same
+   grammar in reverse: the arrow travels in the direction it points while the
+   label holds still, and the rule under the text extends to meet it. One
+   treatment so every onward link on the site behaves identically instead of
+   each section inventing its own hover. */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  text-decoration: none;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid currentColor;
+  transition: gap 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+}
+.link-arrow svg {
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.link-arrow:hover { gap: 0.7rem; }
+.link-arrow:hover svg { transform: translateX(3px); }
+
+.link-arrow-cream { color: var(--cream); }
+.link-arrow-cream:hover { opacity: 0.82; }
+.link-arrow-ink { color: var(--ink); }
+.link-arrow-ink:hover { opacity: 0.7; }
+
+@media (prefers-reduced-motion: reduce) {
+  .link-arrow,
+  .link-arrow svg { transition: none; }
+  .link-arrow:hover { gap: 0.45rem; }
+  .link-arrow:hover svg { transform: none; }
+}
+
+/* AMBASSADOR
+   Editorial, not modular. Every section is a two-column asymmetry: a short
+   label column that states what the section is, and a wide content column that
+   carries it. The label column is sticky on desktop, so the reader always knows
+   which part of the argument they are in without a heading repeating above the
+   fold.
+   Both columns collapse to one below 900px, and the label stops being sticky
+   there, because a sticky element in a single-column flow just eats the screen. */
+.amb-page { background: var(--cream); }
+
+/* --- masthead --- */
+.amb-masthead {
+  background: var(--ink);
+  padding: 4.5rem 0 0;
+}
+.amb-masthead-inner { padding: 0 2rem; }
+
+.amb-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.5);
+  margin-bottom: 1.5rem;
+}
+
+.amb-title {
+  font-size: clamp(2.1rem, 6vw, 4.2rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--cream);
+  margin-bottom: 1.5rem;
+}
+
+.amb-lede {
+  font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+  line-height: 1.7;
+  color: rgba(250, 246, 240, 0.66);
+  max-width: 54ch;
+  margin-bottom: 3rem;
+}
+
+/* Terms strip. The whole cost of the programme, readable in three seconds,
+   inside the ink band rather than buried below it. auto-fit means it goes
+   4-up, 2-up and 1-up without a breakpoint deciding. */
+.amb-terms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  border-top: 0.5px solid rgba(250, 246, 240, 0.18);
+}
+.amb-term {
+  padding: 1.35rem 1.5rem 1.6rem 0;
+  border-right: 0.5px solid rgba(250, 246, 240, 0.14);
+}
+.amb-term:last-child { border-right: none; }
+.amb-term dt {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.45);
+  margin-bottom: 0.45rem;
+}
+.amb-term dd {
+  font-size: 1.05rem;
+  color: var(--cream);
+  letter-spacing: -0.01em;
+}
+
+/* --- body --- */
+.amb-body { padding: 0 2rem 5rem; }
+
+.amb-part {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: 3.5rem;
+  padding: 4rem 0;
+  border-bottom: 0.5px solid var(--cream-border);
+}
+.amb-part:last-of-type { border-bottom: none; }
+
+.amb-part-label { position: sticky; top: 7rem; align-self: start; }
+.amb-part-title {
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+.amb-part-note {
+  font-size: 0.8rem;
+  line-height: 1.65;
+  color: var(--ink-muted);
+  max-width: 26ch;
+}
+
+/* --- the commitment index --- */
+.amb-index { list-style: none; }
+/* The body column is capped rather than 1fr. At 1fr it absorbed all the spare
+   width on a wide display and pushed the sidenote to the far edge, so the note
+   stopped reading as a note on the paragraph beside it and started reading as
+   an unrelated third column. Capping the measure keeps the two together and
+   lets the leftover width fall away to the right, which is what a margin is. */
+.amb-index-item {
+  display: grid;
+  grid-template-columns: minmax(0, 4.5rem) minmax(0, 34rem) minmax(0, 15rem);
+  justify-content: start;
+  gap: 2.5rem;
+  padding: 2.25rem 0;
+  border-top: 0.5px solid var(--cream-border);
+  align-items: start;
+}
+.amb-index-item:first-child { border-top: none; padding-top: 0; }
+
+/* The numerals are the structure of this section. Large, but set back in the
+   muted tone so they read as an index rather than competing with the titles. */
+.amb-index-num {
+  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  opacity: 0.22;
+}
+.amb-index-title {
+  font-size: clamp(1.15rem, 2.1vw, 1.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 0.7rem;
+}
+.amb-index-body {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  color: var(--ink-muted);
+  max-width: 48ch;
+}
+/* Marginal note, set smaller and ruled off, in the manner of a sidenote. */
+.amb-index-aside {
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+  padding-left: 1.1rem;
+  border-left: 1px solid var(--cream-border);
+}
+
+/* --- what you get --- */
+.amb-returns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  column-gap: 3rem;
+  row-gap: 2.25rem;
+}
+.amb-return-title {
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin-bottom: 0.45rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 0.5px solid var(--cream-border);
+}
+.amb-return-body {
+  font-size: 0.86rem;
+  line-height: 1.75;
+  color: var(--ink-muted);
+}
+
+/* --- who it suits --- */
+.amb-fit-wrap { max-width: 52ch; }
+.amb-fit { list-style: none; }
+.amb-fit li {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink);
+  padding: 0.9rem 0 0.9rem 1.5rem;
+  border-top: 0.5px solid var(--cream-border);
+  position: relative;
+}
+.amb-fit li:first-child { border-top: none; padding-top: 0; }
+/* A rule, not a tick. Checkmarks on a list of three make it look like a
+   feature comparison. */
+.amb-fit li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 1.35rem;
+  width: 0.7rem;
+  height: 1px;
+  background: var(--ink);
+}
+.amb-fit li:first-child::before { top: 0.45rem; }
+.amb-fit-note {
+  margin-top: 1.75rem;
+  font-size: 0.86rem;
+  line-height: 1.75;
+  color: var(--ink-muted);
+}
+
+/* --- apply --- */
+.amb-apply {
+  margin-top: 4rem;
+  background: #FFF8E5;
+  border: 1.5px solid #241F16;
+  border-radius: 10px;
+  box-shadow: 6px 8px 0 rgba(36, 31, 22, 0.85);
+  padding: 3rem;
+}
+.amb-apply-copy { max-width: 60ch; }
+.amb-apply-heading {
+  font-size: clamp(1.7rem, 4.5vw, 2.6rem);
+  color: var(--ink);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 0.9rem;
+}
+.amb-apply-body {
+  font-size: 0.92rem;
+  color: var(--ink-muted);
+  line-height: 1.75;
+  margin-bottom: 2rem;
+}
+.amb-apply-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+}
+.amb-apply-cta {
+  display: inline-block;
+  padding: 0.9rem 2rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: var(--ink);
+  color: #FFF8E5;
+  text-decoration: none;
+  transition: transform 0.18s ease;
+}
+.amb-apply-cta:hover { transform: translateY(-2px); }
+.amb-apply-alt {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(36, 31, 22, 0.3);
+  padding-bottom: 1px;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+.amb-apply-alt:hover { color: var(--ink); border-color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .amb-apply-cta:hover { transform: none; }
+}
+
+/* Tablet and below: the sidenote column folds into the body, and the label
+   column stops being sticky. */
+@media (max-width: 1080px) {
+  .amb-index-item {
+    grid-template-columns: minmax(0, 3.5rem) minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+  .amb-index-aside {
+    grid-column: 2;
+    margin-top: 1rem;
+    padding-left: 1rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .amb-part {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 3rem 0;
+  }
+  .amb-part-label { position: static; }
+  .amb-part-note { max-width: 46ch; }
+}
+
+@media (max-width: 640px) {
+  .amb-masthead { padding-top: 3rem; }
+  .amb-masthead-inner { padding: 0 1.25rem; }
+  .amb-body { padding: 0 1.25rem 3.5rem; }
+  .amb-lede { margin-bottom: 2rem; }
+  .amb-term { padding: 1.1rem 1rem 1.2rem 0; border-right: none; border-bottom: 0.5px solid rgba(250, 246, 240, 0.12); }
+  .amb-term:last-child { border-bottom: none; }
+  .amb-index-item { grid-template-columns: 1fr; gap: 0.75rem; padding: 1.9rem 0; }
+  .amb-index-num { font-size: 1.6rem; }
+  .amb-index-aside { grid-column: 1; }
+  .amb-apply { padding: 1.85rem; box-shadow: 4px 5px 0 rgba(36, 31, 22, 0.85); }
+}
+
+/* FAQ
+   Single measured column at every width. There is no layout to collapse, so
+   the page is responsive by construction rather than by breakpoint: the shell
+   handles the gutters and the column is capped in ch so the line length stays
+   readable from a phone to a 4K display. */
+/* Two columns, so the page occupies the screen instead of sitting as a narrow
+   strip down the middle with empty margins either side. Same reasoning as the
+   legal pages: a single prose column across a wide display either wastes the
+   width or runs to an unreadable measure, so the spare width carries a sticky
+   index and the answers keep a sensible line length. */
+.faq-shell {
+  padding: 3.5rem 2rem 5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: 4rem;
+  align-items: start;
+}
+
+/* Same index behaviour as the legal pages: the hovered item lifts and the rest
+   recede, so the column reads as one focused row. Dimming the siblings does
+   more work than enlarging the target, because contrast is what the eye
+   follows. Kept identical rather than re-invented, so both indexes feel like
+   the same control. */
+.faq-index { position: sticky; top: 7rem; }
+.faq-index ol {
+  list-style: none;
+  counter-reset: faqSection;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  border-left: 0.5px solid var(--cream-border);
+}
+.faq-index li { counter-increment: faqSection; }
+.faq-index a {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.1rem 0 0.1rem 0.9rem;
+  margin-left: -0.5px;
+  border-left: 2px solid transparent;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transform-origin: left center;
+  transition: color 0.22s ease, border-color 0.22s ease,
+    transform 0.22s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.22s ease;
+  will-change: transform;
+}
+.faq-index a::before {
+  content: counter(faqSection, decimal-leading-zero);
+  font-size: 0.68rem;
+  opacity: 0.55;
+  padding-top: 0.18rem;
+}
+.faq-index ol:hover a { opacity: 0.45; }
+.faq-index ol:hover a:hover,
+.faq-index a:focus-visible {
+  opacity: 1;
+  color: var(--ink);
+  border-left-color: var(--ink);
+  transform: scale(1.13);
+}
+.faq-index a:focus-visible { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-index a { transition: color 0.15s ease, border-color 0.15s ease; }
+  .faq-index ol:hover a { opacity: 1; }
+  .faq-index ol:hover a:hover { transform: none; }
+}
+
+/* No hover on a touch device, so the dimming would leave every item looking
+   permanently faded after a tap. */
+@media (hover: none) {
+  .faq-index ol:hover a { opacity: 1; }
+  .faq-index ol:hover a:hover { transform: none; }
+}
+
+/* Clears the fixed header when an index link jumps to a section. */
+.faq-group { scroll-margin-top: 6rem; }
+
+.faq-group + .faq-group {
+  margin-top: 3rem;
+}
+
+/* A section heading has to outrank the question titles under it. At 0.82rem in
+   muted ink it was smaller and fainter than the questions it introduced, so it
+   read as a caption rather than a heading. Set on the display face, larger than
+   the body, in full ink, with the rule doing the separating. */
+.faq-group-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--ink);
+  margin-bottom: 0.25rem;
+}
+
+.faq-item {
+  border-bottom: 0.5px solid var(--cream-border);
+}
+
+.faq-question {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.15rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.95rem;
+  color: var(--ink);
+  line-height: 1.45;
+  transition: color 0.18s ease;
+}
+/* Safari draws its own disclosure triangle unless this is cleared. */
+.faq-question::-webkit-details-marker { display: none; }
+.faq-question:hover { color: var(--ink-muted); }
+
+/* Keyboard focus lands on the summary, so it has to be visible. */
+.faq-item:focus-within .faq-question { color: var(--ink); }
+.faq-question:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* A plus that becomes a minus. Rotating one stroke of a plus by 90deg lands it
+   on the other, which reads as the two arms folding together rather than as an
+   icon being swapped. */
+.faq-marker {
+  flex-shrink: 0;
+  color: var(--ink-muted);
+  margin-top: 0.15rem;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), color 0.18s ease;
+}
+.faq-item[open] .faq-marker {
+  transform: rotate(135deg);
+  color: var(--ink);
+}
+
+.faq-answer {
+  padding: 0 0 1.3rem;
+  max-width: 62ch;
+}
+.faq-answer p {
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: var(--ink-muted);
+}
+.faq-answer p + p { margin-top: 0.85rem; }
+.faq-answer a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 0.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-marker { transition: none; }
+}
+
+.faq-tail {
+  margin-top: 4rem;
+  padding-top: 2.5rem;
+  border-top: 0.5px solid var(--cream-border);
+}
+.faq-tail-heading {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+.faq-tail-body {
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+  line-height: 1.7;
+  max-width: 46ch;
+  margin-bottom: 1.25rem;
+}
+.faq-tail-cta {
+  display: inline-block;
+  font-size: 0.85rem;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 2px;
+}
+
+/* Below 900px the index folds above the answers and stops being sticky: a
+   sticky block in a single-column flow just occupies the top of the screen. */
+@media (max-width: 900px) {
+  .faq-shell {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .faq-index {
+    position: static;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--cream-border);
+  }
+  /* Horizontal chip row on narrow screens: a vertical list of five section
+     names above the content pushes the first question below the fold. */
+  .faq-index ol {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .faq-index ol::-webkit-scrollbar { display: none; }
+  .faq-index a {
+    white-space: nowrap;
+    padding: 0.4rem 0.8rem;
+    border: 0.5px solid var(--cream-border);
+    border-radius: 999px;
+    font-size: 0.78rem;
+  }
+  .faq-index a::before { display: none; }
+}
+
+@media (max-width: 640px) {
+  .faq-shell { padding: 2.5rem 1.25rem 4rem; }
+  .faq-question { font-size: 0.9rem; gap: 0.85rem; }
+  .faq-answer p { font-size: 0.86rem; }
+}
+
 /* BACK LINK
    One treatment for every "back to X" on the site. The arrow slides toward the
    direction it points on hover, which is the whole animation: it reads as the
@@ -1406,7 +1951,11 @@ select.filter-pill {
    ground just enough to read as a container, without becoming a grey box. */
 .role-pit {
   position: relative;
-  height: clamp(340px, 44vh, 460px);
+  /* Shorter than it was. Capping the pit at two balls per employer took it from
+     eleven balls to around six, and at the old height they settled in a single
+     row along the bottom with two thirds of the well empty above them. The pit
+     should look full of what the board has, not short of it. */
+  height: clamp(260px, 32vh, 360px);
   border: 0.5px solid rgba(250, 247, 242, 0.14);
   border-radius: 14px;
   background: rgba(250, 247, 242, 0.04);
