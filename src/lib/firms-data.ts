@@ -84,6 +84,45 @@ export function firmLogo(firm: Pick<Firm, 'slug' | 'logoFile'>): string | null {
 
 const FIRMS_UNSORTED: Firm[] = [
   {
+    slug: 'clp-legal',
+    logoFile: null,
+    name: 'CLP Legal',
+    shortName: 'CLP',
+    tier: 'Tier 2',
+    email: 'info@clplegal.com.ng',
+    website: 'https://clplegal.com.ng',
+    // Only the Lagos street address is published. The firm names Abuja, Port
+    // Harcourt and Uyo as offices without giving addresses, so the cities are
+    // recorded and the addresses are not guessed at.
+    offices: [
+      { city: 'Lagos', address: '62 Awolowo Road, Ikoyi, Lagos' },
+      { city: 'Abuja', address: 'Abuja' },
+      { city: 'Port Harcourt', address: 'Port Harcourt' },
+      { city: 'Uyo', address: 'Uyo' },
+    ],
+    practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Dispute Resolution', 'Energy & Natural Resources', 'Intellectual Property', 'Tax', 'Shipping & Maritime'],
+    description: 'A commercial firm founded in 1990, acting for multinationals, Nigerian corporates, family businesses and government ministries. Four offices, with corporate, finance, litigation and energy at the core of the practice.',
+    foundedYear: 1990,
+    openRoles: 0,
+  },
+  {
+    slug: 'alp-ng',
+    logoFile: null,
+    name: 'ALP NG & Co',
+    shortName: 'ALP',
+    tier: 'Tier 2',
+    email: 'info@alp.company',
+    website: 'https://alp.company',
+    offices: [
+      { city: 'Lagos', address: 'Lagos' },
+      { city: 'Abuja', address: 'Abuja' },
+    ],
+    practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Arbitration', 'Banking & Finance', 'Energy & Natural Resources', 'Intellectual Property', 'Public Law & Regulatory'],
+    description: 'Africa Law Practice NG & Co, formed by a merger of Nigerian practices and built as a pan-African firm. Strong in commercial dispute resolution, appearing before the Nigerian courts and in ICSID and ICC arbitrations.',
+    foundedYear: 2011,
+    openRoles: 0,
+  },
+  {
     slug: 'acas-law',
     logoFile: 'ACAS.jpg',
     name: 'ACAS-Law',

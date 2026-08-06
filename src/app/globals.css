@@ -683,14 +683,20 @@ select.filter-pill {
 .jobs-clear:hover { color: var(--on-amber); border-color: var(--on-amber); }
 
 /* ENTRY-ROUTE EXPLAINER
-   Sits in the ink header, so everything here is drawn against the dark ground
-   rather than inheriting the page's cream-surface styles. Collapsed it is one
-   line; open it is a three-column definition set that folds to one column on
-   narrow screens without a breakpoint deciding the count. */
+   A carton card inside the amber header, not a hairline row.
+   Every colour here used to be cream, drawn for the ink header this block was
+   written against; once the header went amber that was white on yellow and the
+   whole definition set was effectively invisible. It is ink on carton now.
+   Making it a card with the site's rule and hard shadow also answers the other
+   half of the problem: as two hairlines it read as a divider people scrolled
+   past, and this is the one thing on the page that stops someone filtering for
+   an internship when they want a graduate scheme.
+   ------------------------------------------------------------------------- */
 .jobs-explainer {
-  margin-top: 1.5rem;
-  border-top: 0.5px solid rgba(250, 247, 242, 0.16);
-  border-bottom: 0.5px solid rgba(250, 247, 242, 0.16);
+  margin-top: 1.75rem;
+  background: #FFF8E5;
+  border: 2px solid #241F16;
+  box-shadow: 5px 6px 0 #241F16;
 }
 
 .jobs-explainer summary {
@@ -698,25 +704,23 @@ select.filter-pill {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.9rem 0;
+  padding: 0.9rem 1.2rem;
   cursor: pointer;
   list-style: none;
-  font-size: 0.84rem;
-  color: rgba(250, 247, 242, 0.72);
-  transition: color 0.18s ease;
+  font-size: 0.86rem;
+  color: #1A1A1A;
 }
 .jobs-explainer summary::-webkit-details-marker { display: none; }
-.jobs-explainer summary:hover { color: var(--cream); }
 .jobs-explainer summary:focus-visible {
-  outline: 2px solid var(--cream);
+  outline: 2px solid #241F16;
   outline-offset: 3px;
-  border-radius: 2px;
 }
 
 /* Plus folds into a minus, matching the FAQ. */
 .jobs-explainer-marker {
   flex-shrink: 0;
   display: inline-flex;
+  color: var(--mint-deep);
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .jobs-explainer[open] .jobs-explainer-marker { transform: rotate(135deg); }
@@ -725,53 +729,48 @@ select.filter-pill {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
   gap: 1.75rem 2.5rem;
-  padding: 0.5rem 0 1.6rem;
+  padding: 0.25rem 1.2rem 1.4rem;
+  border-top: 1.5px solid rgba(36, 31, 22, 0.18);
+  margin-top: 0.2rem;
 }
 .jobs-route p:first-child {
-  font-size: 0.85rem;
-  color: var(--cream);
+  font-size: 0.88rem;
+  color: #1A1A1A;
   margin-bottom: 0.45rem;
 }
-/* Every paragraph after the title, not just the last one.
-   The rule used to be :last-child, so a block with two body paragraphs left the
-   middle one unmatched and inheriting a brighter colour from the header. That
-   accident read better than the rule did, so it is now the rule: 0.78 rather
-   than 0.62, applied to all of them, so the blocks finally agree with each
-   other. */
 .jobs-route p:not(:first-child) {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   line-height: 1.7;
-  color: rgba(250, 247, 242, 0.78);
+  color: rgba(26, 26, 26, 0.82);
 }
 .jobs-route strong {
-  color: var(--cream);
-  font-weight: 600;
+  color: #1A1A1A;
+  font-weight: 700;
 }
 .jobs-route p + p { margin-top: 0.7rem; }
 
-/* Links inside the explainer had no rule of their own, so on the ink ground
-   they fell back to the browser's default blue and read as a rendering fault
-   rather than as a link. Cream with an underline, the same as every other
-   in-prose link on the site, just inverted for the dark header. */
+/* The accent, so the route out of each definition is the thing the eye finds. */
 .jobs-route-link {
-  color: var(--cream);
-  font-weight: 600;
+  color: var(--mint-deep);
+  font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-thickness: 1px;
-  text-decoration-color: rgba(250, 247, 242, 0.4);
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(16, 161, 146, 0.45);
   transition: text-decoration-color 0.18s ease;
 }
-.jobs-route-link:hover { text-decoration-color: var(--cream); }
+.jobs-route-link:hover { text-decoration-color: var(--mint-deep); }
 
 @media (prefers-reduced-motion: reduce) {
   .jobs-explainer-marker { transition: none; }
 }
 
 @media (max-width: 640px) {
-  .jobs-explainer summary { font-size: 0.8rem; }
-  .jobs-explainer-body { gap: 1.35rem; }
+  .jobs-explainer { box-shadow: 4px 5px 0 #241F16; }
+  .jobs-explainer summary { font-size: 0.82rem; padding: 0.8rem 1rem; }
+  .jobs-explainer-body { gap: 1.35rem; padding: 0.25rem 1rem 1.2rem; }
 }
+
 
 .jobs-count {
   font-size: 0.78rem;
