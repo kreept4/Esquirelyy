@@ -8,6 +8,7 @@ import {
   markSeen,
   readPrefs,
   readSeen,
+  readWelcomedAt,
   timeAgo,
   unreadCount,
   type Notification,
@@ -29,26 +30,46 @@ const KIND_DOT: Record<Notification['kind'], string> = {
   role: '#14B8A6',
   deadline: '#EF4444',
   tracker: '#8B5CF6',
+  welcome: '#FBBF24',
 }
 
 const KIND_LABEL: Record<Notification['kind'], string> = {
   role: 'New role',
   deadline: 'Closing soon',
   tracker: 'Tracker',
+  welcome: 'From us',
 }
 
-export default function NotificationBell({ hidden }: { hidden?: boolean }) {
+function NotifRow({ n }: { n: Notification }) {
+  return (
+    <>
+      <span className="notif-dot" style={{ background: KIND_DOT[n.kind] }} aria-hidden />
+      <span className="notif-item-main">
+        <span className="grotesk-bold notif-item-kind">{KIND_LABEL[n.kind]}</span>
+        <span className="grotesk-bold notif-item-title">{n.title}</span>
+        <span className="grotesk-regular notif-item-detail">{n.detail}</span>
+      </span>
+      <span className="grotesk-regular notif-item-time">{timeAgo(n.at)}</span>
+    </>
+  )
+}
+
+export default function NotificationBell({
+  hidden,
+  user,
+  /* Same rule as the wordmark: cream over the dark home hero, ink over every
+     light inner header. A fixed colour vanishes on one or the other. */
+  color = '#1A1A1A',
+}: { hidden?: boolean; user: { id: string } | null; color?: string }) {
   const [open, setOpen] = useState(false)
   const [feed, setFeed] = useState<Notification[]>([])
   const [seen, setSeen] = useState(0)
-  const [signedIn, setSignedIn] = useState(false)
+  const [showWelcome, setShowWelcome] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
 
   const load = useCallback(async () => {
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    setSignedIn(!!user)
     if (!user) { setFeed([]); return }
+    const supabase = createClient()
 
     // One round trip for each source. The tracker read is scoped to the user by
     // the query as well as by RLS, so a policy change cannot leak someone
@@ -58,15 +79,12 @@ export default function NotificationBell({ hidden }: { hidden?: boolean }) {
       supabase.from('applications').select('*').eq('user_id', user.id).order('updated_at', { ascending: false }).limit(20),
     ])
 
-    setFeed(buildFeed(jobs || [], apps || [], readPrefs()))
-  }, [])
+    setFeed(buildFeed(jobs || [], apps || [], readPrefs(), readWelcomedAt()))
+  }, [user])
 
   useEffect(() => {
     setSeen(readSeen())
     load()
-    const supabase = createClient()
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => load())
-    return () => subscription.unsubscribe()
   }, [load])
 
   // Close on outside click and on Escape, the two ways anyone expects to
@@ -100,13 +118,14 @@ export default function NotificationBell({ hidden }: { hidden?: boolean }) {
 
   // Nothing to notify a signed-out visitor about, and a bell that opens onto
   // "sign in to see this" is a control that does nothing.
-  if (!signedIn) return null
+  if (!user) return null
 
   return (
     <div ref={rootRef} className={`notif${hidden ? ' notif-hidden' : ''}`}>
       <button
         type="button"
         className="notif-btn"
+        style={{ color }}
         onClick={toggle}
         aria-expanded={open}
         aria-haspopup="dialog"
@@ -141,19 +160,66 @@ export default function NotificationBell({ hidden }: { hidden?: boolean }) {
             <ul className="notif-list">
               {feed.map(n => (
                 <li key={n.id}>
-                  <Link href={n.href} className="notif-item" onClick={() => setOpen(false)}>
-                    <span className="notif-dot" style={{ background: KIND_DOT[n.kind] }} aria-hidden />
-                    <span className="notif-item-main">
-                      <span className="grotesk-bold notif-item-kind">{KIND_LABEL[n.kind]}</span>
-                      <span className="grotesk-bold notif-item-title">{n.title}</span>
-                      <span className="grotesk-regular notif-item-detail">{n.detail}</span>
-                    </span>
-                    <span className="grotesk-regular notif-item-time">{timeAgo(n.at)}</span>
-                  </Link>
+                  {n.href ? (
+                    <Link href={n.href} className="notif-item" onClick={() => setOpen(false)}>
+                      <NotifRow n={n} />
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      className="notif-item notif-item-btn"
+                      onClick={() => { setOpen(false); setShowWelcome(true) }}
+                    >
+                      <NotifRow n={n} />
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
           )}
+        </div>
+      )}
+
+      {/* The welcome note in full. A dialog rather than a route, because it is a
+          one-off greeting and giving it a URL would mean a page that exists
+          forever to say hello once. */}
+      {showWelcome && (
+        <div className="notif-modal-scrim" onClick={() => setShowWelcome(false)}>
+          <div
+            className="notif-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="A note from the co-founders"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="notif-modal-close"
+              onClick={() => setShowWelcome(false)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+
+            <p className="grotesk-bold notif-modal-kind">From the co-founders</p>
+            <p className="display-black notif-modal-title">You took the easy route. Good.</p>
+
+            <div className="notif-modal-body">
+              <p className="grotesk-regular">
+                Most Nigerian lawyers find their first role by knowing someone. That is a rubbish
+                system, and it is the entire reason this exists.
+              </p>
+              <p className="grotesk-regular">
+                Everything is here and everything is checked. If you find something wrong, tell us —
+                we would much rather hear it from you than not know.
+              </p>
+            </div>
+
+            <p className="grotesk-bold notif-modal-sign">
+              Ogunleye Boluwatife &amp; Ogunleye Ipinuoluwa
+              <span className="grotesk-regular notif-modal-sign-role">Co-founders, Esquirely</span>
+            </p>
+          </div>
         </div>
       )}
     </div>

@@ -1808,7 +1808,10 @@ select.filter-pill {
   cursor: pointer;
   transition: background-color 0.18s ease;
 }
-.notif-btn:hover { background: rgba(36, 31, 22, 0.08); }
+.notif-btn:hover { background: currentColor; }
+/* A wash of the icon's own colour at low alpha, so it reads on ink and on cream
+   without a second rule per ground. */
+.notif-btn:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
 .notif-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
 /* The count, not just a dot. 3 is actionable in a way a dot is not. */
@@ -1891,6 +1894,89 @@ select.filter-pill {
 @media (prefers-reduced-motion: reduce) {
   .notif { transition: opacity 0.2s ease; }
   .notif-hidden { transform: none; }
+}
+
+/* The welcome note, opened from the panel. */
+.notif-modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(36, 31, 22, 0.55);
+}
+.notif-modal {
+  position: relative;
+  width: min(34rem, 100%);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #FBBF24;
+  border: 3px solid #241F16;
+  box-shadow: 7px 8px 0 #241F16;
+  padding: 2.25rem 2rem 2rem;
+}
+.notif-modal-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.85rem;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #241F16;
+  cursor: pointer;
+}
+.notif-modal-kind {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(36, 31, 22, 0.65);
+  margin-bottom: 0.75rem;
+}
+.notif-modal-title {
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #241F16;
+  margin-bottom: 1.25rem;
+}
+.notif-modal-body p {
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: rgba(36, 31, 22, 0.85);
+  margin-bottom: 0.9rem;
+}
+.notif-modal-sign {
+  margin-top: 1.5rem;
+  padding-top: 1.1rem;
+  border-top: 2px solid rgba(36, 31, 22, 0.25);
+  font-size: 0.88rem;
+  color: #241F16;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.notif-modal-sign-role {
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(36, 31, 22, 0.6);
+}
+
+/* The welcome row is a button, so it needs the link row's box reset. */
+.notif-item-btn {
+  width: 100%;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .notif-modal { padding: 1.75rem 1.25rem 1.5rem; box-shadow: 5px 6px 0 #241F16; }
 }
 
 /* FORWARD LINK

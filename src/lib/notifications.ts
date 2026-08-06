@@ -23,16 +23,21 @@ import { ALL_SCHOLARSHIPS } from './scholarships-data'
  */
 
 export const SEEN_KEY = 'esquirely:notifications-seen'
+/** When this browser first saw the welcome note. Stored so the note keeps its
+ *  place in the feed rather than jumping to the top on every visit, and so it
+ *  survives a sign-out — nothing here is tied to a session. */
+export const WELCOME_KEY = 'esquirely:welcomed-at'
 export const PREFS_KEY = 'esquirely:prefs'
 
-export type NotificationKind = 'role' | 'deadline' | 'tracker'
+export type NotificationKind = 'role' | 'deadline' | 'tracker' | 'welcome'
 
 export interface Notification {
   id: string
   kind: NotificationKind
   title: string
   detail: string
-  href: string
+  /** Absent on the welcome note, which opens a panel rather than navigating. */
+  href?: string
   /** ISO. Sorts the feed and decides what counts as unread. */
   at: string
 }
@@ -57,6 +62,20 @@ export function readPrefs(): Prefs {
     return JSON.parse(localStorage.getItem(PREFS_KEY) || '{}')
   } catch {
     return {}
+  }
+}
+
+/** Reads the welcome timestamp, writing it on first call. */
+export function readWelcomedAt(): string {
+  if (typeof window === 'undefined') return new Date().toISOString()
+  try {
+    const existing = localStorage.getItem(WELCOME_KEY)
+    if (existing) return existing
+    const now = new Date().toISOString()
+    localStorage.setItem(WELCOME_KEY, now)
+    return now
+  } catch {
+    return new Date().toISOString()
   }
 }
 
@@ -97,9 +116,21 @@ export function buildFeed(
   jobs: any[],
   applications: any[],
   prefs: Prefs,
+  welcomedAt: string,
   now = new Date()
 ): Notification[] {
   const out: Notification[] = []
+
+  // 0. The welcome. Always present, dated to when this browser first saw it, so
+  //    it sits at the top on day one and is pushed down by real events after
+  //    that rather than being pinned forever.
+  out.push({
+    id: 'welcome',
+    kind: 'welcome',
+    title: 'Welcome to Esquirely',
+    detail: 'A note from the co-founders',
+    at: welcomedAt,
+  })
   const today = now.toISOString().slice(0, 10)
 
   // 1. Roles matching the filters they actually set. With no prefs the match is

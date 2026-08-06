@@ -162,8 +162,8 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
     region: 'Netherlands',
     level: "English-taught Master's at the Graduate School of Law, Economics and Governance",
     funding: 'Full tuition plus one year of living costs at the level Dutch immigration requires',
-    deadline: 'Opens 1 November, closes 1 February 2027 for a September 2027 start',
-    status: 'open',
+    deadline: 'Opens 1 November 2026, closes 1 February 2027 for a September 2027 start',
+    status: 'upcoming',
     description:
       'A faculty scholarship rather than a general one, which is what makes it unusually relevant: it is attached to the Law, Economics and Governance graduate school, so an LL.M there is squarely in scope rather than competing against every subject in the university. About six are awarded a year.',
     eligibility: [
@@ -181,8 +181,8 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
     region: 'Netherlands',
     level: "Master's at Maastricht University",
     funding: 'Around EUR 36,000: tuition waiver, a monthly stipend, visa and insurance',
-    deadline: 'Closes 1 February 2027',
-    status: 'open',
+    deadline: 'Closes 1 February 2027 for a September 2027 start',
+    status: 'upcoming',
     description:
       'Twenty-one full awards a year, restricted to non-EU nationals, which is a far shorter queue than the open-to-all schemes. Maastricht has a substantial law faculty and a well-known set of LL.M programmes, so a Nigerian law graduate is applying into a real fit rather than an exception.',
     eligibility: [

@@ -84,15 +84,12 @@ export default function Navbar() {
   // once left inner pages with no way back to the home page; ink on a dark one
   // is the same fault in reverse.
   //
-  // This used to be "home is dark, everything else is cream". That stopped being
-  // true when inner pages started opening with a full-bleed ink header, which is
-  // the device that ties the white product surfaces back to the homepage. Add
-  // each route to DARK_HEADER_ROUTES as it converts; once every inner page has
-  // one, this can collapse back to a constant.
-  // Prefix match, not equality: /jobs/<slug> carries the same ink header as
-  // /jobs, and an exact check left the wordmark invisible on every detail page.
-  const DARK_HEADER_ROUTES = ['/jobs', '/privacy', '/terms']
-  const overDark = pathname === '/' || DARK_HEADER_ROUTES.some(r => pathname.startsWith(r))
+  // The home page is the only thing left that opens on a dark ground. Every
+  // inner header is now a cream band carrying an amber panel, so the list of
+  // "dark header" routes this used to keep — /jobs, /privacy, /terms — was
+  // painting the wordmark and the toggle cream on cream and making both vanish.
+  // With one dark surface left there is no list to maintain.
+  const overDark = pathname === '/'
   const restColor = overDark ? '#FAF6F0' : '#1A1A1A'
 
   useEffect(() => {
@@ -129,7 +126,7 @@ export default function Navbar() {
       {/* Its own control beside the toggle, not an item inside the panel: a
           badge two taps deep and invisible until you go looking is not a badge.
           Renders nothing at all unless someone is signed in. */}
-      <NotificationBell hidden={hidden} />
+      <NotificationBell hidden={hidden} user={user} color={restColor} />
 
       <StaggeredMenu
         className={hidden ? 'nav-hidden' : undefined}
