@@ -52,6 +52,7 @@ const muted = '#8C8275'
 const sage = '#5B7560'
 const cream = '#FAF6F0'
 const rule = '#E8E0D5'
+const mint = '#14B8A6'
 
 export default function CVReviewPage() {
   const { checking, userId } = useRequireAuth()
@@ -296,7 +297,7 @@ export default function CVReviewPage() {
                 disabled={loading}
                 style={{
                   padding: '0.9rem 2.5rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                  backgroundColor: loading ? muted : ink, color: cream,
+                  backgroundColor: loading ? muted : mint, color: '#FFFFFF',
                   fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 700,
                   letterSpacing: '0.06em', textTransform: 'uppercase' as const,
                   border: 'none', borderRadius: '2px', cursor: loading ? 'not-allowed' : 'pointer',

@@ -24,7 +24,7 @@ const STAGES = [
 ]
 
 const GOALS = [
-  { value: 'jobs', label: 'Jobs and schemes', href: '/jobs' },
+  { value: 'jobs', label: 'Jobs', href: '/jobs' },
   { value: 'scholarships', label: 'Scholarships', href: '/scholarships' },
   { value: 'all', label: 'All of the above', href: '/jobs' },
 ]

@@ -305,9 +305,9 @@ export default function TrackerPage() {
               </p>
             </div>
             <button onClick={() => setShowModal(true)}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#1A1A1A', color: '#FAF7F2', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none', borderRadius: '999px', padding: '0.75rem 1.5rem', cursor: 'pointer', flexShrink: 0 }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#0D2E57')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#1A1A1A')}>
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#14B8A6', color: '#FFFFFF', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 600, border: 'none', borderRadius: '999px', padding: '0.75rem 1.5rem', cursor: 'pointer', flexShrink: 0 }}
+              onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#10A192')}
+              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#14B8A6')}>
               <IconPlus /> Log Application
             </button>
           </div>

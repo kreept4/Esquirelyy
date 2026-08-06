@@ -126,7 +126,7 @@ export default function NewsPage() {
         <header className="doc-masthead">
           <div className="shell doc-masthead-inner">
             <h1 className="display-black doc-title">
-              News and<br />updates.
+              News and updates.
             </h1>
             <p className="grotesk-regular doc-lede">
               What is happening in the profession, what has changed on Esquirely, and the things

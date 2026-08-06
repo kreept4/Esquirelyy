@@ -3,29 +3,31 @@
 import Link from 'next/link'
 
 /**
- * Footer: a brand block, three link columns, one legal line.
+ * Footer: one amber panel, a wordmark set at poster scale, the links, and the
+ * legal line.
  *
- * The previous version read as scattered for two structural reasons, both
- * fixed here rather than restyled around.
+ * This replaces a dark footer that was three tidy link columns on ink. It was
+ * correct and it was invisible: the page ended in the same black the hero and
+ * the ball pit are drawn on, so the site had no bottom edge, just a fade out.
  *
- * First, it inherited the `min(2200px, 94vw)` shell the content sections use.
- * That is right for a hero or a feature grid and wrong for a footer: four
- * `minmax(180px, 1fr)` columns stretched across 2200px end up marooned at
- * opposite edges of the screen with a void between them. The footer gets its
- * own, tighter measure so the columns stay in conversation with each other.
+ * The panel is the design language the site already uses for the one card it
+ * wants you to act on, the ambassador application: carton stock, a 1.5px ink
+ * rule, and a hard offset shadow with no blur. Nothing new is introduced here.
+ * The amber and the teal are lifted straight out of the news carousel's
+ * palette, so the loudest block on the site is still made of its own colours.
  *
- * Second, it carried seventeen links, and several were the same destination
- * twice. `/jobs` appeared as "All Opportunities" next to `/opportunities` as
- * "Opportunities", which is not a navigation choice anyone can make. The firms
- * page appeared three times under different query strings. Filtered views are
- * the job of the filters on those pages, not of permanent footer furniture, so
- * only real destinations survive: twelve links, three even columns.
+ * The wordmark carries the block. At this scale it stops being a logo in a
+ * corner and becomes the surface, which is the whole idea: the footer is where
+ * the name should be unmissable, because it is the last thing on the page.
+ *
+ * Sentence case on the links, deliberately, against the all-caps reference.
+ * Fourteen links shouting is a wall of text; the force here comes from scale,
+ * colour and the rule, and the labels can stay in the site's own voice.
  */
 
-const INK = '#1A1A1A'
-const CREAM = '#FAF6F0'
-const RULE = 'rgba(250,246,240,0.12)'
-const MUTED = 'rgba(250,246,240,0.5)'
+const AMBER = '#FBBF24'
+const TEAL = '#14B8A6'
+const INK = '#241F16'
 
 const FOOTER_LINKS: Record<string, { href: string; label: string }[]> = {
   Find: [
@@ -39,7 +41,7 @@ const FOOTER_LINKS: Record<string, { href: string; label: string }[]> = {
     { href: '/tools/interview-prep', label: 'Interview prep' },
     { href: '/tracker', label: 'Application tracker' },
   ],
-  Company: [
+  More: [
     { href: '/ambassador', label: 'Be an ambassador' },
     { href: '/news', label: 'News and updates' },
     { href: '/faq', label: 'FAQ' },
@@ -51,105 +53,162 @@ const FOOTER_LINKS: Record<string, { href: string; label: string }[]> = {
 }
 
 export default function Footer() {
+  function toTop() {
+    // Honour a reduced-motion preference: a smooth scroll the length of the
+    // whole page is exactly the kind of movement that setting exists to stop.
+    const reduce =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
+  }
+
   return (
-    <footer style={{ backgroundColor: INK, color: CREAM }}>
-      <div className="footer-inner">
-        {/* The wordmark anchors the left rather than floating alone on a base
-            line, which gives the columns something to sit against. */}
-        <div className="footer-brand">
-          <Link href="/" style={{ textDecoration: 'none' }}>
-            <span className="display-black" style={{ fontSize: '1.6rem', fontWeight: 900, letterSpacing: '-0.045em', color: CREAM }}>
-              Esquirely.
-            </span>
-          </Link>
-          <p className="grotesk-regular" style={{ fontSize: '0.82rem', color: MUTED, lineHeight: 1.6, marginTop: '0.75rem', maxWidth: '22ch' }}>
-            Every legal opportunity in Nigeria, in one place.
-          </p>
-        </div>
+    <footer className="site-footer">
+      <div className="footer-panel">
+        <Link href="/" className="display-black footer-wordmark" aria-label="Esquirely home">
+          Esquirely.
+        </Link>
 
-        <div className="footer-cols">
-          {Object.entries(FOOTER_LINKS).map(([section, links]) => (
-            <div key={section}>
-              <p className="grotesk-bold" style={{ fontSize: '0.8rem', color: 'rgba(250,246,240,0.85)', marginBottom: '1.1rem' }}>
-                {section}
-              </p>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-                {links.map(({ href, label }) => (
-                  <li key={href}>
-                    <Link href={href} className="grotesk-regular footer-link" style={{ fontSize: '0.88rem' }}>
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
+        <div className="footer-body">
+          <nav className="footer-cols" aria-label="Footer">
+            {Object.entries(FOOTER_LINKS).map(([section, links]) => (
+              <div key={section}>
+                <p className="grotesk-bold footer-col-title">{section}</p>
+                <ul>
+                  {links.map(({ href, label }) => (
+                    <li key={href}>
+                      <Link href={href} className="grotesk-regular footer-link">
+                        {label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
 
-      <div className="footer-base">
-        {/* Three competing muted lines spread across the full width was most of
-            the clutter. One line, one alignment. */}
-        <p className="grotesk-regular" style={{ fontSize: '0.74rem', color: MUTED }}>
-          &copy; {new Date().getFullYear()} Esquirely. Made for the Nigerian bar.
-        </p>
+          <div className="footer-meta">
+            <button type="button" onClick={toTop} className="grotesk-bold footer-top">
+              Back to top
+            </button>
+            <p className="grotesk-bold footer-legal">
+              &copy; {new Date().getFullYear()} Esquirely
+            </p>
+          </div>
+        </div>
       </div>
 
       <style>{`
-        .footer-inner,
-        .footer-base {
-          /* Same shell as every other section. Capping the footer narrower than
-             the site made it a centred island that drifted away from the page
-             edges on a wide monitor. It spans like everything else; the columns
-             are kept together by their own track sizes instead. */
+        /* The panel is inset rather than bled to the edge, so the hard shadow
+           has somewhere to fall. The ground behind it is the page cream. */
+        .site-footer {
+          background: var(--cream);
+          padding: 3.5rem 1.5rem 4rem;
+        }
+
+        .footer-panel {
           max-width: min(2200px, 94vw);
           margin: 0 auto;
+          background: ${AMBER};
+          border: 1.5px solid ${INK};
+          border-radius: 10px;
+          box-shadow: 8px 10px 0 ${INK};
+          padding: 3rem 2.5rem 2.5rem;
         }
 
-        /* Brand hard left, links grouped hard right. The gap between the two
-           absorbs the extra width on a large screen, so the link columns never
-           stretch apart no matter how wide the viewport gets. */
-        .footer-inner {
+        /* Poster scale. The clamp ceiling is high enough that on a wide monitor
+           the wordmark genuinely spans the panel instead of sitting as a large
+           label in the corner. */
+        .footer-wordmark {
+          display: block;
+          font-size: clamp(2.75rem, 12.5vw, 11.5rem);
+          line-height: 0.82;
+          letter-spacing: -0.055em;
+          color: ${INK};
+          text-decoration: none;
+          margin-bottom: 2.75rem;
+        }
+
+        .footer-body {
           display: flex;
           justify-content: space-between;
-          align-items: flex-start;
-          gap: 4rem;
-          padding: 4.5rem 1.5rem 3.5rem;
+          align-items: flex-end;
+          gap: 3rem;
+          flex-wrap: wrap;
         }
-
-        .footer-brand { flex: 0 1 24rem; }
 
         .footer-cols {
           display: grid;
-          /* Fixed track ceiling is the whole point: 1fr tracks would spread. */
           grid-template-columns: repeat(3, minmax(8.5rem, 11rem));
-          gap: 3.5rem;
+          gap: 2.5rem;
+        }
+        .footer-cols ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+
+        .footer-col-title {
+          font-size: 0.78rem;
+          color: rgba(36, 31, 22, 0.55);
+          margin-bottom: 0.9rem;
         }
 
         .footer-link {
-          color: rgba(250,246,240,0.72);
+          font-size: 0.9rem;
+          color: ${INK};
           text-decoration: none;
-          transition: color 0.18s ease;
+          /* Underline on hover only, drawn as a border so it sits clear of the
+             descenders rather than cutting through them. */
+          border-bottom: 1.5px solid transparent;
+          padding-bottom: 1px;
+          transition: border-color 0.18s ease;
         }
-        .footer-link:hover { color: ${CREAM}; }
+        .footer-link:hover { border-bottom-color: ${INK}; }
 
-        .footer-base {
-          padding: 1.5rem 1.5rem 2.5rem;
-          border-top: 1px solid ${RULE};
+        .footer-meta {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          gap: 0.4rem;
+          text-align: right;
         }
+
+        /* The one accent on the panel, and the same stamped treatment the panel
+           itself has, one size down. */
+        .footer-top {
+          background: ${TEAL};
+          color: #04211E;
+          border: 1.5px solid ${INK};
+          border-radius: 6px;
+          box-shadow: 4px 5px 0 ${INK};
+          padding: 0.6rem 1.15rem;
+          font-size: 0.8rem;
+          cursor: pointer;
+          margin-bottom: 1rem;
+          transition: transform 0.16s ease, box-shadow 0.16s ease;
+        }
+        /* Presses into its own shadow, which is the whole gesture. */
+        .footer-top:hover { transform: translate(2px, 2.5px); box-shadow: 2px 2.5px 0 ${INK}; }
+        .footer-top:active { transform: translate(4px, 5px); box-shadow: 0 0 0 ${INK}; }
+
+        .footer-legal { font-size: 0.78rem; color: ${INK}; }
+        .footer-note { font-size: 0.78rem; color: rgba(36, 31, 22, 0.62); }
 
         @media (max-width: 860px) {
-          .footer-inner {
-            flex-direction: column;
-            gap: 2.5rem;
-            padding: 3rem 1.25rem 2.5rem;
-          }
-          .footer-brand { flex: 1 1 auto; }
-          .footer-cols { gap: 2rem 2.5rem; }
+          .site-footer { padding: 2.5rem 1.1rem 3rem; }
+          .footer-panel { padding: 2rem 1.5rem 1.75rem; box-shadow: 6px 7px 0 ${INK}; }
+          .footer-wordmark { margin-bottom: 2rem; }
+          /* Stacked, and the meta block keeps its right alignment so the button
+             and the legal line stay pinned to the corner as in the reference. */
+          .footer-body { flex-direction: column; align-items: stretch; gap: 2.25rem; }
+          .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem; }
+          .footer-meta { align-items: flex-end; }
         }
 
-        @media (max-width: 460px) {
-          .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        @media (max-width: 420px) {
+          .footer-cols { grid-template-columns: minmax(0, 1fr); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .footer-top { transition: none; }
+          .footer-top:hover, .footer-top:active { transform: none; box-shadow: 4px 5px 0 ${INK}; }
         }
       `}</style>
     </footer>

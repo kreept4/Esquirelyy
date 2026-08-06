@@ -19,6 +19,13 @@
   --ink-light: #2C2C2C;
   --ink-muted: #4A4A4A;
 
+  /* The one accent. Lifted from the news carousel palette and now shared by
+     every control on the site: carousel arrows and CTA, the footer back-to-top,
+     primary buttons and the active state of every filter. */
+  --mint: #14B8A6;
+  --mint-deep: #10A192;
+  --on-mint: #04211E;
+
   /* Status */
   --verified: #2D6A4F;
   --closing: #000000;
@@ -308,8 +315,9 @@ select.filter-pill {
 /* Set when a filter holds a value, so an active control is legible at a glance
    instead of being inferred from a ternary buried in a style prop. */
 .filter-pill[data-active='true'] {
-  color: var(--ink);
-  border-color: var(--ink);
+  color: var(--on-mint);
+  background: var(--mint);
+  border-color: var(--mint);
 }
 
 /* Shared controls, redrawn for an ink header.
@@ -346,9 +354,9 @@ select.filter-pill {
   background: var(--cream);
 }
 .page-header-ink .filter-pill[data-active='true'] {
-  color: var(--ink);
-  background-color: var(--cream);
-  border-color: var(--cream);
+  color: var(--on-mint);
+  background-color: var(--mint);
+  border-color: var(--mint);
 }
 
 /* The search glyph sits in a span carrying an inline ink colour, which the
@@ -542,8 +550,11 @@ select.filter-pill {
    discoloured. Nudging the page a couple of steps along the same warm axis puts
    both on one temperature, so the carton reads as a considered accent instead
    of a stain. It is still unmistakably a white page, and nowhere near cream. */
+/* Cream, matching .page-main. This was #FDFCFA, three points off the cream
+   every other page uses, which is the kind of difference nobody can name but
+   everybody notices when two tabs are open side by side. */
 .jobs-page {
-  background: #FDFCFA;
+  background: var(--cream);
   min-height: 100vh;
 }
 
@@ -615,9 +626,9 @@ select.filter-pill {
 .jobs-select option { color: var(--ink); background: var(--cream); }
 /* An engaged filter should be obvious without reading it. */
 .jobs-select[data-active='true'] {
-  color: var(--ink);
-  background: var(--cream);
-  border-color: var(--cream);
+  color: var(--on-mint);
+  background: var(--mint);
+  border-color: var(--mint);
 }
 
 .jobs-clear {
@@ -979,12 +990,48 @@ select.filter-pill {
   margin-top: 1.5rem;
   padding: 0.6rem 1.2rem;
   border-radius: 999px;
-  background: var(--panel);
-  color: var(--on-panel);
+  /* Mint, matching the arrow buttons, so every control on the carousel is the
+     same colour and the eye only has to learn one affordance. */
+  background: #14B8A6;
+  color: #FFFFFF;
   font-size: 0.8rem;
-  transition: gap 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  /* The arrow is clipped by the pill, so it can travel out of one edge and
+     back in the other. */
+  overflow: hidden;
+  transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s ease;
 }
-a.news-slide-link:hover .news-cta { gap: 0.75rem; }
+/* Lifts off the slide and deepens. The arrow inside runs the same swap the
+   navigation buttons do, so pressing forward looks identical everywhere on the
+   carousel whether it is a slide link or an arrow. */
+a.news-slide-link:hover .news-cta,
+.news-cta:hover {
+  background: #10A192;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 rgba(36, 31, 22, 0.28);
+}
+.news-cta svg {
+  transition: transform 0.42s cubic-bezier(0.65, 0, 0.35, 1);
+}
+a.news-slide-link:hover .news-cta svg,
+.news-cta:hover svg {
+  /* Out to the right and straight back in from the left, in one pass. */
+  animation: cta-arrow-swap 0.52s cubic-bezier(0.65, 0, 0.35, 1);
+}
+@keyframes cta-arrow-swap {
+  0% { transform: translateX(0); opacity: 1; }
+  45% { transform: translateX(1.4rem); opacity: 0; }
+  55% { transform: translateX(-1.4rem); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.news-slide-link:hover .news-cta,
+  .news-cta:hover { transform: none; box-shadow: none; }
+  .news-cta svg,
+  a.news-slide-link:hover .news-cta svg,
+  .news-cta:hover svg { animation: none; transition: none; }
+}
 
 /* The side block. Deep tone of the same hue, holding the artwork and the
    position counter, with a hard rule between it and the copy. */
@@ -1034,7 +1081,7 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
   width: 6.4rem;
   height: 6.4rem;
   padding: 1rem;
-  background: var(--cream);
+  background: #FFFFFF;
   box-shadow: 0 3px 10px rgba(36, 31, 22, 0.22);
   box-sizing: border-box;
   flex-shrink: 0;
@@ -1120,19 +1167,23 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
   border: 1.5px solid #241F16;
   box-shadow: 4px 5px 0 rgba(36, 31, 22, 0.55);
 }
-/* Credit sits on the image because that is where it has to be to do its job.
-   A gradient rather than a solid bar so it does not read as a caption strip. */
+/* Credit under the picture, not on it.
+   Overlaying it meant a white chip burned into the corner of a portrait of a
+   real person, which is both uglier and less legible than simply printing the
+   line where a caption belongs. The photo wrapper becomes a column so the two
+   stack, and the acknowledgement still travels with the image. */
+.news-figure-photo {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
 .news-credit {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 1.6rem 0.9rem 0.55rem;
   font-size: 0.62rem;
   line-height: 1.3;
-  color: rgba(255, 255, 255, 0.82);
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
-  pointer-events: none;
+  letter-spacing: 0.01em;
+  color: var(--fg);
+  opacity: 0.6;
+  text-align: right;
 }
 
 /* Position counter, in the greyed display numeral the ambassador index and the
@@ -1144,7 +1195,7 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
   font-size: 1.15rem;
   line-height: 1;
   letter-spacing: -0.02em;
-  color: var(--on-panel);
+  color: var(--fg);
   opacity: 0.42;
   pointer-events: none;
 }
@@ -1175,25 +1226,78 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
 .news-dot[data-active='true'] { background: #241F16; width: 38px; }
 .news-dot:focus-visible { outline: 2px solid #241F16; outline-offset: 3px; }
 
+/* CLOSING GLIDE
+   The last statement on the home page pins to the top of the viewport while the
+   footer scrolls up over it. Two rules and no JavaScript: the pinned block sits
+   on the base layer, the footer is lifted one layer above it and carries its
+   own opaque background, so it occludes rather than blends.
+
+   Disabled under reduced motion. The effect is parallax, and parallax is the
+   category of movement that setting exists to switch off. */
+.closing-glide {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+}
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .closing-glide { position: static; }
+}
+
 .news-arrows { display: flex; gap: 0.5rem; }
 .news-arrow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   border-radius: 999px;
-  /* Solid ink, not an outline. An outlined button took its fill from whichever
+  /* Filled, not outlined. An outlined button took its fill from whichever
      palette the slide happened to be on, so the control changed weight every
-     six seconds; filling it means the two arrows read as one fixed control
-     sitting on the colour rather than as part of it. */
+     six seconds. Mint is the same accent as the footer's back-to-top control,
+     so the two navigation affordances on the page are the same object. */
   border: none;
-  background: #241F16;
-  color: var(--bg);
+  background: #14B8A6;
+  color: #FFFFFF;
   cursor: pointer;
-  transition: transform 0.18s ease, opacity 0.18s ease;
+  /* The track slides inside the circle, so the glyph has to be clipped by it. */
+  overflow: hidden;
+  transition: background-color 0.2s ease;
 }
-.news-arrow:hover { transform: translateY(-1px); opacity: 0.85; }
+.news-arrow:hover { background: #10A192; }
+.news-arrow:focus-visible { outline: 2px solid #241F16; outline-offset: 3px; }
+
+/* Two arrows on one track, the second sitting exactly one button-width behind
+   the first. Hover slides the track by that width: the visible arrow leaves in
+   the direction it points and its twin arrives from the opposite edge, so the
+   button never appears empty and never bounces back. One transform, no
+   keyframes, and it reverses correctly if the pointer leaves mid-slide. */
+.news-arrow-track {
+  display: flex;
+  align-items: center;
+  width: 200%;
+  height: 100%;
+  transition: transform 0.42s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.news-arrow-glyph {
+  width: 50%;
+  height: 17px;
+  flex: 0 0 50%;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+/* Previous points the other way, and its track therefore travels the other way. */
+.news-arrow[data-dir='prev'] .news-arrow-glyph { transform: scaleX(-1); }
+.news-arrow[data-dir='next']:hover .news-arrow-track { transform: translateX(-50%); }
+.news-arrow[data-dir='prev'] .news-arrow-track { transform: translateX(-50%); }
+.news-arrow[data-dir='prev']:hover .news-arrow-track { transform: translateX(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .news-arrow-track { transition: none; }
+}
 .news-arrow:focus-visible { outline: 2px solid #241F16; outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1626,12 +1730,12 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
   padding: 0.9rem 2rem;
   border-radius: 999px;
   font-size: 0.85rem;
-  background: var(--ink);
-  color: #FFF8E5;
+  background: var(--mint);
+  color: #FFFFFF;
   text-decoration: none;
-  transition: transform 0.18s ease;
+  transition: transform 0.18s ease, background-color 0.18s ease;
 }
-.amb-apply-cta:hover { transform: translateY(-2px); }
+.amb-apply-cta:hover { transform: translateY(-2px); background: var(--mint-deep); }
 .amb-apply-alt {
   font-size: 0.85rem;
   color: var(--ink-muted);
@@ -2322,11 +2426,13 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
    butt into one continuous cream bar. The margin lands on both copies of the
    list equally, so the 50% translate the marquee relies on stays exact. */
 .ticker-logo {
-  margin-right: 1.5rem;
+  margin-right: 2rem;
 }
 
 .animate-ticker {
-  animation: ticker 35s linear infinite;
+  /* Half the old speed. At 35s the marks swept past faster than a name could
+     be read, which turns a credibility device into wallpaper. */
+  animation: ticker 72s linear infinite;
 }
 
 .animate-ticker:hover {
@@ -3047,20 +3153,11 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
 /* Open: solid, with a slow halo. The animation is the only motion on the page
    and it is doing real work, marking the rows you can act on today. */
 .sch-status.is-open .sch-dot { background: var(--verified); }
-.sch-status.is-open .sch-dot::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 1px solid var(--verified);
-  opacity: 0;
-  animation: schPulse 2.8s ease-out infinite;
-}
-@keyframes schPulse {
-  0%   { transform: scale(0.6); opacity: 0.7; }
-  70%  { transform: scale(1.25); opacity: 0; }
-  100% { transform: scale(1.25); opacity: 0; }
-}
+/* No pulsing halo. A ring throbbing once every 2.8 seconds beside every open
+   scholarship is a live-status indicator, and nothing here is live: the
+   deadlines are months out and the row is not going to change while you look
+   at it. It read as decoration pretending to be information. The solid dot and
+   the word next to it already say the thing. */
 
 /* Upcoming: hollow. Something is coming but there is nothing to click yet, and
    an outline says that better than a second solid colour would. */
@@ -3073,10 +3170,6 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
    exists, but it should not compete with what is actionable. */
 .sch-status.is-closed { color: #8A8378; }
 .sch-status.is-closed .sch-dot { background: #C9C2B8; }
-
-@media (prefers-reduced-motion: reduce) {
-  .sch-status.is-open .sch-dot::after { animation: none; opacity: 0.35; }
-}
 
 .sch-main { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
 .sch-title { font-size: 1rem; color: var(--ink); line-height: 1.3; }

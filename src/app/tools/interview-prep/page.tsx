@@ -23,6 +23,7 @@ const ink = '#1A1A1A'
 const muted = '#8C8275'
 const cream = '#FAF6F0'
 const rule = '#E8E0D5'
+const mint = '#14B8A6'
 
 const CATEGORY_COLORS: Record<string, string> = {
   behavioural: '#5B7560',
@@ -304,7 +305,7 @@ export default function InterviewPrepPage() {
                   fontWeight: 700,
                   letterSpacing: '0.06em',
                   textTransform: 'uppercase' as const,
-                  backgroundColor: loading ? muted : ink,
+                  backgroundColor: loading ? muted : mint,
                   color: cream,
                   border: 'none',
                   borderRadius: '2px',

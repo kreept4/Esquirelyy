@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { KIND_LABEL, type NewsItem } from '@/lib/news-data'
 
 /**
@@ -52,30 +52,48 @@ const isExternal = (href: string) => /^https?:\/\//i.test(href)
 type Palette = { bg: string; fg: string; panel: string; onPanel: string }
 
 /**
- * Indexed by position, not by kind.
+ * One ground for every slide: carton.
  *
- * Keying colour to the kind meant every tip was violet and every update teal,
- * so a run of three tips was three identical slides and the carousel looked
- * stuck. Cycling by position guarantees consecutive slides differ, which is the
- * whole reason to colour them at all.
+ * This replaced a seven-hue rotation, sky through amber, that changed the
+ * background every six seconds. It was doing real work — consecutive slides
+ * could never look identical — but it also meant the largest block on the
+ * homepage was a colour the rest of the page never uses, and it changed while
+ * you were reading it. Carton is the stock the site already reserves for the
+ * things it wants you to act on, and it is the exact ground the practice site's
+ * primary button is drawn on, so the carousel now belongs to the same object
+ * family as the ambassador card and the role detail panel.
  *
- * The hues are the ones the feature section already scrolls through, so the
- * page has one palette rather than two. `fg` is fixed per entry rather than
- * derived from luminance: several of these sit close enough to the light/dark
- * boundary that a threshold would flip on rounding, and contrast here should be
- * a decision. `panel` is the deep tone of the same hue for the side block.
+ * The variety has not gone, it has moved into the artwork: each illustration
+ * keeps its own accent, so the slides still differ, they simply differ in what
+ * is drawn rather than in what they are drawn on.
+ *
+ * Kept as an array of one so `paletteFor` and the four custom properties stay
+ * exactly as they were. Restoring a rotation is a matter of adding rows back.
  */
 const PALETTES: Palette[] = [
-  { bg: '#38BDF8', fg: '#08202B', panel: '#0C4A63', onPanel: '#EAF7FE' }, // sky
-  { bg: '#F97316', fg: '#2A1103', panel: '#7C3306', onPanel: '#FFF1E6' }, // orange
-  { bg: '#8B5CF6', fg: '#FBF8FF', panel: '#3A1D85', onPanel: '#EDE6FF' }, // violet
-  { bg: '#22C55E', fg: '#062611', panel: '#0A5C2B', onPanel: '#E9FBEF' }, // green
-  { bg: '#EF4444', fg: '#FFF4F4', panel: '#7C1B1B', onPanel: '#FFE9E9' }, // red
-  { bg: '#14B8A6', fg: '#04211E', panel: '#0A4F49', onPanel: '#E6FAF7' }, // teal
-  { bg: '#FBBF24', fg: '#2B1D02', panel: '#7A5606', onPanel: '#FFF8E6' }, // amber
+  { bg: '#FFF8E5', fg: '#241F16', panel: '#241F16', onPanel: '#FFF8E5' }, // carton
 ]
 
 const paletteFor = (i: number): Palette => PALETTES[i % PALETTES.length]
+
+/**
+ * Shaft and chevron, not a bare chevron.
+ *
+ * A lone chevron is the default every component library ships and it reads as
+ * "there is more" rather than as a control you press. Drawing the shaft turns
+ * it into an arrow with a direction, and it is the same geometry as the primary
+ * button on the practice site, so the two properties point the same way.
+ *
+ * Two of these sit in each button on a track that slides on hover: the visible
+ * one leaves in the direction it points and its twin arrives behind it. The
+ * whole effect is one transform on one element.
+ */
+const Arrow = () => (
+  <svg viewBox="0 0 18 17" fill="none" className="news-arrow-glyph">
+    <path d="M1.1 8.4h15.1" stroke="currentColor" strokeWidth="2.15" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M8.6 1.1l7.6 7.3-7.6 7.3" stroke="currentColor" strokeWidth="2.15" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
 
 export default function NewsCarousel({ items }: { items: NewsItem[] }) {
   const [index, setIndex] = useState(0)
@@ -324,11 +342,17 @@ export default function NewsCarousel({ items }: { items: NewsItem[] }) {
             </div>
 
             <div className="news-arrows">
-              <button type="button" className="news-arrow" onClick={prev} aria-label="Previous slide">
-                <ChevronLeft size={17} aria-hidden />
+              <button type="button" className="news-arrow" data-dir="prev" onClick={prev} aria-label="Previous slide">
+                <span className="news-arrow-track" aria-hidden>
+                  <Arrow />
+                  <Arrow />
+                </span>
               </button>
-              <button type="button" className="news-arrow" onClick={next} aria-label="Next slide">
-                <ChevronRight size={17} aria-hidden />
+              <button type="button" className="news-arrow" data-dir="next" onClick={next} aria-label="Next slide">
+                <span className="news-arrow-track" aria-hidden>
+                  <Arrow />
+                  <Arrow />
+                </span>
               </button>
             </div>
           </div>

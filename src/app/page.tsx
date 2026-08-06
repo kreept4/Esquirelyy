@@ -53,8 +53,8 @@ export default async function HomePage() {
               key={firm.slug + i}
               src={firmLogo(firm)!}
               alt={firm.shortName}
-              capHeight={2.4}
-              maxWidth={8}
+              capHeight={3.1}
+              maxWidth={10.5}
               plate
               className="ticker-logo"
             />
@@ -71,9 +71,15 @@ export default async function HomePage() {
       <QuickQuestions />
 
       <EverythingYouNeed />
-      <ScrollColorSection animate={false}>
-        Every opportunity.<br />One platform.
-      </ScrollColorSection>
+      {/* Pinned, so the footer rises over it instead of following it. The
+          closing statement holds while the amber panel slides up and covers
+          it, which reads as one movement into the end of the page rather than
+          as two stacked blocks. */}
+      <div className="closing-glide">
+        <ScrollColorSection animate={false}>
+          Every opportunity.<br />One platform.
+        </ScrollColorSection>
+      </div>
 
 
       <Footer />

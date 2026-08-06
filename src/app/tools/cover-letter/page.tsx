@@ -42,6 +42,7 @@ const ink = '#1A1A1A'
 const muted = '#8C8275'
 const cream = '#FAF6F0'
 const rule = '#E8E0D5'
+const mint = '#14B8A6'
 
 const fieldStyle = {
   width: '100%',
@@ -275,8 +276,8 @@ export default function CoverLetterPage() {
                 style={{
                   display: 'flex', alignItems: 'center', gap: '0.6rem',
                   padding: '0.95rem 2.5rem',
-                  backgroundColor: (loading || !form.targetRole || !form.employer) ? muted : ink,
-                  color: cream, border: 'none',
+                  backgroundColor: (loading || !form.targetRole || !form.employer) ? muted : mint,
+                  color: '#FFFFFF', border: 'none',
                   fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 700,
                   letterSpacing: '0.1em', textTransform: 'uppercase' as const,
                   cursor: (loading || !form.targetRole || !form.employer) ? 'not-allowed' : 'pointer',

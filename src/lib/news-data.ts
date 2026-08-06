@@ -108,7 +108,7 @@ const ITEMS: NewsItem[] = [
       type: 'photo',
       src: '/news/badejo-okusanya.jpg',
       alt: 'Oyinkansola Badejo-Okusanya SAN',
-      credit: 'Photograph: The Unknown Nigeria',
+      credit: 'The Unknown Nigeria',
     },
   },
   {
