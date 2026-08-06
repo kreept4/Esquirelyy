@@ -30,14 +30,18 @@ const DEVICES = [
 export default async function DevicePreview({
   searchParams,
 }: {
-  searchParams: Promise<{ path?: string }>
+  searchParams: Promise<{ path?: string; top?: string }>
 }) {
   if (process.env.NODE_ENV === 'production') notFound()
 
-  const { path } = await searchParams
+  const { path, top } = await searchParams
   // Same-origin paths only. Without this the harness would happily frame any
   // URL handed to it in a query string.
   const target = path && path.startsWith('/') && !path.startsWith('//') ? path : '/news'
+  // Scroll offset applied inside every frame, so a section partway down the
+  // page can be compared across widths without reaching into each iframe by
+  // hand. Same-origin, so contentWindow.scrollTo is available.
+  const scrollTop = Number(top) > 0 ? Math.floor(Number(top)) : 0
 
   return (
     <main style={{ background: '#1A1A1A', minHeight: '100vh', padding: '1.5rem' }}>
@@ -49,7 +53,9 @@ export default async function DevicePreview({
           marginBottom: '1.25rem',
         }}
       >
-        {target} — add <code>?path=/firms</code> to preview another page
+        {target}
+        {scrollTop ? ` @ ${scrollTop}px` : ''} — add <code>?path=/firms&amp;top=2000</code> to
+        preview another page or scroll into it
       </p>
 
       <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start', overflowX: 'auto' }}>
@@ -75,6 +81,25 @@ export default async function DevicePreview({
           </div>
         ))}
       </div>
+
+      {/* Scrolls each frame once it has loaded. A plain inline script rather
+          than a client component: this is a dev workbench, and a script tag is
+          the whole feature. Re-runs on a short interval for a moment because a
+          Next page keeps growing after `load` as data and images settle, and a
+          single scroll fires before the target offset exists. */}
+      {scrollTop > 0 && (
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=${scrollTop},n=0,i=setInterval(function(){
+              document.querySelectorAll('iframe').forEach(function(f){
+                try { f.contentWindow.scrollTo(0, t) } catch (e) {}
+              });
+              if (++n > 12) clearInterval(i);
+            }, 400)})()`,
+          }}
+        />
+      )}
     </main>
   )
 }

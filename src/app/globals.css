@@ -1183,13 +1183,17 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
   width: 38px;
   height: 38px;
   border-radius: 999px;
-  border: 1.5px solid #241F16;
-  background: transparent;
-  color: #241F16;
+  /* Solid ink, not an outline. An outlined button took its fill from whichever
+     palette the slide happened to be on, so the control changed weight every
+     six seconds; filling it means the two arrows read as one fixed control
+     sitting on the colour rather than as part of it. */
+  border: none;
+  background: #241F16;
+  color: var(--bg);
   cursor: pointer;
-  transition: background-color 0.18s ease, color 0.18s ease;
+  transition: transform 0.18s ease, opacity 0.18s ease;
 }
-.news-arrow:hover { background: #241F16; color: var(--bg); }
+.news-arrow:hover { transform: translateY(-1px); opacity: 0.85; }
 .news-arrow:focus-visible { outline: 2px solid #241F16; outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2962,7 +2966,23 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
   .legal-aside { position: static; grid-column: 2; margin-top: 2.5rem; }
 }
 @media (max-width: 1080px) {
-  .legal-aside { position: static; grid-column: 1; margin-top: 2.5rem; }
+  /* The headnote goes above the clauses, not below them.
+     In a single column the aside is the last grid child, so on every iPad the
+     summary landed at the foot of the page — after eleven numbered clauses,
+     which is precisely the reading it exists to save you. Its own footnote
+     says "the numbered clauses below are what actually govern", and that only
+     parses if it sits above them. Reordering costs nothing: the DOM order is
+     still index, prose, summary, so a screen reader and the print stylesheet
+     are unaffected. */
+  .legal-index { order: 0; }
+  .legal-aside {
+    order: 1;
+    position: static;
+    grid-column: 1;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+  .legal-measure { order: 2; }
 }
 
 /* ---- Scholarships --------------------------------------------------------

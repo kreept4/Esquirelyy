@@ -180,10 +180,29 @@ export default function RolePit({ listings }: { listings: any[] }) {
     const wrap = wrapRef.current
     if (!wrap) return
     const { width, height } = wrap.getBoundingClientRect()
-    // Ball size tracks the pit, not the page. At full shell width the old
-    // width/16 hit its 58px ceiling and nine balls filled about 9% of the box,
-    // which read as an empty container rather than a pit.
-    const r = Math.max(32, Math.min(74, width / 9))
+
+    /* Ball size comes from the area the pit actually has and the number of
+     * balls in it, not from its width.
+     *
+     * Sizing off width alone ignored the two things that decide whether a pit
+     * looks full or looks jammed. Below 900px the layout drops the detail card
+     * and the pit takes the whole row, so its width jumps while its height
+     * does not: on an iPad mini that produced 148px balls in a 328px-tall box,
+     * nine of them, filling about two thirds of the well. They had nowhere to
+     * settle and read as a heap rather than a pit.
+     *
+     * Solving for a target fill instead keeps the same density everywhere:
+     *
+     *   n · πr² = FILL · W · H   →   r = √(FILL · W · H / πn)
+     *
+     * 0.42 is the point where the balls clearly populate the well but still
+     * have room to fall past each other and be thrown around. On a wide
+     * desktop the result exceeds the 74px ceiling and clamps there, so this
+     * changes nothing above 900px and only relieves the crowding below it. */
+    const TARGET_FILL = 0.42
+    const n = Math.max(1, roles.length)
+    const ideal = Math.sqrt((TARGET_FILL * width * (height || 300)) / (Math.PI * n))
+    const r = Math.max(26, Math.min(74, ideal))
     const perRow = Math.max(1, Math.floor((width - r) / (r * 2.2)))
     ballsRef.current = roles.map((_, i) => ({
       // Start inside the box, laid out in rows. They used to start above the
