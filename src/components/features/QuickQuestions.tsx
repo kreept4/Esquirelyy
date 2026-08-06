@@ -23,11 +23,25 @@ const STAGES = [
   { value: 'senior_lawyer', label: 'Senior lawyer', level: 'senior' },
 ]
 
-const GOALS = [
-  { value: 'jobs', label: 'Jobs', href: '/jobs' },
-  { value: 'scholarships', label: 'Scholarships', href: '/scholarships' },
-  { value: 'all', label: 'All of the above', href: '/jobs' },
-]
+/* A law student is not looking for a job, they are looking for an internship,
+   and calling it a job sends them to a board filtered to roles that require a
+   call to the Bar. The wording and the destination both change with the stage
+   answer, which is the only reason the stage question comes first. */
+function goalsFor(stage: string) {
+  const student = stage === 'law_student'
+  return [
+    student
+      ? { value: 'jobs', label: 'Internships', href: '/jobs?type=internship' }
+      : { value: 'jobs', label: 'Jobs', href: '/jobs' },
+    { value: 'scholarships', label: 'Scholarships', href: '/scholarships' },
+    {
+      value: 'all',
+      label: 'All of the above',
+      href: student ? '/jobs?type=internship' : '/jobs',
+    },
+  ]
+}
+const GOALS = goalsFor('')
 
 const CITIES = ['Lagos', 'Abuja', 'Port Harcourt', 'Ibadan', 'Anywhere']
 
@@ -54,7 +68,9 @@ export default function QuickQuestions() {
   const [answers, setAnswers] = useState<Answers>({ stage: '', goal: '', city: '' })
   const [saving, setSaving] = useState(false)
 
-  const current = QUESTIONS[step]
+  const stageGoals = goalsFor(answers.stage)
+  const base = QUESTIONS[step]
+  const current = base.key === 'goal' ? { ...base, options: stageGoals } : base
   const isLast = step === QUESTIONS.length - 1
 
   async function persist(final: Answers) {
@@ -93,13 +109,19 @@ export default function QuickQuestions() {
     setSaving(true)
     await persist(next)
 
-    const goal = GOALS.find((g) => g.value === next.goal)
+    const goal = goalsFor(next.stage).find((g) => g.value === next.goal)
     const level = STAGES.find((s) => s.value === next.stage)?.level
     const params = new URLSearchParams()
     if (level) params.set('level', level)
     if (next.city && next.city !== 'Anywhere') params.set('location', next.city)
-    const query = params.toString()
-    router.push((goal?.href || '/jobs') + (query ? `?${query}` : ''))
+    // The internship destination already carries ?type=internship, so level and
+    // location have to merge into it rather than start a second query string.
+    const href = goal?.href || '/jobs'
+    const [path, existing] = href.split('?')
+    const merged = new URLSearchParams(existing || '')
+    params.forEach((v, k) => merged.set(k, v))
+    const query = merged.toString()
+    router.push(path + (query ? `?${query}` : ''))
   }
 
   function back() {
