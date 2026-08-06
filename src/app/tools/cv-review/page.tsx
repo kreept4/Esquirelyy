@@ -366,7 +366,7 @@ export default function CVReviewPage() {
                 </h2>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1rem' }}>
                   {result.strengths.map((s, i) => (
-                    <p key={i} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.86rem', color: ink, lineHeight: 1.65, paddingLeft: '0.9rem', borderLeft: '2px solid ' + sage }}>
+                    <p key={i} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.86rem', color: ink, lineHeight: 1.65, paddingLeft: '0.9rem' }}>
                       {s}
                     </p>
                   ))}
@@ -379,7 +379,7 @@ export default function CVReviewPage() {
                 </h2>
                 <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1rem' }}>
                   {result.weaknesses.map((w, i) => (
-                    <p key={i} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.86rem', color: ink, lineHeight: 1.65, paddingLeft: '0.9rem', borderLeft: '2px solid ' + accent }}>
+                    <p key={i} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.86rem', color: ink, lineHeight: 1.65, paddingLeft: '0.9rem' }}>
                       {w}
                     </p>
                   ))}

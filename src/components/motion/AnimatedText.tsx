@@ -80,11 +80,37 @@ export function AnimatedHeading({
 }) {
   const lines = text.split('\n')
   let globalIndex = 0
+
+  /* The heading is rendered plain until hydration, then swapped for the
+     animated version.
+
+     It used to render the motion spans on the server, which meant the H1 —
+     the page's largest element and usually its LCP — shipped in the HTML at
+     `opacity: 0` and became visible only when JavaScript ran. Anyone whose JS
+     failed got a page with no heading at all, a crawler got an invisible H1,
+     and any context that throttles requestAnimationFrame left it stuck at
+     zero. The first paint now carries real text, and the animation is an
+     enhancement layered on top of it rather than the only route to legibility.
+
+     The first client render matches the server render, so there is no
+     hydration mismatch; the effect flips it on the next tick. */
+  const [hydrated, setHydrated] = useState(false)
+  useEffect(() => setHydrated(true), [])
+
+  const headingStyle = { fontSize, lineHeight: 1.05, color, marginBottom: '1rem', ...style }
+
+  if (!hydrated) {
+    return (
+      <h1 className={className} style={headingStyle}>
+        {lines.map((line, lineIdx) => (
+          <div key={lineIdx}>{line}</div>
+        ))}
+      </h1>
+    )
+  }
+
   return (
-    <h1
-      className={className}
-      style={{ fontSize, lineHeight: 1.05, color, marginBottom: '1rem', ...style }}
-    >
+    <h1 className={className} style={headingStyle}>
       {lines.map((line, lineIdx) => (
         <div key={lineIdx}>
           {line.split(' ').map((word, wordIdx, wordsArr) => (
