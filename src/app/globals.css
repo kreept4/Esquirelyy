@@ -1088,15 +1088,30 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
    taller and dragged the height of the entire band up with it. Out of flow it
    fills whatever the row turns out to be and contributes nothing to deciding
    it. */
-.news-figure-photo { padding: 0; overflow: hidden; }
+/* Framed, not bled.
+   A 1.2:1 portrait forced to fill a 1.6:1 panel loses a third of its height to
+   the crop, and on a head-and-shoulders shot that lands across the face. It now
+   sits as a portrait-proportioned card inside the field, the same idea as the
+   splashes: artwork placed on the colour rather than fighting the panel's
+   shape. Fixed aspect so the row height stays predictable. */
+/* The photograph alone sits hard right. A portrait wants an edge to sit
+   against; the illustrations and splashes stay centred because they are
+   free-floating shapes with no natural alignment. */
+.news-figure-photo {
+  padding: 1.5rem;
+  justify-content: flex-end;
+}
 .news-photo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
+  width: auto;
   height: 100%;
+  max-height: 15rem;
+  aspect-ratio: 4 / 3.4;
   object-fit: cover;
-  object-position: center 22%;
+  object-position: center 18%;
   display: block;
+  border-radius: 12px;
+  border: 1.5px solid #241F16;
+  box-shadow: 4px 5px 0 rgba(36, 31, 22, 0.55);
 }
 /* Credit sits on the image because that is where it has to be to do its job.
    A gradient rather than a solid bar so it does not read as a caption strip. */
