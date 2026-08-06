@@ -1232,6 +1232,125 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
   .news-figure-splash { padding: 1.5rem; }
 }
 
+/* NEWS PAGE
+   A dated index, not a card grid. The entries are wildly uneven in weight — a
+   Bar election result sits next to a note about how internships get filled —
+   and equal cards would give all of them the same claim on the reader. The date
+   and kind hang in a left column, the substance sits right, and a hairline
+   separates them, which reads as a record. Two columns collapse to one below
+   760px with no other change. */
+.news-page {
+  padding: 3.5rem 2rem 5rem;
+  max-width: 62rem;
+}
+
+.news-list { list-style: none; }
+
+.news-entry {
+  border-top: 0.5px solid var(--cream-border);
+}
+.news-entry:first-child { border-top: none; }
+
+.news-entry-link,
+.news-entry-static {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  gap: 2.5rem;
+  padding: 1.9rem 0;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.18s ease;
+}
+.news-entry-link:hover { opacity: 0.72; }
+.news-entry-link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.news-entry-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+/* One accent per kind, the same three the carousel uses, so an entry is
+   identifiable by colour before the label is read. */
+.news-entry-kind { font-size: 0.78rem; }
+.news-entry-kind[data-kind='news'] { color: #0C6C93; }
+.news-entry-kind[data-kind='tip'] { color: #6D3FD4; }
+.news-entry-kind[data-kind='update'] { color: #0A7A6E; }
+
+.news-entry-date {
+  font-size: 0.76rem;
+  color: var(--ink-muted);
+}
+
+.news-entry-main { display: block; min-width: 0; }
+
+.news-entry-title {
+  display: block;
+  font-size: clamp(1.1rem, 2.1vw, 1.4rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 0.55rem;
+}
+
+.news-entry-summary {
+  display: block;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--ink-muted);
+  max-width: 62ch;
+}
+
+.news-entry-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  font-size: 0.8rem;
+  color: var(--ink);
+  transition: gap 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.news-entry-link:hover .news-entry-cta { gap: 0.65rem; }
+
+.news-page-note {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 0.5px solid var(--cream-border);
+  font-size: 0.86rem;
+  color: var(--ink-muted);
+  line-height: 1.7;
+}
+.news-page-note a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 0.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .news-entry-link,
+  .news-entry-cta { transition: none; }
+  .news-entry-link:hover .news-entry-cta { gap: 0.4rem; }
+}
+
+@media (max-width: 760px) {
+  /* Date and kind sit above the headline rather than beside it. */
+  .news-entry-link,
+  .news-entry-static {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+    padding: 1.5rem 0;
+  }
+  .news-entry-meta { flex-direction: row; align-items: baseline; gap: 0.6rem; }
+}
+
+@media (max-width: 640px) {
+  .news-page { padding: 2.5rem 1.25rem 4rem; }
+}
+
 /* FORWARD LINK
    The counterpart to .back-link, for "go on to the full thing" links. Same
    grammar in reverse: the arrow travels in the direction it points while the

@@ -23,6 +23,7 @@ const NAV_ITEMS = [
   { label: 'Cover Letter', ariaLabel: 'Draft a cover letter', link: '/tools/cover-letter' },
   { label: 'Interview Prep', ariaLabel: 'Practise for interviews', link: '/tools/interview-prep' },
   { label: 'Ambassador', ariaLabel: 'Become a campus ambassador', link: '/ambassador' },
+  { label: 'News', ariaLabel: 'Read news and product updates', link: '/news' },
   { label: 'FAQ', ariaLabel: 'Read frequently asked questions', link: '/faq' },
 ]
 

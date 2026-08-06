@@ -41,6 +41,7 @@ const FOOTER_LINKS: Record<string, { href: string; label: string }[]> = {
   ],
   Company: [
     { href: '/ambassador', label: 'Be an ambassador' },
+    { href: '/news', label: 'News and updates' },
     { href: '/faq', label: 'FAQ' },
     { href: '/advertise', label: 'Post a role' },
     { href: '/contact', label: 'Contact' },

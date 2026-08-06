@@ -894,6 +894,13 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   unionbank: '/employer-logos/union-bank.png',
   unionbankofnigeria: '/employer-logos/union-bank.png',
   unionbankofnigeriaplc: '/employer-logos/union-bank.png',
+  // The official emblem from ecowas.int, not an aggregator's own branding: the
+  // employer here is the Commission itself, and the site that happened to
+  // surface the listing has no claim to the slot.
+  ecowascommission: '/employer-logos/ecowas.png',
+  ecowas: '/employer-logos/ecowas.png',
+  ecowassecretariat: '/employer-logos/ecowas.png',
+  economiccommunityofwestafricanstates: '/employer-logos/ecowas.png',
   // Supabase stores this employer with the '(Client)' suffix, which norm()
   // strips to nothing useful, so both spellings are mapped.
   bridgegapconsultsclient: '/employer-logos/bridgegap.png',
