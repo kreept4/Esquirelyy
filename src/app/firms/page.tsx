@@ -153,12 +153,17 @@ export default function FirmsPage() {
             application that gets read from one that gets filed. */}
         <div className="shell firms-tip-wrap">
           <p className="grotesk-regular firms-tip">
-            <span className="grotesk-bold">Before you write:</span> find the name of the person who
-            will actually read it. A letter addressed to the recruitment manager, the HR lead or the
-            partner running the practice you want lands very differently from one that opens
-            &ldquo;Dear Sir/Madam&rdquo;. Most firms list their team on their own site, and LinkedIn
-            fills the gaps. If you genuinely cannot find a name, address it to the practice, not to
-            nobody.
+            <span className="grotesk-bold">Before you write, find out who will read it.</span>{' '}
+            A letter addressed to the partner who leads the practice you are interested in, or to the
+            firm&rsquo;s recruitment or HR lead, reads very differently from one that opens
+            &ldquo;Dear Sir/Madam&rdquo;. Most firms list their partners and associates on their own
+            site, and LinkedIn usually fills the gaps.
+          </p>
+          <p className="grotesk-regular firms-tip">
+            If no name is published anywhere, address the role rather than nobody at all:{' '}
+            <span className="grotesk-bold">The Managing Partner</span> or{' '}
+            <span className="grotesk-bold">The Head of Recruitment</span>{' '}is correct and
+            professional. Avoid &ldquo;To Whom It May Concern&rdquo;.
           </p>
         </div>
 

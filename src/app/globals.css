@@ -396,6 +396,9 @@ select.filter-pill {
   color: var(--ink-muted);
 }
 .firms-tip .grotesk-bold { color: var(--ink); }
+/* Second paragraph shares the rule rather than starting a new one, so the two
+   read as one note instead of two unrelated asides. */
+.firms-tip + .firms-tip { margin-top: 0.7rem; }
 
 @media (max-width: 640px) {
   .firms-tip-wrap { padding: 1.5rem 1.25rem 1rem; }
@@ -1100,6 +1103,16 @@ a.news-slide-link:hover .news-cta { gap: 0.75rem; }
 .news-figure-photo {
   padding: 1.5rem;
   justify-content: flex-end;
+}
+
+/* ...and that edge is the card's, not the measure's.
+   Every other slide is capped at 76rem so its artwork does not strand itself
+   at the far side of a very wide band. The portrait wants the opposite: this
+   slide alone spans the full card so the picture reaches the right edge. The
+   copy does not move, because it starts at the same left edge either way and
+   is capped at its own 52ch measure; only the empty half of the grid grows. */
+.news-slide-link:has(.news-figure-photo) {
+  max-width: 100%;
 }
 .news-photo {
   width: auto;
