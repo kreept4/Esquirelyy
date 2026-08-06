@@ -123,33 +123,33 @@ export default function AmbassadorPage() {
 
         <div className="shell amb-body">
           {/* The commitment: a numbered index, no boxes. */}
-          <section className="amb-part">
-            <div className="amb-part-label">
-              <p className="grotesk-bold amb-part-title">What we ask</p>
-              <p className="grotesk-regular amb-part-note">Three things, and nothing else.</p>
+          <section className="doc-section">
+            <div className="doc-section-label">
+              <p className="grotesk-bold doc-section-title">What we ask</p>
+              <p className="grotesk-regular doc-section-note">Three things, and nothing else.</p>
             </div>
 
-            <ol className="amb-index">
+            <ol className="doc-rows">
               {COMMITMENT.map((c, i) => (
-                <li key={c.title} className="amb-index-item">
-                  <span className="display-black amb-index-num" aria-hidden>
+                <li key={c.title} className="doc-row">
+                  <span className="display-black doc-num" aria-hidden>
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <div className="amb-index-main">
-                    <h2 className="display-black amb-index-title">{c.title}</h2>
-                    <p className="grotesk-regular amb-index-body">{c.body}</p>
+                  <div className="doc-row-main">
+                    <h2 className="display-black doc-row-title">{c.title}</h2>
+                    <p className="grotesk-regular doc-row-body">{c.body}</p>
                   </div>
-                  <p className="grotesk-regular amb-index-aside">{c.aside}</p>
+                  <p className="grotesk-regular doc-aside">{c.aside}</p>
                 </li>
               ))}
             </ol>
           </section>
 
           {/* The return: sticky label, flowing list. */}
-          <section className="amb-part">
-            <div className="amb-part-label">
-              <p className="grotesk-bold amb-part-title">What you get</p>
-              <p className="grotesk-regular amb-part-note">
+          <section className="doc-section">
+            <div className="doc-section-label">
+              <p className="grotesk-bold doc-section-title">What you get</p>
+              <p className="grotesk-regular doc-section-note">
                 Not money. We would rather say that here than let you find out after applying.
               </p>
             </div>
@@ -164,10 +164,10 @@ export default function AmbassadorPage() {
             </div>
           </section>
 
-          <section className="amb-part">
-            <div className="amb-part-label">
-              <p className="grotesk-bold amb-part-title">Who it suits</p>
-              <p className="grotesk-regular amb-part-note">
+          <section className="doc-section">
+            <div className="doc-section-label">
+              <p className="grotesk-bold doc-section-title">Who it suits</p>
+              <p className="grotesk-regular doc-section-note">
                 University faculties only, no grade requirement, no CV.
               </p>
             </div>

@@ -274,9 +274,17 @@ export default function FAQPage() {
           </nav>
 
           <div className="faq-main">
-          {GROUPS.map(group => (
+          {GROUPS.map((group, i) => (
             <section key={group.heading} id={slug(group.heading)} className="faq-group">
-              <h2 className="grotesk-bold faq-group-heading">{group.heading}</h2>
+              {/* Same hanging greyed numeral as the ambassador index and the
+                  legal clauses, so a section heading is recognisably the same
+                  object wherever it appears. */}
+              <h2 className="grotesk-bold faq-group-heading">
+                <span className="display-black doc-num faq-group-num" aria-hidden>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                {group.heading}
+              </h2>
 
               <div className="faq-list">
                 {group.items.map(item => (

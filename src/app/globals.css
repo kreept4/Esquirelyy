@@ -810,22 +810,22 @@ select.filter-pill {
 /* --- body --- */
 .amb-body { padding: 0 2rem 5rem; }
 
-.amb-part {
+.doc-section {
   display: grid;
   grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
   gap: 3.5rem;
   padding: 4rem 0;
   border-bottom: 0.5px solid var(--cream-border);
 }
-.amb-part:last-of-type { border-bottom: none; }
+.doc-section:last-of-type { border-bottom: none; }
 
-.amb-part-label { position: sticky; top: 7rem; align-self: start; }
-.amb-part-title {
+.doc-section-label { position: sticky; top: 7rem; align-self: start; }
+.doc-section-title {
   font-size: 0.95rem;
   color: var(--ink);
   margin-bottom: 0.5rem;
 }
-.amb-part-note {
+.doc-section-note {
   font-size: 0.8rem;
   line-height: 1.65;
   color: var(--ink-muted);
@@ -833,13 +833,13 @@ select.filter-pill {
 }
 
 /* --- the commitment index --- */
-.amb-index { list-style: none; }
+.doc-rows { list-style: none; }
 /* The body column is capped rather than 1fr. At 1fr it absorbed all the spare
    width on a wide display and pushed the sidenote to the far edge, so the note
    stopped reading as a note on the paragraph beside it and started reading as
    an unrelated third column. Capping the measure keeps the two together and
    lets the leftover width fall away to the right, which is what a margin is. */
-.amb-index-item {
+.doc-row {
   display: grid;
   grid-template-columns: minmax(0, 4.5rem) minmax(0, 34rem) minmax(0, 15rem);
   justify-content: start;
@@ -848,32 +848,32 @@ select.filter-pill {
   border-top: 0.5px solid var(--cream-border);
   align-items: start;
 }
-.amb-index-item:first-child { border-top: none; padding-top: 0; }
+.doc-row:first-child { border-top: none; padding-top: 0; }
 
 /* The numerals are the structure of this section. Large, but set back in the
    muted tone so they read as an index rather than competing with the titles. */
-.amb-index-num {
+.doc-num {
   font-size: clamp(1.9rem, 3.4vw, 2.7rem);
   line-height: 0.9;
   letter-spacing: -0.04em;
   color: var(--ink);
   opacity: 0.22;
 }
-.amb-index-title {
+.doc-row-title {
   font-size: clamp(1.15rem, 2.1vw, 1.5rem);
   line-height: 1.2;
   letter-spacing: -0.02em;
   color: var(--ink);
   margin-bottom: 0.7rem;
 }
-.amb-index-body {
+.doc-row-body {
   font-size: 0.9rem;
   line-height: 1.75;
   color: var(--ink-muted);
   max-width: 48ch;
 }
 /* Marginal note, set smaller and ruled off, in the manner of a sidenote. */
-.amb-index-aside {
+.doc-aside {
   font-size: 0.8rem;
   line-height: 1.7;
   color: var(--ink-muted);
@@ -989,11 +989,11 @@ select.filter-pill {
 /* Tablet and below: the sidenote column folds into the body, and the label
    column stops being sticky. */
 @media (max-width: 1080px) {
-  .amb-index-item {
+  .doc-row {
     grid-template-columns: minmax(0, 3.5rem) minmax(0, 1fr);
     gap: 1.5rem;
   }
-  .amb-index-aside {
+  .doc-aside {
     grid-column: 2;
     margin-top: 1rem;
     padding-left: 1rem;
@@ -1001,13 +1001,13 @@ select.filter-pill {
 }
 
 @media (max-width: 900px) {
-  .amb-part {
+  .doc-section {
     grid-template-columns: 1fr;
     gap: 2rem;
     padding: 3rem 0;
   }
-  .amb-part-label { position: static; }
-  .amb-part-note { max-width: 46ch; }
+  .doc-section-label { position: static; }
+  .doc-section-note { max-width: 46ch; }
 }
 
 @media (max-width: 640px) {
@@ -1017,9 +1017,9 @@ select.filter-pill {
   .amb-lede { margin-bottom: 2rem; }
   .amb-term { padding: 1.1rem 1rem 1.2rem 0; border-right: none; border-bottom: 0.5px solid rgba(250, 246, 240, 0.12); }
   .amb-term:last-child { border-bottom: none; }
-  .amb-index-item { grid-template-columns: 1fr; gap: 0.75rem; padding: 1.9rem 0; }
-  .amb-index-num { font-size: 1.6rem; }
-  .amb-index-aside { grid-column: 1; }
+  .doc-row { grid-template-columns: 1fr; gap: 0.75rem; padding: 1.9rem 0; }
+  .doc-num { font-size: 1.6rem; }
+  .doc-aside { grid-column: 1; }
   .amb-apply { padding: 1.85rem; box-shadow: 4px 5px 0 rgba(36, 31, 22, 0.85); }
 }
 
@@ -1112,6 +1112,9 @@ select.filter-pill {
    read as a caption rather than a heading. Set on the display face, larger than
    the body, in full ink, with the rule doing the separating. */
 .faq-group-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
   font-family: var(--font-display);
   font-size: clamp(1.15rem, 2.2vw, 1.45rem);
   font-weight: 600;
@@ -1121,10 +1124,21 @@ select.filter-pill {
   border-bottom: 1px solid var(--ink);
   margin-bottom: 0.25rem;
 }
+/* Sized to the heading beside it rather than to the ambassador index, where the
+   numeral leads a whole row of its own and can afford to be much larger. */
+.faq-group-num {
+  font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+  line-height: 1;
+}
 
 .faq-item {
   border-bottom: 0.5px solid var(--cream-border);
 }
+/* The last question in a group already has the next group's heading rule, or
+   the tail's top rule, beneath it. Keeping its own border stacked a second
+   hairline under the final answer, which read as a line hanging off the end of
+   the page with nothing below it. */
+.faq-item:last-child { border-bottom: none; }
 
 .faq-question {
   display: flex;
@@ -2144,15 +2158,36 @@ select.filter-pill {
   border-bottom: 0.5px solid #EDE9E2;
 }
 
-.legal-clause { margin-bottom: 2.75rem; }
+/* Hanging numeral column, matching the ambassador index. */
+.legal-clause {
+  display: grid;
+  grid-template-columns: minmax(0, 4rem) minmax(0, 1fr);
+  gap: 1.75rem;
+  margin-bottom: 2.75rem;
+  align-items: start;
+}
+.legal-clause-main { min-width: 0; }
 
 .legal-heading {
   font-size: 1.05rem;
   color: var(--ink);
   margin-bottom: 0.9rem;
+  /* Optical alignment: the numeral's cap sits slightly above a 1.05rem cap at
+     this size, so the heading is nudged down to share a baseline with it. */
+  padding-top: 0.15rem;
 }
-/* Hanging number, so the headings line up and a clause can be cited. */
-.legal-num { color: var(--ink-muted); margin-right: 0.4rem; }
+/* Overrides the shared .doc-num sizing: a clause numeral should mark the
+   clause, not compete with the policy title above it. */
+.legal-num {
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  margin-right: 0;
+}
+
+@media (max-width: 640px) {
+  .legal-clause { grid-template-columns: 1fr; gap: 0.4rem; }
+  .legal-num { font-size: 1.25rem; }
+  .legal-heading { padding-top: 0; }
+}
 
 .legal-clause p,
 .legal-clause li {

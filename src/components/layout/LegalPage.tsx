@@ -100,11 +100,19 @@ export default function LegalPage({
  *  correspondence, which is most of the point of numbering a policy. */
 export function Clause({ n, heading, children }: { n: number; heading: string; children: React.ReactNode }) {
   return (
+    /* The numeral hangs in its own column rather than sitting inline before the
+       heading. Inline, it was the same size and weight as the words after it,
+       so it read as part of the sentence; hanging and greyed back, it reads as
+       structure, the headings all start on one line, and the clause number is
+       still there to cite. Same treatment as the ambassador index. */
     <section className="legal-clause" id={`clause-${n}`}>
-      <h2 className="grotesk-bold legal-heading">
-        <span className="legal-num">{n}.</span> {heading}
-      </h2>
-      {children}
+      <span className="display-black doc-num legal-num" aria-hidden>
+        {String(n).padStart(2, '0')}
+      </span>
+      <div className="legal-clause-main">
+        <h2 className="grotesk-bold legal-heading">{heading}</h2>
+        {children}
+      </div>
     </section>
   )
 }
