@@ -43,13 +43,20 @@ const LOCAL_ONLY_LOGO = new Set([
   // firm's own site by scripts/fetch-new-firm-logos.mjs, so there is no bucket
   // file and logoFile stays null.
   //
-  // Three of the twelve are absent on purpose and keep the monogram tile:
-  // lekan-bamidele (site 403s), giwa-osagie (mark not in the served HTML), and
-  // ikeyi-shittu (only publishes a white-on-transparent variant, which would be
-  // invisible on cream).
+  // Only lekan-bamidele is still absent: lbandcolaw.com returns 403 to every
+  // automated request and the art needs saving by hand from a browser.
+  //
+  // giwa-osagie and ikeyi-shittu were recovered by scripts/repair-firm-logos.mjs
+  // rather than by finding a better download. Ikeyi Shittu publish only a white
+  // variant for their dark header, so the colour channels are inverted to
+  // reconstruct the dark version of the same monochrome mark; Giwa-Osagie's
+  // header logo is not in their served HTML, so it comes from an uploaded copy
+  // elsewhere on the site.
   'alliance-law-firm',
   'dd-dodo',
   'doa-law',
+  'giwa-osagie',
+  'ikeyi-shittu',
   'odujinrin-adefulu',
   'omaplex',
   'paul-usoro',
