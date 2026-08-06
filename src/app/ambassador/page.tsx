@@ -107,7 +107,7 @@ export default function AmbassadorPage() {
             </h1>
             <p className="grotesk-regular amb-lede">
               We can build the board, the tools and the directory. What we cannot do from an office
-              in Lagos is stand in front of your year and tell them it exists. That part is yours.
+              in Abuja is stand in front of your year and tell them it exists. That part is yours.
             </p>
 
             <dl className="amb-terms">

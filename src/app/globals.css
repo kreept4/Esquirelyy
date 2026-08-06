@@ -1260,14 +1260,16 @@ a.news-slide-link:hover .news-cta svg,
      six seconds. Mint is the same accent as the footer's back-to-top control,
      so the two navigation affordances on the page are the same object. */
   border: none;
-  background: #14B8A6;
+  background: var(--mint);
   color: #FFFFFF;
   cursor: pointer;
-  /* The track slides inside the circle, so the glyph has to be clipped by it. */
+  flex-shrink: 0;
+  /* The track is absolutely positioned against this, and clipped by it. */
+  position: relative;
   overflow: hidden;
   transition: background-color 0.2s ease;
 }
-.news-arrow:hover { background: #10A192; }
+.news-arrow:hover { background: var(--mint-deep); }
 .news-arrow:focus-visible { outline: 2px solid #241F16; outline-offset: 3px; }
 
 /* Two arrows on one track, the second sitting exactly one button-width behind
@@ -1276,17 +1278,21 @@ a.news-slide-link:hover .news-cta svg,
    button never appears empty and never bounces back. One transform, no
    keyframes, and it reverses correctly if the pointer leaves mid-slide. */
 .news-arrow-track {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
+  /* Two glyph widths, taken out of flow so it cannot size the button. As a
+     normal flex child at width:200% it set the circle's min-content width,
+     stretched it into an oval and pushed the glyph out of the visible box. */
   width: 200%;
-  height: 100%;
   transition: transform 0.42s cubic-bezier(0.65, 0, 0.35, 1);
 }
 .news-arrow-glyph {
-  width: 50%;
-  height: 17px;
+  height: 16px;
   flex: 0 0 50%;
-  padding: 0 12px;
+  min-width: 0;
+  padding: 0 13px;
   box-sizing: border-box;
 }
 /* Previous points the other way, and its track therefore travels the other way. */
@@ -1322,16 +1328,31 @@ a.news-slide-link:hover .news-cta svg,
 }
 
 @media (max-width: 640px) {
-  .news-carousel { padding: 2.5rem 0 1rem; }
+  /* The card stacks below 900px, so its height is the artwork plus the copy
+     plus the controls rather than the taller of two columns. Every one of
+     those was still carrying its desktop padding, which is why the slide ran
+     most of a phone screen. Each block gives some back. */
+  .news-carousel { padding: 2rem 0 0.75rem; }
   .news-carousel-inner { padding: 0 1rem; }
   .news-card { border-radius: 12px; box-shadow: 5px 6px 0 rgba(36, 31, 22, 0.9); }
-  .news-copy { padding: 1.7rem 1.4rem 1.5rem; }
-  .news-summary { font-size: 0.86rem; }
-  .news-controls { padding: 0 1.4rem 1.25rem; }
+  .news-copy { padding: 1.1rem 1.25rem 1.2rem; }
+  .news-kind { margin-bottom: 0.55rem; }
+  .news-title { font-size: 1.2rem; margin-bottom: 0.5rem; max-width: none; }
+  .news-summary { font-size: 0.84rem; line-height: 1.55; }
+  .news-cta { margin-top: 1rem; padding: 0.5rem 1rem; }
+  .news-controls { padding: 0 1.25rem 1rem; }
   .news-arrow { width: 34px; height: 34px; }
-  .news-splash { width: 5.4rem; height: 5.4rem; padding: 0.8rem; }
-  .news-splashes { max-width: 100%; gap: 0.5rem; }
-  .news-figure-splash { padding: 1.5rem; }
+  .news-arrow-glyph { height: 14px; padding: 0 10px; }
+
+  /* Artwork is the biggest single contributor to the height, so it takes the
+     biggest cut. */
+  .news-figure { padding: 1.1rem 1.25rem 0; }
+  .news-illustration { max-width: 9.5rem; }
+  .news-photo { max-height: 9rem; }
+  .news-figure-photo { padding: 1.1rem 1.25rem 0; }
+  .news-splash { width: 4.2rem; height: 4.2rem; padding: 0.6rem; }
+  .news-splashes { max-width: 100%; gap: 0.4rem; }
+  .news-figure-splash { padding: 1.1rem 1.25rem 0; }
 }
 
 /* NEWS PAGE
@@ -1398,9 +1419,13 @@ a.news-slide-link:hover .news-cta svg,
 }
 .doc-row[data-linked='true']:hover { transform: translateX(0.35rem); }
 .doc-row[data-linked='true']:hover .doc-num { opacity: 0.4; }
-.doc-row[data-linked='true']:hover .news-cta svg { transform: translateX(3px); }
+.doc-row[data-linked='true']:hover .news-entry-cta svg { transform: translateX(3px); }
 
-.news-cta {
+/* The news page forward link. Renamed off .news-cta, which the carousel pill
+   also used: this block sits later in the file, so it was quietly repainting
+   the carousel button's white label ink. Two different objects should never
+   have shared the name. */
+.news-entry-cta {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -1408,7 +1433,7 @@ a.news-slide-link:hover .news-cta svg,
   font-size: 0.8rem;
   color: var(--ink);
 }
-.news-cta svg { transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1); }
+.news-entry-cta svg { transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1); }
 
 /* Date in the right margin, set as a sidenote. .doc-aside already rules it off,
    so this only fixes the face and adds the external-source line beneath. */
@@ -1457,6 +1482,35 @@ a.news-slide-link:hover .news-cta svg,
   .news-date { display: inline; }
   .news-source { display: inline; margin-top: 0; }
   .news-source::before { content: ' · '; }
+}
+
+/* CONTACT
+   One address per row, set as the row's action in the accent the rest of the
+   site uses for actions. It is a link rather than a button because it opens a
+   mail client, and dressing that as a submit control overstates what happens
+   when you press it. */
+.contact-address {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--mint-deep);
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+  padding-bottom: 1px;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+.contact-address svg { transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1); }
+.contact-address:hover {
+  color: var(--mint-deep);
+  border-bottom-color: var(--mint-deep);
+}
+.contact-address:hover svg { transform: translateX(3px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-address svg { transition: none; }
+  .contact-address:hover svg { transform: none; }
 }
 
 /* FORWARD LINK
@@ -2109,6 +2163,12 @@ a.news-slide-link:hover .news-cta svg,
   background: var(--cream-border);
   border: 0.5px solid var(--cream-border);
 }
+/* Six on a wide screen, four below. Six cards wrapping onto a second row on a
+   tablet turns a footnote into a section; the two extra suggestions are worth
+   having only while they fit on one line. */
+@media (max-width: 1080px) {
+  .firm-related-card:nth-child(n + 5) { display: none; }
+}
 .firm-related-card {
   background: var(--cream);
   padding: 1.1rem 1.25rem;
@@ -2371,14 +2431,14 @@ a.news-slide-link:hover .news-cta svg,
   width: 100%;
   padding: 0.85rem 1rem;
   box-sizing: border-box;
-  background: var(--ink);
-  color: #FFF8E5;
+  background: var(--mint);
+  color: #FFFFFF;
   font-size: 0.85rem;
   text-decoration: none;
   border-radius: 999px;
-  transition: transform 0.18s ease;
+  transition: transform 0.18s ease, background-color 0.18s ease;
 }
-.apply-card-cta:hover { transform: translateY(-2px); }
+.apply-card-cta:hover { transform: translateY(-2px); background: var(--mint-deep); }
 
 .apply-card-note {
   font-size: 0.8rem;

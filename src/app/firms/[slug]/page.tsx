@@ -59,11 +59,14 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
       .filter(x => x.score > 1.5)
       .sort((a, b) => b.score - a.score)
 
-    const picked = scored.slice(0, 4).map(x => x.f)
+    // Six are rendered and CSS hides the last two below 1080px, because this is
+    // a server component: there is no viewport to branch on at render time, and
+    // shipping six costs two extra list items rather than a client boundary.
+    const picked = scored.slice(0, 6).map(x => x.f)
     if (picked.length >= 3) return picked
     // Top up from the same tier so the row never renders half empty.
     const filler = pool.filter(f => f.tier === firm.tier && !picked.includes(f))
-    return [...picked, ...filler].slice(0, 4)
+    return [...picked, ...filler].slice(0, 6)
   })()
 
   return (
