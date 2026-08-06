@@ -43,8 +43,10 @@ const LOCAL_ONLY_LOGO = new Set([
   // firm's own site by scripts/fetch-new-firm-logos.mjs, so there is no bucket
   // file and logoFile stays null.
   //
-  // Only lekan-bamidele is still absent: lbandcolaw.com returns 403 to every
-  // automated request and the art needs saving by hand from a browser.
+  // All twelve now carry a mark. lekan-bamidele came from the firm's own art
+  // supplied by hand, because lbandcolaw.com returns 403 to every automated
+  // request; it is cropped to its content box rather than trimmed, since trim
+  // keys off the corner colour and clipped the asymmetric lockup unevenly.
   //
   // giwa-osagie and ikeyi-shittu were recovered by scripts/repair-firm-logos.mjs
   // rather than by finding a better download. Ikeyi Shittu publish only a white
@@ -57,6 +59,7 @@ const LOCAL_ONLY_LOGO = new Set([
   'doa-law',
   'giwa-osagie',
   'ikeyi-shittu',
+  'lekan-bamidele',
   'odujinrin-adefulu',
   'omaplex',
   'paul-usoro',
