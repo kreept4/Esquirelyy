@@ -1,15 +1,16 @@
 'use client'
 import { useState, useRef } from 'react'
-import Footer from '@/components/layout/Footer'
-import { Clock, Loader2 } from 'lucide-react'
+import { Loader2, ArrowRight, AlertCircle, X } from 'lucide-react'
 import { useRequireAuth } from '../useRequireAuth'
 import { createClient } from '@/lib/supabase/client'
+import ToolShell from '../ToolShell'
+import BrandLoader from '@/components/ui/BrandLoader'
 
 const PERSONAS = [
-  { id: 'senior_partner', label: 'Senior Partner', desc: 'Probing, precedent-focused' },
-  { id: 'hr_director', label: 'HR Director', desc: 'Competency & culture fit' },
-  { id: 'magic_circle', label: 'Magic Circle Associate', desc: 'Technical, commercial awareness' },
-  { id: 'nigerian_firm', label: 'Nigerian Firm Partner', desc: 'Local market, client handling' },
+  { id: 'senior_partner', label: 'Senior partner', desc: 'Probing, precedent-focused' },
+  { id: 'hr_director', label: 'HR director', desc: 'Competency and culture fit' },
+  { id: 'magic_circle', label: 'Magic Circle associate', desc: 'Technical, commercial awareness' },
+  { id: 'nigerian_firm', label: 'Nigerian firm partner', desc: 'Local market, client handling' },
 ]
 
 const AREAS = [
@@ -18,20 +19,14 @@ const AREAS = [
   'Employment','Real Estate','Intellectual Property','General Practice',
 ]
 
-const accent = '#1A1A1A'
-const ink = '#1A1A1A'
-const muted = '#8C8275'
-const cream = '#FAF6F0'
-const rule = '#E8E0D5'
-const mint = '#14B8A6'
-
+/** Category accents, drawn from the site palette rather than a private set. */
 const CATEGORY_COLORS: Record<string, string> = {
-  behavioural: '#5B7560',
-  technical: '#3D5A73',
+  behavioural: '#0A7A6E',
+  technical: '#0C6C93',
   situational: '#8C6D1F',
   ethics: '#8C6D1F',
-  motivation: accent,
-  fit: accent,
+  motivation: '#6D3FD4',
+  fit: '#6D3FD4',
 }
 
 interface Question {
@@ -57,7 +52,7 @@ interface HistoryItem {
 
 function categoryColor(cat: string) {
   const key = Object.keys(CATEGORY_COLORS).find(k => cat?.toLowerCase().includes(k))
-  return key ? CATEGORY_COLORS[key] : muted
+  return key ? CATEGORY_COLORS[key] : '#4A4A4A'
 }
 
 export default function InterviewPrepPage() {
@@ -129,7 +124,7 @@ export default function InterviewPrepPage() {
       setResult(data)
       if (userId) {
         const supabase = createClient()
- const { error: insertError } = await (supabase as any).from('interview_sessions').insert({
+        const { error: insertError } = await (supabase as any).from('interview_sessions').insert({
           user_id: userId,
           target_role: mode === 'role' ? targetRole.trim() : (data.inferredRole || null),
           interviewer_persona: persona,
@@ -155,259 +150,213 @@ export default function InterviewPrepPage() {
 
   if (checking) {
     return (
-      <div>
-        <main style={{ backgroundColor: cream, paddingTop: '80px', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Loader2 size={20} className="animate-spin" style={{ color: muted }} />
-        </main>
-      </div>
+      <main className="page-main doc-page">
+        <div className="tool-centre"><BrandLoader /></div>
+      </main>
     )
   }
 
   return (
-    <div>
-      <main style={{ backgroundColor: cream, paddingTop: '80px', minHeight: '100vh' }}>
-
+    <>
+      <ToolShell
+        title="Interview prep."
+        lede="Questions you are actually likely to face, written from the perspective of the person who will be across the table."
+        onHistory={openHistory}
+      >
         {!result && (
-          <>
-            <div style={{ padding: '5rem 2rem 3rem' }}>
-              <div style={{ maxWidth: '640px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                  <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75 }}>
-                    AI Career Tools
-                  </p>
-                  <button onClick={openHistory} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em' }}>
-                    <Clock size={13} /> History
-                  </button>
-                </div>
-                <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: ink, marginBottom: '1rem', lineHeight: 1.1 }}>
-                  Interview Prep
-                </h1>
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1rem', color: muted, lineHeight: 1.7, maxWidth: '480px' }}>
-                  Generate tailored questions from a senior partner, HR director, or Nigerian firm partner perspective.
-                </p>
-              </div>
+          <section className="doc-section">
+            <div className="doc-section-label">
+              <p className="grotesk-bold doc-section-title">The interview</p>
+              <p className="grotesk-regular doc-section-note">
+                Start from a role, or upload a CV and let the questions come from what is on it.
+              </p>
             </div>
 
-            <div style={{ maxWidth: '640px', margin: '0 auto', padding: '0 2rem 6rem' }}>
-
-              <div style={{ display: 'flex', borderBottom: '1px solid ' + rule, marginBottom: '2rem' }}>
-                {(['role', 'cv'] as const).map(m => (
-                  <button
-                    key={m}
-                    onClick={() => { setMode(m); setError('') }}
-                    style={{
-                      padding: '0.6rem 0',
-                      marginRight: '1.75rem',
-                      fontFamily: 'Schibsted Grotesk, sans-serif',
-                      fontSize: '0.78rem',
-                      fontWeight: 600,
-                      border: 'none',
-                      background: 'none',
-                      cursor: 'pointer',
-                      color: mode === m ? ink : muted,
-                      borderBottom: mode === m ? '2px solid ' + accent : '2px solid transparent',
-                      marginBottom: '-1px',
-                    }}
-                  >
-                    {m === 'role' ? 'By Target Role' : 'By CV Upload'}
-                  </button>
-                ))}
+            {loading ? (
+              <div className="tool-card">
+                <BrandLoader
+                  label="Building your session"
+                  note="This takes about half a minute. Each question comes back with the reason it gets asked."
+                />
               </div>
-
-              {mode === 'role' ? (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '2rem' }}>
-                  <div>
-                    <label style={{ display: 'block', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
-                      Target role <span style={{ color: accent }}>*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={targetRole}
-                      onChange={e => setTargetRole(e.target.value)}
-                      placeholder="e.g. Associate, Banking & Finance"
-                      style={{ width: '100%', padding: '0.6rem 0', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.92rem', color: ink, backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid ' + rule, outline: 'none', boxSizing: 'border-box' as const }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
-                      Practice area <span style={{ fontWeight: 400, textTransform: 'none' as const, letterSpacing: 0, fontSize: '0.7rem' }}>(optional)</span>
-                    </label>
-                    <select
-                      value={practiceArea}
-                      onChange={e => setPracticeArea(e.target.value)}
-                      style={{ width: '100%', padding: '0.6rem 0', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.92rem', color: ink, backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid ' + rule, outline: 'none', boxSizing: 'border-box' as const }}
-                    >
-                      <option value="">Any</option>
-                      {AREAS.map(a => <option key={a}>{a}</option>)}
-                    </select>
-                  </div>
-                </div>
-              ) : (
-                <div style={{ marginBottom: '2rem' }}>
-                  <label style={{ display: 'block', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
-                    Your CV <span style={{ color: accent }}>*</span>
-                  </label>
-                  <div
-                    onClick={() => fileRef.current?.click()}
-                    style={{ border: '1px dashed ' + rule, borderRadius: '999px', padding: '1.5rem', textAlign: 'center', cursor: 'pointer', backgroundColor: cvFile ? '#F0F5EC' : 'transparent' }}
-                  >
-                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: cvFile ? '#3D6B3D' : muted }}>
-                      {cvFile ? cvFile.name : 'Click to upload PDF, DOCX, or TXT'}
-                    </p>
-                    {cvFile && (
-                      <button onClick={e => { e.stopPropagation(); setCvFile(null) }} style={{ marginTop: '0.4rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', color: accent, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                  <input ref={fileRef} type="file" accept=".pdf,.docx,.txt" style={{ display: 'none' }} onChange={e => setCvFile(e.target.files?.[0] || null)} />
-                </div>
-              )}
-
-              <div style={{ marginBottom: '2rem' }}>
-                <label style={{ display: 'block', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.75rem' }}>
-                  Interviewer persona
-                </label>
-                <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '0.5rem' }}>
-                  {PERSONAS.map(p => (
+            ) : (
+              <div className="tool-card">
+                <div className="tool-tabs" role="tablist">
+                  {(['role', 'cv'] as const).map(m => (
                     <button
-                      key={p.id}
-                      onClick={() => setPersona(p.id)}
-                      title={p.desc}
-                      style={{
-                        padding: '0.5rem 0.9rem',
-                        fontFamily: 'Schibsted Grotesk, sans-serif',
-                        fontSize: '0.78rem',
-                        fontWeight: 600,
-                        borderRadius: '999px',
-                        border: persona === p.id ? '1px solid ' + ink : '1px solid ' + rule,
-                        backgroundColor: persona === p.id ? ink : 'transparent',
-                        color: persona === p.id ? cream : ink,
-                        cursor: 'pointer',
-                      }}
+                      key={m}
+                      role="tab"
+                      aria-selected={mode === m}
+                      className="grotesk-bold tool-tab"
+                      data-active={mode === m}
+                      onClick={() => { setMode(m); setError('') }}
                     >
-                      {p.label}
+                      {m === 'role' ? 'By target role' : 'By CV'}
                     </button>
                   ))}
                 </div>
+
+                {mode === 'role' ? (
+                  <div className="tool-grid">
+                    <div>
+                      <label htmlFor="ip-role" className="tool-label">Target role</label>
+                      <input id="ip-role" type="text" className="tool-input grotesk-regular"
+                        value={targetRole} onChange={e => setTargetRole(e.target.value)}
+                        placeholder="e.g. Associate, Banking and Finance" />
+                    </div>
+                    <div>
+                      <label htmlFor="ip-area" className="tool-label">
+                        Practice area <span className="tool-label-hint">(optional)</span>
+                      </label>
+                      <select id="ip-area" className="tool-select grotesk-regular"
+                        value={practiceArea} onChange={e => setPracticeArea(e.target.value)}>
+                        <option value="">Any</option>
+                        {AREAS.map(a => <option key={a}>{a}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="tool-row">
+                    <label className="tool-label">Your CV</label>
+                    <div className="tool-drop" data-over={!!cvFile} onClick={() => fileRef.current?.click()} style={{ cursor: 'pointer' }}>
+                      <p className="grotesk-bold tool-drop-title">
+                        {cvFile ? cvFile.name : 'Click to upload a PDF, DOCX or TXT'}
+                      </p>
+                      {cvFile ? (
+                        <button type="button" className="tool-drop-swap"
+                          onClick={e => { e.stopPropagation(); setCvFile(null) }}>
+                          Remove
+                        </button>
+                      ) : (
+                        <p className="grotesk-regular tool-drop-note">
+                          The file is read for this session and not stored.
+                        </p>
+                      )}
+                    </div>
+                    <input ref={fileRef} type="file" accept=".pdf,.docx,.txt" style={{ display: 'none' }}
+                      onChange={e => setCvFile(e.target.files?.[0] || null)} />
+                  </div>
+                )}
+
+                <div className="tool-row">
+                  <label className="tool-label">Who is interviewing you</label>
+                  <div className="tool-personas">
+                    {PERSONAS.map(p => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => setPersona(p.id)}
+                        className="tool-persona"
+                        data-active={persona === p.id}
+                      >
+                        <span className="grotesk-bold tool-persona-name">{p.label}</span>
+                        <span className="grotesk-regular tool-persona-desc">{p.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {error && (
+                  <div className="grotesk-regular tool-error" role="alert">
+                    <AlertCircle size={15} aria-hidden />
+                    <p>{error}</p>
+                  </div>
+                )}
+
+                <button type="button" onClick={handleGenerate} disabled={loading} className="tool-submit">
+                  Generate questions <ArrowRight size={15} aria-hidden />
+                </button>
+                <p className="grotesk-regular tool-note">
+                  AI-generated. Adapt every answer to your own background before an interview.
+                </p>
               </div>
-
-              {error && <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.82rem', color: '#000000', marginBottom: '1.25rem' }}>{error}</p>}
-
-              <button
-                onClick={handleGenerate}
-                disabled={loading}
-                style={{
-                  width: '100%',
-                  padding: '0.9rem',
-                  fontFamily: 'Schibsted Grotesk, sans-serif',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase' as const,
-                  backgroundColor: loading ? muted : mint,
-                  color: cream,
-                  border: 'none',
-                  borderRadius: '2px',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                }}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 size={15} className="animate-spin" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                    Generating...
-                  </>
-                ) : 'Generate Questions'}
-              </button>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginTop: '0.75rem' }}>
-                AI-generated and may contain minor inaccuracies or mix-ups. Please review and edit before relying on it.
-              </p>
-            </div>
-          </>
+            )}
+          </section>
         )}
 
         {result && (
-          <div style={{ maxWidth: '640px', margin: '0 auto', padding: '4rem 2rem 6rem' }}>
-            <button onClick={handleReset} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', marginBottom: '2rem' }}>
-              ← New session
-            </button>
+          <section className="doc-section">
+            <div className="doc-section-label">
+              <p className="grotesk-bold doc-section-title">{result.interviewerPersona}</p>
+              <p className="grotesk-regular doc-section-note">{result.inferredRole}</p>
+            </div>
 
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, marginBottom: '0.5rem' }}>
-              {result.interviewerPersona}
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: '1.8rem', fontWeight: 700, color: ink, marginBottom: '0.75rem', lineHeight: 1.2 }}>
-              {result.inferredRole}
-            </h2>
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginBottom: '2rem' }}>
-              These questions are AI-generated and may contain minor inaccuracies or mix-ups. Review and adapt them to your real background before an interview.
-            </p>
+            <div>
+              <p className="grotesk-regular tool-note" style={{ marginTop: 0, marginBottom: '1.75rem' }}>
+                Tap a question to see why it gets asked. These are AI-generated, so adapt them to
+                your real background rather than rehearsing them as written.
+              </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0.75rem' }}>
-              {result.questions.map((q, i) => (
-                <div key={q.id || i} style={{ border: '1px solid ' + rule, borderRadius: '2px', backgroundColor: '#fff' }}>
-                  <button
-                    onClick={() => setExpandedQ(expandedQ === q.id ? null : q.id)}
-                    style={{ width: '100%', padding: '1rem 1.1rem', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' as const, display: 'flex', gap: '0.9rem', alignItems: 'flex-start' }}
-                  >
-                    <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, color: accent, flexShrink: 0, marginTop: '3px' }}>
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <div style={{ flex: 1 }}>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.9rem', color: ink, lineHeight: 1.6, marginBottom: '0.4rem' }}>{q.question}</p>
-                      <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.6rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' as const, color: categoryColor(q.category) }}>
-                        {q.category}
+              <ol className="tool-questions">
+                {result.questions.map((q, i) => (
+                  <li key={q.id || i} className="tool-question" data-open={expandedQ === q.id}>
+                    <button
+                      type="button"
+                      className="tool-question-btn"
+                      aria-expanded={expandedQ === q.id}
+                      onClick={() => setExpandedQ(expandedQ === q.id ? null : q.id)}
+                    >
+                      <span className="display-black tool-question-num" aria-hidden>
+                        {String(i + 1).padStart(2, '0')}
                       </span>
-                    </div>
-                  </button>
-                  {expandedQ === q.id && (
-                    <div style={{ padding: '0 1.1rem 1rem 2.9rem', borderTop: '1px solid #F0EBE3' }}>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginTop: '0.8rem', marginBottom: '0.3rem' }}>
-                        Why they ask this
-                      </p>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.82rem', color: '#4A4A4A', lineHeight: 1.65 }}>{q.whyTheyAsk}</p>
-                    </div>
-                  )}
-                </div>
+                      <span className="tool-question-main">
+                        <span className="grotesk-bold tool-question-text">{q.question}</span>
+                        <span className="grotesk-bold tool-question-cat" style={{ color: categoryColor(q.category) }}>
+                          {q.category}
+                        </span>
+                      </span>
+                    </button>
+                    {expandedQ === q.id && (
+                      <div className="tool-question-body">
+                        <p className="grotesk-bold tool-rewrite-tag">Why they ask this</p>
+                        <p className="grotesk-regular">{q.whyTheyAsk}</p>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ol>
+
+              <button type="button" onClick={handleReset} className="tool-restart">
+                Start a new session <ArrowRight size={14} aria-hidden />
+              </button>
+            </div>
+          </section>
+        )}
+      </ToolShell>
+
+      {showHistory && (
+        <div className="tool-drawer-scrim" onClick={() => setShowHistory(false)}>
+          <div className="tool-drawer" role="dialog" aria-label="Past sessions" onClick={e => e.stopPropagation()}>
+            <div className="tool-drawer-head">
+              <h3 className="display-black tool-drawer-title">Past sessions</h3>
+              <button type="button" onClick={() => setShowHistory(false)} className="tool-drawer-close" aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+
+            {historyLoading && <Loader2 size={18} className="animate-spin" />}
+
+            {!historyLoading && history.length === 0 && (
+              <p className="grotesk-regular tool-drawer-empty">
+                No sessions yet. Every set of questions you generate will be listed here.
+              </p>
+            )}
+
+            <div className="tool-drawer-list">
+              {history.map(h => (
+                <button key={h.id} onClick={() => loadFromHistory(h)} className="tool-drawer-item">
+                  <p className="grotesk-bold tool-drawer-item-title">{h.target_role || 'CV-based session'}</p>
+                  <p className="grotesk-regular tool-drawer-item-meta">
+                    {PERSONAS.find(p => p.id === h.interviewer_persona)?.label || h.interviewer_persona} · {new Date(h.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </p>
+                </button>
               ))}
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {showHistory && (
-          <div onClick={() => setShowHistory(false)} style={{ position: 'fixed' as const, inset: 0, backgroundColor: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'flex-start' as const, justifyContent: 'center', padding: '4rem 1rem', zIndex: 50, overflowY: 'auto' as const }}>
-            <div onClick={e => e.stopPropagation()} style={{ backgroundColor: cream, maxWidth: '600px', width: '100%', borderRadius: '4px', padding: '2rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h3 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: '1.3rem', fontWeight: 700, color: ink }}>Past Sessions</h3>
-                <button onClick={() => setShowHistory(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: muted, fontSize: '1.2rem' }}>×</button>
-              </div>
-              {historyLoading ? (
-                <Loader2 size={18} className="animate-spin" style={{ color: muted }} />
-              ) : history.length === 0 ? (
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: muted }}>No past sessions yet.</p>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0.6rem' }}>
-                  {history.map(h => (
-                    <button
-                      key={h.id}
-                      onClick={() => loadFromHistory(h)}
-                      style={{ textAlign: 'left' as const, padding: '0.85rem 1rem', border: '1px solid ' + rule, borderRadius: '999px', background: '#fff', cursor: 'pointer' }}
-                    >
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', fontWeight: 600, color: ink }}>
-                        {h.target_role || 'CV-based session'}
-                      </p>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', color: muted, marginTop: '0.2rem' }}>
-                        {PERSONAS.find(p => p.id === h.interviewer_persona)?.label || h.interviewer_persona} · {new Date(h.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </p>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-      </main>
-      <Footer />
-    </div>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; }`}</style>
+    </>
   )
 }

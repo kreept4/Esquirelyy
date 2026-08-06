@@ -1,9 +1,10 @@
 'use client'
 import { useState } from 'react'
-import Footer from '@/components/layout/Footer'
-import { Loader2, Copy, Check, AlertCircle, ArrowRight, Clock, X } from 'lucide-react'
+import { Copy, Check, AlertCircle, ArrowRight, X, Loader2 } from 'lucide-react'
 import { useRequireAuth } from '../useRequireAuth'
 import { createClient } from '@/lib/supabase/client'
+import ToolShell from '../ToolShell'
+import BrandLoader from '@/components/ui/BrandLoader'
 
 type Result = {
   coverLetter: string
@@ -32,41 +33,10 @@ const CAREER_STAGES = [
 ]
 
 const TONES = [
-  { value: 'formal and confident', label: 'Formal & confident' },
-  { value: 'warm and professional', label: 'Warm & professional' },
-  { value: 'direct and concise', label: 'Direct & concise' },
+  { value: 'formal and confident', label: 'Formal and confident' },
+  { value: 'warm and professional', label: 'Warm and professional' },
+  { value: 'direct and concise', label: 'Direct and concise' },
 ]
-
-const accent = '#1A1A1A'
-const ink = '#1A1A1A'
-const muted = '#8C8275'
-const cream = '#FAF6F0'
-const rule = '#E8E0D5'
-const mint = '#14B8A6'
-
-const fieldStyle = {
-  width: '100%',
-  padding: '0.6rem 0',
-  fontFamily: 'Schibsted Grotesk, sans-serif',
-  fontSize: '0.92rem',
-  color: ink,
-  backgroundColor: 'transparent',
-  border: 'none',
-  borderBottom: '1px solid ' + rule,
-  outline: 'none',
-  boxSizing: 'border-box' as const,
-}
-
-const labelStyle = {
-  display: 'block' as const,
-  fontFamily: 'Schibsted Grotesk, sans-serif',
-  fontSize: '0.7rem',
-  fontWeight: 700 as const,
-  letterSpacing: '0.08em',
-  textTransform: 'uppercase' as const,
-  color: muted,
-  marginBottom: '0.6rem',
-}
 
 export default function CoverLetterPage() {
   const { checking, userId } = useRequireAuth()
@@ -165,217 +135,195 @@ export default function CoverLetterPage() {
 
   if (checking) {
     return (
-      <div>
-        <main style={{ backgroundColor: cream, paddingTop: '80px', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Loader2 size={20} className="animate-spin" style={{ color: muted }} />
-        </main>
-      </div>
+      <main className="page-main doc-page">
+        <div className="tool-centre"><BrandLoader /></div>
+      </main>
     )
   }
 
-  return (
-    <div>
-      <main style={{ backgroundColor: cream, paddingTop: '80px', minHeight: '100vh' }}>
+  const blocked = loading || !form.targetRole || !form.employer
 
+  return (
+    <>
+      <ToolShell
+        title="Cover letter."
+        lede="Tell us about the role and your background, and we will draft a letter that does not read like every other application in the pile."
+        onHistory={openHistory}
+      >
         {!result && (
-          <>
-            <div style={{ padding: '5rem 2rem 3rem' }}>
-              <div style={{ maxWidth: '640px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                  <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75 }}>
-                    AI Career Tools
-                  </p>
-                  <button onClick={openHistory} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em' }}>
-                    <Clock size={13} /> History
-                  </button>
+          <section className="doc-section">
+            <div className="doc-section-label">
+              <p className="grotesk-bold doc-section-title">The application</p>
+              <p className="grotesk-regular doc-section-note">
+                Role and employer are the only required fields. The background boxes are optional
+                and they are what make the difference.
+              </p>
+            </div>
+
+            {loading ? (
+              <div className="tool-card">
+                <BrandLoader
+                  label="Writing your letter"
+                  note="This takes about half a minute. The draft is written against the role, the employer and whatever background you gave us."
+                />
+              </div>
+            ) : (
+              <div className="tool-card">
+                <div className="tool-grid">
+                  <div>
+                    <label htmlFor="cl-name" className="tool-label">
+                      First name <span className="tool-label-hint">(optional)</span>
+                    </label>
+                    <input id="cl-name" type="text" className="tool-input grotesk-regular"
+                      value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="e.g. Damian" />
+                  </div>
+                  <div>
+                    <label htmlFor="cl-role" className="tool-label">Target role</label>
+                    <input id="cl-role" type="text" className="tool-input grotesk-regular"
+                      value={form.targetRole} onChange={e => set('targetRole', e.target.value)} placeholder="e.g. Associate, Banking and Finance" />
+                  </div>
+                  <div>
+                    <label htmlFor="cl-employer" className="tool-label">Employer</label>
+                    <input id="cl-employer" type="text" className="tool-input grotesk-regular"
+                      value={form.employer} onChange={e => set('employer', e.target.value)} placeholder="e.g. Aluko &amp; Oyebode" />
+                  </div>
+                  <div>
+                    <label htmlFor="cl-stage" className="tool-label">Career stage</label>
+                    <select id="cl-stage" className="tool-select grotesk-regular"
+                      value={form.careerStage} onChange={e => set('careerStage', e.target.value)}>
+                      {CAREER_STAGES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="cl-tone" className="tool-label">Tone</label>
+                    <select id="cl-tone" className="tool-select grotesk-regular"
+                      value={form.tone} onChange={e => set('tone', e.target.value)}>
+                      {TONES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                    </select>
+                  </div>
                 </div>
-                <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: ink, marginBottom: '1rem', lineHeight: 1.1 }}>
-                  Cover Letter Generator
-                </h1>
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1rem', color: muted, lineHeight: 1.7, maxWidth: '480px' }}>
-                  Tell us about the role and your background. We will write a cover letter that does not sound like every other application in the pile.
+
+                <div className="tool-row">
+                  <label htmlFor="cl-bg" className="tool-label">
+                    Brief background <span className="tool-label-hint">(optional, and it improves the draft a lot)</span>
+                  </label>
+                  <textarea id="cl-bg" className="tool-textarea grotesk-regular" rows={3}
+                    value={form.cvSummary} onChange={e => set('cvSummary', e.target.value)}
+                    placeholder="e.g. LL.B from Unilag, NYSC at Streamsowers, one year at a Lagos litigation firm" />
+                </div>
+
+                <div className="tool-row">
+                  <label htmlFor="cl-highlights" className="tool-label">
+                    Highlights to emphasise <span className="tool-label-hint">(optional)</span>
+                  </label>
+                  <textarea id="cl-highlights" className="tool-textarea grotesk-regular" rows={2}
+                    value={form.highlights} onChange={e => set('highlights', e.target.value)}
+                    placeholder="e.g. led the moot court team, published research on capital markets regulation" />
+                </div>
+
+                {error && (
+                  <div className="grotesk-regular tool-error" role="alert">
+                    <AlertCircle size={15} aria-hidden />
+                    <p>{error}</p>
+                  </div>
+                )}
+
+                <button type="button" onClick={handleGenerate} disabled={blocked} className="tool-submit">
+                  Write my letter <ArrowRight size={15} aria-hidden />
+                </button>
+                <p className="grotesk-regular tool-note">
+                  An AI-generated draft. Read it, make it sound like you, and check every fact
+                  before you send it.
                 </p>
               </div>
-            </div>
-
-            <div style={{ maxWidth: '640px', margin: '0 auto', padding: '0 2rem 6rem' }}>
-
-              <div style={{ marginBottom: '2rem' }}>
-                <label style={{ ...labelStyle, fontSize: '0.7rem' }}>Your first name</label>
-                <input
-                  type="text"
-                  value={form.firstName}
-                  onChange={e => set('firstName', e.target.value)}
-                  placeholder="e.g. Damian"
-                  style={{
-                    width: '100%', padding: '0.85rem 0',
-                    fontFamily: 'Schibsted Grotesk, sans-serif',
-                    fontSize: '1.15rem', color: ink, backgroundColor: 'transparent',
-                    border: 'none', borderBottom: '1.5px solid ' + rule, outline: 'none', boxSizing: 'border-box' as const,
-                  }}
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2.5rem' }}>
-                <div>
-                  <label style={labelStyle}>Target role <span style={{ color: accent }}>*</span></label>
-                  <input type="text" value={form.targetRole} onChange={e => set('targetRole', e.target.value)}
-                    placeholder="e.g. Associate, B&F" style={fieldStyle} />
-                </div>
-                <div>
-                  <label style={labelStyle}>Employer <span style={{ color: accent }}>*</span></label>
-                  <input type="text" value={form.employer} onChange={e => set('employer', e.target.value)}
-                    placeholder="e.g. Aluko & Oyebode" style={fieldStyle} />
-                </div>
-                <div>
-                  <label style={labelStyle}>Career stage</label>
-                  <select value={form.careerStage} onChange={e => set('careerStage', e.target.value)} style={{ ...fieldStyle, cursor: 'pointer' }}>
-                    {CAREER_STAGES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label style={labelStyle}>Tone</label>
-                  <select value={form.tone} onChange={e => set('tone', e.target.value)} style={{ ...fieldStyle, cursor: 'pointer' }}>
-                    {TONES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              <div style={{ marginBottom: '2rem' }}>
-                <label style={labelStyle}>Brief background <span style={{ fontWeight: 400, textTransform: 'none' as const, letterSpacing: 0, fontSize: '0.7rem', color: muted }}>(optional but improves quality)</span></label>
-                <textarea
-                  value={form.cvSummary}
-                  onChange={e => set('cvSummary', e.target.value)}
-                  placeholder="e.g. LL.B from Unilag, NYSC at Streamsowers, one year at a Lagos litigation firm..."
-                  rows={3}
-                  style={{ ...fieldStyle, borderBottom: 'none', borderLeft: '1.5px solid ' + rule, paddingLeft: '1rem', resize: 'vertical' as const, lineHeight: 1.7 }}
-                />
-              </div>
-
-              <div style={{ marginBottom: '3rem' }}>
-                <label style={labelStyle}>Key highlights to emphasise <span style={{ fontWeight: 400, textTransform: 'none' as const, letterSpacing: 0, fontSize: '0.7rem', color: muted }}>(optional)</span></label>
-                <textarea
-                  value={form.highlights}
-                  onChange={e => set('highlights', e.target.value)}
-                  placeholder="e.g. led moot court team, published research on capital markets regulation..."
-                  rows={2}
-                  style={{ ...fieldStyle, borderBottom: 'none', borderLeft: '1.5px solid ' + rule, paddingLeft: '1rem', resize: 'vertical' as const, lineHeight: 1.7 }}
-                />
-              </div>
-
-              {error && (
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-                  <AlertCircle size={15} style={{ color: accent, flexShrink: 0, marginTop: '2px' }} />
-                  <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: accent, margin: 0 }}>{error}</p>
-                </div>
-              )}
-
-              <button
-                onClick={handleGenerate}
-                disabled={loading || !form.targetRole || !form.employer}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '0.6rem',
-                  padding: '0.95rem 2.5rem',
-                  backgroundColor: (loading || !form.targetRole || !form.employer) ? muted : mint,
-                  color: '#FFFFFF', border: 'none',
-                  fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 700,
-                  letterSpacing: '0.1em', textTransform: 'uppercase' as const,
-                  cursor: (loading || !form.targetRole || !form.employer) ? 'not-allowed' : 'pointer',
-                  transition: 'background-color 0.2s ease',
-                }}
-              >
-                {loading
-                  ? <><Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> Writing your letter...</>
-                  : <>Generate <ArrowRight size={15} /></>}
-              </button>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', color: muted, marginTop: '1rem' }}>AI-generated draft. Review before sending.</p>
-            </div>
-          </>
+            )}
+          </section>
         )}
 
         {result && (
-          <div style={{ maxWidth: '640px', margin: '0 auto', padding: '5rem 2rem 6rem' }}>
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', color: muted, marginBottom: '2.5rem' }}>AI-generated draft. Review before sending.</p>
-
-            <div style={{ marginBottom: '3rem' }}>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75, marginBottom: '0.5rem' }}>
-                Suggested subject line
-              </p>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1rem', color: ink, fontWeight: 500, borderBottom: '1px solid ' + rule, paddingBottom: '1.5rem' }}>
-                {result.subjectLine}
+          <section className="doc-section">
+            <div className="doc-section-label">
+              <p className="grotesk-bold doc-section-title">Your draft</p>
+              <p className="grotesk-regular doc-section-note">
+                Read it before sending. A letter that sounds nothing like you is worse than a plain
+                one.
               </p>
             </div>
 
-            <div style={{ marginBottom: '3rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: muted }}>
-                  Your cover letter
-                </p>
-                <button onClick={handleCopy} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.875rem', backgroundColor: 'transparent', border: '0.5px solid ' + rule, fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600, color: muted, cursor: 'pointer' }}>
-                  {copied ? <><Check size={13} style={{ color: '#2D6A4F' }} /> Copied</> : <><Copy size={13} /> Copy</>}
+            <div>
+              <div className="tool-row">
+                <p className="grotesk-bold tool-section-heading">Suggested subject line</p>
+                <p className="grotesk-bold tool-subject">{result.subjectLine}</p>
+              </div>
+
+              <div className="tool-letter-head">
+                <p className="grotesk-bold tool-section-heading" style={{ marginBottom: 0 }}>Your cover letter</p>
+                <button type="button" onClick={handleCopy} className="grotesk-bold tool-copy">
+                  {copied ? <><Check size={13} aria-hidden /> Copied</> : <><Copy size={13} aria-hidden /> Copy</>}
                 </button>
               </div>
-              {result.coverLetter.split('\n').map((para, i) => para.trim() ? (
-                <p key={i} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.95rem', color: ink, lineHeight: 1.85, marginBottom: '1.25rem' }}>{para}</p>
-              ) : <div key={i} style={{ height: '0.5rem' }} />)}
-            </div>
 
-            {result.tipsForSending?.length > 0 && (
-              <div style={{ borderTop: '1px solid ' + rule, paddingTop: '2rem', marginBottom: '3rem' }}>
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: muted, marginBottom: '1.25rem' }}>
-                  Tips for sending
-                </p>
-                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0.875rem' }}>
-                  {result.tipsForSending.map((tip, i) => (
-                    <div key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                      <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 700, color: accent, flexShrink: 0, paddingTop: '2px' }}>{String(i + 1).padStart(2, '0')}</span>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: ink, lineHeight: 1.7, margin: 0 }}>{tip}</p>
-                    </div>
-                  ))}
+              <div className="tool-letter">
+                {result.coverLetter.split('\n').map((para, i) => para.trim()
+                  ? <p key={i} className="grotesk-regular">{para}</p>
+                  : <div key={i} style={{ height: '0.5rem' }} />)}
+              </div>
+
+              {result.tipsForSending?.length > 0 && (
+                <div className="tool-tips">
+                  <p className="grotesk-bold tool-section-heading">Before you send it</p>
+                  <ol className="tool-tip-list">
+                    {result.tipsForSending.map((tip, i) => (
+                      <li key={i}>
+                        <span className="display-black tool-tip-num" aria-hidden>{String(i + 1).padStart(2, '0')}</span>
+                        <p className="grotesk-regular">{tip}</p>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
-              </div>
-            )}
-
-            <button onClick={handleReset} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em', textDecoration: 'underline' }}>
-              Start over
-            </button>
-
-          </div>
-        )}
-
-        {showHistory && (
-          <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(26,26,26,0.4)', zIndex: 200, display: 'flex', justifyContent: 'flex-end' }} onClick={() => setShowHistory(false)}>
-            <div style={{ width: '100%', maxWidth: '420px', height: '100%', backgroundColor: cream, overflowY: 'auto' as const, padding: '2rem' }} onClick={e => e.stopPropagation()}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h3 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: '1.3rem', fontWeight: 700, color: ink }}>Cover Letter History</h3>
-                <button onClick={() => setShowHistory(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: muted }}>
-                  <X size={18} />
-                </button>
-              </div>
-
-              {historyLoading && <Loader2 size={18} className="animate-spin" style={{ color: muted }} />}
-
-              {!historyLoading && history.length === 0 && (
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: muted }}>No cover letters yet. Your past letters will appear here.</p>
               )}
 
-              <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0.75rem' }}>
-                {history.map(item => (
-                  <button key={item.id} onClick={() => loadFromHistory(item)} style={{ textAlign: 'left' as const, padding: '1rem', backgroundColor: '#fff', border: '0.5px solid ' + rule, cursor: 'pointer' }}>
-                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', fontWeight: 600, color: ink, marginBottom: '0.25rem' }}>{item.target_role} at {item.employer}</p>
-                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', color: muted }}>
-                      {new Date(item.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </p>
-                  </button>
-                ))}
-              </div>
+              <button type="button" onClick={handleReset} className="tool-restart">
+                Write another letter <ArrowRight size={14} aria-hidden />
+              </button>
+            </div>
+          </section>
+        )}
+      </ToolShell>
+
+      {showHistory && (
+        <div className="tool-drawer-scrim" onClick={() => setShowHistory(false)}>
+          <div className="tool-drawer" role="dialog" aria-label="Cover letter history" onClick={e => e.stopPropagation()}>
+            <div className="tool-drawer-head">
+              <h3 className="display-black tool-drawer-title">Letter history</h3>
+              <button type="button" onClick={() => setShowHistory(false)} className="tool-drawer-close" aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+
+            {historyLoading && <Loader2 size={18} className="animate-spin" />}
+
+            {!historyLoading && history.length === 0 && (
+              <p className="grotesk-regular tool-drawer-empty">
+                No letters yet. Every draft you generate will be listed here.
+              </p>
+            )}
+
+            <div className="tool-drawer-list">
+              {history.map(item => (
+                <button key={item.id} onClick={() => loadFromHistory(item)} className="tool-drawer-item">
+                  <p className="grotesk-bold tool-drawer-item-title">{item.target_role} at {item.employer}</p>
+                  <p className="grotesk-regular tool-drawer-item-meta">
+                    {new Date(item.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </p>
+                </button>
+              ))}
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; }`}</style>
-      </main>
-      <Footer />
-    </div>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; }`}</style>
+    </>
   )
 }

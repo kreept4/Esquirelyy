@@ -99,7 +99,7 @@ export default function Footer() {
         .site-footer {
           background-color: var(--cream);
           background-image: var(--contour);
-          padding: 4rem 2.5rem 5rem;
+          padding: 2.25rem 2.5rem 2.75rem;
         }
 
         /* Square, heavy-ruled, flat. Each of those is load-bearing: round the
@@ -108,22 +108,22 @@ export default function Footer() {
           max-width: min(2200px, 92vw);
           margin: 0 auto;
           background: ${AMBER};
-          border: 3px solid ${INK};
+          border: 2px solid ${INK};
           border-radius: 0;
-          box-shadow: 7px 8px 0 ${INK};
-          padding: 2.75rem 2.5rem 2.5rem;
+          box-shadow: 5px 5px 0 ${INK};
+          padding: 1.75rem 1.75rem 1.5rem;
         }
 
         /* The wordmark is the panel. Uppercase, tight, sized to run most of the
            width rather than to sit in a corner. */
         .footer-wordmark {
           display: block;
-          font-size: clamp(2.6rem, 14.5vw, 13rem);
-          line-height: 0.86;
+          font-size: clamp(1.6rem, 7vw, 6rem);
+          line-height: 0.9;
           letter-spacing: -0.045em;
           color: ${INK};
           text-decoration: none;
-          margin-bottom: 3rem;
+          margin-bottom: 1.75rem;
         }
 
         .footer-body {
@@ -137,7 +137,7 @@ export default function Footer() {
         .footer-cols {
           display: grid;
           grid-template-columns: repeat(3, minmax(7.5rem, 10.5rem));
-          gap: 2.25rem;
+          gap: 1.75rem;
         }
         .footer-cols ul {
           list-style: none;
@@ -147,7 +147,7 @@ export default function Footer() {
           flex-direction: column;
           /* Wide leading. In the reference the space between the links does as
              much work as their weight. */
-          gap: 1rem;
+          gap: 0.6rem;
         }
 
         .footer-link {
@@ -205,9 +205,9 @@ export default function Footer() {
         }
 
         @media (max-width: 860px) {
-          .site-footer { padding: 2.5rem 1.1rem 3rem; }
-          .footer-panel { padding: 1.75rem 1.4rem 1.6rem; border-width: 2.5px; box-shadow: 5px 6px 0 ${INK}; }
-          .footer-wordmark { margin-bottom: 2rem; }
+          .site-footer { padding: 1.75rem 1.1rem 2rem; }
+          .footer-panel { padding: 1.35rem 1.15rem 1.2rem; border-width: 2px; box-shadow: 4px 4px 0 ${INK}; }
+          .footer-wordmark { margin-bottom: 1.25rem; }
           /* Stacked, with the meta block holding the right edge so the button
              and the legal lines stay in the corner as in the reference. */
           .footer-body { flex-direction: column; align-items: stretch; gap: 2rem; }

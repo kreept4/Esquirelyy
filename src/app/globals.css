@@ -1275,6 +1275,32 @@ select.filter-pill {
   position: relative;
   z-index: 1;
 }
+
+/* Softened. Pinning alone meant the footer arrived as a hard edge sliding over
+   a statement still at full strength, which reads as one block covering
+   another. The statement now recedes as it is covered: it eases back and dims
+   while the footer comes up, so the two movements are one gesture.
+
+   Driven by the scroll position of the block itself rather than by a listener,
+   so it costs nothing and stays in step with the scroll exactly. Browsers
+   without scroll-driven animations keep the plain pin, which is a perfectly
+   good fallback rather than a broken one. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .closing-glide > * {
+      animation: closingRecede linear both;
+      animation-timeline: view();
+      /* Runs over the last stretch of the block's pass through the viewport,
+         which is exactly when the footer is climbing over it. */
+      animation-range: exit -20% exit 90%;
+    }
+  }
+}
+@keyframes closingRecede {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0.35; transform: scale(0.965); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .closing-glide { position: static; }
 }
@@ -1556,17 +1582,17 @@ select.filter-pill {
 .doc-signoff {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(1rem, 1.7vw, 1.2rem);
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
   letter-spacing: -0.015em;
   color: var(--on-amber);
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 }
 
 /* One line where the terms strip used to be. A two-item strip with a heading
    over each was more scaffolding than the fact deserved. */
 .about-est {
-  margin-top: 2rem;
-  padding-top: 1.4rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
   border-top: 2px solid rgba(36, 31, 22, 0.24);
   font-size: 0.82rem;
   letter-spacing: 0.14em;
@@ -1624,9 +1650,7 @@ select.filter-pill {
 }
 /* Cherry, with the type flipped to the warm off-white the site already uses on
    dark grounds. Ink on cherry is unreadable. */
-.about-team .about-card { background: #38BDF8; }
-.about-team .about-card-name { color: #08202B; }
-.about-team .about-card-role { color: rgba(8, 32, 43, 0.72); }
+.about-team .about-card-role { color: rgba(36, 31, 22, 0.6); }
 
 .about-card-name {
   font-size: clamp(0.95rem, 1.7vw, 1.1rem);
@@ -1644,9 +1668,9 @@ select.filter-pill {
 /* Cherry. The ambassadors are not staff and the colour is the quickest way to
    say so without a caption. Type flips to the warm off-white the site already
    uses on dark grounds — ink on cherry is unreadable. */
-.about-card-amb { background: #8B5CF6; }
-.about-card-amb .about-card-name { color: #FBF8FF; }
-.about-card-amb .about-card-role { color: rgba(251, 248, 255, 0.78); }
+/* The ambassadors take the same carton as the team. They are one list of
+   people, not two colour-coded categories. */
+.about-card-amb .about-card-role { color: rgba(36, 31, 22, 0.6); }
 
 .about-card-link { text-decoration: none; transition: transform 0.14s ease, box-shadow 0.14s ease; }
 .about-card-link:hover { transform: translate(-2px, -2px); box-shadow: 8px 9px 0 #241F16; }
@@ -1665,8 +1689,8 @@ select.filter-pill {
 }
 .about-li-mark { width: 1rem; height: 1rem; flex-shrink: 0; }
 .about-li-label { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; }
-.about-team .about-li { color: #08202B; }
-.about-card-amb .about-li { color: #FBF8FF; }
+.about-team .about-li { color: #241F16; }
+.about-card-amb .about-li { color: #241F16; }
 
 /* Short note under the team. */
 .about-note {
@@ -2293,6 +2317,137 @@ select.filter-pill {
 }
 .tool-restart svg { transition: transform 0.2s ease; }
 .tool-restart:hover svg { transform: translateX(3px); }
+
+/* Cover letter output. */
+.tool-subject {
+  font-size: 1rem;
+  color: var(--ink);
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--cream-border);
+}
+.tool-letter-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.25rem 0 1.1rem;
+}
+.tool-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.74rem;
+  color: var(--ink);
+  background: #FFF8E5;
+  border: 1.5px solid rgba(36, 31, 22, 0.3);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.tool-copy:hover { border-color: var(--ink); }
+
+/* The letter itself sits on carton, so it reads as a document rather than as
+   more page copy. */
+.tool-letter {
+  background: #FFF8E5;
+  border: 2px solid #241F16;
+  box-shadow: 5px 6px 0 #241F16;
+  padding: 1.9rem 1.75rem;
+  margin-bottom: 2.5rem;
+}
+.tool-letter p {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--ink);
+  margin-bottom: 1.1rem;
+  max-width: 70ch;
+}
+.tool-letter p:last-child { margin-bottom: 0; }
+
+.tool-tips { border-top: 2px solid var(--cream-border); padding-top: 2rem; margin-bottom: 2.25rem; }
+.tool-tip-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.9rem; }
+.tool-tip-list li { display: flex; gap: 0.9rem; align-items: baseline; }
+.tool-tip-num { font-size: 1rem; color: var(--ink); opacity: 0.32; flex-shrink: 0; }
+.tool-tip-list p { font-size: 0.88rem; line-height: 1.7; color: var(--ink); }
+
+@media (max-width: 640px) {
+  .tool-letter { padding: 1.35rem 1.15rem; box-shadow: 4px 5px 0 #241F16; }
+}
+
+/* Interview prep. */
+.tool-tabs {
+  display: flex;
+  gap: 1.5rem;
+  border-bottom: 2px solid rgba(36, 31, 22, 0.18);
+  margin-bottom: 1.6rem;
+}
+.tool-tab {
+  padding: 0.55rem 0;
+  margin-bottom: -2px;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.tool-tab[data-active='true'] { color: var(--ink); border-bottom-color: var(--mint-deep); }
+
+.tool-personas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 0.6rem;
+}
+.tool-persona {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.75rem 0.9rem;
+  text-align: left;
+  background: transparent;
+  border: 1.5px solid rgba(36, 31, 22, 0.25);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.tool-persona[data-active='true'] {
+  background: var(--mint);
+  border-color: #241F16;
+  box-shadow: 3px 3px 0 #241F16;
+}
+.tool-persona-name { font-size: 0.82rem; color: var(--ink); }
+.tool-persona-desc { font-size: 0.72rem; color: var(--ink-muted); }
+.tool-persona[data-active='true'] .tool-persona-name { color: #FFFFFF; }
+.tool-persona[data-active='true'] .tool-persona-desc { color: rgba(255, 255, 255, 0.85); }
+
+.tool-questions { list-style: none; margin: 0 0 2rem; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.tool-question {
+  background: #FFF8E5;
+  border: 1.5px solid rgba(36, 31, 22, 0.25);
+  transition: box-shadow 0.15s ease;
+}
+.tool-question[data-open='true'] { border-color: #241F16; box-shadow: 4px 4px 0 #241F16; }
+.tool-question-btn {
+  width: 100%;
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 0.95rem 1.1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+.tool-question-num { font-size: 0.9rem; color: var(--ink); opacity: 0.35; flex-shrink: 0; padding-top: 1px; }
+.tool-question-main { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.tool-question-text { font-size: 0.92rem; line-height: 1.6; color: var(--ink); }
+.tool-question-cat { font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.tool-question-body {
+  padding: 0 1.1rem 1rem 3rem;
+  border-top: 1.5px solid rgba(36, 31, 22, 0.12);
+  padding-top: 0.9rem;
+}
+.tool-question-body p:last-child { font-size: 0.85rem; line-height: 1.7; color: var(--ink-muted); }
 
 /* ---- history drawer ---- */
 .tool-drawer-scrim {

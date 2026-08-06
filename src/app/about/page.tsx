@@ -114,9 +114,6 @@ export default function AboutPage() {
               scholarship worth knowing about, and tools that already know what LL.B, B.L and call
               to the Bar mean.
             </p>
-            <p className="grotesk-regular doc-lede">
-              Built by Nigerian lawyers who got tired of hearing about the good roles a week late.
-            </p>
             <p className="grotesk-bold doc-signoff">Stick with us, we are just getting started.</p>
 
             <p className="grotesk-bold about-est">EST. 2026</p>
