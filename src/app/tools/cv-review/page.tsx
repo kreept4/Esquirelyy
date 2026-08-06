@@ -1,9 +1,10 @@
 'use client'
-import { useState, useEffect } from 'react'
-import Footer from '@/components/layout/Footer'
-import { Upload, FileText, Loader2, ArrowRight, AlertCircle, Clock, X } from 'lucide-react'
+import { useState } from 'react'
+import { Upload, FileText, Loader2, ArrowRight, AlertCircle, X } from 'lucide-react'
 import { useRequireAuth } from '../useRequireAuth'
 import { createClient } from '@/lib/supabase/client'
+import ToolShell from '../ToolShell'
+import BrandLoader from '@/components/ui/BrandLoader'
 
 type ReviewResult = {
   greeting: string
@@ -33,7 +34,7 @@ type HistoryItem = {
 const SCORE_LABELS: Record<string, string> = {
   structure: 'Structure',
   impact: 'Impact',
-  marketFit: 'Market Fit',
+  marketFit: 'Market fit',
   atsCompatibility: 'ATS',
 }
 
@@ -45,14 +46,6 @@ const CAREER_STAGES = [
   { value: 'mid', label: 'Mid-level (3-6 yrs PQE)' },
   { value: 'senior', label: 'Senior (6+ yrs PQE)' },
 ]
-
-const accent = '#1A1A1A'
-const ink = '#1A1A1A'
-const muted = '#8C8275'
-const sage = '#5B7560'
-const cream = '#FAF6F0'
-const rule = '#E8E0D5'
-const mint = '#14B8A6'
 
 export default function CVReviewPage() {
   const { checking, userId } = useRequireAuth()
@@ -152,7 +145,7 @@ export default function CVReviewPage() {
           result: data,
         })
       }
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Please check your connection and try again.')
     } finally {
       setLoading(false)
@@ -170,89 +163,84 @@ export default function CVReviewPage() {
 
   if (checking) {
     return (
-      <div>
-        <main style={{ backgroundColor: cream, paddingTop: '80px', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Loader2 size={20} className="animate-spin" style={{ color: muted }} />
-        </main>
-      </div>
+      <main className="page-main doc-page">
+        <div className="tool-centre">
+          <BrandLoader />
+        </div>
+      </main>
     )
   }
 
   return (
-    <div>
-      <main style={{ backgroundColor: cream, paddingTop: '80px', minHeight: '100vh' }}>
-
+    <>
+      <ToolShell
+        title="CV review."
+        lede="Upload your CV and get specific, unsentimental feedback written against what Nigerian firms actually screen for."
+        onHistory={openHistory}
+      >
         {!result && (
-          <>
-            <div style={{ padding: '5rem 2rem 3rem' }}>
-              <div style={{ maxWidth: '640px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                  <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' as const, color: accent, opacity: 0.75 }}>
-                    AI Career Tools
-                  </p>
-                  <button onClick={openHistory} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600, color: muted, background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.04em' }}>
-                    <Clock size={13} /> History
-                  </button>
-                </div>
-                <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(2rem, 5vw, 3.2rem)', fontWeight: 700, color: ink, marginBottom: '1rem', lineHeight: 1.1 }}>
-                  CV Review
-                </h1>
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1rem', color: muted, lineHeight: 1.7, maxWidth: '480px' }}>
-                  Upload your CV. We will give you honest, specific feedback tailored to the Nigerian legal market.
-                </p>
-              </div>
+          <section className="doc-section">
+            <div className="doc-section-label">
+              <p className="grotesk-bold doc-section-title">Your CV</p>
+              <p className="grotesk-regular doc-section-note">
+                The file is read, analysed and discarded. Only the review is saved.
+              </p>
             </div>
 
-            <div style={{ maxWidth: '640px', margin: '0 auto', padding: '0 2rem 6rem' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '2rem' }}>
+            {loading ? (
+              <div className="tool-card">
+                <BrandLoader
+                  label="Reading your CV"
+                  note="This takes up to a minute. The file is parsed, assessed against what an applicant tracking system looks for, then read line by line."
+                />
+              </div>
+            ) : (
+            <div className="tool-card">
+              <div className="tool-grid">
                 <div>
-                  <label style={{ display: 'block', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
-                    Your first name <span style={{ color: accent }}>*</span>
-                  </label>
+                  <label htmlFor="cv-first-name" className="tool-label">First name</label>
                   <input
+                    id="cv-first-name"
                     type="text"
+                    className="tool-input grotesk-regular"
                     value={firstName}
                     onChange={e => setFirstName(e.target.value)}
-                    placeholder="e.g. Boluwatife"
-                    style={{ width: '100%', padding: '0.6rem 0', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.92rem', color: ink, backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid ' + rule, outline: 'none', boxSizing: 'border-box' as const }}
+                    placeholder="e.g. Damian"
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
-                    Target role <span style={{ fontWeight: 400, textTransform: 'none' as const, letterSpacing: 0, fontSize: '0.7rem' }}>(optional)</span>
+                  <label htmlFor="cv-target-role" className="tool-label">
+                    Target role <span className="tool-label-hint">(optional)</span>
                   </label>
                   <input
+                    id="cv-target-role"
                     type="text"
+                    className="tool-input grotesk-regular"
                     value={targetRole}
                     onChange={e => setTargetRole(e.target.value)}
                     placeholder="e.g. Litigation Associate"
-                    style={{ width: '100%', padding: '0.6rem 0', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.92rem', color: ink, backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid ' + rule, outline: 'none', boxSizing: 'border-box' as const }}
                   />
                 </div>
               </div>
 
-              <div style={{ marginBottom: '2rem' }}>
-                <label style={{ display: 'block', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.6rem' }}>
-                  Career stage
-                </label>
-                <select value={careerStage} onChange={e => setCareerStage(e.target.value)} style={{ width: '100%', padding: '0.6rem 0', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.92rem', color: ink, backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid ' + rule, outline: 'none', cursor: 'pointer' }}>
+              <div className="tool-row">
+                <label htmlFor="cv-stage" className="tool-label">Career stage</label>
+                <select
+                  id="cv-stage"
+                  className="tool-select grotesk-regular"
+                  value={careerStage}
+                  onChange={e => setCareerStage(e.target.value)}
+                >
                   {CAREER_STAGES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
               </div>
 
               <div
+                className="tool-drop"
+                data-over={dragOver}
                 onDragOver={e => { e.preventDefault(); setDragOver(true) }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0] || null) }}
-                style={{
-                  border: dragOver ? '1.5px dashed ' + accent : '1px dashed ' + rule,
-                  borderRadius: '4px',
-                  padding: '2.5rem 1.5rem',
-                  textAlign: 'center' as const,
-                  marginBottom: '1.5rem',
-                  backgroundColor: dragOver ? '#F8F0EC' : 'transparent',
-                  transition: 'all 0.15s ease',
-                }}
               >
                 <input
                   id="cv-file-input"
@@ -263,201 +251,142 @@ export default function CVReviewPage() {
                 />
                 {file ? (
                   <div>
-                    <FileText size={24} style={{ color: accent, margin: '0 auto 0.75rem' }} />
-                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: ink, fontWeight: 600, marginBottom: '0.5rem' }}>{file.name}</p>
-                    <button
-                      onClick={() => setFile(null)}
-                      style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.76rem', color: muted, background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
-                    >
+                    <FileText size={22} className="tool-drop-icon" aria-hidden />
+                    <p className="grotesk-bold tool-drop-title">{file.name}</p>
+                    <button type="button" onClick={() => setFile(null)} className="tool-drop-swap">
                       Choose a different file
                     </button>
                   </div>
                 ) : (
                   <label htmlFor="cv-file-input" style={{ cursor: 'pointer', display: 'block' }}>
-                    <Upload size={24} style={{ color: '#A89A8A', margin: '0 auto 0.75rem' }} />
-                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: ink, fontWeight: 600, marginBottom: '0.25rem' }}>
-                      Drop your CV here or click to upload
-                    </p>
-                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.76rem', color: muted }}>
-                      PDF, DOCX, or TXT. Maximum 5MB.
-                    </p>
+                    <Upload size={22} className="tool-drop-icon" aria-hidden />
+                    <p className="grotesk-bold tool-drop-title">Drop your CV here, or click to upload</p>
+                    <p className="grotesk-regular tool-drop-note">PDF, DOCX or TXT. Maximum 5MB.</p>
                   </label>
                 )}
               </div>
 
               {error && (
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '0.5rem 0', marginBottom: '1.5rem' }}>
-                  <AlertCircle size={15} style={{ color: '#000000', flexShrink: 0, marginTop: '2px' }} />
-                  <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.82rem', color: '#000000' }}>{error}</p>
+                <div className="grotesk-regular tool-error" role="alert">
+                  <AlertCircle size={15} aria-hidden />
+                  <p>{error}</p>
                 </div>
               )}
 
-              <button
-                onClick={handleSubmit}
-                disabled={loading}
-                style={{
-                  padding: '0.9rem 2.5rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                  backgroundColor: loading ? muted : mint, color: '#FFFFFF',
-                  fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 700,
-                  letterSpacing: '0.06em', textTransform: 'uppercase' as const,
-                  border: 'none', borderRadius: '2px', cursor: loading ? 'not-allowed' : 'pointer',
-                }}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 size={15} className="animate-spin" style={{ marginRight: '4px' }} />
-                    Reading your CV...
-                  </>
-                ) : (
-                  <>
-                    Get My Review
-                    <ArrowRight size={15} />
-                  </>
-                )}
+              <button type="button" onClick={handleSubmit} disabled={loading} className="tool-submit">
+                Get my review <ArrowRight size={15} aria-hidden />
               </button>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginTop: '0.75rem' }}>
-                AI-generated and may contain minor inaccuracies or mix-ups. Please review and edit before relying on it.
+
+              <p className="grotesk-regular tool-note">
+                AI-generated, and it can get things slightly wrong. Read it against your own
+                judgment before acting on any of it.
               </p>
             </div>
-          </>
+            )}
+          </section>
         )}
 
         {result && (
-          <div style={{ maxWidth: '700px', margin: '0 auto', padding: '5rem 2rem 6rem' }}>
+          <section className="doc-section">
+            <div className="doc-section-label">
+              <p className="grotesk-bold doc-section-title">Your review</p>
+              <p className="grotesk-regular doc-section-note">
+                AI-generated. Treat it as a second opinion, not a verdict.
+              </p>
+            </div>
 
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 'clamp(1.5rem, 3.5vw, 2rem)', fontWeight: 500, color: ink, lineHeight: 1.45, marginBottom: '2.5rem' }}>
-              {result.greeting}
-            </p>
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', color: muted, lineHeight: 1.6, marginBottom: '2.5rem' }}>
-              This review is AI-generated and may contain minor inaccuracies or mix-ups. Review and adapt the feedback against your own judgment.
-            </p>
+            <div>
+              <p className="display-black tool-greeting">{result.greeting}</p>
+              <p className="grotesk-regular tool-impression">{result.overallImpression}</p>
 
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.95rem', color: ink, lineHeight: 1.85, maxWidth: '600px', marginBottom: '3rem' }}>
-              {result.overallImpression}
-            </p>
-
-            <div style={{ borderTop: '1px solid ' + rule, paddingTop: '2.5rem', marginBottom: '3.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'stretch' }}>
-                {Object.entries(result.scores).map(([key, value], i) => (
-                  <div
-                    key={key}
-                    style={{
-                      flex: 1,
-                      textAlign: 'center' as const,
-                      paddingLeft: i > 0 ? '1.5rem' : 0,
-                      paddingRight: i < Object.keys(result.scores).length - 1 ? '1.5rem' : 0,
-                      borderLeft: i > 0 ? '1px solid ' + rule : 'none',
-                    }}
-                  >
-                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 'clamp(2.2rem, 5vw, 3.2rem)', fontWeight: 700, color: accent, lineHeight: 1, marginBottom: '0.5rem' }}>
-                      {value}
-                    </p>
-                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' as const, color: muted }}>
-                      {SCORE_LABELS[key] || key}
-                    </p>
+              <div className="tool-scores">
+                {Object.entries(result.scores).map(([key, value]) => (
+                  <div key={key} className="tool-score">
+                    <p className="tool-score-value">{value}</p>
+                    <p className="grotesk-bold tool-score-label">{SCORE_LABELS[key] || key}</p>
                   </div>
                 ))}
               </div>
-            </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', marginBottom: '3.5rem' }}>
-              <div>
-                <h2 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: sage, marginBottom: '1.25rem' }}>
-                  What's Working
-                </h2>
-                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1rem' }}>
-                  {result.strengths.map((s, i) => (
-                    <p key={i} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.86rem', color: ink, lineHeight: 1.65, paddingLeft: '0.9rem' }}>
-                      {s}
-                    </p>
-                  ))}
+              <div className="tool-columns">
+                <div>
+                  <h2 className="grotesk-bold tool-col-heading">What is working</h2>
+                  <div className="tool-list">
+                    {result.strengths.map((s, i) => (
+                      <p key={i} className="grotesk-regular">{s}</p>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h2 className="grotesk-bold tool-col-heading">Where to improve</h2>
+                  <div className="tool-list">
+                    {result.weaknesses.map((w, i) => (
+                      <p key={i} className="grotesk-regular">{w}</p>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <h2 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: accent, marginBottom: '1.25rem' }}>
-                  Where to Improve
-                </h2>
-                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1rem' }}>
-                  {result.weaknesses.map((w, i) => (
-                    <p key={i} style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.86rem', color: ink, lineHeight: 1.65, paddingLeft: '0.9rem' }}>
-                      {w}
-                    </p>
-                  ))}
+              {result.rewrites && result.rewrites.length > 0 && (
+                <div style={{ marginBottom: '3rem' }}>
+                  <h2 className="grotesk-bold tool-section-heading">Suggested rewrites</h2>
+                  <div className="tool-rewrites">
+                    {result.rewrites.map((r, i) => (
+                      <div key={i} className="tool-rewrite">
+                        <p className="grotesk-bold tool-rewrite-tag">Before</p>
+                        <p className="grotesk-regular tool-rewrite-before">{r.original}</p>
+                        <p className="grotesk-bold tool-rewrite-tag">After</p>
+                        <p className="grotesk-bold tool-rewrite-after">{r.improved}</p>
+                        <p className="grotesk-regular tool-rewrite-why">{r.why}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            {result.rewrites && result.rewrites.length > 0 && (
-              <div style={{ marginBottom: '3.5rem' }}>
-                <h2 style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' as const, color: muted, marginBottom: '2rem' }}>
-                  Suggested Rewrites
-                </h2>
-                <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '2.5rem' }}>
-                  {result.rewrites.map((r, i) => (
-                    <div key={i} style={{ borderTop: i > 0 ? '1px solid ' + rule : 'none', paddingTop: i > 0 ? '2.5rem' : 0 }}>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: muted, marginBottom: '0.5rem' }}>Before</p>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: muted, lineHeight: 1.7, fontStyle: 'italic', marginBottom: '1.25rem' }}>{r.original}</p>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: accent, marginBottom: '0.5rem' }}>After</p>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: ink, lineHeight: 1.7, fontWeight: 500, marginBottom: '1rem' }}>{r.improved}</p>
-                      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.8rem', color: muted, lineHeight: 1.65 }}>{r.why}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: 'clamp(1.3rem, 3vw, 1.7rem)', fontWeight: 500, color: ink, lineHeight: 1.55, fontStyle: 'italic', borderTop: '1px solid ' + rule, paddingTop: '2.5rem', marginBottom: '2.5rem' }}>
-              {result.closingNote}
-            </p>
-
-            <button
-              onClick={handleReset}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '8px',
-                fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 600,
-                letterSpacing: '0.06em', textTransform: 'uppercase' as const, color: ink,
-                background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              }}
-            >
-              Review Another CV
-              <ArrowRight size={14} />
-            </button>
-          </div>
-        )}
-
-        {showHistory && (
-          <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(26,26,26,0.4)', zIndex: 200, display: 'flex', justifyContent: 'flex-end' }} onClick={() => setShowHistory(false)}>
-            <div style={{ width: '100%', maxWidth: '420px', height: '100%', backgroundColor: cream, overflowY: 'auto' as const, padding: '2rem' }} onClick={e => e.stopPropagation()}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h3 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: '1.3rem', fontWeight: 700, color: ink }}>Review History</h3>
-                <button onClick={() => setShowHistory(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: muted }}>
-                  <X size={18} />
-                </button>
-              </div>
-
-              {historyLoading && <Loader2 size={18} className="animate-spin" style={{ color: muted }} />}
-
-              {!historyLoading && history.length === 0 && (
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: muted }}>No reviews yet. Your past CV reviews will appear here.</p>
               )}
 
-              <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0.75rem' }}>
-                {history.map(item => (
-                  <button key={item.id} onClick={() => loadFromHistory(item)} style={{ textAlign: 'left' as const, padding: '1rem', backgroundColor: '#fff', border: '0.5px solid ' + rule, cursor: 'pointer' }}>
-                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', fontWeight: 600, color: ink, marginBottom: '0.25rem' }}>{item.file_name || 'CV Review'}</p>
-                    <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', color: muted }}>
-                      {item.target_role || 'No target role'} · {new Date(item.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </p>
-                  </button>
-                ))}
-              </div>
+              <p className="display-black tool-closing">{result.closingNote}</p>
+
+              <button type="button" onClick={handleReset} className="tool-restart">
+                Review another CV <ArrowRight size={14} aria-hidden />
+              </button>
+            </div>
+          </section>
+        )}
+      </ToolShell>
+
+      {showHistory && (
+        <div className="tool-drawer-scrim" onClick={() => setShowHistory(false)}>
+          <div className="tool-drawer" role="dialog" aria-label="Review history" onClick={e => e.stopPropagation()}>
+            <div className="tool-drawer-head">
+              <h3 className="display-black tool-drawer-title">Review history</h3>
+              <button type="button" onClick={() => setShowHistory(false)} className="tool-drawer-close" aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+
+            {historyLoading && <Loader2 size={18} className="animate-spin" />}
+
+            {!historyLoading && history.length === 0 && (
+              <p className="grotesk-regular tool-drawer-empty">
+                No reviews yet. Every CV you run through this will be listed here.
+              </p>
+            )}
+
+            <div className="tool-drawer-list">
+              {history.map(item => (
+                <button key={item.id} onClick={() => loadFromHistory(item)} className="tool-drawer-item">
+                  <p className="grotesk-bold tool-drawer-item-title">{item.file_name || 'CV review'}</p>
+                  <p className="grotesk-regular tool-drawer-item-meta">
+                    {item.target_role || 'No target role'} · {new Date(item.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </p>
+                </button>
+              ))}
             </div>
           </div>
-        )}
-      </main>
-      <Footer />
+        </div>
+      )}
+
       <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; }`}</style>
-    </div>
+    </>
   )
 }

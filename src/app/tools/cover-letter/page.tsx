@@ -206,7 +206,7 @@ export default function CoverLetterPage() {
                   type="text"
                   value={form.firstName}
                   onChange={e => set('firstName', e.target.value)}
-                  placeholder="e.g. Boluwatife"
+                  placeholder="e.g. Damian"
                   style={{
                     width: '100%', padding: '0.85rem 0',
                     fontFamily: 'Schibsted Grotesk, sans-serif',

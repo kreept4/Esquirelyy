@@ -1979,6 +1979,384 @@ select.filter-pill {
   .notif-modal { padding: 1.75rem 1.25rem 1.5rem; box-shadow: 5px 6px 0 #241F16; }
 }
 
+/* BRAND LOADER
+   The wordmark pulsing under its own glow, used wherever the wait is long
+   enough to need explaining. The glow is a text-shadow in the mint rather than
+   a filter, so it costs nothing to animate and does not blur the glyphs.
+   ------------------------------------------------------------------------- */
+.brand-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+.brand-loader-mark {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  animation: brandPulse 1.9s ease-in-out infinite;
+}
+.brand-loader-label {
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+.brand-loader-note {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  max-width: 40ch;
+}
+
+@keyframes brandPulse {
+  0%, 100% {
+    opacity: 0.55;
+    text-shadow: 0 0 0 rgba(20, 184, 166, 0);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 18px rgba(20, 184, 166, 0.55), 0 0 42px rgba(20, 184, 166, 0.25);
+  }
+}
+
+/* The pulse is the whole effect, so under reduced motion it holds at full
+   strength rather than stopping on a half-faded frame. */
+@media (prefers-reduced-motion: reduce) {
+  .brand-loader-mark { animation: none; opacity: 1; }
+}
+
+/* TOOLS
+   One vocabulary for CV review, cover letter and interview prep. All three were
+   standalone pages carrying their own colour constants, so the same label
+   appeared in three different greys and none of them used the amber masthead,
+   the carton card or the mint accent the rest of the site settled on.
+
+   The form sits in a .doc-section, so it gets the sticky label column every
+   other long-form page on the site uses: the reader always knows which part of
+   the flow they are in without a heading repeating above the fold.
+   ------------------------------------------------------------------------- */
+.tool-masthead-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.tool-history-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.76rem;
+  color: var(--on-amber);
+  background: #FFF8E5;
+  border: 2px solid var(--on-amber);
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 var(--on-amber);
+  cursor: pointer;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+.tool-history-btn:hover { transform: translate(1.5px, 1.5px); box-shadow: 1.5px 1.5px 0 var(--on-amber); }
+
+.tool-body { padding: 0 2rem 5rem; }
+
+/* The form sits on carton, like every other panel that asks for something. */
+.tool-card {
+  background: #FFF8E5;
+  border: 2.5px solid #241F16;
+  box-shadow: 6px 7px 0 #241F16;
+  padding: 1.9rem 1.65rem;
+}
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 1.4rem 1.75rem;
+  margin-bottom: 1.4rem;
+}
+.tool-row { margin-bottom: 1.4rem; }
+
+.tool-label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1A1A1A;
+  margin-bottom: 0.5rem;
+}
+.tool-label-hint {
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-muted);
+}
+
+/* Ruled fields rather than boxed ones: inside a bordered carton card, a second
+   bordered box reads as a container nested in a container. */
+.tool-input,
+.tool-select,
+.tool-textarea {
+  width: 100%;
+  padding: 0.55rem 0;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid rgba(36, 31, 22, 0.3);
+  outline: none;
+  box-sizing: border-box;
+}
+.tool-input::placeholder,
+.tool-textarea::placeholder { color: rgba(36, 31, 22, 0.42); }
+.tool-input:focus-visible,
+.tool-select:focus-visible,
+.tool-textarea:focus-visible { border-bottom-color: var(--mint-deep); }
+.tool-select { cursor: pointer; }
+.tool-textarea { resize: vertical; min-height: 6rem; line-height: 1.6; }
+
+/* Drop zone. */
+.tool-drop {
+  border: 2px dashed rgba(36, 31, 22, 0.35);
+  padding: 2.1rem 1.4rem;
+  text-align: center;
+  margin-bottom: 1.4rem;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.tool-drop[data-over='true'] { border-color: var(--mint-deep); background: rgba(20, 184, 166, 0.08); }
+.tool-drop-title { font-size: 0.9rem; color: var(--ink); margin-bottom: 0.3rem; }
+.tool-drop-note { font-size: 0.78rem; color: var(--ink-muted); }
+.tool-drop-icon { color: rgba(36, 31, 22, 0.45); margin: 0 auto 0.7rem; display: block; }
+.tool-drop-swap {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--mint-deep);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.tool-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: #B3261E;
+}
+.tool-error svg { flex-shrink: 0; margin-top: 2px; }
+
+/* The one action, in the accent, with the stamped treatment. */
+.tool-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.9rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  background: var(--mint);
+  border: 2px solid #241F16;
+  border-radius: 2px;
+  box-shadow: 5px 5px 0 #241F16;
+  cursor: pointer;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, background-color 0.14s ease;
+}
+.tool-submit:hover:not(:disabled) { transform: translate(2px, 2px); box-shadow: 3px 3px 0 #241F16; }
+.tool-submit:disabled { background: var(--ink-muted); cursor: not-allowed; }
+
+.tool-note {
+  margin-top: 0.9rem;
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  max-width: 52ch;
+}
+
+/* ---- results ---- */
+.tool-greeting {
+  font-size: clamp(1.4rem, 3.2vw, 1.95rem);
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin-bottom: 1rem;
+}
+.tool-impression {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--ink);
+  max-width: 68ch;
+  margin-bottom: 2.5rem;
+}
+
+.tool-scores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(50%, 7rem), 1fr));
+  gap: 1px;
+  background: var(--cream-border);
+  border: 1px solid var(--cream-border);
+  margin-bottom: 3rem;
+}
+.tool-score { background: var(--cream); padding: 1.2rem 0.7rem; text-align: center; }
+.tool-score-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 0.35rem;
+}
+.tool-score-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1A1A1A;
+}
+
+.tool-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 2.5rem;
+  margin-bottom: 3rem;
+}
+.tool-col-heading {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1A1A1A;
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.1rem;
+  border-bottom: 2px solid var(--cream-border);
+}
+.tool-list { display: flex; flex-direction: column; gap: 0.9rem; }
+.tool-list p { font-size: 0.88rem; line-height: 1.7; color: var(--ink); }
+
+.tool-section-heading {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1A1A1A;
+  margin-bottom: 1.4rem;
+}
+.tool-rewrites { display: flex; flex-direction: column; gap: 2rem; }
+.tool-rewrite { padding-top: 2rem; border-top: 1px solid var(--cream-border); }
+.tool-rewrites > .tool-rewrite:first-child { padding-top: 0; border-top: none; }
+.tool-rewrite-tag {
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1A1A1A;
+  margin-bottom: 0.4rem;
+}
+.tool-rewrite-before { font-size: 0.88rem; line-height: 1.7; color: var(--ink-muted); font-style: italic; margin-bottom: 1.1rem; }
+.tool-rewrite-after { font-size: 0.9rem; line-height: 1.7; color: var(--ink); margin-bottom: 0.8rem; }
+.tool-rewrite-why { font-size: 0.82rem; line-height: 1.7; color: var(--ink-muted); }
+
+.tool-closing {
+  font-size: clamp(1.15rem, 2.6vw, 1.5rem);
+  line-height: 1.6;
+  color: var(--ink);
+  border-top: 2px solid var(--cream-border);
+  padding-top: 2.2rem;
+  margin-bottom: 2rem;
+}
+.tool-restart {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--mint-deep);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.tool-restart svg { transition: transform 0.2s ease; }
+.tool-restart:hover svg { transform: translateX(3px); }
+
+/* ---- history drawer ---- */
+.tool-drawer-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(36, 31, 22, 0.45);
+  display: flex;
+  justify-content: flex-end;
+}
+.tool-drawer {
+  width: min(26rem, 100%);
+  height: 100%;
+  overflow-y: auto;
+  background: var(--cream);
+  border-left: 3px solid #241F16;
+  padding: 1.75rem 1.5rem;
+}
+.tool-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.4rem;
+}
+.tool-drawer-title { font-size: 1.2rem; letter-spacing: -0.025em; color: var(--ink); }
+.tool-drawer-close { background: none; border: none; cursor: pointer; color: var(--ink-muted); }
+.tool-drawer-empty { font-size: 0.86rem; line-height: 1.65; color: var(--ink-muted); }
+.tool-drawer-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.tool-drawer-item {
+  text-align: left;
+  padding: 0.9rem 1rem;
+  background: #FFF8E5;
+  border: 1.5px solid rgba(36, 31, 22, 0.25);
+  cursor: pointer;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+.tool-drawer-item:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 #241F16; }
+.tool-drawer-item-title { font-size: 0.86rem; color: var(--ink); margin-bottom: 0.2rem; }
+.tool-drawer-item-meta { font-size: 0.76rem; color: var(--ink-muted); }
+
+.tool-centre {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 640px) {
+  .tool-body { padding: 0 1.25rem 3.5rem; }
+  .tool-card { padding: 1.35rem 1.1rem; box-shadow: 4px 5px 0 #241F16; }
+  .tool-masthead-row { flex-direction: column; gap: 0.75rem; }
+  .tool-history-btn { margin-top: 0; align-self: flex-start; }
+  .tool-columns { gap: 1.75rem; }
+  .tool-drawer { padding: 1.35rem 1.1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tool-submit, .tool-history-btn, .tool-drawer-item, .tool-restart svg { transition: none; }
+  .tool-submit:hover:not(:disabled),
+  .tool-history-btn:hover,
+  .tool-drawer-item:hover { transform: none; }
+}
+
 /* FORWARD LINK
    The counterpart to .back-link, for "go on to the full thing" links. Same
    grammar in reverse: the arrow travels in the direction it points while the

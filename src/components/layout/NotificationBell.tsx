@@ -199,17 +199,20 @@ export default function NotificationBell({
             </button>
 
             <p className="grotesk-bold notif-modal-kind">From the co-founders</p>
-            <p className="display-black notif-modal-title">You took the easy route. Good.</p>
+            <p className="display-black notif-modal-title">Welcome to Esquirely.</p>
 
             <div className="notif-modal-body">
               <p className="grotesk-regular">
-                Most Nigerian lawyers find their first role by knowing someone. That is a rubbish
-                system, and it is the entire reason this exists.
+                Careers in this profession are usually built on information that travels by word of
+                mouth. Who is hiring, what they really ask for, which deadline moved. We put all of
+                it in one place so that knowing the right people stops being the deciding factor.
               </p>
               <p className="grotesk-regular">
-                Everything is here, and everything gets checked before it goes up. If you spot
-                something wrong, tell us. We would much rather hear it from you than not know.
+                Everything here is checked against the source before it goes up. If you find
+                something out of date or simply wrong, tell us. That is genuinely the most useful
+                thing you can send us.
               </p>
+              <p className="grotesk-regular">Glad you are here. Take your time and look around.</p>
             </div>
 
             <p className="grotesk-bold notif-modal-sign">
