@@ -60,7 +60,6 @@ export default function PageHeader({
                 fontSize: '0.95rem',
                 color: muted,
                 lineHeight: 1.7,
-                maxWidth: '620px',
                 marginBottom: children ? '1.75rem' : 0,
               }}
             >

@@ -110,9 +110,20 @@ export default function AboutPage() {
           <div className="shell doc-masthead-inner">
             <h1 className="display-black doc-title">About us.</h1>
             <p className="grotesk-regular doc-lede">
-              Every legal opportunity in Nigeria, in one place. One board, forty-four firms, every
-              scholarship worth knowing about, and tools that already know what LL.B, B.L and call
-              to the Bar mean.
+              Esquirely is where Nigerian lawyers and law students find what is genuinely open to
+              them. Associate and trainee roles at the firms in our directory, graduate programmes
+              across West Africa, legal internships at institutions like the World Bank and the
+              ECOWAS Commission, and postgraduate scholarships in the UK, the Netherlands and
+              Canada. Nigerian by audience, not by border.
+            </p>
+            <p className="grotesk-regular doc-lede">
+              The hard part was never finding opportunities. It is working out which ones are real.
+              Most scholarships advertised as open to Africans fund subjects no lawyer can study.
+              Most boards still list roles that closed weeks ago. So we check every entry against
+              the organisation&rsquo;s own page, record the deadline they actually publish, and say
+              plainly when something is unpaid, restricted by nationality, or needs a letter from
+              your faculty before you are eligible. When a thing does not survive that check, it
+              does not go up.
             </p>
             <p className="grotesk-bold doc-signoff">Stick with us, we are just getting started.</p>
 

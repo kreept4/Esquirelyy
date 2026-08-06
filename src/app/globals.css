@@ -611,7 +611,6 @@ select.filter-pill {
   font-size: 0.95rem;
   line-height: 1.7;
   color: rgba(36, 31, 22, 0.72);
-  max-width: 46ch;
   margin-top: 1rem;
 }
 
@@ -1590,6 +1589,28 @@ select.filter-pill {
 
 /* One line where the terms strip used to be. A two-item strip with a heading
    over each was more scaffolding than the fact deserved. */
+.amb-lede,
+.doc-lede,
+.jobs-sub,
+.page-header-panel p {
+  max-width: none;
+  columns: 2;
+  column-gap: 3.5rem;
+}
+/* Keeps a paragraph from being split across the fold of the two columns. */
+.amb-lede,
+.doc-lede,
+.jobs-sub { break-inside: avoid; }
+.doc-lede + .doc-lede { margin-top: 1rem; }
+
+/* One column below the width where two would each be too narrow to read. */
+@media (max-width: 1080px) {
+  .amb-lede,
+  .doc-lede,
+  .jobs-sub,
+  .page-header-panel p { columns: 1; }
+}
+
 .about-est {
   margin-top: 1.25rem;
   padding-top: 1rem;
@@ -2600,8 +2621,7 @@ select.filter-pill {
   font-size: clamp(0.95rem, 1.4vw, 1.08rem);
   line-height: 1.7;
   color: rgba(36, 31, 22, 0.75);
-  max-width: 54ch;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 /* Terms strip. The whole cost of the programme, readable in three seconds,
