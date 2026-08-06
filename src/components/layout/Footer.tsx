@@ -31,7 +31,7 @@ const FOOTER_LINKS: Record<string, { href: string; label: string }[]> = {
   Find: [
     { href: '/jobs', label: 'Jobs board' },
     { href: '/scholarships', label: 'Scholarships' },
-    { href: '/firms', label: 'Firm directory' },
+    { href: '/firms', label: 'Firms directory' },
   ],
   Tools: [
     { href: '/tools/cv-review', label: 'CV review' },

@@ -1,7 +1,7 @@
 /**
  * The "nothing matched" state, shared by every filterable surface.
  *
- * Jobs, scholarships and the firm directory each had their own version of this:
+ * Jobs, scholarships and the firms directory each had their own version of this:
  * two centred paragraphs, slightly different sizes, slightly different spacing,
  * and no illustration. An empty result is the one screen guaranteed to feel
  * like a dead end, so it is worth more than a line of grey text.

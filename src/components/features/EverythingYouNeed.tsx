@@ -163,7 +163,7 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
  * component shape on the web and read as placeholder UI wherever they appeared.
  * They also disagreed with the rest of the product: the design language is
  * round buttons and square cards, and the tag treatment everywhere else
- * (.tag-chip on the job board and the firm directory) is a 2px radius on a
+ * (.tag-chip on the job board and the firms directory) is a 2px radius on a
  * filled ground. Matching that makes the previews look like screenshots of the
  * real thing, which is the entire point of a preview.
  *

@@ -172,8 +172,8 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
         <div className="shell jobs-header-inner">
           <h1 className="display-black jobs-title">Jobs</h1>
           <p className="grotesk-regular jobs-sub">
-            Roles across law firms, banks, energy companies, fintechs and regulators, for every stage
-            from law school to partner.
+            Roles across law firms, banks, energy companies, fintechs and regulators, for every
+            stage from call to the Bar to partner.
           </p>
 
           <div className="jobs-controls">
@@ -208,6 +208,93 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
             )}
           </div>
 
+          {/* Entry-route explainer.
+              These three get conflated constantly, and the cost is real: people
+              filter for internships when they want a graduate trainee scheme,
+              or skip trainee associate roles thinking they are unpaid. Collapsed
+              by default because most visitors already know which one they are,
+              and open on demand for the ones who do not. */}
+          <details className="jobs-explainer">
+            <summary className="grotesk-regular">
+              <span>Trainee, graduate trainee or internship? What each one means</span>
+              <span className="jobs-explainer-marker" aria-hidden>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </span>
+            </summary>
+
+            <div className="jobs-explainer-body">
+              {/* Undergraduates only. Law School students are not looking for
+                  attachments; that year is short, examined throughout, and ends
+                  in call to the Bar, so they are already applying for trainee
+                  associate roles rather than internships. */}
+              <div className="jobs-route">
+                <p className="grotesk-bold">Internship</p>
+                <p className="grotesk-regular">
+                  For undergraduates still in the law faculty. You spend a few weeks in chambers
+                  over the long vacation, learning how a file actually moves, usually unpaid or on
+                  a small stipend. You will find very few listed here, and that is not a gap on this
+                  board: firms fill these places from letters students send them directly, so there
+                  is nothing to advertise.
+                </p>
+                <p className="grotesk-regular">
+                  Which makes the{' '}
+                  <Link href="/firms" className="jobs-route-link">firms directory</Link>{' '}
+                  the place to start. Every profile carries the practice areas, the offices and the
+                  address to write to, so you can pick the chambers whose work actually interests
+                  you instead of sending the same letter to forty firms.
+                </p>
+              </div>
+
+              <div className="jobs-route">
+                <p className="grotesk-bold">Trainee or NYSC associate</p>
+                <p className="grotesk-regular">
+                  For people already called to the Nigerian Bar, serving their NYSC year or just out
+                  of it. Firms put corps members on the same files as first-year associates, and
+                  many keep them on at the end of service. This is a salaried entry-level job, not
+                  an internship, and it sits here under <strong>Entry-level</strong>.
+                </p>
+                <p className="grotesk-regular">
+                  Start with{' '}
+                  <Link href="/jobs?level=junior&sector=law_firm" className="jobs-route-link">
+                    entry-level roles at firms
+                  </Link>
+                  , then read the chambers up in the{' '}
+                  <Link href="/firms" className="jobs-route-link">firms directory</Link>{' '}
+                  before you apply. Knowing a firm&rsquo;s practice areas is most of what separates
+                  a good cover letter from a generic one.
+                </p>
+              </div>
+
+              <div className="jobs-route">
+                <p className="grotesk-bold">Graduate trainee</p>
+                <p className="grotesk-regular">
+                  The in-house route. Banks, fintechs, energy companies, regulators and
+                  multinationals run structured intakes for recent graduates, often rotating you
+                  through departments before you land in legal, compliance or company secretarial.
+                  Salaried, with a fixed start and a hard closing date. Also{' '}
+                  <strong>Entry-level</strong>, not an internship.
+                </p>
+                <p className="grotesk-regular">
+                  These sit outside the law firms, so set the sector filter accordingly:{' '}
+                  <Link href="/jobs?level=junior&sector=banking" className="jobs-route-link">
+                    banking and finance
+                  </Link>
+                  ,{' '}
+                  <Link href="/jobs?level=junior&sector=fintech" className="jobs-route-link">
+                    technology and fintech
+                  </Link>
+                  , or{' '}
+                  <Link href="/jobs?level=junior&sector=energy" className="jobs-route-link">
+                    energy
+                  </Link>
+                  . Deadlines here are real, so apply before the closing date rather than on it.
+                </p>
+              </div>
+            </div>
+          </details>
+
           <p className="grotesk-regular jobs-count">
             {filtered.length} {filtered.length === 1 ? 'role' : 'roles'}
             {filtered.length !== jobs.length ? ` of ${jobs.length}` : ''} open
@@ -240,7 +327,7 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
                   </li>
                   <li>
                     Take the recruitment address from the{' '}
-                    <a href="/firms">firm directory</a>. Every profile carries one, along with the
+                    <a href="/firms">firms directory</a>. Every profile carries one, along with the
                     practice areas and offices.
                   </li>
                   <li>
@@ -254,7 +341,7 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
                 </ol>
               </div>
               <a className="grotesk-bold jobs-empty-cta" href="/firms">
-                Browse the firm directory
+                Browse the firms directory
               </a>
             </div>
           ) : (

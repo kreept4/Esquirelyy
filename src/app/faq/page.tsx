@@ -102,7 +102,7 @@ const GROUPS: Group[] = [
             Because Nigerian firms almost never advertise them. Placements and attachments here are
             arranged by writing to the firm directly, and a good speculative letter is how most
             students get in. Every profile in the{' '}
-            <Link href="/firms">firm directory</Link> carries an address for exactly that.
+            <Link href="/firms">firms directory</Link> carries an address for exactly that.
           </p>
         ),
       },

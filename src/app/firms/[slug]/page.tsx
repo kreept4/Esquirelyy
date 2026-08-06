@@ -77,7 +77,7 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
         <div style={{ borderBottom: '0.5px solid var(--cream-border)', padding: '0.875rem 2rem', backgroundColor: '#F2EBE1' }}>
           <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto' }}>
             <Link href="/firms" className="back-link">
-              <ArrowLeftIcon /> Firm directory
+              <ArrowLeftIcon /> Firms directory
             </Link>
           </div>
         </div>

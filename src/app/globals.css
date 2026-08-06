@@ -614,6 +614,97 @@ select.filter-pill {
 }
 .jobs-clear:hover { color: var(--cream); border-color: var(--cream); }
 
+/* ENTRY-ROUTE EXPLAINER
+   Sits in the ink header, so everything here is drawn against the dark ground
+   rather than inheriting the page's cream-surface styles. Collapsed it is one
+   line; open it is a three-column definition set that folds to one column on
+   narrow screens without a breakpoint deciding the count. */
+.jobs-explainer {
+  margin-top: 1.5rem;
+  border-top: 0.5px solid rgba(250, 247, 242, 0.16);
+  border-bottom: 0.5px solid rgba(250, 247, 242, 0.16);
+}
+
+.jobs-explainer summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.84rem;
+  color: rgba(250, 247, 242, 0.72);
+  transition: color 0.18s ease;
+}
+.jobs-explainer summary::-webkit-details-marker { display: none; }
+.jobs-explainer summary:hover { color: var(--cream); }
+.jobs-explainer summary:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Plus folds into a minus, matching the FAQ. */
+.jobs-explainer-marker {
+  flex-shrink: 0;
+  display: inline-flex;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.jobs-explainer[open] .jobs-explainer-marker { transform: rotate(135deg); }
+
+.jobs-explainer-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 1.75rem 2.5rem;
+  padding: 0.5rem 0 1.6rem;
+}
+.jobs-route p:first-child {
+  font-size: 0.85rem;
+  color: var(--cream);
+  margin-bottom: 0.45rem;
+}
+/* Every paragraph after the title, not just the last one.
+   The rule used to be :last-child, so a block with two body paragraphs left the
+   middle one unmatched and inheriting a brighter colour from the header. That
+   accident read better than the rule did, so it is now the rule: 0.78 rather
+   than 0.62, applied to all of them, so the blocks finally agree with each
+   other. */
+.jobs-route p:not(:first-child) {
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: rgba(250, 247, 242, 0.78);
+}
+.jobs-route strong {
+  color: var(--cream);
+  font-weight: 600;
+}
+.jobs-route p + p { margin-top: 0.7rem; }
+
+/* Links inside the explainer had no rule of their own, so on the ink ground
+   they fell back to the browser's default blue and read as a rendering fault
+   rather than as a link. Cream with an underline, the same as every other
+   in-prose link on the site, just inverted for the dark header. */
+.jobs-route-link {
+  color: var(--cream);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(250, 247, 242, 0.4);
+  transition: text-decoration-color 0.18s ease;
+}
+.jobs-route-link:hover { text-decoration-color: var(--cream); }
+
+@media (prefers-reduced-motion: reduce) {
+  .jobs-explainer-marker { transition: none; }
+}
+
+@media (max-width: 640px) {
+  .jobs-explainer summary { font-size: 0.8rem; }
+  .jobs-explainer-body { gap: 1.35rem; }
+}
+
 .jobs-count {
   font-size: 0.78rem;
   color: rgba(250, 247, 242, 0.5);

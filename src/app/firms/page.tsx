@@ -100,7 +100,7 @@ export default function FirmsPage() {
 
         <PageHeader
           tone="ink"
-          heading="Firm directory"
+          heading="Firms directory"
           subcopy="Profiles of Nigerian law firms with tier rankings, practice-area breakdowns, and hiring history."
         >
 

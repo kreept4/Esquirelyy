@@ -16,7 +16,7 @@ import './StaggeredMenu.css'
 
 const NAV_ITEMS = [
   { label: 'Jobs', ariaLabel: 'Browse legal jobs', link: '/jobs' },
-  { label: 'Firms', ariaLabel: 'Browse the firm directory', link: '/firms' },
+  { label: 'Firms', ariaLabel: 'Browse the firms directory', link: '/firms' },
   { label: 'Scholarships', ariaLabel: 'Browse scholarships', link: '/scholarships' },
   { label: 'Tracker', ariaLabel: 'Open your application tracker', link: '/tracker' },
   { label: 'CV Review', ariaLabel: 'Get your CV reviewed', link: '/tools/cv-review' },
