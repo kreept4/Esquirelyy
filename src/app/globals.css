@@ -1020,6 +1020,7 @@ select.filter-pill {
    card rather than as a link dropped on top of a colour. */
 .news-cta {
   display: inline-flex;
+  text-decoration: none;
   align-items: center;
   gap: 0.45rem;
   margin-top: 1.5rem;
@@ -1028,7 +1029,7 @@ select.filter-pill {
   /* Mint, matching the arrow buttons, so every control on the carousel is the
      same colour and the eye only has to learn one affordance. */
   background: #14B8A6;
-  color: #04211E;
+  color: #FFFFFF;
   font-size: 0.8rem;
   /* The arrow is clipped by the pill, so it can travel out of one edge and
      back in the other. */
@@ -1039,7 +1040,6 @@ select.filter-pill {
 /* Lifts off the slide and deepens. The arrow inside runs the same swap the
    navigation buttons do, so pressing forward looks identical everywhere on the
    carousel whether it is a slide link or an arrow. */
-a.news-slide-link:hover .news-cta,
 .news-cta:hover {
   background: #10A192;
   transform: translateY(-2px);
@@ -1048,7 +1048,6 @@ a.news-slide-link:hover .news-cta,
 .news-cta svg {
   transition: transform 0.42s cubic-bezier(0.65, 0, 0.35, 1);
 }
-a.news-slide-link:hover .news-cta svg,
 .news-cta:hover svg {
   /* Out to the right and straight back in from the left, in one pass. */
   animation: cta-arrow-swap 0.52s cubic-bezier(0.65, 0, 0.35, 1);
@@ -1061,10 +1060,8 @@ a.news-slide-link:hover .news-cta svg,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  a.news-slide-link:hover .news-cta,
   .news-cta:hover { transform: none; box-shadow: none; }
   .news-cta svg,
-  a.news-slide-link:hover .news-cta svg,
   .news-cta:hover svg { animation: none; transition: none; }
 }
 
@@ -2556,14 +2553,14 @@ a.news-slide-link:hover .news-cta svg,
   align-items: center;
   gap: 6px;
   font-size: 0.8rem;
-  color: rgba(250, 247, 242, 0.6);
+  color: rgba(26, 26, 26, 0.7);
   text-decoration: none;
   transition: color 0.18s ease;
 }
 .job-back svg {
   transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.job-back:hover { color: var(--cream); }
+.job-back:hover { color: #1A1A1A; }
 .job-back:hover svg { transform: translateX(-4px); }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2594,11 +2591,11 @@ a.news-slide-link:hover .news-cta svg,
   font-size: clamp(1.9rem, 4vw, 3.2rem);
   line-height: 1;
   letter-spacing: -0.04em;
-  color: var(--cream);
+  color: #1A1A1A;
 }
 .job-detail-employer {
   font-size: 1rem;
-  color: rgba(250, 247, 242, 0.62);
+  color: rgba(26, 26, 26, 0.72);
   margin-top: 0.5rem;
 }
 
@@ -2610,14 +2607,14 @@ a.news-slide-link:hover .news-cta svg,
   gap: 1.5rem;
   margin-top: 2.5rem;
   padding-top: 1.75rem;
-  border-top: 0.5px solid rgba(250, 247, 242, 0.18);
+  border-top: 1px solid rgba(36, 31, 22, 0.22);
 }
 .job-facts dt {
   font-size: 0.72rem;
-  color: rgba(250, 247, 242, 0.45);
+  color: #1A1A1A;
   margin-bottom: 0.3rem;
 }
-.job-facts dd { font-size: 0.92rem; color: var(--cream); margin: 0; }
+.job-facts dd { font-size: 0.92rem; color: #1A1A1A; margin: 0; }
 
 .job-detail-body {
   display: grid;

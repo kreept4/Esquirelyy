@@ -252,18 +252,39 @@ export default function NewsCarousel({ items }: { items: NewsItem[] }) {
                       </span>
                 ) : null
 
+                /* The CTA is the link, not the slide.
+                 *
+                 * The whole panel used to be one anchor, which meant a thumb
+                 * resting anywhere on a card that is most of the screen wide
+                 * navigated away — and on a carousel that also moves under you,
+                 * that is a tap nobody intended. The pill and the arrows are
+                 * now the only things that respond. */
+                const cta = item.href ? (
+                  isExternal(item.href) ? (
+                    <a
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="grotesk-bold news-cta"
+                    >
+                      {item.cta ?? 'Read more'}
+                      <ArrowRight size={14} aria-hidden />
+                    </a>
+                  ) : (
+                    <Link href={item.href} className="grotesk-bold news-cta">
+                      {item.cta ?? 'Read more'}
+                      <ArrowRight size={14} aria-hidden />
+                    </Link>
+                  )
+                ) : null
+
                 const body = (
                   <>
                     <span className="news-copy">
                     <span className="grotesk-bold news-kind">{KIND_LABEL[item.kind]}</span>
                     <p className="display-black news-title">{item.title}</p>
                     <p className="grotesk-regular news-summary">{item.summary}</p>
-                    {item.href && (
-                      <span className="grotesk-bold news-cta">
-                        {item.cta ?? 'Read more'}
-                        <ArrowRight size={14} aria-hidden />
-                      </span>
-                    )}
+                    {cta}
                     </span>
                     {figure}
                   </>
@@ -298,27 +319,7 @@ export default function NewsCarousel({ items }: { items: NewsItem[] }) {
                     inert={!active}
                     aria-hidden={!active}
                   >
-                    {item.href ? (
-                      /* An external headline leaves the site, so it gets a
-                         plain anchor with a new tab and noopener. Routing it
-                         through next/link would prefetch a third-party page. */
-                      isExternal(item.href) ? (
-                        <a
-                          href={item.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="news-slide-link"
-                        >
-                          {body}
-                        </a>
-                      ) : (
-                        <Link href={item.href} className="news-slide-link">
-                          {body}
-                        </Link>
-                      )
-                    ) : (
-                      <div className="news-slide-link news-slide-static">{body}</div>
-                    )}
+                    <div className="news-slide-link news-slide-static">{body}</div>
                   </div>
                 )
               })}

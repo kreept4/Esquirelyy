@@ -54,6 +54,12 @@ const LOCAL_ONLY_LOGO = new Set([
   // reconstruct the dark version of the same monochrome mark; Giwa-Osagie's
   // header logo is not in their served HTML, so it comes from an uploaded copy
   // elsewhere on the site.
+  // Added with CLP and ALP. CLP's source carries a white frame around a maroon
+  // banner with the lettering pushed to the right third, so it is cropped to
+  // the lettering and the maroon padded back evenly; ALP's is cropped out of a
+  // ruled box that also held 'An SGRB firm' and the site URL.
+  'alp-ng',
+  'clp-legal',
   'alliance-law-firm',
   'dd-dodo',
   'doa-law',
