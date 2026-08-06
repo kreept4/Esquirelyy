@@ -22,8 +22,8 @@ import {
  * control, fixed to the same line as the toggle and hidden with it when the
  * header retracts on scroll.
  *
- * Everything it shows is derived at open time from data the site already holds
- * — see src/lib/notifications.ts for why there is no table behind this.
+ * Everything it shows is derived at open time from data the site already holds.
+ * See src/lib/notifications.ts for why there is no table behind this.
  */
 
 const KIND_DOT: Record<Notification['kind'], string> = {
@@ -33,19 +33,11 @@ const KIND_DOT: Record<Notification['kind'], string> = {
   welcome: '#FBBF24',
 }
 
-const KIND_LABEL: Record<Notification['kind'], string> = {
-  role: 'New role',
-  deadline: 'Closing soon',
-  tracker: 'Tracker',
-  welcome: 'From us',
-}
-
 function NotifRow({ n }: { n: Notification }) {
   return (
     <>
       <span className="notif-dot" style={{ background: KIND_DOT[n.kind] }} aria-hidden />
       <span className="notif-item-main">
-        <span className="grotesk-bold notif-item-kind">{KIND_LABEL[n.kind]}</span>
         <span className="grotesk-bold notif-item-title">{n.title}</span>
         <span className="grotesk-regular notif-item-detail">{n.detail}</span>
       </span>
@@ -86,6 +78,11 @@ export default function NotificationBell({
     setSeen(readSeen())
     load()
   }, [load])
+
+  function openNote() {
+    setOpen(false)
+    setShowWelcome(true)
+  }
 
   // Close on outside click and on Escape, the two ways anyone expects to
   // dismiss a popover.
@@ -168,7 +165,7 @@ export default function NotificationBell({
                     <button
                       type="button"
                       className="notif-item notif-item-btn"
-                      onClick={() => { setOpen(false); setShowWelcome(true) }}
+                      onClick={openNote}
                     >
                       <NotifRow n={n} />
                     </button>
@@ -210,13 +207,13 @@ export default function NotificationBell({
                 system, and it is the entire reason this exists.
               </p>
               <p className="grotesk-regular">
-                Everything is here and everything is checked. If you find something wrong, tell us —
-                we would much rather hear it from you than not know.
+                Everything is here, and everything gets checked before it goes up. If you spot
+                something wrong, tell us. We would much rather hear it from you than not know.
               </p>
             </div>
 
             <p className="grotesk-bold notif-modal-sign">
-              Ogunleye Boluwatife &amp; Ogunleye Ipinuoluwa
+              Boluwatife and Ipinuoluwa
               <span className="grotesk-regular notif-modal-sign-role">Co-founders, Esquirely</span>
             </p>
           </div>
