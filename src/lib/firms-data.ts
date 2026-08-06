@@ -901,6 +901,14 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   ecowas: '/employer-logos/ecowas.png',
   ecowassecretariat: '/employer-logos/ecowas.png',
   economiccommunityofwestafricanstates: '/employer-logos/ecowas.png',
+  // The globe alone, not the full lockup. 'WORLD BANK GROUP' set beside the
+  // globe is a 5.1:1 mark, and BallMark clamps anything that wide to about 14%
+  // of the ball's height, so the wordmark would be a smear. The globe is the
+  // Bank's own standalone identifier and it is square, so it fills the ball.
+  worldbankgroup: '/employer-logos/world-bank.png',
+  worldbank: '/employer-logos/world-bank.png',
+  wbg: '/employer-logos/world-bank.png',
+  theworldbank: '/employer-logos/world-bank.png',
   // Supabase stores this employer with the '(Client)' suffix, which norm()
   // strips to nothing useful, so both spellings are mapped.
   bridgegapconsultsclient: '/employer-logos/bridgegap.png',
