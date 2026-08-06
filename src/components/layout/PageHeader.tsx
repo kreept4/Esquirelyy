@@ -21,9 +21,13 @@ export default function PageHeader({
   children?: React.ReactNode
   tone?: 'cream' | 'ink'
 }) {
+  /*  now paints amber, not ink. The prop name is kept because it
+     means "the loud tone" at every call site and renaming it would touch every
+     page for no gain; the class it sets, .page-header-ink, carries the control
+     overrides for that ground. */
   const isInk = tone === 'ink'
-  const fg = isInk ? '#FAF6F0' : '#1A1A1A'
-  const muted = isInk ? 'rgba(250,246,240,0.7)' : '#4A4A4A'
+  const fg = isInk ? '#241F16' : '#1A1A1A'
+  const muted = isInk ? 'rgba(36,31,22,0.72)' : '#4A4A4A'
 
   return (
     <header
@@ -34,12 +38,13 @@ export default function PageHeader({
          without each one restyling its own filters. */
       className={isInk ? 'page-header page-header-ink' : 'page-header'}
       style={{
-        backgroundColor: isInk ? '#1A1A1A' : '#F0EBE3',
+        backgroundColor: isInk ? '#FBBF24' : '#F0EBE3',
+        backgroundImage: isInk ? 'var(--amber-pattern)' : undefined,
         borderBottom: isInk ? 'none' : '0.5px solid #E8E0D5',
         padding: '3.25rem 2rem 2.5rem',
       }}
     >
-      <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto' }}>
+      <div className={isInk ? 'page-header-panel' : undefined} style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto' }}>
         <AnimatedHeading
           text={heading}
           color={fg}

@@ -22,6 +22,19 @@
   /* The one accent. Lifted from the news carousel palette and now shared by
      every control on the site: carousel arrows and CTA, the footer back-to-top,
      primary buttons and the active state of every filter. */
+  /* The page-header ground. Every inner-page masthead was ink, which made the
+     footer the only warm block on the site and the top of each page a second
+     black band under a black nav. Amber is the footer's panel colour. */
+  --amber: #FBBF24;
+  /* Contour texture for the amber headers, after the reference. A tiling SVG
+     data URI rather than a file: it is under 400 bytes, needs no request, and
+     cannot 404. */
+  /* Contour texture. Goes on the cream AROUND an amber panel, never inside it:
+     on the amber it lifted the ground toward the ink and swallowed the type. */
+  --contour: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23241F16' stroke-opacity='0.28' stroke-width='1.5'%3E%3Cpath d='M0 20c26-14 54 14 80 0s54-14 80 0'/%3E%3Cpath d='M0 47c26-11 54 11 80 0s54-11 80 0'/%3E%3Cpath d='M0 74c26-16 54 16 80 0s54-16 80 0'/%3E%3Cpath d='M0 101c26-9 54 9 80 0s54-9 80 0'/%3E%3Cpath d='M0 128c26-15 54 15 80 0s54-15 80 0'/%3E%3C/g%3E%3C/svg%3E");
+  --amber-pattern-unused: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><g fill='none' stroke='%23ffffff' stroke-opacity='0.16' stroke-width='1.4'><path d='M0 15c20 -8 40 -8 60 0c20 8 40 8 60 0'/><path d='M0 45c20 -8 40 -8 60 0c20 8 40 8 60 0'/><path d='M0 75c20 -8 40 -8 60 0c20 8 40 8 60 0'/><path d='M0 105c20 -8 40 -8 60 0c20 8 40 8 60 0'/></g></svg>");
+  --on-amber: #241F16;
+
   --mint: #14B8A6;
   --mint-deep: #10A192;
   --on-mint: #04211E;
@@ -303,9 +316,9 @@ select.filter-pill {
   background-position: right 1rem center;
 }
 
-/* On ink the chevron has to invert too, or it disappears into the field. */
+/* The header ground is amber, so the chevron stays ink rather than inverting. */
 .page-header-ink select.filter-pill {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 1L5 5.5L9 1' stroke='%23FAF7F2' stroke-opacity='0.6' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 1L5 5.5L9 1' stroke='%23241F16' stroke-opacity='0.75' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 /* An active filter flips to a cream fill, so the chevron goes back to ink. */
 .page-header-ink select.filter-pill[data-active='true'] {
@@ -329,25 +342,25 @@ select.filter-pill {
 /* background-color, not the `background` shorthand: the shorthand resets
    background-image, which would wipe the custom select chevron set above. */
 .page-header-ink .field {
-  color: var(--cream);
-  background-color: rgba(250, 247, 242, 0.06);
-  border-color: rgba(250, 247, 242, 0.18);
+  color: var(--on-amber);
+  background-color: rgba(36, 31, 22, 0.07);
+  border-color: rgba(36, 31, 22, 0.24);
 }
 .page-header-ink .field::placeholder {
-  color: rgba(250, 247, 242, 0.45);
+  color: rgba(36, 31, 22, 0.5);
 }
 .page-header-ink .field:focus-visible {
-  border-color: var(--cream);
+  border-color: var(--on-amber);
 }
 
 .page-header-ink .filter-pill {
-  color: rgba(250, 247, 242, 0.75);
+  color: rgba(36, 31, 22, 0.8);
   background-color: transparent;
-  border-color: rgba(250, 247, 242, 0.18);
+  border-color: rgba(36, 31, 22, 0.24);
 }
 .page-header-ink .filter-pill:hover {
-  color: var(--cream);
-  border-color: var(--cream);
+  color: var(--on-amber);
+  border-color: var(--on-amber);
 }
 .page-header-ink .filter-pill option {
   color: var(--ink);
@@ -364,8 +377,21 @@ select.filter-pill {
    the svg itself beats that inherited value, and `stroke="currentColor"`
    resolves against it. Controls are excluded so an icon inside a pill tracks
    its own label through hover and active rather than staying dimmed. */
+/* PageHeader's ink tone, same band-and-panel construction. */
+.page-header-ink {
+  background-color: var(--cream) !important;
+  background-image: var(--contour) !important;
+  padding: 4.25rem 2.5rem 3.5rem !important;
+}
+.page-header-panel {
+  background: var(--amber);
+  border: 3px solid var(--on-amber);
+  box-shadow: 7px 8px 0 var(--on-amber);
+  padding: 2.5rem 2rem 2.25rem;
+}
+
 .page-header-ink svg {
-  color: rgba(250, 247, 242, 0.5);
+  color: rgba(36, 31, 22, 0.55);
 }
 .page-header-ink .filter-pill svg,
 .page-header-ink button svg {
@@ -559,22 +585,29 @@ select.filter-pill {
 }
 
 .jobs-header {
-  background: #000000;
-  color: var(--cream);
-  padding: 8rem 1.5rem 2.75rem;
+  background-color: var(--cream);
+  background-image: var(--contour);
+  color: var(--on-amber);
+  padding: 4.25rem 2.5rem 3.5rem;
+}
+.jobs-header > .shell {
+  background: var(--amber);
+  border: 3px solid var(--on-amber);
+  box-shadow: 7px 8px 0 var(--on-amber);
+  padding: 2.5rem 2rem 2.25rem;
 }
 
 .jobs-title {
   font-size: clamp(2.4rem, 6vw, 4.5rem);
   line-height: 0.92;
   letter-spacing: -0.045em;
-  color: var(--cream);
+  color: var(--on-amber);
 }
 
 .jobs-sub {
   font-size: 0.95rem;
   line-height: 1.7;
-  color: rgba(250, 247, 242, 0.62);
+  color: rgba(36, 31, 22, 0.72);
   max-width: 46ch;
   margin-top: 1rem;
 }
@@ -595,7 +628,7 @@ select.filter-pill {
 .jobs-search svg {
   position: absolute;
   left: 0.9rem;
-  color: rgba(250, 247, 242, 0.5);
+  color: rgba(36, 31, 22, 0.5);
   pointer-events: none;
 }
 .jobs-search input {
@@ -603,22 +636,22 @@ select.filter-pill {
   padding: 0.7rem 1rem 0.7rem 2.5rem;
   font-family: var(--font-sans);
   font-size: 0.88rem;
-  color: var(--cream);
-  background: rgba(250, 247, 242, 0.06);
-  border: 0.5px solid rgba(250, 247, 242, 0.18);
+  color: var(--on-amber);
+  background: rgba(36, 31, 22, 0.07);
+  border: 0.5px solid rgba(36, 31, 22, 0.24);
   border-radius: 999px;
   outline: none;
 }
-.jobs-search input::placeholder { color: rgba(250, 247, 242, 0.45); }
-.jobs-search input:focus-visible { border-color: var(--cream); }
+.jobs-search input::placeholder { color: rgba(36, 31, 22, 0.5); }
+.jobs-search input:focus-visible { border-color: var(--on-amber); }
 
 .jobs-select {
   padding: 0.7rem 1.1rem;
   font-family: var(--font-sans);
   font-size: 0.82rem;
-  color: rgba(250, 247, 242, 0.75);
+  color: rgba(36, 31, 22, 0.8);
   background: transparent;
-  border: 0.5px solid rgba(250, 247, 242, 0.18);
+  border: 0.5px solid rgba(36, 31, 22, 0.24);
   border-radius: 999px;
   cursor: pointer;
   outline: none;
@@ -638,13 +671,13 @@ select.filter-pill {
   padding: 0.7rem 1.1rem;
   font-family: var(--font-sans);
   font-size: 0.8rem;
-  color: rgba(250, 247, 242, 0.75);
+  color: rgba(36, 31, 22, 0.8);
   background: transparent;
-  border: 0.5px solid rgba(250, 247, 242, 0.18);
+  border: 0.5px solid rgba(36, 31, 22, 0.24);
   border-radius: 999px;
   cursor: pointer;
 }
-.jobs-clear:hover { color: var(--cream); border-color: var(--cream); }
+.jobs-clear:hover { color: var(--on-amber); border-color: var(--on-amber); }
 
 /* ENTRY-ROUTE EXPLAINER
    Sits in the ink header, so everything here is drawn against the dark ground
@@ -993,7 +1026,7 @@ select.filter-pill {
   /* Mint, matching the arrow buttons, so every control on the carousel is the
      same colour and the eye only has to learn one affordance. */
   background: #14B8A6;
-  color: #FFFFFF;
+  color: #04211E;
   font-size: 0.8rem;
   /* The arrow is clipped by the pill, so it can travel out of one edge and
      back in the other. */
@@ -1513,6 +1546,231 @@ a.news-slide-link:hover .news-cta svg,
   .contact-address:hover svg { transform: none; }
 }
 
+/* ABOUT
+   Amber masthead and cream body, the same shell as every other inner page. An
+   earlier version ran amber all the way down; at that length it stopped being a
+   colour and became a wall.
+   ------------------------------------------------------------------------- */
+/* The sign-off. Sits with the lede but set on the display face and in full ink,
+   so it lands as a line rather than as a third paragraph. */
+.doc-signoff {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1rem, 1.7vw, 1.2rem);
+  letter-spacing: -0.015em;
+  color: var(--on-amber);
+  margin-top: 1.5rem;
+}
+
+/* One line where the terms strip used to be. A two-item strip with a heading
+   over each was more scaffolding than the fact deserved. */
+.about-est {
+  margin-top: 2rem;
+  padding-top: 1.4rem;
+  border-top: 2px solid rgba(36, 31, 22, 0.24);
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  color: rgba(36, 31, 22, 0.7);
+}
+
+.about-body { padding: 0 2rem 5rem; }
+
+.about-section { padding: 3rem 0; border-top: 2px solid var(--cream-border); }
+.about-section:first-child { border-top: none; padding-top: 2.5rem; }
+.about-section-title {
+  font-size: clamp(1.15rem, 2.3vw, 1.6rem);
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  text-transform: none;
+  color: var(--ink);
+  margin-bottom: 0.6rem;
+}
+.about-section-note {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--ink-muted);
+  max-width: 48ch;
+  margin-bottom: 1.75rem;
+}
+
+/* The team reads as a diagram: the founder pair on one line, a dotted drop to
+   the designer beneath. Centred as a group rather than left-aligned, so the
+   drop lands under the middle of the pair rather than off to one side. */
+.about-team {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.about-team-cell {
+  display: flex;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+}
+.about-team-cell .about-card { flex: 1 1 0; }
+
+/* Carton card with the panel treatment the rest of the site uses. */
+.about-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.6rem 1.4rem;
+  background: #FFF8E5;
+  /* Group colour is set per section below. */
+  border: 2.5px solid #241F16;
+  box-shadow: 6px 7px 0 #241F16;
+  min-width: 0;
+}
+/* Cherry, with the type flipped to the warm off-white the site already uses on
+   dark grounds. Ink on cherry is unreadable. */
+.about-team .about-card { background: #38BDF8; }
+.about-team .about-card-name { color: #08202B; }
+.about-team .about-card-role { color: rgba(8, 32, 43, 0.72); }
+
+.about-card-name {
+  font-size: clamp(0.95rem, 1.7vw, 1.1rem);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #241F16;
+  word-break: break-word;
+}
+.about-card-role {
+  font-size: 0.74rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: rgba(36, 31, 22, 0.6);
+}
+/* Cherry. The ambassadors are not staff and the colour is the quickest way to
+   say so without a caption. Type flips to the warm off-white the site already
+   uses on dark grounds — ink on cherry is unreadable. */
+.about-card-amb { background: #8B5CF6; }
+.about-card-amb .about-card-name { color: #FBF8FF; }
+.about-card-amb .about-card-role { color: rgba(251, 248, 255, 0.78); }
+
+.about-card-link { text-decoration: none; transition: transform 0.14s ease, box-shadow 0.14s ease; }
+.about-card-link:hover { transform: translate(-2px, -2px); box-shadow: 8px 9px 0 #241F16; }
+.about-card-link:focus-visible { outline: 3px solid #241F16; outline-offset: 4px; }
+
+/* The mark sits under the role as the visible affordance, ruled off so it reads
+   as an action attached to the card rather than as a third line of detail. */
+.about-li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1.5px solid currentColor;
+  align-self: flex-start;
+}
+.about-li-mark { width: 1rem; height: 1rem; flex-shrink: 0; }
+.about-li-label { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.about-team .about-li { color: #08202B; }
+.about-card-amb .about-li { color: #FBF8FF; }
+
+/* Short note under the team. */
+.about-note {
+  margin-top: 1.5rem;
+  font-size: 0.86rem;
+  color: var(--ink-muted);
+}
+
+.about-link { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
+.about-link-h { width: 9rem; height: 2.5rem; }
+.about-link-v { display: none; width: 2.5rem; height: 7rem; }
+
+/* Ambassadors get the same card, four across. */
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 1.5rem 1.4rem;
+  margin-top: 1.5rem;
+}
+
+.about-outro { font-size: 0.92rem; line-height: 1.75; color: var(--ink-muted); max-width: 56ch; margin-bottom: 1.75rem; }
+.about-actions { display: flex; align-items: center; gap: 1.75rem; flex-wrap: wrap; }
+.about-cta {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background: var(--mint);
+  color: #FFFFFF;
+  border: 2px solid #241F16;
+  border-radius: 2px;
+  box-shadow: 5px 5px 0 #241F16;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+.about-cta:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #241F16; }
+.about-alt {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  text-decoration: none;
+  border-bottom: 1.5px solid rgba(36, 31, 22, 0.35);
+  padding-bottom: 1px;
+}
+.about-alt:hover { color: var(--ink); border-color: var(--ink); }
+
+/* Below the width where two cards and a connector fit on one line, the pair
+   stacks and its connector turns to run top to bottom. Hiding it would lose the
+   link; leaving it horizontal would point between columns that no longer exist. */
+@media (max-width: 860px) {
+  .about-team { flex-direction: column; align-items: stretch; }
+  .about-team-cell { flex-direction: column; align-items: stretch; }
+  .about-link-h { display: none; }
+  .about-link-v { display: block; }
+}
+
+@media (max-width: 640px) {
+  .about-body { padding: 0 1.25rem 3.5rem; }
+  .about-section { padding: 2.25rem 0; }
+  .about-card { padding: 1.25rem 1.1rem; box-shadow: 4px 5px 0 #241F16; }
+  .about-grid { gap: 1.1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-cta { transition: none; }
+  .about-cta:hover { transform: none; box-shadow: 4px 4px 0 #241F16; }
+}
+
+
+/* FIRM PROFILE HEADER
+   Flat amber, no contour and no inset panel: this band sits under a breadcrumb
+   rather than at the top of a page, and repeating the full band-and-panel
+   construction one strip down read as two headers stacked. The typography is
+   the shared one, which is what actually makes it belong to the set.
+   ------------------------------------------------------------------------- */
+.firm-profile-crumb {
+  background: var(--cream);
+  border-bottom: 0.5px solid var(--cream-border);
+  padding: 0.875rem 2.5rem;
+}
+.firm-profile-crumb > div,
+.firm-profile-crumb .shell { max-width: min(2200px, 94vw); margin: 0 auto; }
+
+.firm-profile-header {
+  background: var(--amber);
+  padding: 3rem 2.5rem 2.75rem;
+}
+.firm-profile-name {
+  font-size: clamp(1.7rem, 4vw, 2.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--on-amber);
+  margin-bottom: 0.6rem;
+}
+.firm-profile-header .firm-profile-meta { color: rgba(36, 31, 22, 0.7); }
+.firm-profile-header .firm-profile-dot { background: rgba(36, 31, 22, 0.4); }
+.firm-profile-desc {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(36, 31, 22, 0.78);
+  max-width: 62ch;
+}
+
 /* FORWARD LINK
    The counterpart to .back-link, for "go on to the full thing" links. Same
    grammar in reverse: the arrow travels in the direction it points while the
@@ -1563,19 +1821,27 @@ a.news-slide-link:hover .news-cta svg,
    the site is being moved onto and "ambassador" stopped describing it once a
    second page used it. The .amb-* names stay as aliases so the ambassador page
    is not rewritten to prove the point. */
+/* The band is cream and carries the texture; the amber is an inset panel with
+   the footer's rule and hard shadow. Same object, top and bottom of the page. */
 .amb-masthead,
 .doc-masthead {
-  background: var(--ink);
-  padding: 4.5rem 0 0;
+  background-color: var(--cream);
+  background-image: var(--contour);
+  padding: 4.25rem 2.5rem 3.5rem;
 }
 .amb-masthead-inner,
-.doc-masthead-inner { padding: 0 2rem; }
+.doc-masthead-inner {
+  background: var(--amber);
+  border: 3px solid var(--on-amber);
+  box-shadow: 7px 8px 0 var(--on-amber);
+  padding: 2.5rem 2rem 0.75rem;
+}
 
 .amb-kicker {
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(250, 246, 240, 0.5);
+  color: rgba(36, 31, 22, 0.6);
   margin-bottom: 1.5rem;
 }
 
@@ -1584,7 +1850,7 @@ a.news-slide-link:hover .news-cta svg,
   font-size: clamp(2.1rem, 6vw, 4.2rem);
   line-height: 1.02;
   letter-spacing: -0.035em;
-  color: var(--cream);
+  color: var(--on-amber);
   margin-bottom: 1.5rem;
 }
 
@@ -1592,7 +1858,7 @@ a.news-slide-link:hover .news-cta svg,
 .doc-lede {
   font-size: clamp(0.95rem, 1.4vw, 1.08rem);
   line-height: 1.7;
-  color: rgba(250, 246, 240, 0.66);
+  color: rgba(36, 31, 22, 0.75);
   max-width: 54ch;
   margin-bottom: 3rem;
 }
@@ -1604,7 +1870,7 @@ a.news-slide-link:hover .news-cta svg,
 .doc-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
-  border-top: 0.5px solid rgba(250, 246, 240, 0.18);
+  border-top: 0.5px solid rgba(36, 31, 22, 0.24);
 }
 .amb-term,
 .doc-strip-item {
@@ -1615,13 +1881,13 @@ a.news-slide-link:hover .news-cta svg,
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(250, 246, 240, 0.45);
+  color: rgba(36, 31, 22, 0.58);
   margin-bottom: 0.45rem;
 }
 .amb-term dd,
 .doc-strip-item dd {
   font-size: 1.05rem;
-  color: var(--cream);
+  color: var(--on-amber);
   letter-spacing: -0.01em;
 }
 
@@ -1833,7 +2099,7 @@ a.news-slide-link:hover .news-cta svg,
   .amb-masthead-inner, .doc-masthead-inner { padding: 0 1.25rem; }
   .amb-body, .doc-body { padding: 0 1.25rem 3.5rem; }
   .amb-lede, .doc-lede { margin-bottom: 2rem; }
-  .amb-term, .doc-strip-item { padding: 1.1rem 1rem 1.2rem 0; border-right: none; border-bottom: 0.5px solid rgba(250, 246, 240, 0.12); }
+  .amb-term, .doc-strip-item { padding: 1.1rem 1rem 1.2rem 0; border-right: none; border-bottom: 0.5px solid rgba(36, 31, 22, 0.18); }
   .amb-term:last-child, .doc-strip-item:last-child { border-bottom: none; }
   .doc-row { grid-template-columns: 1fr; gap: 0.75rem; padding: 1.9rem 0; }
   .doc-num { font-size: 1.6rem; }
@@ -2893,7 +3159,7 @@ a.news-slide-link:hover .news-cta svg,
 .legal-header { padding-bottom: 2.5rem; }
 .legal-updated {
   font-size: 0.78rem;
-  color: rgba(250, 247, 242, 0.45);
+  color: rgba(36, 31, 22, 0.58);
   margin-top: 1.75rem;
 }
 

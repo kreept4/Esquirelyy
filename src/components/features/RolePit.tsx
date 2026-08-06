@@ -386,7 +386,7 @@ export default function RolePit({ listings }: { listings: any[] }) {
               <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: '#4A4A4A', marginBottom: '1.1rem' }}>
                 {[TYPE_LABELS[active.type] || active.type, active.location, deadlineLabel(active)].filter(Boolean).join(' · ')}
               </p>
-              <Link href={'/jobs/' + active.slug} className="grotesk-bold" style={{ display: 'inline-block', padding: '0.65rem 1.5rem', borderRadius: '999px', fontSize: '0.76rem', backgroundColor: INK, color: CARTON, textDecoration: 'none' }}>
+              <Link href={'/jobs/' + active.slug} className="grotesk-bold" style={{ display: 'inline-block', padding: '0.65rem 1.5rem', borderRadius: '999px', fontSize: '0.76rem', backgroundColor: '#14B8A6', color: '#FFFFFF', textDecoration: 'none' }}>
                 View role
               </Link>
             </>

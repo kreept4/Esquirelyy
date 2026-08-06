@@ -3,59 +3,57 @@
 import Link from 'next/link'
 
 /**
- * Footer: one amber panel, a wordmark set at poster scale, the links, and the
- * legal line.
+ * Footer, rebuilt against the supplied reference.
  *
- * This replaces a dark footer that was three tidy link columns on ink. It was
- * correct and it was invisible: the page ended in the same black the hero and
- * the ball pit are drawn on, so the site had no bottom edge, just a fade out.
+ * The first attempt softened every characteristic that made the reference work:
+ * a 1.5px rule instead of a heavy one, a 10px radius instead of square corners,
+ * sentence-case links under section headings instead of one caps stack, and the
+ * contour texture painted inside the panel rather than on the page around it.
+ * The result was a tidy card. The reference is a printed block, and the effect
+ * comes from the weight of the rule, the flatness of the field and the scale of
+ * the wordmark against it.
  *
- * The panel is the design language the site already uses for the one card it
- * wants you to act on, the ambassador application: carton stock, a 1.5px ink
- * rule, and a hard offset shadow with no blur. Nothing new is introduced here.
- * The amber and the teal are lifted straight out of the news carousel's
- * palette, so the loudest block on the site is still made of its own colours.
+ * So: square corners, a 3px rule, a hard offset shadow with no blur, a flat
+ * amber field, and the contour pattern on the cream behind the panel where the
+ * reference puts it.
  *
- * The wordmark carries the block. At this scale it stops being a logo in a
- * corner and becomes the surface, which is the whole idea: the footer is where
- * the name should be unmissable, because it is the last thing on the page.
- *
- * Sentence case on the links, deliberately, against the all-caps reference.
- * Fourteen links shouting is a wall of text; the force here comes from scale,
- * colour and the rule, and the labels can stay in the site's own voice.
+ * The one departure is the link count. The reference carries four social links
+ * in a single column; this site has fifteen real destinations. They keep the
+ * reference's treatment — uppercase, bold, generously leaded, no headings — in
+ * three columns, because a fifteen-deep single stack would stand taller than
+ * the wordmark and turn the block into a directory.
  */
 
 const AMBER = '#FBBF24'
-const TEAL = '#14B8A6'
+const MINT = '#14B8A6'
 const INK = '#241F16'
 
-const FOOTER_LINKS: Record<string, { href: string; label: string }[]> = {
-  Find: [
+const FOOTER_LINKS = [
+  [
     { href: '/jobs', label: 'Jobs board' },
     { href: '/scholarships', label: 'Scholarships' },
     { href: '/firms', label: 'Firms directory' },
+    { href: '/tracker', label: 'Tracker' },
+    { href: '/news', label: 'News' },
   ],
-  Tools: [
+  [
     { href: '/tools/cv-review', label: 'CV review' },
     { href: '/tools/cover-letter', label: 'Cover letter' },
     { href: '/tools/interview-prep', label: 'Interview prep' },
-    { href: '/tracker', label: 'Application tracker' },
-  ],
-  More: [
-    { href: '/ambassador', label: 'Be an ambassador' },
-    { href: '/news', label: 'News and updates' },
-    { href: '/faq', label: 'FAQ' },
     { href: '/advertise', label: 'Post a role' },
-    { href: '/contact', label: 'Contact' },
-    { href: '/privacy', label: 'Privacy policy' },
-    { href: '/terms', label: 'Terms of use' },
+    { href: '/ambassador', label: 'Ambassadors' },
   ],
-}
+  [
+    { href: '/about', label: 'About us' },
+    { href: '/faq', label: 'FAQ' },
+    { href: '/contact', label: 'Contact' },
+    { href: '/privacy', label: 'Privacy' },
+    { href: '/terms', label: 'Terms' },
+  ],
+]
 
 export default function Footer() {
   function toTop() {
-    // Honour a reduced-motion preference: a smooth scroll the length of the
-    // whole page is exactly the kind of movement that setting exists to stop.
     const reduce =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -66,67 +64,66 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="footer-panel">
         <Link href="/" className="display-black footer-wordmark" aria-label="Esquirely home">
-          Esquirely.
+          ESQUIRELY
         </Link>
 
         <div className="footer-body">
           <nav className="footer-cols" aria-label="Footer">
-            {Object.entries(FOOTER_LINKS).map(([section, links]) => (
-              <div key={section}>
-                <p className="grotesk-bold footer-col-title">{section}</p>
-                <ul>
-                  {links.map(({ href, label }) => (
-                    <li key={href}>
-                      <Link href={href} className="grotesk-regular footer-link">
-                        {label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {FOOTER_LINKS.map((col, i) => (
+              <ul key={i}>
+                {col.map(({ href, label }) => (
+                  <li key={href}>
+                    <Link href={href} className="grotesk-bold footer-link">
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             ))}
           </nav>
 
           <div className="footer-meta">
             <button type="button" onClick={toTop} className="grotesk-bold footer-top">
-              Back to top
+              Scroll to top
             </button>
-            <p className="grotesk-bold footer-legal">
-              &copy; {new Date().getFullYear()} Esquirely
-            </p>
+            <p className="grotesk-bold footer-legal">&copy;{new Date().getFullYear()} Esquirely</p>
           </div>
         </div>
       </div>
 
       <style>{`
-        /* The panel is inset rather than bled to the edge, so the hard shadow
-           has somewhere to fall. The ground behind it is the page cream. */
+        /* The contour texture sits on the page behind the panel, which is where
+           the reference puts it. A tiling SVG data URI: under 600 bytes, no
+           request, cannot 404. Ink at very low alpha, so it reads as paper
+           texture on the cream rather than as a second colour. */
         .site-footer {
-          background: var(--cream);
-          padding: 3.5rem 1.5rem 4rem;
+          background-color: var(--cream);
+          background-image: var(--contour);
+          padding: 4rem 2.5rem 5rem;
         }
 
+        /* Square, heavy-ruled, flat. Each of those is load-bearing: round the
+           corners or thin the rule and it stops reading as a printed block. */
         .footer-panel {
-          max-width: min(2200px, 94vw);
+          max-width: min(2200px, 92vw);
           margin: 0 auto;
           background: ${AMBER};
-          border: 1.5px solid ${INK};
-          border-radius: 10px;
-          box-shadow: 8px 10px 0 ${INK};
-          padding: 3rem 2.5rem 2.5rem;
+          border: 3px solid ${INK};
+          border-radius: 0;
+          box-shadow: 7px 8px 0 ${INK};
+          padding: 2.75rem 2.5rem 2.5rem;
         }
 
-        /* Poster scale. The clamp ceiling is high enough that on a wide monitor
-           the wordmark genuinely spans the panel instead of sitting as a large
-           label in the corner. */
+        /* The wordmark is the panel. Uppercase, tight, sized to run most of the
+           width rather than to sit in a corner. */
         .footer-wordmark {
           display: block;
-          font-size: clamp(2.75rem, 12.5vw, 11.5rem);
-          line-height: 0.82;
-          letter-spacing: -0.055em;
+          font-size: clamp(2.6rem, 14.5vw, 13rem);
+          line-height: 0.86;
+          letter-spacing: -0.045em;
           color: ${INK};
           text-decoration: none;
-          margin-bottom: 2.75rem;
+          margin-bottom: 3rem;
         }
 
         .footer-body {
@@ -139,26 +136,29 @@ export default function Footer() {
 
         .footer-cols {
           display: grid;
-          grid-template-columns: repeat(3, minmax(8.5rem, 11rem));
-          gap: 2.5rem;
+          grid-template-columns: repeat(3, minmax(7.5rem, 10.5rem));
+          gap: 2.25rem;
         }
-        .footer-cols ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.55rem; }
-
-        .footer-col-title {
-          font-size: 0.78rem;
-          color: rgba(36, 31, 22, 0.55);
-          margin-bottom: 0.9rem;
+        .footer-cols ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          /* Wide leading. In the reference the space between the links does as
+             much work as their weight. */
+          gap: 1rem;
         }
 
         .footer-link {
-          font-size: 0.9rem;
+          font-size: 0.82rem;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
           color: ${INK};
           text-decoration: none;
-          /* Underline on hover only, drawn as a border so it sits clear of the
-             descenders rather than cutting through them. */
-          border-bottom: 1.5px solid transparent;
-          padding-bottom: 1px;
-          transition: border-color 0.18s ease;
+          border-bottom: 2px solid transparent;
+          padding-bottom: 2px;
+          transition: border-color 0.16s ease;
         }
         .footer-link:hover { border-bottom-color: ${INK}; }
 
@@ -166,49 +166,63 @@ export default function Footer() {
           display: flex;
           flex-direction: column;
           align-items: flex-end;
-          gap: 0.4rem;
           text-align: right;
         }
 
-        /* The one accent on the panel, and the same stamped treatment the panel
-           itself has, one size down. */
+        /* Rectangular, not a pill, carrying the panel's rule and hard shadow one
+           size down. */
         .footer-top {
-          background: ${TEAL};
-          color: #04211E;
-          border: 1.5px solid ${INK};
-          border-radius: 6px;
-          box-shadow: 4px 5px 0 ${INK};
-          padding: 0.6rem 1.15rem;
-          font-size: 0.8rem;
+          background: ${MINT};
+          color: #FFFFFF;
+          border: 2px solid ${INK};
+          border-radius: 2px;
+          box-shadow: 4px 4px 0 ${INK};
+          padding: 0.55rem 1.1rem;
+          font-size: 0.74rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
           cursor: pointer;
-          margin-bottom: 1rem;
-          transition: transform 0.16s ease, box-shadow 0.16s ease;
+          margin-bottom: 1.1rem;
+          transition: transform 0.14s ease, box-shadow 0.14s ease;
         }
-        /* Presses into its own shadow, which is the whole gesture. */
-        .footer-top:hover { transform: translate(2px, 2.5px); box-shadow: 2px 2.5px 0 ${INK}; }
-        .footer-top:active { transform: translate(4px, 5px); box-shadow: 0 0 0 ${INK}; }
+        /* Presses into its own shadow. */
+        .footer-top:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 ${INK}; }
+        .footer-top:active { transform: translate(4px, 4px); box-shadow: 0 0 0 ${INK}; }
 
-        .footer-legal { font-size: 0.78rem; color: ${INK}; }
-        .footer-note { font-size: 0.78rem; color: rgba(36, 31, 22, 0.62); }
+        .footer-legal {
+          font-size: 0.75rem;
+          line-height: 1.45;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          color: ${INK};
+        }
+        .footer-built {
+          margin-top: 0.9rem;
+          font-size: 0.7rem;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          color: rgba(36, 31, 22, 0.55);
+        }
 
         @media (max-width: 860px) {
           .site-footer { padding: 2.5rem 1.1rem 3rem; }
-          .footer-panel { padding: 2rem 1.5rem 1.75rem; box-shadow: 6px 7px 0 ${INK}; }
+          .footer-panel { padding: 1.75rem 1.4rem 1.6rem; border-width: 2.5px; box-shadow: 5px 6px 0 ${INK}; }
           .footer-wordmark { margin-bottom: 2rem; }
-          /* Stacked, and the meta block keeps its right alignment so the button
-             and the legal line stay pinned to the corner as in the reference. */
-          .footer-body { flex-direction: column; align-items: stretch; gap: 2.25rem; }
-          .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem; }
+          /* Stacked, with the meta block holding the right edge so the button
+             and the legal lines stay in the corner as in the reference. */
+          .footer-body { flex-direction: column; align-items: stretch; gap: 2rem; }
+          .footer-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
           .footer-meta { align-items: flex-end; }
         }
 
         @media (max-width: 420px) {
-          .footer-cols { grid-template-columns: minmax(0, 1fr); }
+          .footer-cols { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+          .footer-cols ul { gap: 0.85rem; }
         }
 
         @media (prefers-reduced-motion: reduce) {
           .footer-top { transition: none; }
-          .footer-top:hover, .footer-top:active { transform: none; box-shadow: 4px 5px 0 ${INK}; }
+          .footer-top:hover, .footer-top:active { transform: none; box-shadow: 4px 4px 0 ${INK}; }
         }
       `}</style>
     </footer>

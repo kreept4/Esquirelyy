@@ -52,7 +52,7 @@ export default function HeroSection() {
             </FadeIn>
             <FadeIn delay={1200} duration={1000}>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                <Link href="/jobs" className="grotesk-bold" style={{ background: '#FAF6F0', color: '#1A1A1A', padding: '0.85rem 2rem', borderRadius: '0.5rem', fontSize: '0.85rem', textDecoration: 'none' }}>
+                <Link href="/jobs" className="grotesk-bold" style={{ background: '#14B8A6', color: '#FFFFFF', padding: '0.85rem 2rem', borderRadius: '0.5rem', fontSize: '0.85rem', textDecoration: 'none' }}>
                   Browse Opportunities
                 </Link>
                 <Link href="/tracker" className="liquid-glass grotesk-bold" style={{ border: '1px solid rgba(255,255,255,0.2)', color: '#FAF6F0', padding: '0.85rem 2rem', borderRadius: '0.5rem', fontSize: '0.85rem', textDecoration: 'none' }}>

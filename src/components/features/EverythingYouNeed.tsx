@@ -505,7 +505,7 @@ function Block({ block, flip, tone }: { block: (typeof BLOCKS)[number]; flip: bo
         <p className="grotesk-regular" style={{ fontSize: '0.95rem', lineHeight: 1.75, color: tone.soft, maxWidth: '44ch', marginBottom: '1.75rem' }}>
           {block.desc}
         </p>
-        <Link href={block.href} className="grotesk-bold glide-cta" style={{ display: 'inline-block', padding: '0.8rem 1.9rem', borderRadius: '999px', fontSize: '0.8rem', color: tone.chipFg, backgroundColor: tone.chipBg, textDecoration: 'none' }}>
+        <Link href={block.href} className="grotesk-bold glide-cta" style={{ display: 'inline-block', padding: '0.8rem 1.9rem', borderRadius: '999px', fontSize: '0.8rem', color: '#FFFFFF', backgroundColor: '#14B8A6', textDecoration: 'none' }}>
           {block.cta}
         </Link>
       </div>

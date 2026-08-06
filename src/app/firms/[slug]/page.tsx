@@ -77,7 +77,7 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
       <main style={{ backgroundColor: '#FAF6F0', paddingTop: '64px' }}>
 
         {/* Breadcrumb */}
-        <div style={{ borderBottom: '0.5px solid var(--cream-border)', padding: '0.875rem 2rem', backgroundColor: '#F2EBE1' }}>
+        <div className="firm-profile-crumb">
           <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto' }}>
             <Link href="/firms" className="back-link">
               <ArrowLeftIcon /> Firms directory
@@ -91,12 +91,12 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
             distinction. Tier and founding year survive as a quiet meta line
             under the name, where they belong: they qualify the firm, they are
             not the headline. */}
-        <div style={{ backgroundColor: '#FFFFFF', borderBottom: '0.5px solid var(--cream-border)', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto' }}>
+        <div className="firm-profile-header">
+          <div className="shell">
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '2rem', flexWrap: 'wrap' }}>
               <div style={{ paddingTop: '6px' }}><FirmAvatar firm={firm} /></div>
               <div>
-                <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(1.6rem, 3.5vw, 2.5rem)', fontWeight: 700, color: 'var(--ink)', lineHeight: 1.1, marginBottom: '0.6rem' }}>
+                <h1 className="display-black firm-profile-name">
                   {firm.name}
                 </h1>
                 <div className="firm-profile-meta">
@@ -110,7 +110,7 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
                   <span className="firm-profile-dot" />
                   <span>{firm.offices.length === 1 ? '1 office' : `${firm.offices.length} offices`}</span>
                 </div>
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.9rem', color: 'var(--ink-muted)', lineHeight: 1.7, maxWidth: '600px' }}>
+                <p className="grotesk-regular firm-profile-desc">
                   {firm.description}
                 </p>
               </div>

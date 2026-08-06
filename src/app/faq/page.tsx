@@ -228,8 +228,8 @@ const GROUPS: Group[] = [
         q: 'Who is behind this?',
         a: (
           <p>
-            Esquirely is built in Abuja by Nigerian lawyers, for the Nigerian bar and the students
-            joining it.
+            Esquirely is built in Abuja by Nigerian lawyers. The people behind it are named on
+            the <a href="/about">about page</a>.
           </p>
         ),
       },

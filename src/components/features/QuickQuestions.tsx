@@ -201,8 +201,8 @@ export default function QuickQuestions() {
                     style={{
                       padding: '0.8rem 1.5rem',
                       fontSize: '0.88rem',
-                      color: selected ? '#1A1A1A' : '#FAF6F0',
-                      backgroundColor: selected ? '#FAF6F0' : 'transparent',
+                      color: selected ? '#FFFFFF' : '#FAF6F0',
+                      backgroundColor: selected ? '#14B8A6' : 'transparent',
                       border: '1px solid rgba(250,246,240,0.25)',
                       borderRadius: '999px',
                       cursor: saving ? 'wait' : 'pointer',
