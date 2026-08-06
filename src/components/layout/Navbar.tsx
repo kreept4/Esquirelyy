@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import StaggeredMenu from './StaggeredMenu'
+import NotificationBell from './NotificationBell'
 import './StaggeredMenu.css'
 
 /**
@@ -125,6 +126,11 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Its own control beside the toggle, not an item inside the panel: a
+          badge two taps deep and invisible until you go looking is not a badge.
+          Renders nothing at all unless someone is signed in. */}
+      <NotificationBell hidden={hidden} />
+
       <StaggeredMenu
         className={hidden ? 'nav-hidden' : undefined}
         position="right"

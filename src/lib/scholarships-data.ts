@@ -155,4 +155,44 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
     link: 'https://www.acu.ac.uk/our-work/queen-elizabeth-commonwealth-scholarships/',
   },
 
+  {
+    slug: 'utrecht-leg-international-talent',
+    title: 'Law, Economics and Governance International Talent Scholarship',
+    provider: 'Utrecht University',
+    region: 'Netherlands',
+    level: "English-taught Master's at the Graduate School of Law, Economics and Governance",
+    funding: 'Full tuition plus one year of living costs at the level Dutch immigration requires',
+    deadline: 'Opens 1 November, closes 1 February 2027 for a September 2027 start',
+    status: 'open',
+    description:
+      'A faculty scholarship rather than a general one, which is what makes it unusually relevant: it is attached to the Law, Economics and Governance graduate school, so an LL.M there is squarely in scope rather than competing against every subject in the university. About six are awarded a year.',
+    eligibility: [
+      'Open to non-EU applicants, so Nigerian nationality is no barrier',
+      'A secondary education qualification from outside the Netherlands',
+      'Admitted to an English-taught master at the Faculty of Law, Economics and Governance',
+      'Judged on academic record, career achievement and community involvement',
+    ],
+    link: 'https://www.uu.nl/en/masters/general-information/application-and-admission/scholarships-and-grants/law-economics-and-governance-international-talent-scholarship',
+  },
+  {
+    slug: 'maastricht-nl-high-potential',
+    title: 'Maastricht University NL-High Potential Scholarship',
+    provider: 'Maastricht University',
+    region: 'Netherlands',
+    level: "Master's at Maastricht University",
+    funding: 'Around EUR 36,000: tuition waiver, a monthly stipend, visa and insurance',
+    deadline: 'Closes 1 February 2027',
+    status: 'open',
+    description:
+      'Twenty-one full awards a year, restricted to non-EU nationals, which is a far shorter queue than the open-to-all schemes. Maastricht has a substantial law faculty and a well-known set of LL.M programmes, so a Nigerian law graduate is applying into a real fit rather than an exception.',
+    eligibility: [
+      'Nationality outside the EU/EEA, Switzerland and Suriname, and no dual EU nationality',
+      'No previous degree-seeking study in the Netherlands',
+      'Aged 35 or under at the start of the programme',
+      'GPA of 7.5 out of 10 or better in your prior degree',
+      'Check the participating-programmes list for the cycle: not every faculty takes part every year',
+    ],
+    link: 'https://www.maastrichtuniversity.nl/studeren/toelating-inschrijving/financing-your-studies/scholarships/maastricht-university-nl-high',
+  },
+
 ]

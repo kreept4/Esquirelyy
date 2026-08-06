@@ -1485,7 +1485,8 @@ select.filter-pill {
   max-width: 52ch;
 }
 .news-note a {
-  color: var(--ink);
+  color: var(--mint-deep);
+  font-weight: 600;
   text-decoration: none;
   border-bottom: 1px solid rgba(36, 31, 22, 0.3);
 }
@@ -1706,7 +1707,8 @@ select.filter-pill {
 .about-cta:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #241F16; }
 .about-alt {
   font-size: 0.85rem;
-  color: var(--ink-muted);
+  color: var(--mint-deep);
+  font-weight: 600;
   text-decoration: none;
   border-bottom: 1.5px solid rgba(36, 31, 22, 0.35);
   padding-bottom: 1px;
@@ -1768,6 +1770,127 @@ select.filter-pill {
   line-height: 1.7;
   color: rgba(36, 31, 22, 0.78);
   max-width: 62ch;
+}
+
+/* NOTIFICATION BELL
+   Fixed to the header line, just left of the Menu toggle, and retracting with
+   it. Positioned rather than placed inside StaggeredMenu because that component
+   owns its own layout and animation; sitting outside it keeps the two from
+   fighting over the same transform.
+   ------------------------------------------------------------------------- */
+.notif {
+  position: fixed;
+  top: 1.5rem;
+  /* Clear of the toggle. StaggeredMenu pads its header 1.75rem and the toggle
+     is about 5rem wide, so this lands in the gap beside it. */
+  right: 8.5rem;
+  z-index: 60;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+}
+/* Retracts with the header rather than hanging in the middle of the page. */
+.notif-hidden {
+  transform: translateY(-160%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.notif-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+.notif-btn:hover { background: rgba(36, 31, 22, 0.08); }
+.notif-btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* The count, not just a dot. 3 is actionable in a way a dot is not. */
+.notif-badge {
+  position: absolute;
+  top: 0.05rem;
+  right: 0.05rem;
+  min-width: 1.05rem;
+  height: 1.05rem;
+  padding: 0 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #EF4444;
+  color: #FFFFFF;
+  font-size: 0.62rem;
+  line-height: 1;
+}
+
+.notif-panel {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  width: min(22rem, calc(100vw - 2rem));
+  max-height: min(28rem, 70vh);
+  overflow-y: auto;
+  background: #FFF8E5;
+  border: 2px solid #241F16;
+  box-shadow: 6px 7px 0 #241F16;
+}
+.notif-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1.5px solid rgba(36, 31, 22, 0.18);
+  position: sticky;
+  top: 0;
+  background: #FFF8E5;
+}
+.notif-panel-title { font-size: 0.88rem; color: #1A1A1A; }
+.notif-panel-note { font-size: 0.72rem; color: var(--ink-muted); }
+
+.notif-empty {
+  padding: 1.25rem 1rem 1.5rem;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--ink-muted);
+}
+
+.notif-list { list-style: none; margin: 0; padding: 0; }
+.notif-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(36, 31, 22, 0.1);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+.notif-item:hover { background: rgba(36, 31, 22, 0.05); }
+.notif-list li:last-child .notif-item { border-bottom: none; }
+
+.notif-dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; margin-top: 0.42rem; flex-shrink: 0; }
+.notif-item-main { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.notif-item-kind { font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
+.notif-item-title { font-size: 0.84rem; line-height: 1.3; color: #1A1A1A; }
+.notif-item-detail { font-size: 0.76rem; line-height: 1.4; color: var(--ink-muted); }
+.notif-item-time { font-size: 0.7rem; color: var(--ink-muted); white-space: nowrap; padding-top: 0.15rem; }
+
+@media (max-width: 640px) {
+  .notif { top: 1.15rem; right: 6.75rem; }
+  .notif-btn { width: 2.1rem; height: 2.1rem; }
+  .notif-panel { right: -1rem; width: calc(100vw - 2rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notif { transition: opacity 0.2s ease; }
+  .notif-hidden { transform: none; }
 }
 
 /* FORWARD LINK
@@ -2057,13 +2180,14 @@ select.filter-pill {
 .amb-apply-cta:hover { transform: translateY(-2px); background: var(--mint-deep); }
 .amb-apply-alt {
   font-size: 0.85rem;
-  color: var(--ink-muted);
+  color: var(--mint-deep);
+  font-weight: 600;
   text-decoration: none;
-  border-bottom: 1px solid rgba(36, 31, 22, 0.3);
+  border-bottom: 1.5px solid rgba(16, 161, 146, 0.45);
   padding-bottom: 1px;
   transition: color 0.18s ease, border-color 0.18s ease;
 }
-.amb-apply-alt:hover { color: var(--ink); border-color: var(--ink); }
+.amb-apply-alt:hover { color: var(--mint-deep); border-color: var(--mint-deep); }
 
 @media (prefers-reduced-motion: reduce) {
   .amb-apply-cta:hover { transform: none; }
@@ -2269,10 +2393,11 @@ select.filter-pill {
 }
 .faq-answer p + p { margin-top: 0.85rem; }
 .faq-answer a {
-  color: var(--ink);
+  color: var(--mint-deep);
+  font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 2px;
-  text-decoration-thickness: 0.5px;
+  text-decoration-thickness: 1px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2300,9 +2425,9 @@ select.filter-pill {
 .faq-tail-cta {
   display: inline-block;
   font-size: 0.85rem;
-  color: var(--ink);
+  color: var(--mint-deep);
   text-decoration: none;
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 1.5px solid var(--mint-deep);
   padding-bottom: 2px;
 }
 
@@ -3312,7 +3437,7 @@ select.filter-pill {
 }
 
 .legal-clause strong { color: var(--ink); font-weight: 600; }
-.legal-clause a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+.legal-clause a { color: var(--mint-deep); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
 .legal-clause code {
   font-family: var(--font-mono);
   font-size: 0.85em;
