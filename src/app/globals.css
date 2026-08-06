@@ -31,10 +31,6 @@
      cannot 404. */
   /* Contour texture. Goes on the cream AROUND an amber panel, never inside it:
      on the amber it lifted the ground toward the ink and swallowed the type. */
-  /* Carton stock for the filter controls: a 6px woven tile at low alpha. Small
-     enough to read as paper grain rather than as a pattern. */
-  --carton-weave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6' viewBox='0 0 6 6'%3E%3Cg stroke='%23241F16' stroke-opacity='0.09' stroke-width='0.6'%3E%3Cpath d='M0 0.5H6'/%3E%3Cpath d='M0.5 0V6'/%3E%3C/g%3E%3C/svg%3E");
-
   --contour: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23241F16' stroke-opacity='0.28' stroke-width='1.5'%3E%3Cpath d='M0 20c26-14 54 14 80 0s54-14 80 0'/%3E%3Cpath d='M0 47c26-11 54 11 80 0s54-11 80 0'/%3E%3Cpath d='M0 74c26-16 54 16 80 0s54-16 80 0'/%3E%3Cpath d='M0 101c26-9 54 9 80 0s54-9 80 0'/%3E%3Cpath d='M0 128c26-15 54 15 80 0s54-15 80 0'/%3E%3C/g%3E%3C/svg%3E");
   --amber-pattern-unused: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'><g fill='none' stroke='%23ffffff' stroke-opacity='0.16' stroke-width='1.4'><path d='M0 15c20 -8 40 -8 60 0c20 8 40 8 60 0'/><path d='M0 45c20 -8 40 -8 60 0c20 8 40 8 60 0'/><path d='M0 75c20 -8 40 -8 60 0c20 8 40 8 60 0'/><path d='M0 105c20 -8 40 -8 60 0c20 8 40 8 60 0'/></g></svg>");
   --on-amber: #241F16;
@@ -301,7 +297,6 @@ body {
   font-size: 0.8rem;
   color: var(--ink);
   background-color: #FFF8E5;
-  background-image: var(--carton-weave);
   border: 1px solid rgba(36, 31, 22, 0.3);
   border-radius: 999px;
   outline: none;
@@ -349,7 +344,6 @@ select.filter-pill {
 .page-header-ink .field {
   color: var(--ink);
   background-color: #FFF8E5;
-  background-image: var(--carton-weave);
   border-color: rgba(36, 31, 22, 0.3);
 }
 .page-header-ink .field::placeholder {
@@ -362,7 +356,6 @@ select.filter-pill {
 .page-header-ink .filter-pill {
   color: var(--ink);
   background-color: #FFF8E5;
-  background-image: var(--carton-weave);
   border-color: rgba(36, 31, 22, 0.3);
 }
 .page-header-ink .filter-pill:hover {
@@ -648,7 +641,6 @@ select.filter-pill {
   font-size: 0.88rem;
   color: var(--ink);
   background-color: #FFF8E5;
-  background-image: var(--carton-weave);
   border: 1px solid rgba(36, 31, 22, 0.3);
   border-radius: 999px;
   outline: none;
@@ -662,7 +654,6 @@ select.filter-pill {
   font-size: 0.82rem;
   color: var(--ink);
   background-color: #FFF8E5;
-  background-image: var(--carton-weave);
   border: 1px solid rgba(36, 31, 22, 0.3);
   border-radius: 999px;
   cursor: pointer;
@@ -685,7 +676,6 @@ select.filter-pill {
   font-size: 0.8rem;
   color: var(--ink);
   background-color: #FFF8E5;
-  background-image: var(--carton-weave);
   border: 1px solid rgba(36, 31, 22, 0.3);
   border-radius: 999px;
   cursor: pointer;

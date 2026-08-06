@@ -74,21 +74,8 @@ export const KIND_LABEL: Record<NewsKind, string> = {
  * An invented headline on a careers platform is worse than an empty carousel:
  * students act on this.
  *
- * ⚠ REORDERING OR REMOVING A SLIDE CHANGES ITS COLOUR.
- * The carousel assigns a palette by position, and each illustration has had its
- * near-white areas baked to the colour of the slide it lands on so the artwork
- * sits in the field rather than on a white card. Change the order and those
- * baked colours no longer match. Current mapping, after sorting:
- *
- *   1 nba-president-elect       sky      (no artwork)
- *   2 virtual-internships       orange   (logos, colour-independent)
- *   3 directory-at-44           violet   (logos, colour-independent)
- *   4 speculative-applications  green    file-searching.svg
- *   5 ambassadors-open          red      ambassador.svg
- *   6 cv-tools-live             teal     writing-letter.svg
- *
- * After any reorder, re-run scripts/recolour-illustrations.mjs with the new
- * targets. Logo slides are unaffected.
+ * Order is free. Every slide is drawn on carton now, so position no longer
+ * decides a palette and nothing has to be re-baked after a reorder.
  */
 const ITEMS: NewsItem[] = [
   {

@@ -23,12 +23,10 @@ function LoginForm() {
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) { setError(error.message); setLoading(false); return }
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      const { data: profile } = await supabase.from('profiles').select('onboarding_complete').eq('id', user.id).single()
-      if ((profile as any)?.onboarding_complete) router.push(redirect)
-      else router.push('/auth/onboarding')
-    }
+    // Straight to wherever they were going. The onboarding step asked three
+    // questions the homepage quiz already asks and put a screen between a
+    // correct password and the page the visitor came for.
+    router.push(redirect)
   }
 
   async function handleGoogle() {
