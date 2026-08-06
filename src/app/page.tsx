@@ -7,6 +7,8 @@ import ScrollColorSection from '@/components/layout/ScrollColorSection'
 import QuickQuestions from '@/components/features/QuickQuestions'
 import RolePit from '@/components/features/RolePit'
 import EverythingYouNeed from '@/components/features/EverythingYouNeed'
+import NewsCarousel from '@/components/features/NewsCarousel'
+import { getNewsItems } from '@/lib/news-data'
 import { FIRMS_WITH_LOGOS, firmLogo } from '@/lib/firms-data'
 import LogoFrame from '@/components/ui/LogoFrame'
 
@@ -60,7 +62,9 @@ export default async function HomePage() {
         </div>
       </div>
 
-      
+      {/* Between the ticker and the pit, still inside the dark run, so the
+          glass panel has ink behind it to be glass against. */}
+      <NewsCarousel items={getNewsItems()} />
 
       <RolePit listings={openRoles} />
 

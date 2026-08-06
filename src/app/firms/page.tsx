@@ -147,8 +147,22 @@ export default function FirmsPage() {
             </div>
         </PageHeader>
 
+        {/* One practical note, placed where someone is about to pick a firm and
+            write to it rather than buried in the FAQ. Addressing a letter to a
+            named person is the single cheapest thing that separates an
+            application that gets read from one that gets filed. */}
+        <div className="shell firms-tip-wrap">
+          <p className="grotesk-regular firms-tip">
+            <span className="grotesk-bold">Before you write:</span> find the name of the person who
+            will actually read it. A letter addressed to the recruitment manager, the HR lead or the
+            partner running the practice you want lands very differently from one that opens
+            &ldquo;Dear Sir/Madam&rdquo;. Most firms list their team on their own site, and LinkedIn
+            fills the gaps. If you genuinely cannot find a name, address it to the practice, not to
+            nobody.
+          </p>
+        </div>
 
-        <div className="shell" style={{ padding: '2rem' }}>
+        <div className="shell" style={{ padding: '0 2rem 2rem' }}>
           {filtered.length === 0 ? (
             <EmptyState
               heading="No firms match that."

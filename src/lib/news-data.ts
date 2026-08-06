@@ -1,0 +1,210 @@
+/**
+ * Headlines, product updates and tips for the homepage carousel and /news.
+ *
+ * Kept as a typed file in the repo rather than a Supabase table, deliberately.
+ * The homepage is statically generated on an hourly revalidate, so a file is
+ * baked in at build time and costs nothing at runtime, where a table would add
+ * a query to a page that currently makes exactly one. Volume here is a handful
+ * of items a month, which does not pay for a table plus the admin screen it
+ * would need to be usable. And the tip slides state things about named firms,
+ * which ought to go through a commit rather than be pasteable into a row.
+ *
+ * If that stops being true, `getNewsItems()` is the only thing a Supabase move
+ * has to replace; nothing else imports the array.
+ */
+
+export type NewsKind = 'update' | 'tip' | 'news'
+
+/**
+ * Optional artwork for a slide.
+ *
+ * Deliberately narrow. Press photographs of, say, an NBA election are owned by
+ * the outlets that took them, and Nigeria has fair dealing on a closed list
+ * rather than fair use, so lifting one for a homepage carousel is infringement
+ * whatever the intent. Only two sources are allowed here:
+ *
+ * `logos` renders firm marks already in the directory, which is the same
+ * editorial use they are shown under everywhere else on the site.
+ *
+ * `image` points at something in /public that we control: the recoloured
+ * Storyset illustrations, or artwork we commission. It is not an escape hatch
+ * for a hotlinked press photo.
+ */
+export type NewsMedia =
+  | { type: 'logos'; slugs: string[] }
+  | { type: 'image'; src: string; alt: string }
+  /**
+   * A photograph, bled to the edge of the panel rather than sat on a plate.
+   *
+   * `credit` is required, not optional, and it is rendered. A photograph of a
+   * real person reporting a real event is the one case where artwork carries a
+   * third party's rights, and the fair dealing that covers reporting current
+   * events under the Copyright Act 2022 expects sufficient acknowledgement.
+   * Making the field mandatory means a photo cannot be added without someone
+   * deciding what the credit says.
+   */
+  | { type: 'photo'; src: string; alt: string; credit: string }
+
+export interface NewsItem {
+  slug: string
+  kind: NewsKind
+  /** ISO date. Sorts the list and prints on the news page. */
+  date: string
+  title: string
+  /** One or two sentences. This is what the carousel shows. */
+  summary: string
+  /** Optional destination. Internal paths get a router link, external a new tab. */
+  href?: string
+  cta?: string
+  /** Optional. A slide reads perfectly well without one. */
+  media?: NewsMedia
+}
+
+/** Label shown on a slide. Kept here so the carousel and the news page agree. */
+export const KIND_LABEL: Record<NewsKind, string> = {
+  update: "What's new",
+  tip: 'Did you know',
+  news: 'In the news',
+}
+
+/**
+ * Newest first is enforced by getNewsItems(), so entries can be added anywhere.
+ *
+ * Only put something in `news` when there is a real, checkable story behind it.
+ * An invented headline on a careers platform is worse than an empty carousel:
+ * students act on this.
+ *
+ * ⚠ REORDERING OR REMOVING A SLIDE CHANGES ITS COLOUR.
+ * The carousel assigns a palette by position, and each illustration has had its
+ * near-white areas baked to the colour of the slide it lands on so the artwork
+ * sits in the field rather than on a white card. Change the order and those
+ * baked colours no longer match. Current mapping, after sorting:
+ *
+ *   1 nba-president-elect       sky      (no artwork)
+ *   2 virtual-internships       orange   (logos, colour-independent)
+ *   3 directory-at-44           violet   (logos, colour-independent)
+ *   4 speculative-applications  green    file-searching.svg
+ *   5 ambassadors-open          red      ambassador.svg
+ *   6 cv-tools-live             teal     writing-letter.svg
+ *
+ * After any reorder, re-run scripts/recolour-illustrations.mjs with the new
+ * targets. Logo slides are unaffected.
+ */
+const ITEMS: NewsItem[] = [
+  {
+    slug: 'nba-president-elect-2026',
+    kind: 'news',
+    date: '2026-08-06',
+    /* Checked against Punch, Daily Post, The Nation and Tribune, which agree on
+     * the name, the margin and the swearing-in date. Deliberately states the
+     * result and nothing further: several outlets also report a dispute around
+     * the election, and characterising that is not this carousel's job. */
+    title: 'Badejo-Okusanya SAN elected NBA President',
+    summary:
+      'Oyinkansola Badejo-Okusanya SAN takes 47 per cent of the vote to become only the second woman to lead the Nigerian Bar Association, after Priscilla Kuye in 1991. She is sworn in as the 33rd President on 21 August for a two-year term.',
+    href: 'https://punchng.com/full-list-winners-of-2026-nba-elections/',
+    cta: 'Full list of winners',
+    media: {
+      type: 'photo',
+      src: '/news/badejo-okusanya.jpg',
+      alt: 'Oyinkansola Badejo-Okusanya SAN',
+      credit: 'Photograph: The Unknown Nigeria',
+    },
+  },
+  {
+    slug: 'virtual-internships',
+    kind: 'tip',
+    date: '2026-08-06',
+    /* Supplied by the Esquirely team from direct knowledge of both firms. It
+     * names two firms and students outside Lagos will act on it, so if either
+     * arrangement changes this is the first slide to pull. */
+    title: 'Distance is not a barrier',
+    summary:
+      'Omaplex and Lekan Bamidele & Co both run virtual internships, so you can intern from anywhere in Nigeria. If you are not in Lagos or Abuja, start there.',
+    href: '/firms',
+    cta: 'See both firms',
+    media: { type: 'logos', slugs: ['omaplex', 'lekan-bamidele'] }
+  },
+  {
+    slug: 'directory-at-44',
+    kind: 'update',
+    date: '2026-08-06',
+    title: '44 firms in the directory',
+    summary:
+      'Every profile carries the practice areas, the real office addresses and the address to write to. Twelve firms added this week, including Duale Ovia & Alex-Adedipe, Paul Usoro & Co and SOOB.',
+    href: '/firms',
+    cta: 'Browse the firms directory',
+    media: {
+      type: 'logos',
+      slugs: [
+        'doa-law',
+        'paul-usoro',
+        'sofunde-osakwe',
+        'the-new-practice',
+        'odujinrin-adefulu',
+        'pavestones',
+        'alliance-law-firm',
+        'dd-dodo',
+      ],
+    }
+  },
+  {
+    slug: 'speculative-applications',
+    kind: 'tip',
+    date: '2026-08-05',
+    title: 'Most internships are never advertised',
+    summary:
+      'Nigerian firms fill them from letters students send directly. A short letter naming the practice area you want beats forty generic ones, and every profile in the directory carries the address.',
+    href: '/firms',
+    cta: 'Find a firm to write to',
+    media: { type: 'image', src: '/illustrations/file-searching.svg', alt: '' }
+  },
+  {
+    slug: 'ambassadors-open',
+    kind: 'update',
+    date: '2026-08-06',
+    title: 'Campus ambassador applications are open!',
+    summary:
+      'One workshop a semester inside your university law faculty, and you leave with a signed reference. Not paid, and we would rather say so here.',
+    href: '/ambassador',
+    cta: 'Read the terms',
+    media: { type: 'image', src: '/illustrations/ambassador.svg', alt: '' }
+  },
+  {
+    slug: 'cv-tools-live',
+    kind: 'update',
+    date: '2026-08-05',
+    title: 'CV review, cover letters and interview prep',
+    summary:
+      'All three are tuned to the Nigerian market and know what LL.B, B.L and call to the Bar actually mean. Your CV file is never stored, only the review.',
+    href: '/tools/cv-review',
+    cta: 'Try the CV review',
+    media: { type: 'image', src: '/illustrations/writing-letter.svg', alt: '' }
+  },
+]
+
+/**
+ * The single read point. Newest first, and tolerant of a malformed date so one
+ * bad entry cannot reorder or crash the homepage.
+ */
+export function getNewsItems(): NewsItem[] {
+  return [...ITEMS].sort((a, b) => {
+    const ta = Date.parse(a.date)
+    const tb = Date.parse(b.date)
+    if (Number.isNaN(ta) && Number.isNaN(tb)) return 0
+    if (Number.isNaN(ta)) return 1
+    if (Number.isNaN(tb)) return -1
+    return tb - ta
+  })
+}
+
+/** Long-form date for the news page. */
+export function formatNewsDate(iso: string): string {
+  const t = Date.parse(iso)
+  if (Number.isNaN(t)) return ''
+  return new Date(t).toLocaleDateString('en-NG', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}

@@ -33,18 +33,32 @@ const SKIN = {
   '#EDC4B8': '#A76D45',
   '#E0A99C': '#8B5733',
   '#B07A6E': '#653C24',
+  // Ambassador-amico ships a third ramp again.
+  '#C8856A': '#A76D45',
+  '#AF6152': '#653C24',
+  // Writing-a-letter-rafiki, a fourth.
+  '#EBB376': '#A76D45',
+  '#D58745': '#8B5733',
 }
 
 /** Storyset's blue-greys onto our ink. */
 const PALETTE = {
   '#263238': '#1A1A1A',
   '#455A64': '#4A4A4A',
+  '#37474F': '#3A3A3A',
   '#FF725E': '#EF4444', // accent, onto the one already in the design system
+  // Storyset picks a different signature colour per illustration. Mapping them
+  // onto stops the site already uses keeps a set of artwork drawn by different
+  // hands looking like one commission.
+  '#BA68C8': '#8B5CF6', // purple -> our violet
+  '#407BFF': '#38BDF8', // blue   -> our sky
 }
 
 const TARGETS = [
   { file: 'public/illustrations/file-searching.svg', maps: [SKIN, PALETTE] },
   { file: 'public/illustrations/404-illustration.svg', maps: [SKIN] },
+  { file: 'public/illustrations/ambassador.svg', maps: [SKIN, PALETTE] },
+  { file: 'public/illustrations/writing-letter.svg', maps: [SKIN, PALETTE] },
 ]
 
 for (const { file, maps } of TARGETS) {
