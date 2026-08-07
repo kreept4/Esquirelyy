@@ -163,7 +163,7 @@ const ITEMS: NewsItem[] = [
     date: '2026-08-05',
     title: 'CV review, cover letters and interview prep',
     summary:
-      'All three are tuned to the Nigerian market and know what LL.B, B.L and call to the Bar actually mean. Your CV file is never stored, only the review.',
+      'All three are tuned to the Nigerian market and know what LL.B, B.L and call to the Bar actually mean. Your CV file is never stored, only what the tools write from it.',
     href: '/tools/cv-review',
     cta: 'Try the CV review',
     media: { type: 'image', src: '/illustrations/writing-letter.svg', alt: '' }

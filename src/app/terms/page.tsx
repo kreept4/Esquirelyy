@@ -30,7 +30,7 @@ export default function TermsPage() {
   return (
     <LegalPage
       title="Terms of use"
-      updated="5 August 2026"
+      updated="7 August 2026"
       intro="What Esquirely is, what it is not, and where our responsibility begins and ends. Plain terms, because terms nobody reads protect nobody."
       summary={{
         heading: 'Headnote',
@@ -38,6 +38,7 @@ export default function TermsPage() {
           'We point you to opportunities other people published. We are not a recruiter and not a party to your application.',
           'Always read the employer’s own posting. Where it differs from our summary, theirs governs.',
           'The AI tools give suggestions, not advice. Check anything before you send it.',
+          'A CV we generate for you is yours. We claim nothing in it, and we cannot promise any system will parse it.',
           'Firm logos identify the firm. They do not mean the firm endorses us.',
           'We limit our liability as far as the law allows, and no further.',
         ],
@@ -85,13 +86,32 @@ export default function TermsPage() {
 
       <Clause n={3} heading="The career tools give suggestions, not advice">
         <p>
-          CV review, cover letter drafting and interview preparation are produced by an AI system.
-          Output can be wrong, incomplete or unsuitable for your situation, and it is not
+          CV review, CV generation, cover letter drafting and interview preparation are produced by an
+          AI system. Output can be wrong, incomplete or unsuitable for your situation, and it is not
           professional, legal or career advice.
         </p>
         <p>
           Read anything it produces, exercise your own judgement, and take responsibility for what you
           send to an employer. Do not submit output you have not checked.
+        </p>
+        <p>
+          <strong>Generating a CV is something you choose, not something a review triggers.</strong>{' '}
+          Reviewing a CV and generating one are separate actions, and we will not rewrite your CV
+          unless you ask for it.
+        </p>
+        <p>
+          <strong>A CV we generate for you is yours.</strong> We claim no ownership of it and no
+          licence over it. Use it, edit it, send it anywhere, with no credit to us.
+        </p>
+        <p>
+          Two things we cannot promise about it. The first is accuracy. The generator works from what
+          you gave it and is instructed never to invent an employer, a qualification, a date or an
+          achievement, but an AI system can still get something wrong, and a CV goes out under your
+          name and not ours. <strong>Read every line before you send it, and correct anything that is
+          not true of you.</strong> The second is compatibility. We build the document to be read
+          cleanly by applicant tracking systems, but those systems are numerous, private and change
+          without notice. We cannot guarantee any given employer&rsquo;s software will parse it, that
+          a score will improve, or that you will be shortlisted.
         </p>
       </Clause>
 
@@ -113,6 +133,10 @@ export default function TermsPage() {
           The site design, our written summaries, and the way the information is organised belong to
           Esquirely. You may read, link to and share it. You may not scrape it, republish it in bulk,
           or use it to build a competing database.
+        </p>
+        <p>
+          This clause does not reach what the tools write for you. Your reviews, cover letters and
+          generated CVs are yours, as clause 3 says.
         </p>
       </Clause>
 
@@ -154,7 +178,12 @@ export default function TermsPage() {
             withdrawn
           </li>
           <li>
-            we are not liable for reliance on career tool output that you did not check
+            we are not liable for reliance on career tool output that you did not check, including
+            sending a generated CV to an employer without reading it
+          </li>
+          <li>
+            we are not liable for an applicant tracking system failing to parse, rank or accept a
+            document produced by the tools
           </li>
           <li>
             we are not liable for indirect or consequential loss, or for loss of profit, opportunity,

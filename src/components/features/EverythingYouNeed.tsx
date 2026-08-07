@@ -411,7 +411,7 @@ function Preview({ kind }: { kind: string }) {
             </svg>
           </div>
           <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: tone.soft, lineHeight: 1.6, marginTop: '0.5rem' }}>
-            No. The file is read to produce your review and never written to disk. Only the review text is saved, to your account.
+            Not the file. That is read to produce your review and never written to disk. What we save is what the tools write: your review, and any CV you generate.
           </p>
         </Row>
 

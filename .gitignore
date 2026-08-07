@@ -33,3 +33,8 @@ next-env.d.ts
 .vercel
 .env*
 firm-addresses.json
+
+# Test fixtures for scripts/test-cv-generate.mjs. Real CVs and real reviews,
+# pulled from the database to exercise the generator against actual data.
+# Personal information: generated locally, never committed.
+scripts/fixtures/

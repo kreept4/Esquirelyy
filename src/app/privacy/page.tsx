@@ -17,6 +17,13 @@ export const metadata = {
  *   - CV files are parsed in memory and NOT persisted anywhere; only extracted
  *     text is sent to Anthropic, and the buffer is discarded when the request
  *     ends. That is a genuine minimisation point and worth stating plainly.
+ *   - what the tools WRITE is persisted, and that is the part people get wrong.
+ *     `cv_reviews.result.rewrites[].original` quotes your CV back verbatim, so
+ *     employer names, dates and degree details are in that row. `cv_generations`
+ *     holds a whole generated CV. Saying "your CV is not stored" full stop was
+ *     therefore always slightly generous, and is untenable now. The line the
+ *     page takes instead is the one that is actually true: we do not keep your
+ *     file, we keep what the tools produce from it.
  *
  * If any of that changes, this page has to change with it. A notice that
  * describes a system you no longer run is worse than no notice, because it is
@@ -26,13 +33,13 @@ export default function PrivacyPage() {
   return (
     <LegalPage
       title="Privacy"
-      updated="5 August 2026"
+      updated="7 August 2026"
       intro="What we collect, why we collect it, who else sees it, and what you can make us do about it. Written to be read, not to be survived."
       summary={{
         heading: 'Headnote',
         points: [
           'We collect your email, three optional profile preferences, and whatever you put in the tracker.',
-          'Your CV is never stored. It is read, analysed, and discarded.',
+          'Your CV file is never stored. What the tools write from it is: the review, and any CV you generate.',
           'Three processors: Supabase, Anthropic and Vercel. Nobody else.',
           'We do not sell your data or pass it to employers.',
           'You can ask us to show it, fix it or delete it, free, within 30 days.',
@@ -69,6 +76,13 @@ export default function PrivacyPage() {
             and interview practice answers.
           </li>
           <li>
+            <strong>What the tools write back.</strong> Saved against your account so you can reopen
+            it: your CV reviews, your drafted cover letters, your interview question sets, and any
+            CV you ask us to generate. A review quotes lines from your CV back to you so you can see
+            the rewrite, and a generated CV contains your name, contact details and full history, so
+            treat these as holding the same personal data your CV does.
+          </li>
+          <li>
             <strong>Browser storage.</strong> If you answer the questions on the home page without an
             account, your answers are kept in your own browser under the key{' '}
             <code>esquirely:prefs</code>. That never reaches us until you create an account.
@@ -84,13 +98,30 @@ export default function PrivacyPage() {
         </p>
       </Clause>
 
-      <Clause n={2} heading="Your CV is not stored">
+      <Clause n={2} heading="Your CV file is not stored. What we write from it is.">
         <p>
-          This is worth stating on its own because it is unusual. When you use the CV review tool,
-          your file is read into memory, the text is extracted, and that text is sent for analysis.
-          The file itself is <strong>never written to our database, our servers, or any storage
-          bucket</strong>. When the request finishes, it is gone. If you want the feedback later, save
-          it yourself, because we cannot retrieve it for you.
+          This one deserves its own clause because it is easy to state too generously, and we would
+          rather draw the line in the right place than in the flattering place.
+        </p>
+        <p>
+          <strong>The file you upload is never kept.</strong> It is read into memory, the text is
+          extracted, that text is sent for analysis, and the buffer is dropped when the request ends.
+          It is not written to our database, our servers, or any storage bucket. We keep the file
+          name so your history is recognisable, and nothing else of the document itself.
+        </p>
+        <p>
+          <strong>The output is kept, and the output contains your CV.</strong> A review saves the
+          scores, the feedback, and the rewritten bullets, and a rewritten bullet necessarily quotes
+          your original line so you can compare the two. Your employers, dates, degree and matters
+          are therefore in that record. If you generate an ATS-optimised CV, we save the finished
+          document against your account so you can download it again, and that document holds your
+          name, phone number, email address and full career history.
+        </p>
+        <p>
+          So the accurate summary is not that we do not have your CV. It is that we never keep the
+          file you sent, and we do keep what the tools made from it, because a history you cannot
+          reopen is not a history. All of it is tied to your account, none of it is shown to anyone
+          else, and clause 7 tells you how to make us delete it.
         </p>
       </Clause>
 
@@ -102,8 +133,10 @@ export default function PrivacyPage() {
             the service does not function without them.
           </li>
           <li>
-            <strong>Consent.</strong> Profile preferences and anything you put into the career tools.
-            You give it deliberately and you can withdraw at any time.
+            <strong>Consent.</strong> Profile preferences, anything you put into the career tools,
+            and the reviews, letters and generated CVs we save back against your account. You give it
+            deliberately, generating a CV is a separate step you have to choose, and you can withdraw
+            at any time.
           </li>
           <li>
             <strong>Legitimate interests.</strong> Security logging and preventing abuse, balanced
@@ -123,9 +156,10 @@ export default function PrivacyPage() {
             profile and tracker entries.
           </li>
           <li>
-            <strong>Anthropic</strong> for the AI behind CV review, cover letter drafting and
-            interview preparation. Receives the text you submit to those tools, and nothing else. It
-            does not receive your account details or tracker.
+            <strong>Anthropic</strong> for the AI behind CV review, CV generation, cover letter
+            drafting and interview preparation. Receives the text you submit to those tools, and
+            nothing else. It does not receive your account details or tracker, and it does not use
+            what you send to train its models.
           </li>
           <li>
             <strong>Vercel</strong> for hosting and delivery. Handles technical logs.
@@ -151,10 +185,19 @@ export default function PrivacyPage() {
         <ul>
           <li>Account, profile and tracker data: for as long as your account exists.</li>
           <li>
+            Uploaded CV files: not retained at all, as set out in clause 2. Only the file name
+            survives the request.
+          </li>
+          <li>
+            Saved tool output, meaning reviews, cover letters, interview question sets and generated
+            CVs: for as long as your account exists, or until you ask us to remove it. We do not
+            expire them on a timer, because the point of saving them is that they are there when you
+            come back.
+          </li>
+          <li>
             After you delete your account: removed within 30 days, except anything we must keep by
             law.
           </li>
-          <li>CV files: not retained at all, as set out in clause 2.</li>
           <li>Technical logs: kept for a short period for security and diagnostics.</li>
         </ul>
       </Clause>
@@ -169,6 +212,11 @@ export default function PrivacyPage() {
           <li>hand it over in a portable format</li>
           <li>stop relying on consent you have withdrawn</li>
         </ul>
+        <p>
+          That includes deleting one item rather than everything. If you want a single review or a
+          single generated CV gone but want to keep your account, say which one and we will remove
+          it. You do not have to justify the request.
+        </p>
         <p>
           Write to us and we will respond within 30 days. Exercising these rights costs nothing. If
           you are not satisfied with our answer you can complain to the Nigeria Data Protection

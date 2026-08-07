@@ -21,6 +21,12 @@ export const metadata = {
  * that only says yes is marketing, and the two questions people actually worry
  * about here are whether their CV is being kept and whether this is a job
  * guarantee. Both are answered first and answered honestly.
+ *
+ * "Do you keep my CV?" used to be a flat no. It is now a qualified no, because
+ * the generator saves a finished CV against the account and a review already
+ * quotes the original bullets back. The honest answer is longer than the
+ * comfortable one, and it leads the page anyway. If the storage model changes
+ * again, this answer and clause 2 of the privacy notice move together.
  */
 
 type QA = { q: string; a: React.ReactNode }
@@ -39,24 +45,61 @@ const GROUPS: Group[] = [
         a: (
           <>
             <p>
-              No. When you upload a CV for review, the file is read in memory to pull out the text,
-              the text is sent for review, and the file is discarded. It is never written to disk
-              and never stored in our database.
+              Not the file. When you upload a CV, it is read in memory to pull out the text, the text
+              is sent for review, and the file is discarded. It is never written to disk and never
+              stored in our database. We keep the file name so your history is recognisable, and
+              nothing else of the document itself.
             </p>
             <p>
-              What we do save is the review itself, against your account, so you can open it again
-              later. You can see exactly what that covers in the{' '}
-              <Link href="/privacy">privacy policy</Link>.
+              We do save what the tools write. That means the review, and any CV you generate. It is
+              worth being blunt about what that contains: a review quotes your own bullets back at
+              you so you can see the rewrite, so your employers and dates are in it, and a generated
+              CV is a full CV with your name, phone number and email on it. Saying we do not have
+              your CV would be too neat. We do not have your <em>file</em>, and we do have what we
+              made from it.
+            </p>
+            <p>
+              All of it sits against your account, none of it is shown to anyone else, and you can
+              have any of it deleted. The <Link href="/privacy">privacy policy</Link> sets out the
+              detail in clause 2.
             </p>
           </>
+        ),
+      },
+      {
+        q: 'What happens to a CV the generator writes for me?',
+        a: (
+          <>
+            <p>
+              It is saved against your account so you can download it again instead of regenerating
+              it, and it appears in your history alongside your reviews. Nobody else sees it. We do
+              not send it to employers, and there is no version of Esquirely where a firm browses
+              candidate CVs.
+            </p>
+            <p>
+              It is also yours outright. We claim no ownership and no licence over it, so edit it,
+              rename it and send it wherever you like without crediting us.
+            </p>
+          </>
+        ),
+      },
+      {
+        q: 'Can I delete a saved review or a generated CV without deleting my account?',
+        a: (
+          <p>
+            Yes. Tell us which one and it goes, and you do not have to give a reason. There is no
+            delete button in the history drawer yet, so for now it is an email rather than a click,
+            which is slower than it should be and is on the list to fix.
+          </p>
         ),
       },
       {
         q: 'Is my CV used to train an AI model?',
         a: (
           <p>
-            No. Your CV goes to Anthropic&rsquo;s API to generate your review and is not used to
-            train any model. We do not sell, share, or license anything you upload.
+            No. Your CV goes to Anthropic&rsquo;s API to produce your review or to write your new
+            CV, and is not used to train any model. We do not sell, share, or license anything you
+            upload or anything the tools write for you.
           </p>
         ),
       },
@@ -64,9 +107,9 @@ const GROUPS: Group[] = [
         q: 'Can I delete my account and everything in it?',
         a: (
           <p>
-            Yes. Write to us and we will delete your account and every review, cover letter and
-            interview session attached to it. Under the Nigeria Data Protection Act 2023 that is
-            your right, not a favour.
+            Yes. Write to us and we will delete your account and every review, generated CV, cover
+            letter and interview session attached to it. Under the Nigeria Data Protection Act 2023
+            that is your right, not a favour.
           </p>
         ),
       },
@@ -142,10 +185,39 @@ const GROUPS: Group[] = [
               actually ask, then critiques your answers.
             </p>
             <p>
-              All three are tuned to the Nigerian market, so they understand LL.B, B.L, call to bar
+              All of them are tuned to the Nigerian market, so they understand LL.B, B.L, call to bar
               and NYSC rather than treating them as noise.
             </p>
           </>
+        ),
+      },
+      {
+        q: 'What is the difference between reviewing a CV and generating one?',
+        a: (
+          <>
+            <p>
+              A review tells you what is wrong and shows you stronger versions of your own lines. You
+              then go and edit your CV yourself. Generating takes the same findings and writes the
+              whole document for you, formatted to survive an applicant tracking system, and hands
+              you a Word file and a PDF.
+            </p>
+            <p>
+              They are separate choices. Reviewing does not generate anything, and you can generate
+              without reviewing first. Nothing gets rewritten unless you press the button.
+            </p>
+          </>
+        ),
+      },
+      {
+        q: 'Will a generated CV get me past the ATS?',
+        a: (
+          <p>
+            It is built to. Standard headings, clean dates, no tables, no columns, no graphics, and a
+            real text layer, which is most of what those systems trip over. But they are numerous,
+            private, and change without telling anyone, so nobody can honestly guarantee a given
+            employer&rsquo;s software will parse a given file. Anyone promising you a score is
+            guessing.
+          </p>
         ),
       },
       {
@@ -161,8 +233,8 @@ const GROUPS: Group[] = [
         q: 'Do I need an account?',
         a: (
           <p>
-            For the tools, yes, so your reviews are saved and you can come back to them. Browsing
-            jobs, scholarships and firms needs nothing at all.
+            For the tools, yes, so your reviews and generated CVs are saved and you can come back to
+            them. Browsing jobs, scholarships and firms needs nothing at all.
           </p>
         ),
       },
