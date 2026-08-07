@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import TrackOnApply from '@/components/features/TrackOnApply'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
@@ -225,9 +226,18 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
               <p className="grotesk-bold apply-card-title">Apply for this role</p>
 
               {applyHref ? (
-                <a href={applyHref} target="_blank" rel="noopener noreferrer" className="grotesk-bold apply-card-cta">
-                  {job.apply_url ? 'Apply now' : 'Apply by email'} <ExternalLink size={14} />
-                </a>
+                <TrackOnApply
+                  href={applyHref}
+                  kind={job.apply_url ? 'external' : 'email'}
+                  label={job.apply_url ? 'Apply now' : 'Apply by email'}
+                  target={{
+                    firm: job.employer,
+                    role: job.title,
+                    type: job.type === 'internship' ? 'Internship' : 'Full-time',
+                    location: job.location,
+                    deadline: job.deadline ?? null,
+                  }}
+                />
               ) : (
                 <p className="grotesk-regular apply-card-note">
                   No application link was published for this role.

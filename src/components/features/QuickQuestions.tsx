@@ -83,16 +83,23 @@ export default function QuickQuestions() {
       const supabase = createClient()
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
-        await (supabase as any).from('profiles').upsert({
+        /* Errors used to be dropped twice over: the upsert's own error was
+         * never read, and the catch below swallowed anything thrown. Between
+         * them they hid a missing GRANT on `profiles` that made every one of
+         * these writes fail. The localStorage copy above is why nothing was
+         * visibly wrong: the quiz kept working, it just never persisted. */
+        const { error } = await (supabase as any).from('profiles').upsert({
           id: user.id,
           career_stage: final.stage,
           goals: final.goal,
           location: final.city === 'Anywhere' ? null : final.city,
           updated_at: new Date().toISOString(),
         })
+        if (error) console.error('[quiz] could not save profile', error)
       }
-    } catch {
-      // Never block the visitor on a profile write.
+    } catch (err) {
+      // Never block the visitor on a profile write, but do not hide it either.
+      console.error('[quiz] could not save profile', err)
     }
   }
 

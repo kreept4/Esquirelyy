@@ -1,58 +1,85 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import {
+  Plus, X, MapPin, ChevronDown, Trash2, ArrowRight, Check,
+  FileText, PenLine, MessagesSquare,
+} from 'lucide-react'
 import Footer from '@/components/layout/Footer'
+import BrandLoader from '@/components/ui/BrandLoader'
 import { createClient } from '@/lib/supabase/client'
 
-function IconPlus({ size = 16 }: { size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-}
-function IconX({ size = 16 }: { size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-}
-function IconCalendar({ size = 14 }: { size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-}
-function IconMapPin({ size = 14 }: { size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
-}
-function IconChevronDown({ size = 14 }: { size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
-}
-function IconSend({ size = 16 }: { size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
-}
-function IconInbox({ size = 40 }: { size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></svg>
-}
-function IconTrash({ size = 14 }: { size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>
-}
-function IconArrowRight({ size = 14 }: { size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
-}
+/**
+ * The tracker.
+ *
+ * What this replaced was a six-column kanban board at a 900px minimum width,
+ * built out of inline styles with its own private palette. Three things were
+ * wrong with it beyond the styling.
+ *
+ * A kanban is a project-management idiom and this is not a project. Six columns
+ * for a student with four applications is five empty boxes and one card, so the
+ * page's dominant visual statement was emptiness. It also could not be used on a
+ * phone at all, which is where most of this audience is.
+ *
+ * And it carried a panel offering to auto-log applications forwarded to
+ * "you@mail.esquirely.app". There is no such inbox, no parser and no address,
+ * and the button under it had no handler. That has been removed rather than
+ * restyled.
+ *
+ * What is here instead is a funnel and a ledger. The funnel answers the question
+ * the page is named for in one glance, and the ledger is the site's own row
+ * idiom, which works from 360px up to a television without a horizontal
+ * scrollbar.
+ */
 
-type UIStatus = 'Applied' | 'Assessment' | 'Interview I' | 'Interview II' | 'Offer' | 'Rejected'
-type DBStatus = 'applied' | 'assessment' | 'interview_1' | 'interview_2' | 'offer' | 'rejected'
+/* `Saved` is a shortlist, not a stage.
+ *
+ * It is what the bookmark on the jobs board writes, and it sits BEFORE the
+ * funnel rather than at the top of it: nothing has been sent, so counting a
+ * saved role as having "reached Applied" would overstate the top of the funnel
+ * and understate every conversion under it — the same reason Closed is counted
+ * beside the funnel rather than inside it. It leaves in one direction only: the
+ * moment someone taps Applied on a saved row it becomes an ordinary
+ * application and does not come back.
+ *
+ * No migration was needed. The live table has no CHECK constraint on `status`
+ * at all (verified 2026-08-07 — an insert of `bogus_value_xyz` was accepted),
+ * which also means nothing outside this file protects the column. */
+type UIStatus = 'Saved' | 'Applied' | 'Assessment' | 'First interview' | 'Second interview' | 'Offer' | 'Closed'
+type DBStatus = 'saved' | 'applied' | 'assessment' | 'interview_1' | 'interview_2' | 'offer' | 'rejected'
 
+/* DB values are unchanged. Only the labels moved.
+ *
+ * "Rejected" became "Closed" because the row holds more than rejections: a
+ * withdrawal, a role that got filled, a firm that never replied and a cycle that
+ * ended all land here, and naming the whole bucket after the worst case makes a
+ * tracker something you avoid opening. */
 const STATUS_TO_DB: Record<UIStatus, DBStatus> = {
+  'Saved': 'saved',
   'Applied': 'applied',
   'Assessment': 'assessment',
-  'Interview I': 'interview_1',
-  'Interview II': 'interview_2',
+  'First interview': 'interview_1',
+  'Second interview': 'interview_2',
   'Offer': 'offer',
-  'Rejected': 'rejected',
+  'Closed': 'rejected',
 }
 
 const STATUS_FROM_DB: Record<DBStatus, UIStatus> = {
+  'saved': 'Saved',
   'applied': 'Applied',
   'assessment': 'Assessment',
-  'interview_1': 'Interview I',
-  'interview_2': 'Interview II',
+  'interview_1': 'First interview',
+  'interview_2': 'Second interview',
   'offer': 'Offer',
-  'rejected': 'Rejected',
+  'rejected': 'Closed',
 }
+
+/** Order matters: this is the sequence the stepper advances through, and the
+ *  index is what the funnel uses to decide whether an application has reached a
+ *  given stage. Closed is outside the sequence because it is absorbing. */
+const LIVE_STAGES: UIStatus[] = ['Applied', 'Assessment', 'First interview', 'Second interview', 'Offer']
 
 interface Application {
   id: string
@@ -61,187 +88,412 @@ interface Application {
   type: string
   location: string
   dateApplied: string
+  appliedAt: number | null
   deadline: string
   status: UIStatus
   notes: string
 }
 
-const COLUMNS: { status: UIStatus; color: string; dot: string }[] = [
-  { status: 'Applied',      color: '#4A4A4A', dot: '#A0A0A0' },
-  { status: 'Assessment',   color: '#7B5E00', dot: '#D4A017' },
-  { status: 'Interview I',  color: '#0A4A7A', dot: '#3B82C4' },
-  { status: 'Interview II', color: '#0A3A6A', dot: '#1D6FB8' },
-  { status: 'Offer',        color: '#2D6A4F', dot: '#40916C' },
-  { status: 'Rejected',     color: '#8B1A1A', dot: '#C44040' },
-]
+/* Deadlines arrive two ways. TrackOnApply writes an ISO date off a listing;
+ * the manual form takes free text, because a lot of these are published as
+ * cycles rather than dates ("Rolling", "November intake"). Anything that does
+ * not parse is shown as written rather than dropped or guessed at. */
+function readDeadline(raw: string): { text: string; daysLeft: number | null } {
+  if (!raw) return { text: '', daysLeft: null }
+  const t = Date.parse(raw)
+  if (Number.isNaN(t)) return { text: raw, daysLeft: null }
+  const d = new Date(t)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const days = Math.round((d.getTime() - today.getTime()) / 86400000)
+  return {
+    text: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+    daysLeft: days,
+  }
+}
 
-function AppCard({ app, onStatusChange, onDelete, onNoteChange }: {
-  app: Application
-  onStatusChange: (id: string, status: UIStatus) => void
-  onDelete: (id: string) => void
-  onNoteChange: (id: string, note: string) => void
+function fmtDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+/* ------------------------------------------------------------------ funnel */
+
+/**
+ * Where the applications actually sit.
+ *
+ * Widths are proportional to how many applications reached each stage, not to
+ * how many are sitting in it right now. Reaching is inferred from the current
+ * stage's position in the sequence, which is the only history the table holds:
+ * an application at second interview must have been applied for.
+ *
+ * Closed applications are counted beside the funnel rather than inside it. We
+ * do not record how far one got before it closed, and quietly folding them into
+ * the "applied" bar would overstate the top and understate every conversion
+ * below it.
+ */
+function Funnel({
+  apps, active, onPick,
+}: {
+  apps: Application[]
+  active: UIStatus | null
+  onPick: (s: UIStatus | null) => void
 }) {
-  const [expanded, setExpanded] = useState(false)
-  const [showStatusMenu, setShowStatusMenu] = useState(false)
-  const [noteVal, setNoteVal] = useState(app.notes)
-  const col = COLUMNS.find(c => c.status === app.status)!
+  /* Saved rows would contribute nothing anyway — `LIVE_STAGES.indexOf('Saved')`
+     is -1, so they fail every `>= idx` test — but excluding them by name means
+     the counts do not depend on that coincidence holding. */
+  const live = apps.filter(a => a.status !== 'Closed' && a.status !== 'Saved')
+  const reached = LIVE_STAGES.map(stage => {
+    const idx = LIVE_STAGES.indexOf(stage)
+    return live.filter(a => LIVE_STAGES.indexOf(a.status) >= idx).length
+  })
+  const top = reached[0] || 1
 
   return (
-    <article style={{ backgroundColor: '#FDFAF5', border: '0.5px solid #E8E0D5', borderRadius: '3px', marginBottom: '0.6rem', overflow: 'hidden', transition: 'box-shadow 0.2s ease' }}
-      onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 4px 16px rgba(139,58,58,0.07)')}
-      onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-    >
-      <div style={{ height: '2px', backgroundColor: col.dot }} />
-      <div style={{ padding: '0.9rem 1rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.3rem' }}>
-          <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', fontWeight: 600, color: '#1A1A1A', lineHeight: 1.3, flex: 1 }}>{app.role}</p>
-          <button onClick={() => setExpanded(!expanded)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#A0A0A0', padding: '0', flexShrink: 0, marginTop: '2px' }}>
-            <div style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s ease' }}><IconChevronDown /></div>
+    <div className="trk-funnel" role="group" aria-label="Application stages">
+      {LIVE_STAGES.map((stage, i) => {
+        const count = reached[i]
+        const here = live.filter(a => a.status === stage).length
+        const prev = i > 0 ? reached[i - 1] : null
+        const isActive = active === stage
+
+        /* The first stage has nothing to convert from, so it reports how many
+         * are still sitting there rather than a percentage. Later stages report
+         * conversion, but only where the stage above them has anyone in it: a
+         * conversion rate off a denominator of zero is not 0%, it is undefined,
+         * and printing anything at all there says something untrue. */
+        const sub =
+          i === 0
+            ? (here === count ? 'sent' : `${here} still here`)
+            : prev && prev > 0
+              ? `${Math.round((count / prev) * 100)}% through`
+              : ''
+
+        return (
+          <button
+            key={stage}
+            type="button"
+            className="trk-stage"
+            data-active={isActive}
+            data-empty={count === 0}
+            /* Flex-grow on the reach count, with a floor, so a stage nobody has
+             * got to yet is still a legible hairline with its name on it rather
+             * than collapsing out of the row. An invisible stage would read as
+             * a stage that does not exist. */
+            style={{ flexGrow: Math.max(count / top, 0.22) }}
+            onClick={() => onPick(isActive ? null : stage)}
+            aria-pressed={isActive}
+          >
+            <span className="trk-stage-bar" aria-hidden />
+            <span className="display-black trk-stage-count">{count}</span>
+            <span className="grotesk-regular trk-stage-name">{stage}</span>
+            {sub && <span className="grotesk-regular trk-stage-sub">{sub}</span>}
           </button>
-        </div>
-        <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '0.6rem' }}>{app.firm}</p>
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', color: '#6A6A6A' }}><IconMapPin /> {app.location}</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '3px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', color: '#6A6A6A' }}><IconCalendar /> Applied {app.dateApplied}</span>
-        </div>
-        <span style={{ display: 'inline-block', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' as const, color: '#1A1A1A', backgroundColor: '#EBF0F7', padding: '2px 7px', borderRadius: '2px' }}>{app.type}</span>
-        {expanded && (
-          <div style={{ marginTop: '0.85rem', paddingTop: '0.85rem', borderTop: '0.5px solid #E8E0D5' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-              <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', color: '#6A6A6A' }}>Deadline</span>
-              <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.72rem', fontWeight: 600, color: '#1A1A1A' }}>{app.deadline}</span>
-            </div>
-            <textarea value={noteVal} onChange={e => setNoteVal(e.target.value)} onBlur={() => onNoteChange(app.id, noteVal)} placeholder="Add a note..." rows={2}
-              style={{ width: '100%', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', color: '#4A4A4A', backgroundColor: '#F5F0EB', border: '0.5px solid #E8E0D5', borderRadius: '2px', padding: '0.5rem 0.6rem', resize: 'none' as const, outline: 'none', lineHeight: 1.6, marginBottom: '0.75rem', boxSizing: 'border-box' as const }} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' as const }}>
-              <div style={{ position: 'relative' as const }}>
-                <button onClick={() => setShowStatusMenu(!showStatusMenu)}
-                  style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', fontWeight: 600, color: col.color, background: 'none', border: '0.5px solid currentColor', borderRadius: '999px', padding: '3px 8px', cursor: 'pointer', opacity: 0.85 }}>
-                  Move to <IconChevronDown size={11} />
-                </button>
-                {showStatusMenu && (
-                  <div style={{ position: 'absolute' as const, bottom: '110%', left: 0, backgroundColor: '#FDFAF5', border: '0.5px solid #E8E0D5', borderRadius: '3px', boxShadow: '0 8px 24px rgba(0,0,0,0.1)', zIndex: 10, minWidth: '140px', overflow: 'hidden' }}>
-                    {COLUMNS.filter(c => c.status !== app.status).map(c => (
-                      <button key={c.status} onClick={() => { onStatusChange(app.id, c.status); setShowStatusMenu(false) }}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.75rem', color: '#1A1A1A', background: 'none', border: 'none', padding: '0.6rem 0.9rem', cursor: 'pointer', textAlign: 'left' as const, borderBottom: '0.5px solid #F0EBE3' }}
-                        onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#F0EBE3')}
-                        onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}>
-                        <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: c.dot, flexShrink: 0 }} />{c.status}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <button onClick={() => onDelete(app.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#C0A0A0', padding: '4px', display: 'flex', alignItems: 'center' }} title="Remove application">
-                <IconTrash />
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </article>
+        )
+      })}
+    </div>
   )
 }
 
-function AddModal({ onClose, onAdd }: { onClose: () => void; onAdd: (app: Omit<Application, 'id'>) => Promise<void> }) {
-  const [form, setForm] = useState({ firm: '', role: '', type: 'Full-time', location: 'Lagos', dateApplied: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }), deadline: '', status: 'Applied' as UIStatus, notes: '' })
+/* -------------------------------------------------------------------- row */
+
+function LedgerRow({
+  app, index, onStatusChange, onDelete, onNoteChange,
+}: {
+  app: Application
+  index: number
+  onStatusChange: (id: string, s: UIStatus) => void
+  onDelete: (id: string) => void
+  onNoteChange: (id: string, n: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [note, setNote] = useState(app.notes)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const dl = readDeadline(app.deadline)
+  const stageIdx = LIVE_STAGES.indexOf(app.status)
+  const closed = app.status === 'Closed'
+
+  /* Urgency is only claimed where a real date parsed. A free-text cycle gets no
+   * colour, because "November to December" is not a countdown. */
+  const urgency =
+    dl.daysLeft === null ? '' : dl.daysLeft < 0 ? 'past' : dl.daysLeft <= 7 ? 'soon' : ''
+
+  return (
+    <li className="trk-row" data-open={open} data-closed={closed}>
+      <button
+        type="button"
+        className="trk-row-head"
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+      >
+        <span className="display-black trk-index" aria-hidden>
+          {String(index + 1).padStart(2, '0')}
+        </span>
+
+        <span className="trk-row-main">
+          <span className="grotesk-bold trk-firm">{app.firm}</span>
+          <span className="grotesk-regular trk-role">{app.role || 'Speculative application'}</span>
+          <span className="trk-meta">
+            {app.location && (
+              <span className="grotesk-regular trk-meta-item">
+                <MapPin size={12} aria-hidden /> {app.location}
+              </span>
+            )}
+            {app.type && <span className="tag-chip trk-type">{app.type}</span>}
+            {app.dateApplied && (
+              <span className="grotesk-regular trk-meta-item">Sent {app.dateApplied}</span>
+            )}
+          </span>
+        </span>
+
+        {/* The stage as a five-step gauge rather than a word in a coloured pill.
+            It shows position and distance at once: how far this one has come and
+            how far is left, which a pill cannot do. */}
+        <span className="trk-gauge" title={app.status}>
+          <span className="trk-gauge-pips" aria-hidden>
+            {LIVE_STAGES.map((_, i) => (
+              <span key={i} className="trk-pip" data-on={!closed && i <= stageIdx} />
+            ))}
+          </span>
+          <span className="grotesk-regular trk-gauge-label">{app.status}</span>
+        </span>
+
+        <span className="grotesk-regular trk-deadline" data-urgency={urgency}>
+          {dl.text
+            ? dl.daysLeft !== null && dl.daysLeft >= 0
+              ? `${dl.text} · ${dl.daysLeft}d`
+              : dl.text
+            : '—'}
+        </span>
+
+        <span className="trk-chev" aria-hidden><ChevronDown size={15} /></span>
+      </button>
+
+      {open && (
+        <div className="trk-row-body">
+          <div className="trk-stepper-wrap">
+            <p className="grotesk-regular trk-body-label">Move it along</p>
+            {/* A stepper, not a dropdown. Where an application is going next is
+                one tap, because that is the action people actually take, and the
+                whole sequence stays visible while they take it. */}
+            <div className="trk-stepper">
+              {LIVE_STAGES.map((s, i) => (
+                <button
+                  key={s}
+                  type="button"
+                  className="grotesk-regular trk-step"
+                  data-on={!closed && i <= stageIdx}
+                  data-current={!closed && i === stageIdx}
+                  onClick={() => onStatusChange(app.id, s)}
+                >
+                  <span className="trk-step-dot" aria-hidden>
+                    {!closed && i < stageIdx ? <Check size={10} strokeWidth={3} /> : null}
+                  </span>
+                  {s}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="grotesk-regular trk-step trk-step-closed"
+                data-on={closed}
+                data-current={closed}
+                onClick={() => onStatusChange(app.id, 'Closed')}
+              >
+                <span className="trk-step-dot" aria-hidden />
+                Closed
+              </button>
+            </div>
+          </div>
+
+          <div className="trk-note-wrap">
+            <label className="grotesk-regular trk-body-label" htmlFor={`n-${app.id}`}>
+              Notes
+            </label>
+            <textarea
+              id={`n-${app.id}`}
+              className="grotesk-regular trk-note"
+              value={note}
+              onChange={e => setNote(e.target.value)}
+              onBlur={() => note !== app.notes && onNoteChange(app.id, note)}
+              placeholder="Who you spoke to, what they asked, what to chase."
+              rows={3}
+            />
+            <div className="trk-row-actions">
+              {app.deadline && (
+                <span className="grotesk-regular trk-deadline-full">Closes {app.deadline}</span>
+              )}
+              {confirmDelete ? (
+                <span className="trk-confirm">
+                  <span className="grotesk-regular">Remove it?</span>
+                  <button type="button" className="grotesk-bold trk-confirm-yes" onClick={() => onDelete(app.id)}>Yes</button>
+                  <button type="button" className="grotesk-regular trk-confirm-no" onClick={() => setConfirmDelete(false)}>Keep</button>
+                </span>
+              ) : (
+                <button type="button" className="grotesk-regular trk-remove" onClick={() => setConfirmDelete(true)}>
+                  <Trash2 size={13} aria-hidden /> Remove
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </li>
+  )
+}
+
+/* ------------------------------------------------------------------ modal */
+
+function AddModal({ onClose, onAdd }: {
+  onClose: () => void
+  onAdd: (a: Omit<Application, 'id' | 'appliedAt'>) => Promise<void>
+}) {
+  const [form, setForm] = useState({
+    firm: '', role: '', type: 'Full-time', location: '',
+    dateApplied: fmtDate(new Date().toISOString()),
+    deadline: '', status: 'Applied' as UIStatus, notes: '',
+  })
   const [saving, setSaving] = useState(false)
-  const field = (key: keyof typeof form, val: string) => setForm(prev => ({ ...prev, [key]: val }))
+  const set = (k: keyof typeof form, v: string) => setForm(p => ({ ...p, [k]: v }))
+  const ready = form.firm.trim().length > 0
+
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    window.addEventListener('keydown', esc)
+    return () => window.removeEventListener('keydown', esc)
+  }, [onClose])
 
   async function submit() {
-    if (!form.firm.trim() || !form.role.trim()) return
+    if (!ready || saving) return
     setSaving(true)
     await onAdd(form)
-    setSaving(false)
     onClose()
   }
 
-  const inputStyle: React.CSSProperties = { width: '100%', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: '#1A1A1A', backgroundColor: '#F5F0EB', border: '0.5px solid #E8E0D5', borderRadius: '2px', padding: '0.6rem 0.75rem', outline: 'none', boxSizing: 'border-box' }
-  const labelStyle: React.CSSProperties = { display: 'block', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#4A4A4A', marginBottom: '0.35rem' }
-
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 200, backgroundColor: 'rgba(139,58,58,0.45)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
-      onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div style={{ backgroundColor: '#FAF7F2', border: '0.5px solid #E8E0D5', borderRadius: '4px', padding: '2rem', width: '100%', maxWidth: '500px', maxHeight: '90vh', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem' }}>
-          <div>
-            <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#1A1A1A', opacity: 0.6, marginBottom: '0.2rem' }}>Application Tracker</p>
-            <h2 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: '1.4rem', fontWeight: 700, color: '#1A1A1A' }}>Log an application</h2>
-          </div>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#4A4A4A', padding: '4px' }}><IconX size={18} /></button>
+    <div className="trk-scrim" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
+      <div className="trk-modal" role="dialog" aria-modal="true" aria-label="Log an application">
+        <div className="trk-modal-head">
+          <h2 className="display-black trk-modal-title">Log an application</h2>
+          <button type="button" className="trk-modal-close" onClick={onClose} aria-label="Close">
+            <X size={18} />
+          </button>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem 1.25rem' }}>
-          <div style={{ gridColumn: '1 / -1' }}><label style={labelStyle}>Firm</label><input value={form.firm} onChange={e => field('firm', e.target.value)} placeholder="e.g. Banwo & Ighodalo" style={inputStyle} /></div>
-          <div style={{ gridColumn: '1 / -1' }}><label style={labelStyle}>Role</label><input value={form.role} onChange={e => field('role', e.target.value)} placeholder="e.g. Associate, Banking & Finance" style={inputStyle} /></div>
-          <div><label style={labelStyle}>Type</label>
-            <select value={form.type} onChange={e => field('type', e.target.value)} style={inputStyle}>
-              {['Full-time', 'Internship', 'Contract'].map(t => <option key={t}>{t}</option>)}
+
+        <p className="grotesk-regular trk-modal-note">
+          Only the firm is required. Anything you leave blank you can fill in later, and applications
+          you send from a listing on here get logged on their own.
+        </p>
+
+        <div className="trk-form">
+          <div className="trk-field trk-field-wide">
+            <label className="grotesk-regular tool-label" htmlFor="f-firm">Firm or employer</label>
+            <input id="f-firm" className="tool-input" value={form.firm} onChange={e => set('firm', e.target.value)} placeholder="Banwo &amp; Ighodalo" autoFocus />
+          </div>
+          <div className="trk-field trk-field-wide">
+            <label className="grotesk-regular tool-label" htmlFor="f-role">Role</label>
+            <input id="f-role" className="tool-input" value={form.role} onChange={e => set('role', e.target.value)} placeholder="Associate, Banking and Finance" />
+          </div>
+          <div className="trk-field">
+            <label className="grotesk-regular tool-label" htmlFor="f-type">Type</label>
+            <select id="f-type" className="tool-select" value={form.type} onChange={e => set('type', e.target.value)}>
+              {['Full-time', 'Internship', 'Clerkship', 'Contract', 'Scholarship'].map(t => <option key={t}>{t}</option>)}
             </select>
           </div>
-          <div><label style={labelStyle}>Status</label>
-            <select value={form.status} onChange={e => field('status', e.target.value as UIStatus)} style={inputStyle}>
-              {COLUMNS.map(c => <option key={c.status}>{c.status}</option>)}
+          <div className="trk-field">
+            <label className="grotesk-regular tool-label" htmlFor="f-stage">Stage</label>
+            <select id="f-stage" className="tool-select" value={form.status} onChange={e => set('status', e.target.value as UIStatus)}>
+              {[...LIVE_STAGES, 'Closed' as UIStatus].map(s => <option key={s}>{s}</option>)}
             </select>
           </div>
-          <div><label style={labelStyle}>Location</label><input value={form.location} onChange={e => field('location', e.target.value)} placeholder="Lagos" style={inputStyle} /></div>
-          <div><label style={labelStyle}>Deadline</label><input value={form.deadline} onChange={e => field('deadline', e.target.value)} placeholder="e.g. 30 Sep or Rolling" style={inputStyle} /></div>
-          <div style={{ gridColumn: '1 / -1' }}><label style={labelStyle}>Notes</label><textarea value={form.notes} onChange={e => field('notes', e.target.value)} placeholder="Any context worth remembering..." rows={3} style={{ ...inputStyle, resize: 'none', lineHeight: 1.6 }} /></div>
+          <div className="trk-field">
+            <label className="grotesk-regular tool-label" htmlFor="f-loc">Location</label>
+            <input id="f-loc" className="tool-input" value={form.location} onChange={e => set('location', e.target.value)} placeholder="Lagos" />
+          </div>
+          <div className="trk-field">
+            <label className="grotesk-regular tool-label" htmlFor="f-dl">
+              Closes <span className="tool-label-hint">a date, or how it runs</span>
+            </label>
+            <input id="f-dl" className="tool-input" value={form.deadline} onChange={e => set('deadline', e.target.value)} placeholder="30 Sep, or Rolling" />
+          </div>
+          <div className="trk-field trk-field-wide">
+            <label className="grotesk-regular tool-label" htmlFor="f-notes">Notes</label>
+            <textarea id="f-notes" className="tool-textarea" value={form.notes} onChange={e => set('notes', e.target.value)} placeholder="Anything worth remembering." rows={3} />
+          </div>
         </div>
-        <button onClick={submit} disabled={saving}
-          style={{ marginTop: '1.5rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', backgroundColor: saving ? '#A0A0A0' : '#1A1A1A', color: '#FAF7F2', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', border: 'none', borderRadius: '2px', padding: '0.85rem', cursor: saving ? 'not-allowed' : 'pointer' }}>
-          <IconSend size={14} /> {saving ? 'Saving...' : 'Log Application'}
+
+        <button type="button" className="grotesk-bold tool-submit" onClick={submit} disabled={!ready || saving}>
+          {saving ? 'Saving' : 'Log it'}
         </button>
       </div>
     </div>
   )
 }
 
+/* ------------------------------------------------------------------- page */
+
 export default function TrackerPage() {
   const router = useRouter()
   const [apps, setApps] = useState<Application[]>([])
+  const [work, setWork] = useState({ cv: 0, letters: 0, interviews: 0 })
   const [showModal, setShowModal] = useState(false)
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+  const [filter, setFilter] = useState<UIStatus | null>(null)
+  const [showClosed, setShowClosed] = useState(false)
+  const [firstName, setFirstName] = useState('')
 
   useEffect(() => {
+    const supabase = createClient()
     async function init() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.push('/auth/login'); return }
-      const { data, error } = await supabase
-        .from('applications')
-        .select('*')
-        .order('created_at', { ascending: false })
-      if (!error && data) {
-        setApps(data.map((row: any) => ({
-          id: row.id,
-          firm: row.firm ?? '',
-          role: row.role ?? '',
-          type: row.type ?? '',
-          location: row.location ?? '',
-          dateApplied: row.date_applied ? new Date(row.date_applied).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '',
-          deadline: row.deadline ?? '',
-          status: STATUS_FROM_DB[row.status as DBStatus] ?? 'Applied',
-          notes: row.notes ?? '',
+      if (!user) { router.push('/auth/login?redirect=%2Ftracker'); return }
+
+      setFirstName(
+        (user.user_metadata?.full_name || user.email || '').split(/[\s@.]/)[0] || ''
+      )
+
+      /* Counts only. The tracker does not need the bodies of six cover letters,
+       * and pulling them would be a slow query for a three-number strip. */
+      const [appRes, cv, cl, ip] = await Promise.all([
+        supabase.from('applications').select('*').order('created_at', { ascending: false }),
+        supabase.from('cv_reviews').select('id', { count: 'exact', head: true }),
+        supabase.from('cover_letters').select('id', { count: 'exact', head: true }),
+        supabase.from('interview_sessions').select('id', { count: 'exact', head: true }),
+      ])
+
+      if (!appRes.error && appRes.data) {
+        setApps(appRes.data.map((r: any) => ({
+          id: r.id,
+          firm: r.firm ?? '',
+          role: r.role ?? '',
+          type: r.type ?? '',
+          location: r.location ?? '',
+          dateApplied: r.date_applied ? fmtDate(r.date_applied) : '',
+          appliedAt: r.date_applied ? Date.parse(r.date_applied) : null,
+          deadline: r.deadline ?? '',
+          status: STATUS_FROM_DB[r.status as DBStatus] ?? 'Applied',
+          notes: r.notes ?? '',
         })))
       }
+      setWork({ cv: cv.count ?? 0, letters: cl.count ?? 0, interviews: ip.count ?? 0 })
       setLoading(false)
     }
     init()
-  }, [])
+  }, [router])
 
-  async function addApp(form: Omit<Application, 'id'>) {
+  async function addApp(form: Omit<Application, 'id' | 'appliedAt'>) {
+    const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
+    const now = new Date().toISOString()
     const { data, error } = await (supabase.from('applications') as any).insert({
       user_id: user.id,
-      firm: form.firm,
-      role: form.role,
+      firm: form.firm.trim(),
+      role: form.role.trim(),
       type: form.type,
-      location: form.location,
-      date_applied: new Date().toISOString(),
-      deadline: form.deadline,
+      location: form.location.trim(),
+      date_applied: now,
+      deadline: form.deadline.trim(),
       status: STATUS_TO_DB[form.status],
-      notes: form.notes,
+      notes: form.notes.trim(),
     }).select().single()
     if (!error && data) {
       setApps(prev => [{
@@ -250,7 +502,8 @@ export default function TrackerPage() {
         role: data.role ?? '',
         type: data.type ?? '',
         location: data.location ?? '',
-        dateApplied: new Date(data.date_applied).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        dateApplied: fmtDate(data.date_applied),
+        appliedAt: Date.parse(data.date_applied),
         deadline: data.deadline ?? '',
         status: STATUS_FROM_DB[data.status as DBStatus] ?? 'Applied',
         notes: data.notes ?? '',
@@ -260,113 +513,235 @@ export default function TrackerPage() {
 
   async function changeStatus(id: string, status: UIStatus) {
     setApps(prev => prev.map(a => a.id === id ? { ...a, status } : a))
+    const supabase = createClient()
     await (supabase.from('applications') as any).update({ status: STATUS_TO_DB[status] }).eq('id', id)
   }
 
   async function deleteApp(id: string) {
     setApps(prev => prev.filter(a => a.id !== id))
+    const supabase = createClient()
     await (supabase.from('applications') as any).delete().eq('id', id)
   }
 
   async function updateNote(id: string, notes: string) {
     setApps(prev => prev.map(a => a.id === id ? { ...a, notes } : a))
+    const supabase = createClient()
     await (supabase.from('applications') as any).update({ notes }).eq('id', id)
   }
 
-  const total = apps.length
-  const interviews = apps.filter(a => a.status === 'Interview I' || a.status === 'Interview II').length
+  /* "In play" means sent and still open, so it excludes both ends: Closed
+     because it is over, and Saved because it never started. */
+  const live = apps.filter(a => a.status !== 'Closed' && a.status !== 'Saved')
+  const savedCount = apps.filter(a => a.status === 'Saved').length
+  const closedCount = apps.filter(a => a.status === 'Closed').length
   const offers = apps.filter(a => a.status === 'Offer').length
-  const responseRate = total > 0 ? Math.round(((interviews + offers + apps.filter(a => a.status === 'Assessment').length) / total) * 100) : 0
-  const STATS = [
-    { label: 'Applications', value: String(total) },
-    { label: 'Interviews', value: String(interviews) },
-    { label: 'Offers', value: String(offers) },
-    { label: 'Response Rate', value: `${responseRate}%` },
+  const interviewing = apps.filter(a => a.status === 'First interview' || a.status === 'Second interview').length
+
+  /** Anything with a real date still ahead of it, soonest first. This is the
+   *  one thing on the page a person could otherwise miss entirely. */
+  const upcoming = useMemo(() => (
+    /* Saved roles keep their deadline here deliberately: a shortlisted job you
+       have not applied to yet is exactly the one a closing date should chase
+       you about. */
+    apps
+      .filter(a => a.status !== 'Closed')
+      .map(a => ({ a, d: readDeadline(a.deadline) }))
+      .filter(x => x.d.daysLeft !== null && x.d.daysLeft >= 0)
+      .sort((x, y) => (x.d.daysLeft! - y.d.daysLeft!))
+      .slice(0, 3)
+  ), [apps])
+
+  const visible = useMemo(() => {
+    /* Unfiltered, the ledger is the things you have actually sent. Saved and
+       Closed are both reachable by name from the funnel section; neither should
+       pad the default list, because a shortlist of forty roles would bury the
+       four applications that are live. */
+    let list = filter
+      ? apps.filter(a => a.status === filter)
+      : apps.filter(a => a.status !== 'Closed' && a.status !== 'Saved')
+    if (!filter && showClosed) list = apps.filter(a => a.status !== 'Saved')
+    return list
+  }, [apps, filter, showClosed])
+
+  const STRIP = [
+    { k: 'Saved', v: String(savedCount) },
+    { k: 'In play', v: String(live.length) },
+    { k: 'Interviewing', v: String(interviewing) },
+    { k: 'Offers', v: String(offers) },
+    { k: 'Closed', v: String(closedCount) },
   ]
 
-  if (loading) return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#FAF7F2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.85rem', color: '#6A6A6A' }}>Loading your applications...</p>
-    </div>
-  )
+  if (loading) {
+    return (
+      <main className="page-main doc-page trk-loading">
+        <BrandLoader label="Opening your tracker" />
+      </main>
+    )
+  }
 
   return (
     <>
-      <main style={{ backgroundColor: '#FAF7F2', minHeight: '100vh', paddingTop: '64px' }}>
-        <div style={{ borderBottom: '0.5px solid #E8E0D5', backgroundColor: '#FAF7F2', padding: '3rem 2rem 0', maxWidth: 'min(2200px, 94vw)', margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem', paddingBottom: '2rem' }}>
-            <div>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#1A1A1A', opacity: 0.6, marginBottom: '0.4rem' }}>Application Tracker</p>
-              <h1 style={{ fontFamily: 'var(--font-display)', letterSpacing: '-0.025em', fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', fontWeight: 800, color: '#1A1A1A', lineHeight: 1.1, marginBottom: '0.5rem' }}>Where you stand.</h1>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.88rem', color: '#6A6A6A', lineHeight: 1.6 }}>
-                Every application, every stage. Forward confirmations to{' '}
-                <code style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.8rem', backgroundColor: '#EBF0F7', padding: '1px 5px', borderRadius: '2px', color: '#1A1A1A' }}>you@mail.esquirely.app</code>
-                {' '}and we log them automatically.
-              </p>
+      <main className="page-main doc-page trk-page">
+        <header className="doc-masthead">
+          <div className="shell doc-masthead-inner trk-masthead">
+            <div className="trk-masthead-row">
+              <h1 className="display-black doc-title">
+                {firstName ? `Where you stand, ${firstName}.` : 'Where you stand.'}
+              </h1>
+              <button type="button" className="grotesk-bold trk-add" onClick={() => setShowModal(true)}>
+                <Plus size={15} aria-hidden /> Log one
+              </button>
             </div>
-            <button onClick={() => setShowModal(true)}
-              style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#14B8A6', color: '#FFFFFF', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', fontWeight: 600, border: 'none', borderRadius: '999px', padding: '0.75rem 1.5rem', cursor: 'pointer', flexShrink: 0 }}
-              onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#10A192')}
-              onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#14B8A6')}>
-              <IconPlus /> Log Application
-            </button>
-          </div>
-          <div style={{ display: 'flex', borderTop: '0.5px solid #E8E0D5', flexWrap: 'wrap' }}>
-            {STATS.map(({ label, value }, i) => (
-              <div key={label} style={{ flex: '1 1 120px', padding: '1.25rem 1.75rem 1.25rem 0', borderRight: i < STATS.length - 1 ? '0.5px solid #E8E0D5' : 'none', marginRight: i < STATS.length - 1 ? '1.75rem' : 0 }}>
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '1.75rem', fontWeight: 700, color: '#1A1A1A', lineHeight: 1, marginBottom: '0.2rem' }}>{value}</p>
-                <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6A6A6A' }}>{label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ padding: '2rem', overflowX: 'auto', maxWidth: 'min(2200px, 94vw)', margin: '0 auto' }}>
-          <div style={{ display: 'flex', gap: '1rem', minWidth: '900px', alignItems: 'flex-start' }}>
-            {COLUMNS.map(col => {
-              const colApps = apps.filter(a => a.status === col.status)
-              return (
-                <div key={col.status} style={{ flex: '1 1 200px', minWidth: '200px', maxWidth: '280px', backgroundColor: '#F0EBE3', border: '0.5px solid #E8E0D5', borderRadius: '3px', overflow: 'hidden' }}>
-                  <div style={{ padding: '0.85rem 1rem', borderBottom: '0.5px solid #E8E0D5', backgroundColor: '#EAE4DB', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: col.dot, flexShrink: 0 }} />
-                      <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', fontWeight: 700, letterSpacing: '0.09em', textTransform: 'uppercase', color: col.color }}>{col.status}</span>
-                    </div>
-                    <span style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', fontWeight: 700, color: '#A0A0A0' }}>{colApps.length}</span>
-                  </div>
-                  <div style={{ padding: '0.75rem 0.6rem', minHeight: '120px' }}>
-                    {colApps.length === 0 ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem', color: '#C0B8AE', gap: '0.5rem' }}>
-                        <IconInbox size={28} />
-                        <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', textAlign: 'center', lineHeight: 1.5 }}>Nothing here yet</p>
-                      </div>
-                    ) : (
-                      colApps.map(app => <AppCard key={app.id} app={app} onStatusChange={changeStatus} onDelete={deleteApp} onNoteChange={updateNote} />)
-                    )}
-                  </div>
-                  <button onClick={() => setShowModal(true)}
-                    style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', padding: '0.65rem', background: 'none', border: 'none', borderTop: '0.5px solid #E8E0D5', cursor: 'pointer', fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.68rem', color: '#A0A0A0', transition: 'background-color 0.15s ease, color 0.15s ease' }}
-                    onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#EAE4DB'; e.currentTarget.style.color = '#1A1A1A' }}
-                    onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#A0A0A0' }}>
-                    <IconPlus size={12} /> Add
-                  </button>
+            <p className="grotesk-regular doc-lede">
+              {apps.length === 0
+                ? 'Nothing filed yet. Save a role on the board or apply to one from its listing, and it lands in this page on its own. You can put one in by hand too.'
+                : 'Every role you have saved and every application you have sent, and how far each one has got. Saving and applying from a listing both file it for you.'}
+            </p>
+            <dl className="doc-strip trk-strip">
+              {STRIP.map(s => (
+                <div key={s.k} className="doc-strip-item">
+                  <dt className="grotesk-regular">{s.k}</dt>
+                  <dd className="grotesk-bold">{s.v}</dd>
                 </div>
-              )
-            })}
+              ))}
+            </dl>
           </div>
-        </div>
+        </header>
 
-        <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto 4rem', padding: '0 2rem' }}>
-          <div style={{ backgroundColor: '#EBF0F7', border: '0.5px solid #C8D8EC', borderRadius: '3px', padding: '1.25rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <div style={{ color: '#1A1A1A', flexShrink: 0 }}><IconSend size={18} /></div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.82rem', fontWeight: 600, color: '#1A1A1A', marginBottom: '0.2rem' }}>Auto-log with email forwarding</p>
-              <p style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.78rem', color: '#4A6A8A', lineHeight: 1.5 }}>Forward any application confirmation to your Esquirely address and we parse the firm, role, and status automatically.</p>
+        <div className="shell trk-body">
+          {apps.length === 0 ? (
+            <section className="trk-empty">
+              <p className="display-black trk-empty-head">
+                A tracker you have to fill in by hand is a worse spreadsheet than a spreadsheet.
+              </p>
+              <p className="grotesk-regular trk-empty-body">
+                So this one fills itself. Bookmark a role on the board and it arrives here as a
+                shortlist; every Apply button and every speculative letter you send from Esquirely
+                writes the firm, the role and the closing date in as you go, and tells you it has.
+                You never have to remember to come back.
+              </p>
+              <div className="trk-empty-actions">
+                <Link href="/jobs" className="grotesk-bold trk-empty-cta">
+                  Find something to apply for <ArrowRight size={15} aria-hidden />
+                </Link>
+                <button type="button" className="grotesk-regular trk-empty-alt" onClick={() => setShowModal(true)}>
+                  Or log one you sent elsewhere
+                </button>
+              </div>
+            </section>
+          ) : (
+            <>
+              <section className="trk-section">
+                <div className="trk-section-head">
+                  <p className="grotesk-bold trk-section-title">The funnel</p>
+                  {filter && (
+                    <button type="button" className="grotesk-regular trk-clear" onClick={() => setFilter(null)}>
+                      Showing {filter.toLowerCase()} only · clear
+                    </button>
+                  )}
+                </div>
+                <Funnel apps={apps} active={filter} onPick={setFilter} />
+                {/* The shortlist, named and reachable. This is where the
+                    bookmark on the jobs board now lands, so it has to be
+                    visible from the page the bookmark promises to fill —
+                    otherwise the button is exactly as redundant as it was when
+                    it wrote to nothing. Opening one gives the same stepper
+                    every other row has, so "I have now applied" is one tap. */}
+                {savedCount > 0 && (
+                  <p className="grotesk-regular trk-funnel-note">
+                    {savedCount} {savedCount === 1 ? 'role is' : 'roles are'} saved but not applied
+                    for. They sit before the funnel because nothing has been sent yet.{' '}
+                    <button type="button" className="trk-inline-btn" onClick={() => setFilter('Saved')}>
+                      Open the shortlist
+                    </button>
+                  </p>
+                )}
+                {closedCount > 0 && (
+                  <p className="grotesk-regular trk-funnel-note">
+                    {closedCount} {closedCount === 1 ? 'application has' : 'applications have'} closed.
+                    They sit outside the funnel because we do not know how far each one got first.{' '}
+                    <button type="button" className="trk-inline-btn" onClick={() => setFilter('Closed')}>
+                      See them
+                    </button>
+                  </p>
+                )}
+              </section>
+
+              {upcoming.length > 0 && !filter && (
+                <section className="trk-section trk-next">
+                  <p className="grotesk-bold trk-section-title">Closing soonest</p>
+                  <ul className="trk-next-list">
+                    {upcoming.map(({ a, d }) => (
+                      <li key={a.id} className="trk-next-item" data-urgent={d.daysLeft! <= 7}>
+                        <span className="display-black trk-next-days">
+                          {d.daysLeft === 0 ? 'Today' : `${d.daysLeft}d`}
+                        </span>
+                        <span className="trk-next-main">
+                          <span className="grotesk-bold trk-next-firm">{a.firm}</span>
+                          <span className="grotesk-regular trk-next-role">{a.role || 'Speculative application'}</span>
+                        </span>
+                        <span className="grotesk-regular trk-next-date">{d.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
+              <section className="trk-section">
+                <div className="trk-section-head">
+                  <p className="grotesk-bold trk-section-title">
+                    {filter ? filter : 'Everything in play'}
+                    <span className="grotesk-regular trk-section-count">{visible.length}</span>
+                  </p>
+                  {!filter && closedCount > 0 && (
+                    <button type="button" className="grotesk-regular trk-clear" onClick={() => setShowClosed(s => !s)}>
+                      {showClosed ? 'Hide closed' : `Show ${closedCount} closed`}
+                    </button>
+                  )}
+                </div>
+
+                {visible.length === 0 ? (
+                  <p className="grotesk-regular trk-none">Nothing at this stage yet.</p>
+                ) : (
+                  <ul className="trk-ledger">
+                    {visible.map((a, i) => (
+                      <LedgerRow
+                        key={a.id}
+                        app={a}
+                        index={i}
+                        onStatusChange={changeStatus}
+                        onDelete={deleteApp}
+                        onNoteChange={updateNote}
+                      />
+                    ))}
+                  </ul>
+                )}
+              </section>
+            </>
+          )}
+
+          {/* What you have made, not just what you have sent. On an empty
+              tracker this is the only thing on the page with anything in it,
+              and on a full one it is the shortest route back to the tools. */}
+          <section className="trk-section trk-work">
+            <p className="grotesk-bold trk-section-title">Your work</p>
+            <div className="trk-work-grid">
+              {[
+                { icon: <FileText size={18} />, n: work.cv, one: 'CV review', many: 'CV reviews', href: '/tools/cv-review', cta: 'Review a CV' },
+                { icon: <PenLine size={18} />, n: work.letters, one: 'cover letter', many: 'cover letters', href: '/tools/cover-letter', cta: 'Write a letter' },
+                { icon: <MessagesSquare size={18} />, n: work.interviews, one: 'interview set', many: 'interview sets', href: '/tools/interview-prep', cta: 'Prep an interview' },
+              ].map(w => (
+                <Link key={w.href} href={w.href} className="trk-work-card">
+                  <span className="trk-work-icon" aria-hidden>{w.icon}</span>
+                  <span className="display-black trk-work-n">{w.n}</span>
+                  <span className="grotesk-regular trk-work-label">{w.n === 1 ? w.one : w.many}</span>
+                  <span className="grotesk-regular trk-work-cta">
+                    {w.cta} <ArrowRight size={13} aria-hidden />
+                  </span>
+                </Link>
+              ))}
             </div>
-            <button style={{ fontFamily: 'Schibsted Grotesk, sans-serif', fontSize: '0.7rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#1A1A1A', backgroundColor: 'transparent', border: '0.5px solid #1A1A1A', borderRadius: '999px', padding: '0.5rem 1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0, opacity: 0.8 }}>
-              Set Up Address <IconArrowRight size={12} />
-            </button>
-          </div>
+          </section>
         </div>
       </main>
       <Footer />

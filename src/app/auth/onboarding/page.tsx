@@ -49,7 +49,12 @@ export default function OnboardingPage() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
-      await (supabase as any).from('profiles').upsert({
+      /* The error was discarded here, and that is how a broken GRANT on
+       * `profiles` went unnoticed long enough to throw away every onboarding
+       * answer the product has ever collected. The write still must not block
+       * the reader: they answered three questions and are owed the board either
+       * way. But a failure now leaves a trace instead of nothing. */
+      const { error } = await (supabase as any).from('profiles').upsert({
         id: user.id,
         career_stage: stage,
         goals: goal,
@@ -57,6 +62,7 @@ export default function OnboardingPage() {
         onboarding_complete: true,
         updated_at: new Date().toISOString(),
       })
+      if (error) console.error('[onboarding] could not save profile', error)
     }
     router.push('/jobs')
   }

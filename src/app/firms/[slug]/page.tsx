@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import TrackOnApply from '@/components/features/TrackOnApply'
 import { notFound } from 'next/navigation'
 import Footer from '@/components/layout/Footer'
 import { ALL_FIRMS, firmLogo, getMonogram, type Firm } from '@/lib/firms-data'
@@ -118,8 +119,15 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
           </div>
         </div>
 
-        {/* Body */}
-        <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '3rem 2rem', display: 'grid', gridTemplateColumns: '1fr min(300px, 32%)', gap: '3rem', alignItems: 'start' }}>
+        {/* Body.
+            The grid lives in CSS, not in a style attribute. As an inline
+            `1fr min(300px, 32%)` it could not be reached by a media query, so
+            it stayed two columns all the way down: on a 390px phone the second
+            track resolved to about 105px and the apply card inside it broke to
+            one word per line with its button clipped mid-word. `.job-detail-body`
+            already collapses at 900px and this page asks the same question, so
+            it now uses the same class. */}
+        <div className="job-detail-body firm-profile-body">
 
           {/* Left — details */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
@@ -171,9 +179,20 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
 
               {firm.email && (
                 <>
-                  <a href={'mailto:' + firm.email} className="grotesk-bold apply-card-cta">
-                    <MailIcon /> Send your application
-                  </a>
+                  {/* The speculative letter is the main route for a Nigerian law
+                      student rather than a fallback, so it is filed exactly like
+                      an advertised role. No role name, because there is not one
+                      to record. */}
+                  <TrackOnApply
+                    href={'mailto:' + firm.email}
+                    kind="email"
+                    label="Send your application"
+                    target={{
+                      firm: firm.name,
+                      role: 'Speculative application',
+                      location: firm.offices[0]?.city,
+                    }}
+                  />
                   <p className="grotesk-regular apply-card-note">
                     Nigerian firms take speculative applications year round. Send your CV and a
                     short cover letter to{' '}

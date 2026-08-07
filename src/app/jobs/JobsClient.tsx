@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import { Search, X, Bookmark, ChevronRight } from 'lucide-react'
 import { logoForEmployer, ballBgForEmployer } from '@/lib/firms-data'
 import EmptyState from '@/components/ui/EmptyState'
+import { useSavedJobs } from '@/lib/saved-jobs'
 
 /**
  * The job board.
@@ -120,7 +121,12 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
   const [type, setType] = useState(initial('type'))
   const [level, setLevel] = useState(initial('level'))
   const [location, setLocation] = useState(initial('location'))
-  const [saved, setSaved] = useState<Set<string>>(new Set())
+  /* Saved roles are tracker rows now, not a Set that dies on navigation.
+     `onlySaved` is the view that makes the bookmark worth pressing on this
+     page: without somewhere to see them, a shortlist is invisible until you
+     open a different page entirely. */
+  const { isSaved, toggle: toggleSave, savedCount, signedIn } = useSavedJobs()
+  const [onlySaved, setOnlySaved] = useState(false)
 
   /**
    * The three cities Nigerian legal hiring actually happens in.
@@ -144,6 +150,7 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
   const filtered = useMemo(
     () =>
       jobs.filter(l => {
+        if (onlySaved && !isSaved(l.employer, l.title)) return false
         const q = search.toLowerCase()
         if (q && !l.title?.toLowerCase().includes(q) && !l.employer?.toLowerCase().includes(q)) return false
         if (sector && l.sector !== sector) return false
@@ -152,18 +159,11 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
         if (location && !l.location?.toLowerCase().includes(location.toLowerCase())) return false
         return true
       }),
-    [jobs, search, sector, type, level, location]
+    [jobs, search, sector, type, level, location, onlySaved, isSaved]
   )
 
   const activeCount = [sector, type, level, location].filter(Boolean).length
   const clearAll = () => { setSector(''); setType(''); setLevel(''); setLocation('') }
-
-  const toggleSave = (id: string) =>
-    setSaved(prev => {
-      const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
-      return next
-    })
 
   return (
     <main className="jobs-page">
@@ -298,6 +298,29 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
           <p className="grotesk-regular jobs-count">
             {filtered.length} {filtered.length === 1 ? 'role' : 'roles'}
             {filtered.length !== jobs.length ? ` of ${jobs.length}` : ''} open
+            {/* The shortlist has to be reachable from the page you build it on.
+                Only shown once something is in it, so it is a door rather than
+                a permanently empty tab. */}
+            {savedCount > 0 && (
+              <>
+                {' · '}
+                <button
+                  type="button"
+                  className="jobs-saved-toggle"
+                  data-active={onlySaved}
+                  aria-pressed={onlySaved}
+                  onClick={() => setOnlySaved(v => !v)}
+                >
+                  {onlySaved ? `Showing ${savedCount} saved · show all` : `${savedCount} saved`}
+                </button>
+                {signedIn === false && (
+                  <span className="jobs-saved-note">
+                    {' '}Kept on this device.{' '}
+                    <Link href="/auth/login?redirect=%2Fjobs">Sign in</Link> to keep them in your tracker.
+                  </span>
+                )}
+              </>
+            )}
           </p>
         </div>
       </header>
@@ -386,17 +409,35 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
                   <span className="grotesk-regular job-employer">{job.employer}</span>
                 </span>
 
-                <span className="grotesk-regular job-cell">{job.location}</span>
-                <span className="grotesk-regular job-cell">{TYPE_LABELS[job.type] || job.type}</span>
-                <span className="grotesk-regular job-cell job-deadline">{deadlineLabel(job)}</span>
+                {/* `display: contents` by default, so these three stay direct
+                    grid items in their own Location / Type / Closes columns and
+                    the head row still lines up. Below 900px the wrapper becomes
+                    a real box in the stacked layout's `meta` area and runs them
+                    together as one dot-separated line.
+                    Without it all three carried `grid-area: meta` themselves,
+                    which placed them in the SAME cell — so on every phone the
+                    location, the type and the deadline were painted on top of
+                    one another. */}
+                <span className="job-meta">
+                  <span className="grotesk-regular job-cell">{job.location}</span>
+                  <span className="grotesk-regular job-cell">{TYPE_LABELS[job.type] || job.type}</span>
+                  <span className="grotesk-regular job-cell job-deadline">{deadlineLabel(job)}</span>
+                </span>
 
                 <span className="job-actions">
                   <button
-                    onClick={() => toggleSave(job.id)}
-                    aria-label={saved.has(job.id) ? `Unsave ${job.title}` : `Save ${job.title}`}
-                    aria-pressed={saved.has(job.id)}
+                    onClick={() => toggleSave({
+                      firm: job.employer,
+                      role: job.title,
+                      type: TYPE_LABELS[job.type] || job.type,
+                      location: job.location,
+                      deadline: deadlineLabel(job),
+                    })}
+                    aria-label={isSaved(job.employer, job.title) ? `Unsave ${job.title}` : `Save ${job.title}`}
+                    aria-pressed={isSaved(job.employer, job.title)}
+                    data-saved={isSaved(job.employer, job.title)}
                   >
-                    <Bookmark size={15} fill={saved.has(job.id) ? 'currentColor' : 'none'} />
+                    <Bookmark size={15} fill={isSaved(job.employer, job.title) ? 'currentColor' : 'none'} />
                   </button>
                   <Link href={'/jobs/' + job.slug} aria-label={`View ${job.title}`}>
                     <ChevronRight size={18} />

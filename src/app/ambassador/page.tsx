@@ -56,7 +56,7 @@ const COMMITMENT = [
     title: 'Pass on what lands',
     body:
       'Drop the openings and deadlines worth seeing into the group chats and faculty channels you are already in. No quota, no reporting, nothing to log.',
-    aside: 'Only the things your year would genuinely want to see. An ambassador who posts everything gets muted by March.',
+    aside: 'Only the things your year would genuinely want to see. Post everything and people stop reading you.',
   },
   {
     title: 'Tell us what is missing',

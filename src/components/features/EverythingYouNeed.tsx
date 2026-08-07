@@ -466,6 +466,26 @@ function Preview({ kind }: { kind: string }) {
 function Block({ block, flip, tone }: { block: (typeof BLOCKS)[number]; flip: boolean; tone: Tone }) {
   const ref = useRef<HTMLDivElement>(null)
   const [p, setP] = useState(0)
+  /**
+   * Below 860px the block is one column, and the sideways half of the glide
+   * stops meaning anything: there is no second column for the panel to arrive
+   * from, so the pair simply slid in from opposite edges of the same track. It
+   * also overshot — a child running to the shell's right edge plus 40px is 4px
+   * wider than a 390px screen, so the page picked up a horizontal scroll for as
+   * long as the block was easing. Stacked, the motion is a rise only.
+   *
+   * Matched to the CSS breakpoint that does the stacking; if the two drift
+   * apart the motion goes back to fighting the layout.
+   */
+  const [stacked, setStacked] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 860px)')
+    const sync = () => setStacked(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
 
   useEffect(() => {
     const el = ref.current
@@ -493,7 +513,7 @@ function Block({ block, flip, tone }: { block: (typeof BLOCKS)[number]; flip: bo
   const ease = p * p * (3 - 2 * p)
   const glide = (from: number): React.CSSProperties => ({
     opacity: ease,
-    transform: `translate3d(${from * (1 - ease)}px, ${28 * (1 - ease)}px, 0)`,
+    transform: `translate3d(${(stacked ? 0 : from) * (1 - ease)}px, ${28 * (1 - ease)}px, 0)`,
   })
 
   return (

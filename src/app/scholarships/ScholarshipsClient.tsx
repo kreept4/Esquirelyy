@@ -30,9 +30,26 @@ const STATUS: Record<string, { label: string; cls: string }> = {
   closed: { label: 'Closed', cls: 'is-closed' },
 }
 
-const STATUS_OPTIONS = [
-  { value: '', label: 'All statuses' },
-  { value: 'open', label: 'Open now' },
+/**
+ * The state mark.
+ *
+ * Three states told apart by three colours of the same dot is the weakest
+ * version of this: it carries no meaning on a greyscale screen, none for the
+ * ~8% of men with a red-green deficiency, and it makes the reader learn an
+ * arbitrary legend. So each state gets its own shape, and the shape says the
+ * thing directly. A filled disc is a door that is open. A ring is that same
+ * door with nothing behind it yet. A ring struck through is one that has shut.
+ *
+ * The same component renders inside the filter and inside every row, so the
+ * mark is learned once and means one thing everywhere on the page.
+ */
+function StatusMark({ status }: { status: string }) {
+  return <span className={`sch-mark sch-mark-${status}`} aria-hidden />
+}
+
+const STATUS_FILTERS = [
+  { value: '', label: 'Everything' },
+  { value: 'open', label: 'Open' },
   { value: 'upcoming', label: 'Upcoming' },
   { value: 'closed', label: 'Closed' },
 ]
@@ -66,7 +83,16 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
     [scholarships, status, region]
   )
 
-  const openCount = scholarships.filter(s => s.status === 'open').length
+  /** Counts drive the filter, so the distribution is visible before you touch
+   *  anything. A dropdown hid it: you had to pick "Upcoming" to discover there
+   *  were two, and pick again to get back. */
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { '': scholarships.length, open: 0, upcoming: 0, closed: 0 }
+    for (const s of scholarships) c[s.status] = (c[s.status] ?? 0) + 1
+    return c
+  }, [scholarships])
+
+  const openCount = counts.open ?? 0
 
   return (
     <main className="jobs-page">
@@ -78,11 +104,40 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
             to law, which rules out most of what the general scholarship lists carry.
           </p>
 
-          <div className="jobs-controls">
-            <select className="jobs-select" data-active={!!status} value={status} onChange={e => setStatus(e.target.value)} aria-label="Status">
-              {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
-            <select className="jobs-select" data-active={!!region} value={region} onChange={e => setRegion(e.target.value)} aria-label="Region">
+          {/* Status is a segmented control rather than a dropdown, for three
+              reasons. The whole distribution is legible without interacting, so
+              you can see there are only two upcoming before deciding to look.
+              Every state is one tap from every other, instead of two taps
+              through a menu. And the state marks sit in the control itself, so
+              the legend is taught in the place it is first needed rather than
+              left for the reader to infer from the rows.
+
+              A state with nothing in it is disabled rather than hidden. A
+              control whose options appear and disappear as you filter is a
+              control you cannot learn. */}
+          <div className="sch-filters">
+            <div className="sch-segment" role="group" aria-label="Filter by status">
+              {STATUS_FILTERS.map(o => {
+                const n = counts[o.value] ?? 0
+                return (
+                  <button
+                    key={o.value}
+                    type="button"
+                    className="grotesk-regular sch-seg"
+                    data-active={status === o.value}
+                    disabled={n === 0}
+                    aria-pressed={status === o.value}
+                    onClick={() => setStatus(o.value)}
+                  >
+                    {o.value && <StatusMark status={o.value} />}
+                    <span className="sch-seg-label">{o.label}</span>
+                    <span className="sch-seg-count">{n}</span>
+                  </button>
+                )
+              })}
+            </div>
+
+            <select className="jobs-select sch-region" data-active={!!region} value={region} onChange={e => setRegion(e.target.value)} aria-label="Region">
               {REGION_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </div>
@@ -112,13 +167,10 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
 
             {filtered.map(s => (
               <div key={s.slug} className="sch-row">
-                {/* A dot and a label, not a coloured chip. Filled pills read as
-                    generic UI furniture; letting the colour live in a single
-                    small mark and keeping the type in ink is what makes it look
-                    considered. The open dot carries a slow pulse, so "you can
-                    apply to this today" is legible at a glance without shouting. */}
+                {/* The same mark as the filter above, so the reader learns it
+                    once. Type stays in ink; the state lives in the shape. */}
                 <span className={`sch-status ${STATUS[s.status]?.cls ?? ''}`}>
-                  <span className="sch-dot" aria-hidden />
+                  <StatusMark status={s.status} />
                   {STATUS[s.status]?.label ?? s.status}
                 </span>
 
