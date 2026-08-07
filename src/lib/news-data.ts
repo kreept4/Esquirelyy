@@ -152,7 +152,7 @@ const ITEMS: NewsItem[] = [
     date: '2026-08-06',
     title: 'Campus ambassador applications are open!',
     summary:
-      'One workshop a semester inside your university law faculty, and you leave with a signed reference. Not paid, and we would rather say so here.',
+      'Run one session for your year, whenever it suits you, and leave with a signed reference. Not paid, and we would rather say so up front.',
     href: '/ambassador',
     cta: 'Read the terms',
     media: { type: 'image', src: '/illustrations/ambassador.svg', alt: '' }

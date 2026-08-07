@@ -4,7 +4,7 @@ import Link from 'next/link'
 export const metadata = {
   title: 'Be an ambassador',
   description:
-    'Represent Esquirely inside your university law faculty. One semester, three commitments, and a signed reference at the end.',
+    'Bring Esquirely to your faculty. Run one session when it suits you, pass on what is worth passing on, and leave with a signed reference.',
 }
 
 /**
@@ -35,30 +35,33 @@ export const metadata = {
  * for exactly that.
  */
 
+/* Commitment and time used to lead this strip: one semester, roughly three
+ * hours a month. Both are gone. Putting a duration and an hourly figure at the
+ * top of an unpaid ask reads as terms of engagement, and this is a favour, not
+ * an arrangement. What stays is the part someone genuinely needs before they
+ * decide: that there is no money in it, and what they get instead. */
 const TERMS = [
-  { k: 'Commitment', v: 'One semester' },
-  { k: 'Time', v: '~3 hours a month' },
   { k: 'Paid', v: 'No' },
   { k: 'You leave with', v: 'A signed reference' },
 ]
 
 const COMMITMENT = [
   {
-    title: 'Host one workshop each semester',
+    title: 'Get your year in one room',
     body:
-      'A single one-hour session for students on your campus, in a lecture room or on a video call, whichever is easier to fill. You walk them through finding roles on the board, using the CV and interview tools, and writing to a firm speculatively.',
-    aside: 'We send the slides, the talking points and a sign-up link. You pick the date and get people in the room.',
+      'An hour, in a lecture room or on a call, whenever the term gives you a gap. You show them how to find roles on the board, use the CV and interview tools, and write to a firm speculatively. We send the slides, the talking points and the sign-up link.',
+    aside: 'You pick the date. If that week gets away from you, pick another one.',
   },
   {
     title: 'Pass on what lands',
     body:
-      'Share openings and scholarship deadlines in the group chats and faculty channels you are already part of. There is no posting quota and nothing to report.',
+      'Drop the openings and deadlines worth seeing into the group chats and faculty channels you are already in. No quota, no reporting, nothing to log.',
     aside: 'Only the things your year would genuinely want to see. An ambassador who posts everything gets muted by March.',
   },
   {
     title: 'Tell us what is missing',
     body:
-      'You are closer to what a final-year student actually needs than we are. When something on Esquirely is wrong, thin, or useless for your campus, we want to hear it before anyone else does.',
+      'You are closer to what a final-year student actually needs than we are. When something here is wrong, thin or useless for your campus, we want to hear it first.',
     aside: 'This is the part we value most, and the part most programmes never actually ask for.',
   },
 ]
@@ -89,7 +92,7 @@ const RETURNS = [
  * here rather than left for someone to discover after applying. */
 const FIT = [
   'An undergraduate law student at a Nigerian university',
-  'Around for at least one more semester',
+  'Still around campus for a while yet',
   'Already the person people ask about opportunities',
 ]
 
@@ -126,7 +129,7 @@ export default function AmbassadorPage() {
           <section className="doc-section">
             <div className="doc-section-label">
               <p className="grotesk-bold doc-section-title">What we ask</p>
-              <p className="grotesk-regular doc-section-note">Three things, and nothing else.</p>
+              <p className="grotesk-regular doc-section-note">Three things, and none of them heavy.</p>
             </div>
 
             <ol className="doc-rows">
@@ -179,8 +182,8 @@ export default function AmbassadorPage() {
                 ))}
               </ul>
               <p className="grotesk-regular amb-fit-note">
-                If your workload turns at exam time, nobody is chasing you. It is a semester, not a
-                contract, and it ends by simply ending.
+                Exams come first, always. Nobody is chasing you, there is nothing to sign, and it
+                ends whenever you would like it to.
               </p>
             </div>
           </section>
@@ -190,10 +193,9 @@ export default function AmbassadorPage() {
             <div className="amb-apply-copy">
               <p className="display-black amb-apply-heading">Put your campus on the map.</p>
               <p className="grotesk-regular amb-apply-body">
-                Send us three things: your campus and year, what you would change about Esquirely,
-                and when your next semester starts. That is the whole application. We read them as
-                they arrive and take a small number each intake, so every ambassador gets a person
-                rather than a mailing list.
+                Tell us your campus and year, and the one thing you would change about Esquirely.
+                That is the whole application. We read every one as it arrives and take a small
+                number at a time, so you get a person rather than a mailing list.
               </p>
               <div className="amb-apply-actions">
                 <a
