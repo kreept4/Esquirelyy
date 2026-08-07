@@ -198,7 +198,6 @@ export default function NotificationBell({
               ×
             </button>
 
-            <p className="grotesk-bold notif-modal-kind">From the co-founders</p>
             <p className="display-black notif-modal-title">Welcome to Esquirely.</p>
 
             <div className="notif-modal-body">

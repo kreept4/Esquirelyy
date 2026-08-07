@@ -1,0 +1,124 @@
+<!--
+  Esquirely email signature.
+
+  Built to the footer's design — square corners, a heavy ink rule, a flat amber
+  field and the wordmark carrying the block — but rebuilt in the only language
+  email clients actually agree on.
+
+  Five things here are deliberate, and each one is a rule email breaks:
+
+  1. TABLES, NOT FLEX OR GRID. Outlook 2007-2021 renders through Word, which
+     supports neither. A flex row silently becomes a vertical stack.
+
+  2. THE HARD SHADOW IS A TABLE CELL, NOT `box-shadow`. Word ignores
+     box-shadow entirely, so the offset is drawn as an ink-filled cell sitting
+     2px down and right of the amber one. It is the same effect, made of the
+     only thing that renders everywhere: a coloured rectangle.
+
+  3. THE TYPE IS REAL TEXT, NOT AN IMAGE. Outlook and Gmail block remote images
+     by default, so a signature that is one flat PNG arrives blank for a large
+     share of readers — and an all-image signature is a spam-filter signal.
+     Only the illustration is an image, and it carries no information the text
+     does not already give, so blocking it costs nothing.
+
+  4. THE ILLUSTRATION IS A PNG, NOT THE SVG IN THE REPO. Gmail strips <svg> and
+     refuses SVG in <img src>; Outlook cannot draw it. Rendered by
+     `scripts/render-email-art.mjs` at 2x and downscaled by the width attribute
+     so it stays sharp on retina.
+
+  5. FONTS FALL BACK ON PURPOSE. Hanken and Schibsted are Google-hosted webfonts
+     and no desktop client will fetch them, so the stack ends in Arial and the
+     sizes are chosen to hold up in Arial rather than to look right only in the
+     brand face.
+
+  BEFORE SENDING: replace https://esquirely.com with the real host. Image src
+  MUST be absolute — a relative path resolves against the mail client, not the
+  site, and will always break.
+-->
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+  <tr>
+    <td style="padding:0;">
+
+      <!-- Shadow layer. The ink cell is offset under the panel by sitting in a
+           1-cell table whose background is ink, with the panel nudged up-left. -->
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="480" style="border-collapse:collapse;width:480px;background-color:#241F16;">
+        <tr>
+          <td style="padding:0 5px 5px 0;">
+
+            <!-- The panel: flat amber, square, heavy ink rule. -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:#FBBF24;border:2px solid #241F16;">
+              <tr>
+                <td style="padding:20px 22px 16px 22px;">
+
+                  <!-- Wordmark. The footer's move: the mark is the block. -->
+                  <p style="margin:0 0 2px 0;font-family:'Hanken Grotesk','Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:34px;line-height:1;font-weight:900;letter-spacing:-1.4px;color:#241F16;">
+                    ESQUIRELY
+                  </p>
+                  <p style="margin:0 0 16px 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;color:#241F16;">
+                    Nigeria&rsquo;s legal career platform
+                  </p>
+
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+                    <tr>
+                      <!-- Sender block. Swap the two lines per person. -->
+                      <td valign="top" style="padding:0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;">
+                        <p style="margin:0 0 1px 0;font-size:14px;line-height:1.35;font-weight:700;color:#241F16;">
+                          {{FULL_NAME}}
+                        </p>
+                        <p style="margin:0 0 12px 0;font-size:12px;line-height:1.35;color:#241F16;">
+                          {{ROLE}}
+                        </p>
+
+                        <p style="margin:0 0 3px 0;font-size:12px;line-height:1.5;color:#241F16;">
+                          <a href="mailto:{{EMAIL}}" style="color:#241F16;text-decoration:none;border-bottom:1px solid #241F16;">{{EMAIL}}</a>
+                        </p>
+                        <p style="margin:0;font-size:12px;line-height:1.5;color:#241F16;">
+                          <a href="https://esquirely.com" style="color:#241F16;text-decoration:none;border-bottom:1px solid #241F16;">esquirely.com</a>
+                        </p>
+                      </td>
+
+                      <!-- Illustration. Decorative, so alt is empty: a screen
+                           reader should not announce a picture that repeats the
+                           text beside it. -->
+                      <td valign="bottom" align="right" width="120" style="padding:0;">
+                        <img src="https://esquirely.com/email/welcome-art.png"
+                             width="110" height="110" alt=""
+                             style="display:block;border:0;outline:none;text-decoration:none;width:110px;height:110px;" />
+                      </td>
+                    </tr>
+                  </table>
+
+                  <!-- Rule, then the links. Uppercase and leaded like the
+                       footer's link stack. -->
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+                    <tr>
+                      <td style="padding:14px 0 0 0;border-top:2px solid #241F16;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.6;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:#241F16;">
+                        <a href="https://esquirely.com/jobs" style="color:#241F16;text-decoration:none;">Jobs board</a>
+                        &nbsp;&middot;&nbsp;
+                        <a href="https://esquirely.com/scholarships" style="color:#241F16;text-decoration:none;">Scholarships</a>
+                        &nbsp;&middot;&nbsp;
+                        <a href="https://esquirely.com/firms" style="color:#241F16;text-decoration:none;">Firms</a>
+                        &nbsp;&middot;&nbsp;
+                        <a href="https://esquirely.com/tracker" style="color:#241F16;text-decoration:none;">Tracker</a>
+                      </td>
+                    </tr>
+                  </table>
+
+                </td>
+              </tr>
+            </table>
+
+          </td>
+        </tr>
+      </table>
+
+      <!-- Confidentiality line, outside the panel so it reads as small print
+           rather than as part of the mark. -->
+      <p style="margin:10px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.5;color:#8A8378;max-width:480px;">
+        This message and any attachments are intended for the named recipient only. Esquirely is a
+        careers platform and does not provide legal advice.
+      </p>
+
+    </td>
+  </tr>
+</table>

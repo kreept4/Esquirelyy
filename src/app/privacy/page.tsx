@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import LegalPage, { Clause } from '@/components/layout/LegalPage'
 
 export const metadata = {
@@ -42,7 +43,9 @@ export default function PrivacyPage() {
       <p className="legal-lead grotesk-regular">
         Esquirely is a careers platform for Nigerian lawyers and law students. This notice explains
         how we handle personal data under the Nigeria Data Protection Act 2023. We are the data
-        controller for the information described here.
+        controller for the information described here. Creating an account confirms that you have
+        read this notice and agreed to it: the sign-up form asks you to tick that you accept both
+        this notice and the <Link href="/terms">Terms of Use</Link>, and will not submit until you do.
       </p>
 
       <Clause n={1} heading="What we collect">

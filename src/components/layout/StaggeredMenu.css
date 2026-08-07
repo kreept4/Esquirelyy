@@ -349,17 +349,67 @@
   position: relative;
   color: #000;
   font-weight: 600;
-  font-size: 3.5rem;
+  /* Fluid, and smaller than the flat 3.5rem it was. The root scale already
+     runs 15px to 24px, so a fixed 3.5rem meant 84px items on a large monitor
+     and a list that had to scroll on a phone. */
+  font-size: clamp(2rem, 6.2vw, 3rem);
   cursor: pointer;
   line-height: 1;
   letter-spacing: -2px;
   text-transform: uppercase;
+  /* `transform` is safe to own here. GSAP drives `.sm-panel-itemLabel` (the
+     inner span) for the stagger reveal, and an inline transform there would
+     beat anything declared in CSS — so the hover scale lives on the anchor,
+     which GSAP never touches, and the two never fight. */
   transition:
     background 0.25s,
-    color 0.25s;
+    color 0.25s,
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.34s ease;
+  transform-origin: 0% 50%;
   display: inline-block;
   text-decoration: none;
   padding-right: 1.4em;
+}
+
+/* Pointing at one item pulls the others back.
+   The same move the socials list already makes, in scale as well as opacity so
+   the item under the cursor reads as the one in focus rather than merely the
+   one that is not dimmed. Left origin, because the list is left-aligned and
+   scaling from the centre would slide every label sideways. */
+.sm-panel-list:hover .sm-panel-item:not(:hover),
+.sm-panel-list:focus-within .sm-panel-item:not(:focus-visible) {
+  transform: scale(0.84);
+  opacity: 0.4;
+}
+.sm-panel-list .sm-panel-item:hover,
+.sm-panel-list .sm-panel-item:focus-visible {
+  transform: scale(1.02);
+  opacity: 1;
+}
+
+/* Touch has no hover, so the same effect keys off the press. `:has` lets the
+   list react to a child being held, which is the only "which one are you
+   pointing at" signal a finger gives. */
+@media (hover: none) {
+  .sm-panel-list:has(.sm-panel-item:active) .sm-panel-item:not(:active) {
+    transform: scale(0.84);
+    opacity: 0.4;
+  }
+  .sm-panel-list .sm-panel-item:active { transform: scale(1.02); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the de-emphasis, drop the movement: the opacity change alone still
+     answers "which one am I on". */
+  .sm-panel-list:hover .sm-panel-item:not(:hover),
+  .sm-panel-list:focus-within .sm-panel-item:not(:focus-visible),
+  .sm-panel-list:has(.sm-panel-item:active) .sm-panel-item:not(:active) {
+    transform: none;
+  }
+  .sm-panel-list .sm-panel-item:hover,
+  .sm-panel-list .sm-panel-item:focus-visible,
+  .sm-panel-list .sm-panel-item:active { transform: none; }
 }
 
 .staggered-menu-panel .sm-socials-list .sm-socials-link {

@@ -92,6 +92,12 @@ export default function Navbar() {
   const overDark = pathname === '/'
   const restColor = overDark ? '#FAF6F0' : '#1A1A1A'
 
+  /* No menu on the auth pages.
+     Signing in is the one place on the site with a single job, and a Menu
+     toggle beside the form is an invitation to wander off mid-way. Nothing is
+     trapped: each auth page links to the other, and the wordmark goes home. */
+  const isAuthRoute = !!pathname?.startsWith('/auth')
+
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }) => setUser(data.user))
@@ -120,6 +126,9 @@ export default function Navbar() {
   const authItems = user
     ? [{ label: 'Dashboard', link: '/dashboard' }, { label: 'Sign Out', link: '#sign-out' }]
     : [{ label: 'Sign In', link: '/auth/login' }, { label: 'Join Esquirely', link: '/auth/signup' }]
+
+  // Declared after every hook, so the early return cannot change hook order.
+  if (isAuthRoute) return null
 
   return (
     <>

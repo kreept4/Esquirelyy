@@ -538,26 +538,69 @@ function Block({ block, flip, tone }: { block: (typeof BLOCKS)[number]; flip: bo
 
 /* ---------------- section ---------------- */
 
+/** The colour at a given scroll progress. Pure, so both the paint loop and the
+ *  first render can call it without duplicating the interpolation. */
+function colourAt(t: number): RGB {
+  const seg = t * (STOPS.length - 1)
+  const i = Math.min(Math.floor(seg), STOPS.length - 2)
+  const f = seg - i
+  return [0, 1, 2].map(n => Math.round(STOPS[i][n] + (STOPS[i + 1][n] - STOPS[i][n]) * f)) as RGB
+}
+
 export default function EverythingYouNeed() {
   const ref = useRef<HTMLElement>(null)
-  const [t, setT] = useState(0)
+  /**
+   * Only the TONE is state. The colour is not.
+   *
+   * This section used to hold scroll progress in React state and re-render on
+   * every frame, which meant reconciling seven feature blocks, their preview
+   * panels and every dotted SVG connector up to sixty times a second. On a
+   * phone that is far more work than a frame has time for, and it is why the
+   * scroll felt like it was dragging.
+   *
+   * Two things make it cheap. The background is written straight to the node's
+   * style in the rAF callback, so a scroll mutates one property instead of
+   * walking a component tree. And `toneFor` is a THRESHOLD on luminance — there
+   * are exactly two tones, light and dark — so the subtree only has to re-render
+   * on the one frame where the background crosses that line, rather than on
+   * every frame where it merely changed shade.
+   *
+   * The `transition: background-color` that used to sit here is gone too: a CSS
+   * transition chasing a target that moves every frame never arrives, and it
+   * added lag on top of the jank.
+   */
+  const [light, setLight] = useState(() => isLight(STOPS[0] as RGB))
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
     let frame = 0
+    let lastLight = isLight(colourAt(0))
+
+    const paint = () => {
+      frame = 0
+      const r = el.getBoundingClientRect()
+      const total = r.height - window.innerHeight
+      const t = total <= 0 ? 0 : Math.min(Math.max(-r.top / total, 0), 1)
+      const rgb = colourAt(t)
+
+      // Direct write. No setState, so no reconciliation.
+      el.style.backgroundColor = `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`
+
+      const nowLight = isLight(rgb)
+      if (nowLight !== lastLight) {
+        lastLight = nowLight
+        setLight(nowLight)
+      }
+    }
+
     const onScroll = () => {
       if (frame) return
-      frame = requestAnimationFrame(() => {
-        frame = 0
-        const r = el.getBoundingClientRect()
-        const total = r.height - window.innerHeight
-        setT(total <= 0 ? 0 : Math.min(Math.max(-r.top / total, 0), 1))
-      })
+      frame = requestAnimationFrame(paint)
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
-    onScroll()
+    paint()
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
@@ -565,14 +608,14 @@ export default function EverythingYouNeed() {
     }
   }, [])
 
-  const seg = t * (STOPS.length - 1)
-  const i = Math.min(Math.floor(seg), STOPS.length - 2)
-  const f = seg - i
-  const rgb: RGB = [0, 1, 2].map((n) => Math.round(STOPS[i][n] + (STOPS[i + 1][n] - STOPS[i][n]) * f)) as RGB
-  const tone = toneFor(rgb)
+  const tone = toneFor(light ? [255, 255, 255] : [0, 0, 0])
 
   return (
-    <section ref={ref} style={{ backgroundColor: `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`, transition: 'background-color 0.08s linear' }}>
+    <section
+      ref={ref}
+      /* Server-rendered starting colour only; the effect owns it from mount. */
+      style={{ backgroundColor: `rgb(${STOPS[0][0]},${STOPS[0][1]},${STOPS[0][2]})` }}
+    >
       <div style={{ maxWidth: 'min(2200px, 94vw)', margin: '0 auto', padding: '7rem 1.5rem 3rem' }}>
         <h2 className="display-black" style={{ fontSize: 'clamp(2.2rem, 5.5vw, 4rem)', color: tone.fg, lineHeight: 1.05, maxWidth: '15ch' }}>
           Everything you need, in one place.

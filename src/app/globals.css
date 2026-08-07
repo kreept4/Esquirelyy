@@ -1455,9 +1455,12 @@ select.filter-pill {
      biggest cut. */
   .news-figure { padding: 1.1rem 1.25rem 0; }
   .news-illustration { max-width: 9.5rem; }
-  /* Shallower than the 16/9 above, because on a phone the copy underneath has
-     to reach the fold too. Width is still the card's. */
-  .news-photo { aspect-ratio: 2 / 1; }
+  /* 3:2, not the 2:1 this was.
+     The slide is a PORTRAIT of a person, and a 2:1 letterbox over a portrait
+     crops through the top of the head and the chin at the same time, which is
+     what made it look cut off. 3:2 keeps the face whole and is still shallow
+     enough that the copy under it reaches the fold. */
+  .news-photo { aspect-ratio: 3 / 2; object-position: center 22%; }
   .news-figure-photo { padding: 1.1rem 1.25rem 0; }
   .news-splash { width: 4.2rem; height: 4.2rem; padding: 0.6rem; }
   .news-splashes { max-width: 100%; gap: 0.4rem; }
@@ -1990,9 +1993,20 @@ select.filter-pill {
 .notif-item-time { font-size: 0.7rem; color: var(--ink-muted); white-space: nowrap; padding-top: 0.15rem; }
 
 @media (max-width: 640px) {
-  .notif { top: 1.15rem; right: 6.75rem; }
+  .notif { --notif-inset: 6.75rem; top: 1.15rem; right: var(--notif-inset); }
   .notif-btn { width: 2.1rem; height: 2.1rem; }
-  .notif-panel { right: -1rem; width: calc(100vw - 2rem); }
+  /* The panel is full-bleed but was anchored to the BELL, and the bell is not
+     at the edge of the screen — it sits 6.75rem in, clearing the menu toggle.
+     `right: -1rem` therefore put a `100vw - 2rem` panel's left edge at about
+     -56px on a 390px screen, so the first 56px of every notification was cut
+     off past the left edge with no way to scroll to it.
+     Offsetting by the bell's own inset lands the panel on a 1rem gutter both
+     sides. Derived from the same custom property the bell is positioned with,
+     so moving one cannot silently break the other. */
+  .notif-panel {
+    right: calc(1rem - var(--notif-inset));
+    width: calc(100vw - 2rem);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -5356,4 +5370,391 @@ select.filter-pill {
   .amb-term dt { margin-bottom: 0.2rem; }
   .doc-strip-item dd,
   .amb-term dd { font-size: 0.95rem; }
+}
+
+/* ============================================================
+   AUTH PAGES
+   These predate the design system and never joined it: every colour was a
+   hardcoded hex, every font a 'Schibsted Grotesk' string literal, and not one
+   of the site's objects appeared — no carton card, no ink rule, no hard offset
+   shadow, no pill. Four specific things read as broken rather than plain:
+
+     - the panel was clipped to `polygon(40px 0, ...)`, a 40px diagonal that
+       made a parallelogram with visibly non-vertical edges;
+     - it was filled with a grey radial gradient (#4D4D4D to #0D0D0D), a colour
+       the site uses nowhere;
+     - a bare `"` glyph sat at 5rem in the corner with no quotation after it;
+     - the wordmark was printed twice, in the corner and again over the form.
+
+   Now it is the same object family as everything else: cream ground with the
+   contour texture, the form on a carton card with a 2px rule and a hard
+   offset, a flat ink panel, and pill buttons.
+   ============================================================ */
+
+.auth-page {
+  min-height: 100dvh;
+  display: flex;
+  background-color: var(--cream);
+  background-image: var(--contour);
+}
+
+.auth-form-col {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.25rem;
+  min-width: 0;
+}
+
+/* The carton card, the site's signature object, doing the job it does on the
+   apply panel and the news carousel: marking the one thing being asked for. */
+.auth-form-wrap {
+  /* 60% of the screen, capped and floored.
+     Uncapped, 60vw on a 2560px monitor is a 1536px-wide login form and the
+     labels end up a foot away from their inputs; unfloored, 60% of a 390px
+     phone is 234px, which cannot hold an email address. The clamp keeps the
+     proportion the design asks for in the range where it means something. */
+  width: clamp(20rem, 60%, 46rem);
+  background: #FFF8E5;
+  border: 2px solid var(--on-amber);
+  box-shadow: 6px 7px 0 var(--on-amber);
+  padding: 1.6rem 1.9rem 1.5rem;
+}
+
+/* Hanken. The two-family rule is display versus body/UI, and this is the page
+   title — it was set in Schibsted like the labels under it, which is why the
+   whole column read flat. */
+.auth-title {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--on-amber);
+  margin-bottom: 1.5rem;
+}
+
+.auth-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-amber);
+  margin-bottom: 0.4rem;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(36, 31, 22, 0.35);
+  border-radius: 2px;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.18s ease;
+}
+.auth-input::placeholder { color: rgba(36, 31, 22, 0.45); }
+.auth-input:focus { border-color: var(--on-amber); }
+
+/* Pills, per the design system. Both were square black rectangles. */
+.auth-btn-google {
+  width: 100%;
+  padding: 0.75rem;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(36, 31, 22, 0.35);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+.auth-btn-google:hover { border-color: var(--on-amber); background: #FFFDF7; }
+
+.auth-btn-primary {
+  width: 100%;
+  padding: 0.8rem;
+  background: var(--mint-deep, #10A192);
+  color: #FFFFFF;
+  border: 2px solid var(--on-amber);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.18s ease;
+  box-shadow: 3px 3px 0 var(--on-amber);
+}
+.auth-btn-primary:hover:not(:disabled) { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--on-amber); }
+/* Was #C47070, a muddy pink from no palette at all. */
+.auth-btn-primary:disabled {
+  background: rgba(36, 31, 22, 0.25);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
+.auth-divider { display: flex; align-items: center; gap: 0.9rem; margin: 1.1rem 0; }
+.auth-divider span { font-size: 0.68rem; letter-spacing: 0.1em; color: rgba(36, 31, 22, 0.5); }
+.auth-divider i { flex: 1; height: 1.5px; background: rgba(36, 31, 22, 0.18); }
+
+.auth-error {
+  font-size: 0.8rem;
+  color: var(--on-amber);
+  background: #FDE8E2;
+  border: 1.5px solid #E0A99B;
+  border-radius: 2px;
+  padding: 0.6rem 0.85rem;
+  margin: 0;
+}
+
+.auth-alt { font-size: 0.82rem; color: rgba(36, 31, 22, 0.7); margin-top: 1.4rem; }
+.auth-alt a { color: var(--on-amber); font-weight: 700; text-decoration: none; border-bottom: 1.5px solid var(--on-amber); }
+
+
+
+.auth-forgot { font-size: 0.72rem; color: rgba(36, 31, 22, 0.7); text-decoration: none; }
+.auth-forgot:hover { color: var(--on-amber); }
+
+
+.auth-note { font-size: 0.88rem; line-height: 1.7; color: rgba(36, 31, 22, 0.75); margin-bottom: 1rem; }
+.auth-note-quiet { font-size: 0.8rem; color: rgba(36, 31, 22, 0.6); }
+.auth-alt-link { font-size: 0.78rem; color: var(--on-amber); text-decoration: none; border-bottom: 1.5px solid var(--on-amber); }
+
+/* Consent row. The box is sized up from the 13px default because this is a
+   legal act on a phone, and a target that small gets mis-tapped. */
+.auth-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: rgba(36, 31, 22, 0.8);
+  cursor: pointer;
+}
+.auth-consent input {
+  flex-shrink: 0;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-top: 0.1rem;
+  accent-color: var(--mint-deep, #10A192);
+  cursor: pointer;
+}
+.auth-consent a { color: var(--on-amber); font-weight: 700; text-decoration: none; border-bottom: 1.5px solid var(--on-amber); }
+
+/* The panel stacks above the card below 880px, where it was simply hidden.
+   The illustration is the reason it can: it carries the page's character at a
+   size that does not push the form off the first screen. */
+
+
+/* Two field tracks on the wider card. Widening alone would have kept every
+   row at its old height and simply added empty space beside it, so the width
+   is spent on pairing the fields instead. */
+.auth-form { display: flex; flex-direction: column; gap: 0.85rem; }
+.auth-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem 1.1rem;
+}
+.auth-field-wide { grid-column: 1 / -1; }
+
+/* Below the pairing width the card is a single column again, and it takes
+   nearly the whole screen rather than 60% of it. */
+@media (max-width: 700px) {
+  .auth-form-wrap { width: 92%; padding: 1.35rem 1.25rem 1.25rem; }
+  .auth-fields { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* One-time code. Wide tracking and a large size because a six-digit string is
+   read back character by character against a phone notification, not scanned
+   like a word. */
+.auth-input-otp {
+  font-size: 1.5rem;
+  letter-spacing: 0.5em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  padding-left: 0.9rem;
+  /* The tracking adds a trailing gap after the last glyph, which reads as
+     off-centre unless the padding compensates. */
+  text-indent: 0.5em;
+}
+
+/* A button that has to sit in a sentence. */
+.auth-linkbtn {
+  font: inherit;
+  color: var(--on-amber);
+  font-weight: 700;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-bottom: 1.5px solid var(--on-amber);
+}
+
+/* ============================================================
+   SMALL SCREEN NOTICE
+   A sheet, not a modal: no scrim, no focus trap, and the page behind stays
+   scrollable. It sits above the footer's scroll-to-top but below the menu
+   overlay, so opening the menu covers it rather than fighting it.
+   ============================================================ */
+.ssn {
+  position: fixed;
+  left: 0.75rem;
+  right: 0.75rem;
+  /* Clear of the iOS home indicator and Android gesture bar. */
+  bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  z-index: 55;
+  background: #FFF8E5;
+  border: 2px solid var(--on-amber);
+  box-shadow: 5px 6px 0 var(--on-amber);
+  padding: 1.1rem 1.15rem 1rem;
+  animation: ssnIn 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes ssnIn {
+  from { transform: translateY(120%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ssn { animation: none; }
+}
+
+.ssn-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  background: none;
+  border: none;
+  color: rgba(36, 31, 22, 0.6);
+  cursor: pointer;
+}
+.ssn-close:hover { color: var(--on-amber); }
+
+.ssn-title {
+  font-size: 1.05rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--on-amber);
+  margin: 0 2rem 0.4rem 0;
+}
+.ssn-copy {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(36, 31, 22, 0.75);
+  margin: 0 0 0.9rem;
+}
+
+.ssn-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ssn-primary,
+.ssn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  cursor: pointer;
+  flex: 1 1 auto;
+}
+/* Continuing is the primary action. The notice is information, not a
+   redirection, so the button that keeps you here is the filled one. */
+.ssn-primary {
+  background: var(--mint-deep, #10A192);
+  color: #FFFFFF;
+  border: 2px solid var(--on-amber);
+}
+.ssn-secondary {
+  background: transparent;
+  color: var(--on-amber);
+  border: 1.5px solid rgba(36, 31, 22, 0.4);
+}
+.ssn-secondary:hover { background: rgba(36, 31, 22, 0.07); }
+
+/* The notice on the narrowest phones.
+   Two pill buttons side by side needed about 300px between them, and "Copy
+   link for desktop" is a long label, so below this they were being squeezed to
+   the point of wrapping mid-word. Stacked and full width, they are two clear
+   targets instead of two cramped ones. */
+@media (max-width: 430px) {
+  .ssn { left: 0.5rem; right: 0.5rem; padding: 1rem 1rem 0.9rem; }
+  .ssn-title { font-size: 0.98rem; margin-right: 1.75rem; }
+  .ssn-copy { font-size: 0.79rem; }
+  .ssn-actions { flex-direction: column; gap: 0.45rem; }
+  .ssn-primary,
+  .ssn-secondary { width: 100%; flex: 0 0 auto; padding: 0.62rem 0.75rem; }
+}
+
+/* Landscape phones have almost no vertical room, so the sheet loses its copy
+   rather than covering the page it is describing. */
+@media (max-height: 460px) {
+  .ssn-copy { display: none; }
+  .ssn { padding: 0.8rem 0.9rem; }
+}
+
+/* CAROUSEL, stacked layout: where the slack goes.
+   `.news-track` is a flex row, so every slide is as tall as the TALLEST slide
+   (the portrait one). On a short slide, the two-logo "Distance is not a
+   barrier" being the worst case, that surplus was landing between the copy and
+   the bottom of the card, with `.news-copy { align-self: center }` floating the
+   text in the middle of it. That is the suspended look and the empty band.
+
+   The slide becomes a column and the FIGURE takes the slack instead of the gap:
+   copy sits hard under the artwork, and the artwork centres itself in whatever
+   height is left. Slides stay equal height, so advancing still does not jolt
+   the page, but the space now reads as part of the picture. */
+@media (max-width: 900px) {
+  .news-slide-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .news-figure {
+    flex: 1 1 auto;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+  }
+  .news-copy {
+    flex: 0 0 auto;
+    align-self: stretch;
+  }
+  /* Two marks in a cluster sized for eight looked stranded in the middle of a
+     wide band. Bigger marks, tighter padding, so the pair reads as the subject
+     rather than as two dots. */
+  .news-figure-splash { padding: 1.25rem 1.25rem 0; }
+  .news-splashes { gap: 0.9rem; }
+  .news-splash { width: 5.4rem; height: 5.4rem; }
+}
+
+/* Exit: ease-IN, so it barely moves at first and is quickest as it clears the
+   bottom edge. Same curve as the footer's back-to-top, and the reason a
+   dismissal feels decisive rather than draggy. `forwards` holds the end state
+   for the frames between the animation finishing and React unmounting. */
+.ssn-leaving {
+  animation: ssnOut 0.3s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+  pointer-events: none;
+}
+@keyframes ssnOut {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(140%); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ssn-leaving { animation: none; }
 }

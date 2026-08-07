@@ -133,7 +133,7 @@ export default function AboutPage() {
 
         <div className="shell about-body">
           <section className="about-section">
-            <p className="grotesk-bold about-section-title">The team (for now)</p>
+            <p className="grotesk-bold about-section-title">The team</p>
 
             <svg width="0" height="0" aria-hidden style={{ position: 'absolute' }}>
               <ArrowDefs id="aboutHeadH" />

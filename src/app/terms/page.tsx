@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import LegalPage, { Clause } from '@/components/layout/LegalPage'
 
 export const metadata = {
@@ -45,6 +46,9 @@ export default function TermsPage() {
     >
       <p className="legal-lead grotesk-regular">
         By using Esquirely you agree to these terms. If you do not, please do not use the site.
+        Creating an account is itself an acceptance: the sign-up form asks you to tick that you
+        agree to these Terms of Use and to the{' '}
+        <Link href="/privacy">Privacy Notice</Link>, and submitting it confirms that you have.
       </p>
 
       <Clause n={1} heading="What Esquirely is">

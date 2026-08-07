@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
+import SmallScreenNotice from '@/components/layout/SmallScreenNotice'
 
 export const metadata: Metadata = {
   title: {
@@ -43,6 +44,7 @@ export default function RootLayout({
       <body>
         <Navbar />
         {children}
+        <SmallScreenNotice />
       </body>
     </html>
   )
