@@ -20,7 +20,10 @@ function LoginForm() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  /* /auth/callback bounces failed OAuth attempts back here with `?error=`.
+     Read it once on mount so a failed Google sign-in shows the actual
+     reason instead of landing on a blank form with no explanation. */
+  const [error, setError] = useState(() => searchParams.get('error') || '')
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
