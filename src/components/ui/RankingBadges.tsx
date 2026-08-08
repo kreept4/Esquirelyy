@@ -47,7 +47,15 @@ export default function RankingBadges({
         {ranked.map(r => (
           // The title carries the guide's full name and the edition, so the
           // information the compact form drops is still one hover away.
-          <span key={r.key} className="grotesk-bold rank-badge" title={`${r.full}: ${r.band}, ${r.year}`}>
+          <span
+            key={r.key}
+            className="grotesk-bold rank-badge"
+            title={
+              r.areas && r.areas.length > 0
+                ? `${r.full}: ${r.band}, ${r.year} (${r.areas.join(', ')})`
+                : `${r.full}: ${r.band}, ${r.year}`
+            }
+          >
             {r.label}
           </span>
         ))}
@@ -65,6 +73,16 @@ export default function RankingBadges({
             <span className="rank-panel-text">
               <span className="grotesk-bold rank-panel-band">{r.band}</span>
               <span className="grotesk-regular rank-panel-source">{r.full}, {r.year}</span>
+              {/* What the band was earned in. Without this a reader reasonably
+                  assumes the ranking covers everything the firm does, which is
+                  the more misleading of the two ways this can be wrong. Only
+                  the areas held AT this band are listed, so nothing here is
+                  carried by a rank it did not earn. */}
+              {r.areas && r.areas.length > 0 && (
+                <span className="grotesk-regular rank-panel-areas">
+                  {r.areas.join(' · ')}
+                </span>
+              )}
             </span>
           </li>
         ))}

@@ -438,6 +438,23 @@ select.filter-pill {
   padding: 2.5rem 2rem 2.25rem;
 }
 
+/* Two paddings compound here, and on a phone they were squeezing the panel.
+   The band carries 2.5rem and the panel another 2rem, so a 390px screen spent
+   4.5rem of its width on horizontal padding before the heading got any, and the
+   filter controls inside had to wrap into a narrow column. Both are pulled in
+   at this width, and the offset shadow with them: a 7px/8px shadow that reads
+   as a deliberate print offset on a desktop reads as a misprint next to a panel
+   only a few hundred pixels wide. */
+@media (max-width: 640px) {
+  .page-header-ink {
+    padding: 2.5rem 1rem 2rem !important;
+  }
+  .page-header-panel {
+    padding: 1.75rem 1.25rem 1.5rem;
+    box-shadow: 5px 6px 0 var(--on-amber);
+  }
+}
+
 .page-header-ink svg {
   color: rgba(36, 31, 22, 0.55);
 }
@@ -605,10 +622,23 @@ select.filter-pill {
   flex-direction: column;
   gap: 0.7rem;
 }
+/* `flex-start`, not `center`. The row used to hold two lines of a fixed height,
+   so centring the badge against them was safe. It now holds a third line that
+   wraps to two or three on a phone, and centring pushed the badge to the middle
+   of a growing block, away from the band it labels. */
 .rank-panel-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.7rem;
+}
+
+/* The practice areas the band was earned in. Quieter than the guide name above
+   it, because it is the third thing read in this row and the longest. */
+.rank-panel-areas {
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: rgba(36, 31, 22, 0.52);
+  margin-top: 0.15rem;
 }
 .rank-panel-text {
   display: flex;

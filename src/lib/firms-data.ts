@@ -28,12 +28,30 @@ export interface FirmOffice {
  *
  * HOW TO MAINTAIN THIS
  *
- * A band, never a numeric rank, and never a practice area. The guides re-rank
- * annually and per-practice, so "Band 1 for Corporate/M&A, 2025" would be stale
- * within a year and wrong the moment the firm's other practices moved. The
- * coarse band survives an edition; the detail does not. `year` records the
- * edition the band was read from, and the UI shows it, so an unmaintained badge
- * dates itself in public rather than quietly ageing into a lie.
+ * A band, never a numeric rank, plus the practice areas that band was earned in.
+ *
+ * The practice areas are a deliberate reversal. This table used to hold the band
+ * alone, on the argument that "Band 1 for Corporate/M&A" goes stale the moment a
+ * firm's other practices move, while a coarse band survives an edition. That
+ * argument is still true and is the cost of what is here now. It was outweighed:
+ * a student deciding where to apply cares enormously that a firm is Tier 1 FOR
+ * BANKING rather than Tier 1 in the abstract, and the abstract version invites
+ * the reader to assume the ranking covers everything the firm does, which is
+ * the more misleading of the two failures.
+ *
+ * So the maintenance burden is now higher on purpose. `areas` has to be re-read
+ * with the band every edition, not inferred, and a firm that picks up or loses a
+ * practice ranking needs its line changed even when the top band has not moved.
+ *
+ * `band` stays the HIGHEST band the firm holds in any Nigeria practice area, and
+ * `areas` names the practice areas it holds AT THAT BAND — not every area it is
+ * ranked in. Listing lower-banded areas beside a top band would read as though
+ * they shared it. Where a lower band is worth recording, the comment beside the
+ * entry carries it.
+ *
+ * `year` records the edition the band was read from, and the UI shows it, so an
+ * unmaintained badge dates itself in public rather than quietly ageing into a
+ * lie.
  *
  * Absent means unverified, NOT unranked. A firm with no entry here is one
  * nobody has checked; do not render anything that says otherwise.
@@ -48,10 +66,27 @@ export type RankingBand =
   | 'Tier 1' | 'Tier 2' | 'Tier 3' | 'Tier 4'
   | 'Ranked'
 
+/**
+ * One guide's verdict on one firm.
+ *
+ * `areas` is optional rather than required, and that is not laziness. 'Ranked'
+ * exists for a firm the guide lists without a clean tier, and a firm can be
+ * ranked in a table that names no practice area at all. Forcing an array there
+ * would mean inventing a label to satisfy the type, which is the failure this
+ * whole file is written against. An empty or absent `areas` renders as the band
+ * alone, which is the honest fallback.
+ */
+export interface RankingEntry {
+  band: RankingBand
+  year: number
+  /** The practice areas held AT `band`. Read off the guide, never inferred. */
+  areas?: string[]
+}
+
 export interface FirmRankings {
-  chambers?: { band: RankingBand; year: number }
-  iflr?: { band: RankingBand; year: number }
-  emea?: { band: RankingBand; year: number }
+  chambers?: RankingEntry
+  iflr?: RankingEntry
+  emea?: RankingEntry
 }
 
 /** The three directories, in the order they are shown. Kept here so the badge
@@ -1076,96 +1111,100 @@ function sortKey(name: string): string {
 export const FIRM_RANKINGS: Record<string, FirmRankings> = {
   /* Ranked by all three. */
   'templars': {
-    chambers: { band: 'Band 1', year: 2026 }, // B1 Banking, Corporate, Dispute Res, Projects
-    iflr:     { band: 'Tier 1', year: 2026 }, // T1 Banking, Cap Mkts Debt + Equity, M&A, Projects
-    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res, Energy
+    chambers: { band: 'Band 1', year: 2026, areas: ['Banking & Finance', 'Corporate/Commercial', 'Dispute Resolution', 'Projects & Energy'] },
+    iflr:     { band: 'Tier 1', year: 2026, areas: ['Banking', 'Capital markets: debt', 'Capital markets: equity', 'M&A', 'Projects'] },
+    emea:     { band: 'Tier 1', year: 2026, areas: ['Commercial, corporate and M&A', 'Banking, finance and capital markets', 'Dispute resolution', 'Energy and natural resources'] },
   },
   'olaniwun-ajayi': {
-    chambers: { band: 'Band 1', year: 2026 }, // B1 Banking, Corporate, Dispute Res, Projects, Tax
-    iflr:     { band: 'Tier 1', year: 2026 }, // T1 in all six ranked areas
-    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res, Energy
+    chambers: { band: 'Band 1', year: 2026, areas: ['Banking & Finance', 'Corporate/Commercial', 'Dispute Resolution', 'Projects & Energy', 'Tax'] },
+    iflr:     { band: 'Tier 1', year: 2026, areas: ['Banking', 'Capital markets: debt', 'Capital markets: equity', 'M&A', 'Private equity', 'Projects'] },
+    emea:     { band: 'Tier 1', year: 2026, areas: ['Commercial, corporate and M&A', 'Banking, finance and capital markets', 'Dispute resolution', 'Energy and natural resources'] },
   },
   'udo-udoma-bello-osagie': {
-    chambers: { band: 'Band 1', year: 2026 }, // B1 Banking, Capital Markets, Corporate
-    iflr:     { band: 'Tier 1', year: 2026 }, // T1 Banking, Cap Mkts Debt + Equity, M&A, Private Equity
-    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res
+    chambers: { band: 'Band 1', year: 2026, areas: ['Banking & Finance', 'Capital Markets', 'Corporate/Commercial'] },
+    // Projects is Tier 2 and so is not listed beside a Tier 1 band.
+    iflr:     { band: 'Tier 1', year: 2026, areas: ['Banking', 'Capital markets: debt', 'Capital markets: equity', 'M&A', 'Private equity'] },
+    emea:     { band: 'Tier 1', year: 2026, areas: ['Commercial, corporate and M&A', 'Banking, finance and capital markets', 'Dispute resolution'] },
   },
   'banwo-ighodalo': {
-    chambers: { band: 'Band 1', year: 2026 }, // B1 Capital Markets, Corporate, Projects
-    iflr:     { band: 'Tier 1', year: 2026 }, // T1 Banking, Cap Mkts Debt + Equity, M&A, Private Equity, Projects
-    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Energy
+    chambers: { band: 'Band 1', year: 2026, areas: ['Capital Markets', 'Corporate/Commercial', 'Projects & Energy'] },
+    iflr:     { band: 'Tier 1', year: 2026, areas: ['Banking', 'Capital markets: debt', 'Capital markets: equity', 'M&A', 'Private equity', 'Projects'] },
+    emea:     { band: 'Tier 1', year: 2026, areas: ['Commercial, corporate and M&A', 'Banking, finance and capital markets', 'Energy and natural resources'] },
   },
-  'odujinrin-adefulu': {
-    chambers: { band: 'Band 3', year: 2026 }, // B3 Banking & Finance
-    iflr:     { band: 'Tier 2', year: 2026 }, // T2 Banking; lower tiers elsewhere
-    emea:     { band: 'Tier 3', year: 2026 }, // T3 Banking, Dispute Res, Energy
-  },
-
-  /* Chambers and Legal 500. No IFLR firm page was reachable for these. */
   'aluko-oyebode': {
-    chambers: { band: 'Band 1', year: 2026 }, // B1 Banking, Cap Mkts, Corporate, Dispute Res, IP & TMT, Projects
-    iflr:     { band: 'Tier 1', year: 2026 }, // T1 Banking, Cap Mkts Debt + Equity, M&A, Private Equity, Projects
-    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res
+    chambers: { band: 'Band 1', year: 2026, areas: ['Banking & Finance', 'Capital Markets', 'Corporate/Commercial', 'Dispute Resolution', 'Intellectual Property & TMT', 'Projects & Energy'] },
+    iflr:     { band: 'Tier 1', year: 2026, areas: ['Banking', 'Capital markets: debt', 'Capital markets: equity', 'M&A', 'Private equity', 'Projects'] },
+    emea:     { band: 'Tier 1', year: 2026, areas: ['Commercial, corporate and M&A', 'Banking, finance and capital markets', 'Dispute resolution'] },
   },
   'g-elias': {
-    chambers: { band: 'Band 1', year: 2026 }, // B1 Corporate, Dispute Res, Tax
-    iflr:     { band: 'Tier 1', year: 2026 }, // T1 Banking, Cap Mkts Debt + Equity, M&A, Projects
-    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res, Energy
+    chambers: { band: 'Band 1', year: 2026, areas: ['Corporate/Commercial', 'Dispute Resolution', 'Tax'] },
+    iflr:     { band: 'Tier 1', year: 2026, areas: ['Banking', 'Capital markets: debt', 'Capital markets: equity', 'M&A', 'Projects'] },
+    emea:     { band: 'Tier 1', year: 2026, areas: ['Commercial, corporate and M&A', 'Banking, finance and capital markets', 'Dispute resolution', 'Energy and natural resources'] },
   },
   'aelex': {
-    chambers: { band: 'Band 1', year: 2026 }, // B1 Tax
-    iflr:     { band: 'Tier 2', year: 2026 }, // T2 Banking, Cap Mkts Debt, M&A, Projects; T3 Cap Mkts Equity
-    emea:     { band: 'Tier 2', year: 2026 }, // T2 Corporate/M&A, Banking, Dispute Res, Energy
+    chambers: { band: 'Band 1', year: 2026, areas: ['Tax'] },
+    // Capital markets: equity is Tier 3 and so is not listed beside Tier 2.
+    iflr:     { band: 'Tier 2', year: 2026, areas: ['Banking', 'Capital markets: debt', 'M&A', 'Projects'] },
+    emea:     { band: 'Tier 2', year: 2026, areas: ['Commercial, corporate and M&A', 'Banking, finance and capital markets', 'Dispute resolution', 'Energy and natural resources'] },
   },
+  'odujinrin-adefulu': {
+    chambers: { band: 'Band 3', year: 2026, areas: ['Banking & Finance'] },
+    // T3 private equity, equity capital markets and projects; T4 debt and M&A.
+    iflr:     { band: 'Tier 2', year: 2026, areas: ['Banking'] },
+    emea:     { band: 'Tier 3', year: 2026, areas: ['Banking, finance and capital markets', 'Dispute resolution', 'Energy and natural resources'] },
+  },
+
+  /* Two guides. */
   'jackson-etti-edu': {
-    chambers: { band: 'Band 1', year: 2026 }, // B1 IP & TMT
-    emea:     { band: 'Tier 2', year: 2026 }, // T2 Banking, Dispute Res
+    chambers: { band: 'Band 1', year: 2026, areas: ['Intellectual Property & TMT'] },
+    emea:     { band: 'Tier 2', year: 2026, areas: ['Banking, finance and capital markets', 'Dispute resolution'] },
   },
   'acas-law': {
-    chambers: { band: 'Band 2', year: 2026 }, // B2 Projects & Energy (listed as Dentons ACAS-Law)
-    emea:     { band: 'Tier 1', year: 2026 }, // T1 Energy & Natural Resources
+    chambers: { band: 'Band 2', year: 2026, areas: ['Projects & Energy'] }, // listed as Dentons ACAS-Law
+    emea:     { band: 'Tier 1', year: 2026, areas: ['Energy and natural resources'] },
   },
   'olajide-oyewole': {
-    chambers: { band: 'Band 2', year: 2026 }, // B2 IP & TMT (listed as Olajide Oyewole LLP)
-    emea:     { band: 'Tier 2', year: 2026 }, // T2 Dispute Res (listed as DLA Piper Africa, Nigeria)
+    chambers: { band: 'Band 2', year: 2026, areas: ['Intellectual Property & TMT'] }, // listed as Olajide Oyewole LLP
+    emea:     { band: 'Tier 2', year: 2026, areas: ['Dispute resolution'] }, // listed as DLA Piper Africa, Nigeria
   },
   'bloomfield-law': {
-    chambers: { band: 'Band 3', year: 2026 }, // B3 Corporate, Projects
-    emea:     { band: 'Tier 2', year: 2026 }, // T2 Corporate/M&A, Banking, Energy
+    chambers: { band: 'Band 3', year: 2026, areas: ['Corporate/Commercial', 'Projects & Energy'] },
+    emea:     { band: 'Tier 2', year: 2026, areas: ['Commercial, corporate and M&A', 'Banking, finance and capital markets', 'Energy and natural resources'] },
   },
   'doa-law': {
-    chambers: { band: 'Band 4', year: 2026 }, // B4 Corporate (listed as Duale, Ovia & Alex-Adedipe)
-    emea:     { band: 'Tier 2', year: 2026 }, // T2 Corporate/M&A
+    chambers: { band: 'Band 4', year: 2026, areas: ['Corporate/Commercial'] }, // listed as Duale, Ovia & Alex-Adedipe
+    emea:     { band: 'Tier 2', year: 2026, areas: ['Commercial, corporate and M&A'] },
   },
   'spa-ajibade': {
-    chambers: { band: 'Band 3', year: 2026 }, // B3 Dispute Resolution
-    emea:     { band: 'Tier 3', year: 2026 }, // T3 Dispute Resolution
+    chambers: { band: 'Band 3', year: 2026, areas: ['Dispute Resolution'] },
+    emea:     { band: 'Tier 3', year: 2026, areas: ['Dispute resolution'] },
   },
   'stren-blan-partners': {
-    chambers: { band: 'Band 4', year: 2026 }, // B4 Corporate, IP & TMT
-    emea:     { band: 'Tier 4', year: 2026 }, // T4 Dispute Resolution (listed as Stren and Blan Partners)
+    chambers: { band: 'Band 4', year: 2026, areas: ['Corporate/Commercial', 'Intellectual Property & TMT'] },
+    emea:     { band: 'Tier 4', year: 2026, areas: ['Dispute resolution'] }, // listed as Stren and Blan Partners
   },
 
   /* Chambers only. */
-  'detail-solicitors':  { chambers: { band: 'Band 3', year: 2026 } }, // B3 Banking & Finance
-  'streamsowers-kohn':  { chambers: { band: 'Band 3', year: 2026 } }, // B3 Projects & Energy
-  'wole-olanipekun':    { chambers: { band: 'Band 3', year: 2026 } }, // B3 Dispute Resolution
-  'sofunde-osakwe':     { chambers: { band: 'Band 3', year: 2026 } }, // B3 Dispute Resolution
-  'the-new-practice':   { chambers: { band: 'Band 4', year: 2026 } }, // B4 Corporate (listed as TNP – The New Practice)
-  'perchstone-graeys':  { chambers: { band: 'Band 4', year: 2026 } }, // B4 Dispute Resolution
-  'tayo-oyetibo':       { chambers: { band: 'Band 4', year: 2026 } }, // B4 Dispute Resolution (listed as Tayo Oyetibo LP)
+  'detail-solicitors':  { chambers: { band: 'Band 3', year: 2026, areas: ['Banking & Finance'] } },
+  'streamsowers-kohn':  { chambers: { band: 'Band 3', year: 2026, areas: ['Projects & Energy'] } },
+  'wole-olanipekun':    { chambers: { band: 'Band 3', year: 2026, areas: ['Dispute Resolution'] } },
+  'sofunde-osakwe':     { chambers: { band: 'Band 3', year: 2026, areas: ['Dispute Resolution'] } },
+  'the-new-practice':   { chambers: { band: 'Band 4', year: 2026, areas: ['Corporate/Commercial'] } }, // listed as TNP, The New Practice
+  'perchstone-graeys':  { chambers: { band: 'Band 4', year: 2026, areas: ['Dispute Resolution'] } },
+  'tayo-oyetibo':       { chambers: { band: 'Band 4', year: 2026, areas: ['Dispute Resolution'] } }, // listed as Tayo Oyetibo LP
 
-  /* Legal 500 only — no Chambers entry, which for these means Chambers does not
-     rank them in the seven Nigeria tables, not that they went unchecked. */
-  'alliance-law-firm':  { emea: { band: 'Tier 3', year: 2026 } }, // T3 Banking, finance and capital markets
-  'dealhq-partners':    { emea: { band: 'Tier 3', year: 2026 } }, // T3 Commercial, corporate and M&A
-  'tope-adebayo':       { emea: { band: 'Tier 4', year: 2026 } }, // T4 Dispute Resolution (listed as Tope Adebayo LP)
+  /* Legal 500 only. No Chambers entry here means Chambers does not rank them in
+     the seven Nigeria tables, not that they went unchecked. */
+  'alliance-law-firm':  { emea: { band: 'Tier 3', year: 2026, areas: ['Banking, finance and capital markets'] } },
+  'dealhq-partners':    { emea: { band: 'Tier 3', year: 2026, areas: ['Commercial, corporate and M&A'] } },
+  'tope-adebayo':       { emea: { band: 'Tier 4', year: 2026, areas: ['Dispute resolution'] } }, // listed as Tope Adebayo LP
 
   'alp-ng': {
     // IFLR lists ALP but bands it below the numbered tiers ("Notable" in
-    // Banking), so 'Ranked' claims presence and nothing further.
+    // Banking), so 'Ranked' claims presence and nothing further. No `areas`:
+    // there is no tier for them to belong to.
     iflr: { band: 'Ranked', year: 2026 },
-    emea: { band: 'Tier 3', year: 2026 }, // T3 Banking, finance and capital markets (listed as ALP NG & Company)
+    emea: { band: 'Tier 3', year: 2026, areas: ['Banking, finance and capital markets'] }, // listed as ALP NG & Company
   },
 }
 
