@@ -132,6 +132,49 @@ const PICKS = {
   // yoa-logo.png, not yoa-logo-light.png: same artwork, but the "light" file is
   // opaque and measured lum 193 against 105 for this one.
   'yusuf-ali': 'https://www.yusufali.net/assets/img/yoa-logo.png',
+
+  // ---- fourth batch, 2026-08-08 ---------------------------------------------
+  // The "cropped-" prefix is WordPress's site-icon crop, but here it and the
+  // uncropped AB_siteLogo-v3.png are byte-identical at 290x31, so there is no
+  // better original to prefer.
+  'afe-babalola': 'https://afebabalola.com/wp-content/uploads/2024/03/cropped-AB_siteLogo-v3.png',
+  // Not oakelegallogo-removebg-preview.png. The name is the warning: somebody
+  // ran it through a background remover, and it measured lum 196 against 33 for
+  // this one, which is the firm's actual file.
+  'oake-legal': 'https://oakelegal.com/wp-content/uploads/2022/04/logo.d9401ed7.png',
+  // Reversed, and there is no dark pair. Both files the site serves are the
+  // same white mark, at lum 225 and 231.
+  'law-crest': {
+    url: 'https://thelawcrest.com/wp-content/uploads/2022/03/logo-1.png',
+    negate: true,
+  },
+  // The filename says it: this is the white footer mark, lum 255, and it is the
+  // only logo anywhere in the served HTML.
+  'matrix-solicitors': {
+    url: 'https://matrixsolicitors.com/wp-content/uploads/2019/08/Matrix-logo-white-footer.png',
+    negate: true,
+  },
+  // The device on its own, not plplogo.png. That file is the full lockup, and
+  // its wordmark is white for the site's dark header: the swirl came through
+  // and "PINHEIRO LP" beside it was invisible on cream. Negating was not an
+  // option either, since it would have thrown the orange in the device to blue.
+  // The device alone is the whole mark and it stands up unaided.
+  'pinheiro': 'https://pinheirolp.com/images/logo-.png',
+  // The Brizy upload at 237x167, not the 122x90 JPEG beside it: twice the size
+  // and it carries alpha, where the JPEG is an opaque plate at lum 216.
+  'enr-advisory':
+    'https://enradvisory.com/wp-content/uploads/brizy/imgs/ENR-Advisory-Logo-290x200-1-e1722355815247-305x243x0x19x305x203x1722355815.png',
+  'mj-numa': 'https://www.mjnuma.com/assets1/logo.png',
+  // The og:image, not the header file. Both are the same mark, but the header
+  // one is 139x61 and stops after the "AS" plate, so the firm's name is missing
+  // from it entirely; this is 538x233 and carries the full lockup. It is an
+  // opaque JPEG, hence the key. Safe here despite the pale letters inside the
+  // navy plate: keying reads the darkest channel, so the plate stays opaque and
+  // takes the lettering sitting on it with it.
+  'aekley': {
+    url: 'https://aekleysolicitors.com/wp-content/uploads/2023/02/Aekley-logo-rev.jpg',
+    key: 'white',
+  },
 }
 
 /* Left on the monogram placeholder:

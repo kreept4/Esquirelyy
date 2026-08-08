@@ -204,6 +204,19 @@ const LOCAL_ONLY_LOGO = new Set([
   'olisa-agbakoba',
   'yusuf-ali',
   'ao2-law',
+  // Fourth batch. The Law Crest and Matrix Solicitors publish reversed art
+  // only, so both are inverted; Aekley's is an opaque JPEG with the white
+  // keyed out. Pinheiro is the device on its own, because the full lockup
+  // pairs it with a white wordmark that cannot be inverted without turning the
+  // device's orange to blue.
+  'afe-babalola',
+  'oake-legal',
+  'law-crest',
+  'matrix-solicitors',
+  'pinheiro',
+  'enr-advisory',
+  'mj-numa',
+  'aekley',
   // abe-asotie: re-sourced 2026-08-08 from the firm's own site, replacing the
   // opaque crop taken off a hiring flier when abeandasotie.com was unreachable.
   // The download is already RGBA, and it is trimmed to its content box rather
@@ -1370,6 +1383,199 @@ const FIRMS_UNSORTED: Firm[] = [
     ],
     practiceAreas: ['Dispute Resolution', 'Energy & Natural Resources', 'Corporate & Commercial', 'Real Estate', 'Banking & Finance'],
     description: 'AO2 is Anaje Olumide Oke Akinkugbe, and the four offices are the point: Lagos and Abuja as you would expect, then Awka and Akure, which almost no commercial firm of this size bothers with. Dispute resolution and energy lead the practice, with real estate, corporate finance and project development beside them.',
+    openRoles: 0,
+  },
+
+  /* ———————————————————————————————————————————————————————————————————————
+   * Fourth batch, 8 August 2026. Eight of a list of sixteen.
+   *
+   * The other eight are NOT here, and that is a decision rather than an
+   * unfinished job. A record in this file is a set of factual claims about a
+   * real firm that a student will act on by posting a letter, so a firm nobody
+   * can source an address and an address to write to for does not get a
+   * plausible-looking entry. What was checked, and what stopped each one:
+   *
+   *   Tokunbo Orimobi      no website found on any obvious domain
+   *   The Metropolitan     no website found
+   *   Acuity Partners      no website found
+   *   Babajide Koku        no website found
+   *   Cardinal Counsel     no website found
+   *   Grey Chapel          greychapellegal.com answers 403 to every automated
+   *                        request, so nothing can be read off it
+   *   Tsedaqah             tsedaqah.com is not the firm. It resolves to an
+   *                        unrelated brand whose own title is "Faith Infused In
+   *                        Elegance", which is the kind of thing that gets
+   *                        copied into a directory as a firm's website and then
+   *                        sits there for years
+   *   Duke & Bob-Manuel    dukeandbobmanuel.com is real and current, but
+   *                        publishes no address and no email anywhere. Every
+   *                        route to them is a contact form, and this directory's
+   *                        whole promise is an address you can write to
+   *
+   * Any of the eight becomes addable the moment someone finds a page that
+   * publishes an address. None of them should be added from a third-party
+   * aggregator.
+   * ——————————————————————————————————————————————————————————————————————— */
+
+  {
+    slug: 'afe-babalola',
+    logoFile: null,
+    name: 'Afe Babalola & Co',
+    shortName: 'Afe Babalola',
+    tier: 'Tier 1',
+    email: 'info@afebabalola.com',
+    website: 'https://afebabalola.com',
+    /* All five read off afebabalola.com/contact on 2026-08-08. Each office
+       publishes its own address, so writing to a branch directly works:
+       afelagos@, afeabuja@ and afeph@ respectively.
+
+       Ibadan is first because it is the head office, which is unusual enough to
+       be worth preserving in the ordering: almost every other firm in this file
+       leads with Lagos. The Ado-Ekiti entry gives a building name and a P.O.
+       box and no street, and the box is dropped as everywhere else here. */
+    offices: [
+      { city: 'Ibadan', address: '80 Fajuyi Road, Adamasimgba, Ekotedo, Ibadan, Oyo State' },
+      { city: 'Lagos', address: '85 Awolowo Road, Ikoyi, Lagos' },
+      { city: 'Abuja', address: 'Emmanuel House, 24 Madeira Street, Imani Estate, Maitama, Abuja' },
+      { city: 'Port Harcourt', address: '7 Aba Road, Port Harcourt' },
+      { city: 'Ado-Ekiti', address: 'Salt Valley House, Ado-Ekiti, Ekiti State' },
+    ],
+    practiceAreas: ['Dispute Resolution', 'Constitutional & Electoral Law', 'Arbitration', 'Energy & Natural Resources', 'Labour & Employment', 'Intellectual Property', 'Asset Recovery'],
+    description: 'Emmanuel Chambers, the practice of Aare Afe Babalola SAN, and one of the few firms in the country whose head office is not in Lagos or Abuja. Litigation is the whole centre of gravity here: election petitions, constitutional cases, chieftaincy matters and criminal work alongside the commercial practice. Five offices, and the Ado-Ekiti one is a rarity worth knowing about if you are in Ekiti.',
+    openRoles: 0,
+  },
+  {
+    slug: 'oake-legal',
+    logoFile: null,
+    name: 'OAKE Legal',
+    shortName: 'OAKE Legal',
+    tier: 'Tier 2',
+    email: 'info@oakelegal.com',
+    website: 'https://oakelegal.com',
+    /* Both from oakelegal.com/contact-us on 2026-08-08. */
+    offices: [
+      { city: 'Lagos', address: '5th Floor, AIICO Plaza, Plot PC 12, Churchgate Street, Victoria Island, Lagos' },
+      { city: 'Abuja', address: '4th Floor, Murjanatu House, 1 Zambezi Crescent, Maitama, Abuja' },
+    ],
+    practiceAreas: ['Capital Markets', 'Corporate & Commercial', 'Dispute Resolution', 'Mergers & Acquisitions', 'Banking & Finance', 'Corporate Compliance'],
+    description: 'A capital markets practice first: listings, secondary issues, reorganisations and delistings, with the corporate and project finance work that sits around them. Worth a letter if the transactional side is what interests you and you would rather learn it somewhere you are not one of eighty trainees.',
+    openRoles: 0,
+  },
+  {
+    slug: 'law-crest',
+    logoFile: null,
+    name: 'The Law Crest LLP',
+    shortName: 'The Law Crest',
+    tier: 'Tier 2',
+    email: 'info@thelawcrest.com',
+    website: 'https://thelawcrest.com',
+    /* Both from thelawcrest.com on 2026-08-08. The Lagos address is in the
+       footer of every page; Abuja is on the contact page only. */
+    offices: [
+      { city: 'Lagos', address: 'Continental Re Centre, First Floor, 17 Olosa Street, Victoria Island, Lagos' },
+      { city: 'Abuja', address: 'Suite 16 Extension, Jinifa Plaza, Central Business District, Abuja' },
+    ],
+    practiceAreas: ['Dispute Resolution', 'Labour & Employment', 'Corporate & Commercial', 'Tax', 'Banking & Finance', 'Insolvency'],
+    description: 'Fourteen practice groups run out of two offices, which tells you it is a generalist commercial practice rather than a specialist one. Employment and industrial relations is a real strength and is a quieter route into a firm than the corporate desk everyone applies to. Debt recovery and white collar investigations sit alongside it.',
+    /* "commenced business in January 2000", from the firm's own services page.
+       The month is theirs; only the year is recorded, as everywhere here. */
+    foundedYear: 2000,
+    openRoles: 0,
+  },
+  {
+    slug: 'matrix-solicitors',
+    logoFile: null,
+    name: 'Matrix Solicitors',
+    shortName: 'Matrix',
+    tier: 'Tier 2',
+    email: 'info@matrixsolicitors.com',
+    website: 'https://matrixsolicitors.com',
+    /* Both from matrixsolicitors.com/contact on 2026-08-08. The page gives the
+       Abuja address twice with and without "Garki"; the fuller one is used. */
+    offices: [
+      { city: 'Lagos', address: '9A Kwara Street, Osborne Foreshore Estate, Ikoyi, Lagos' },
+      { city: 'Abuja', address: '3rd Floor, Grand Square, Plot 270, Muhammadu Buhari Way, Central Business District, Garki, Abuja' },
+    ],
+    practiceAreas: ['Aviation', 'Shipping & Maritime', 'Energy & Natural Resources', 'Dispute Resolution', 'Corporate & Commercial', 'Telecommunications & ICT', 'Insolvency'],
+    description: 'Aviation and maritime lead here, which is a narrow pair of specialisms for a firm this size and the reason to look at it. Capital projects and infrastructure sit beside them, along with a government relations and policy advisory group that most commercial firms do not keep as a named practice.',
+    openRoles: 0,
+  },
+  {
+    slug: 'pinheiro',
+    logoFile: null,
+    name: 'Pinheiro LP',
+    shortName: 'Pinheiro',
+    tier: 'Tier 2',
+    email: 'admin@pinheirolp.com',
+    website: 'https://pinheirolp.com',
+    /* All three from the footer of pinheirolp.com on 2026-08-08. */
+    offices: [
+      { city: 'Lagos', address: '5/7 Folayemi Street, Off Coker Road, Ilupeju, Lagos' },
+      { city: 'Abuja', address: 'D5008, Brains & Hammers Estate, 5th Avenue, Gwarimpa, Abuja' },
+      { city: 'Port Harcourt', address: 'Suite 201, Fleet House, Olu Obasanjo Road, Port Harcourt, Rivers State' },
+    ],
+    practiceAreas: ['Dispute Resolution', 'Arbitration', 'Shipping & Maritime', 'Corporate & Commercial', 'Energy & Natural Resources', 'Real Estate', 'Constitutional & Electoral Law'],
+    description: 'Nine practice teams, each led by a partner, across a general practice that runs from admiralty and arbitration to family and probate. A firm that keeps criminal law and constitutional law on the same list as banking is telling you something useful about the range of work a junior would see.',
+    /* No foundedYear. The footer reads "Copyright 1996-2023", which is very
+       probably the founding year and is still a copyright range rather than a
+       claim about when the firm started. */
+    openRoles: 0,
+  },
+  {
+    slug: 'enr-advisory',
+    logoFile: null,
+    name: 'ENR Advisory',
+    shortName: 'ENR Advisory',
+    tier: 'Boutique',
+    email: 'enr@enradvisory.com',
+    website: 'https://enradvisory.com',
+    /* From enradvisory.com/contact-us on 2026-08-08. South Atlantic Petroleum
+       Towers is the SAPETRO building, which is also where Giwa-Osagie sit, so
+       the two Adeola Odeku entries in this file are the same address and not a
+       duplication error. */
+    offices: [
+      { city: 'Lagos', address: '3rd Floor, South Atlantic Petroleum Towers, 1 Adeola Odeku Street, Victoria Island, Lagos' },
+    ],
+    practiceAreas: ['Energy & Natural Resources', 'Banking & Finance', 'Mergers & Acquisitions', 'Dispute Resolution', 'Public Law & Regulatory'],
+    description: 'Energy and nothing else, which is the entire proposition. Petroleum operations, gas supply and processing, electricity and renewables, energy finance, energy disputes and mining. A team built out of senior in-house counsel from oil and gas companies rather than out of a general practice, so the work is closer to what a client actually does.',
+    openRoles: 0,
+  },
+  {
+    slug: 'mj-numa',
+    logoFile: null,
+    name: 'MJ Numa & Partners LLP',
+    shortName: 'MJ Numa',
+    tier: 'Boutique',
+    /* The firm publishes a dedicated address for CVs and asks for them
+       explicitly, including for internships. That is a better field value than
+       the general info@ for a directory whose purpose is to be written to. */
+    email: 'career@mjnuma.com',
+    website: 'https://www.mjnuma.com',
+    /* From mjnuma.com/contact on 2026-08-08. */
+    offices: [
+      { city: 'Abuja', address: 'Flat 1, Tripple A Villas, 495 Adegboyega Atanda Street, Mabushi, Abuja' },
+    ],
+    practiceAreas: ['Dispute Resolution', 'Arbitration', 'Constitutional & Electoral Law', 'Corporate & Commercial'],
+    description: 'A disputes practice in Abuja that says out loud what most firms leave you to guess: send a CV to the careers address, internships included. Election petitions, public interest litigation and white collar work, plus the government and community liaison practice that comes with being based in the capital.',
+    openRoles: 0,
+  },
+  {
+    slug: 'aekley',
+    logoFile: null,
+    name: 'Aekley Solicitors',
+    shortName: 'Aekley',
+    tier: 'Boutique',
+    email: 'info@aekleysolicitors.com',
+    website: 'https://aekleysolicitors.com',
+    /* Both from the footer of every page on aekleysolicitors.com, read
+       2026-08-08. No Lagos office, which is worth noticing rather than
+       assuming an omission. */
+    offices: [
+      { city: 'Abuja', address: 'Suite C7-C10, Second Floor, Innovation Plaza, Plot 770, Wuse, Abuja' },
+      { city: 'Ibadan', address: 'First Floor, 78/80 Oyo Road, Opposite University of Ibadan Second Gate, Ibadan, Oyo State' },
+    ],
+    practiceAreas: ['Corporate & Commercial', 'Real Estate', 'Intellectual Property', 'Public Law & Regulatory', 'Start-up Advisory'],
+    description: 'A small practice built around SMEs and the paperwork of actually starting something: company registration, industrial designs, certificates of occupancy, moneylender and FCCPC licensing. The Ibadan office is opposite the University of Ibadan second gate, which makes it one of the few firms in this directory a law student could walk to.',
     openRoles: 0,
   },
 ]
