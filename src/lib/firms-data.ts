@@ -1121,6 +1121,116 @@ const FIRMS_UNSORTED: Firm[] = [
     description: 'Seven practice groups across corporate, energy, financing and regulatory work, with a shipping, aviation and trade group that few firms this size keep. The Calabar office is unusual and worth knowing about if you are in Cross River and assumed the work was all in Lagos.',
     openRoles: 0,
   },
+
+  /* ———————————————————————————————————————————————————————————————————————
+   * Second batch, 8 August 2026. Same rule: read off the firm's own contact
+   * page, and where a third-party directory disagrees with it, the firm wins.
+   *
+   * That rule earned its keep on Kola Awodein. Search results and several legal
+   * directories put its Lagos office at UBA House, 57 Marina. Its own offices
+   * page says 83 Awolowo Road, Ikoyi. A stale Marina address is exactly the
+   * kind of thing that gets copied between directories for years, and a student
+   * posting a letter to it loses a fortnight finding out.
+   * ——————————————————————————————————————————————————————————————————————— */
+
+  {
+    slug: 'kola-awodein',
+    logoFile: null,
+    name: 'Kola Awodein & Co',
+    shortName: 'Kola Awodein',
+    tier: 'Tier 2',
+    email: 'ka@kolaawodeinandco.com',
+    website: 'https://kolaawodeinandco.com',
+    /* All three from kolaawodeinandco.com/offices.php on 2026-08-08. Each
+       office publishes its own address, so writing to the Abuja or Port
+       Harcourt office directly is possible: kaabj@ and kaph@ respectively. */
+    offices: [
+      { city: 'Lagos', address: '2nd Floor, 83 Awolowo Road, Ikoyi, Lagos' },
+      { city: 'Abuja', address: 'Plot 3671, Zone E27, Opposite FCT High Court, Apo Resettlement, Abuja' },
+      { city: 'Port Harcourt', address: '93 Tombia Extension, GRA Phase II, Port Harcourt' },
+    ],
+    practiceAreas: ['Dispute Resolution', 'Banking & Finance', 'Capital Markets', 'Energy & Natural Resources', 'Tax', 'Public Law & Regulatory'],
+    description: 'A dispute resolution practice at heart, built around Kola Awodein SAN, that also runs full commercial and infrastructure work including public private partnerships. Three offices, each with its own contact address.',
+    foundedYear: 1984,
+    openRoles: 0,
+  },
+  {
+    slug: 'fra-law',
+    logoFile: null,
+    name: 'F. R. A. Williams & Co',
+    shortName: 'FRA Law',
+    tier: 'Tier 2',
+    /* The firm publishes a dedicated recruitment address, which is better than
+       the general one for a field whose entire purpose is to be written to. */
+    email: 'hr@frawilliams.com',
+    website: 'https://frawilliams.com',
+    /* Both from frawilliams.com/contact on 2026-08-08. The P.O. box the page
+       also lists is dropped, as everywhere else in this file. */
+    offices: [
+      { city: 'Lagos', address: '3 Shagamu Avenue, Ilupeju, Lagos' },
+      { city: 'Abuja', address: '17 Benghazi Street, Wuse Zone 4, Abuja' },
+    ],
+    practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Energy & Natural Resources', 'Tax'],
+    description: 'The chambers founded by Chief F. R. A. Williams SAN, the first Senior Advocate of Nigeria, still practising under his name. Litigation and corporate advisory across power, oil and gas, mining and real estate, from Lagos and Abuja.',
+    /* No foundedYear. The firm is plainly old and its history is well known,
+       but the contact page gives no year and a date inferred from a founder's
+       career is not a source. */
+    openRoles: 0,
+  },
+  {
+    slug: 'chris-ogunbanjo',
+    logoFile: null,
+    name: 'Chris Ogunbanjo LP',
+    shortName: 'Chris Ogunbanjo',
+    tier: 'Tier 2',
+    email: 'info@chrisogunbanjo.com',
+    website: 'https://chrisogunbanjo.com',
+    offices: [
+      { city: 'Lagos', address: '3 Hospital Road, Lagos Island, Lagos' },
+    ],
+    practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Capital Markets', 'Intellectual Property', 'Dispute Resolution', 'Tax'],
+    description: 'The first indigenous commercial law firm in Nigeria, founded by Chief Chris Ogunbanjo, who is widely credited with establishing corporate practice here as a discipline. Seventeen practice areas out of one Lagos Island office.',
+    /* 1960, from the firm's own history page and consistent across the
+       obituaries published when the founder died in 2024. Worth noting that a
+       common secondary claim of 1961 is wrong. */
+    foundedYear: 1960,
+    openRoles: 0,
+  },
+  {
+    slug: 'femi-atoyebi',
+    logoFile: null,
+    name: 'Femi Atoyebi & Co',
+    shortName: 'Femi Atoyebi',
+    tier: 'Boutique',
+    email: 'careers@femiatoyebi.com.ng',
+    /* The firm's site is on a .click domain while its email is on
+       femiatoyebi.com.ng. That mismatch is unusual enough to note rather than
+       tidy away, but both were live on 2026-08-08 and the site carries the
+       firm's own content. */
+    website: 'https://faandco.click',
+    offices: [
+      { city: 'Lagos', address: 'Sea Voyager House, 29 Norman Williams Street, Off Awolowo Road, South West Ikoyi, Lagos' },
+    ],
+    practiceAreas: ['Shipping & Maritime', 'Energy & Natural Resources', 'Dispute Resolution', 'Tax', 'Banking & Finance'],
+    description: 'One of the few Nigerian firms where maritime and international trade is the main practice rather than a sideline, which makes it worth a letter if shipping is what you actually want to do. Finance, oil and gas and labour disputes alongside it.',
+    openRoles: 0,
+  },
+  {
+    slug: 'idowu-sofola',
+    logoFile: null,
+    name: 'Idowu Sofola & Co',
+    shortName: 'Idowu Sofola',
+    tier: 'Tier 2',
+    email: 'contact@idowusofola.com',
+    website: 'https://idowusofola.com',
+    offices: [
+      { city: 'Lagos', address: 'Ereke House, 4th and 5th Floors, Plot 15 CIPM Road, Alausa, Ikeja, Lagos' },
+      { city: 'Abuja', address: 'F3 ABM Plaza, Plot 23 Ekukinam Street, Utako District, Abuja' },
+    ],
+    practiceAreas: ['Corporate & Commercial', 'Dispute Resolution'],
+    description: 'A full service practice founded by Chief Idowu Sofola SAN, with offices in Lagos and Abuja. The Lagos office is in Alausa rather than on the island, which puts it next to the Lagos State secretariat and the courts there.',
+    openRoles: 0,
+  },
 ]
 
 export function getMonogram(name: string): string {
