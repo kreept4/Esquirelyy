@@ -24,13 +24,17 @@ import { createServerClient } from '@supabase/ssr'
  * employers how to list a role. An employer will not create an account to find
  * out whether listing is free.
  *
- * ⚠ Everything else — the jobs board, the firms directory, scholarships, the
- * news page and the tools — is now private, and that has a cost worth being
- * explicit about: those pages were statically generated and indexable, and
- * they were how a student searching for "Nigerian law firm internship" would
- * ever have found this site. Behind a login they are invisible to search
- * engines. If the goal is reach, the usual shape is to leave the listings
- * public and gate the actions on them.
+ * And the firms directory, which is the exception this comment used to warn
+ * about. Gating it made the most researched thing on the site invisible to
+ * search engines: a student searching "Aluko & Oyebode training contract" found
+ * a login page or nothing. /firms is now open at this layer, and the decision
+ * about how much of a given firm a signed-out reader sees is made in the page
+ * itself, by tier. Tier 1 profiles are public and indexed; the rest show the
+ * firm's shape and ask the reader to sign in for the contact details. That
+ * needs the firm record to answer, which is why it cannot live here.
+ *
+ * ⚠ Everything else — the jobs board, scholarships, the news page and the
+ * tools — is still private, and still carries the same cost.
  */
 const PUBLIC_PATHS = [
   '/auth',
@@ -41,6 +45,7 @@ const PUBLIC_PATHS = [
   '/faq',
   '/ambassador',
   '/advertise',
+  '/firms',
 ]
 
 function isPublic(pathname: string) {

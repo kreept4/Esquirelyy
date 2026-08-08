@@ -3767,6 +3767,18 @@ select.filter-pill {
   line-height: 1.6;
 }
 
+/* Stands in for a withheld street address on a gated firm.
+   Italic and lighter, so it reads as a note about the page rather than as the
+   address itself. It is deliberately not a blur or a row of blocks: faking the
+   shape of hidden text is a dark pattern's tell, and it also invites the reader
+   to try selecting it. Saying plainly that the address exists and is behind an
+   account is both more honest and, going by how these usually convert, more
+   persuasive. */
+.firm-office-address-hidden {
+  font-style: italic;
+  opacity: 0.72;
+}
+
 /* SHARED EMPTY STATE
    Used by the job board, scholarships and the firm directory, so a no-results
    screen is the same object everywhere instead of three near-copies. */

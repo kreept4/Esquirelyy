@@ -1,10 +1,70 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import TrackOnApply from '@/components/features/TrackOnApply'
 import { notFound } from 'next/navigation'
 import Footer from '@/components/layout/Footer'
-import { ALL_FIRMS, firmLogo, getMonogram, type Firm } from '@/lib/firms-data'
+import { ALL_FIRMS, firmLogo, getMonogram, isPubliclyReadable, type Firm } from '@/lib/firms-data'
 import LogoFrame from '@/components/ui/LogoFrame'
 import RankingBadges from '@/components/ui/RankingBadges'
+import { createClient } from '@/lib/supabase/server'
+
+/**
+ * Prerender the public profiles, and only those.
+ *
+ * The twenty Tier 1 pages never read a cookie, so they can be built once and
+ * served as flat HTML: a crawler gets the whole record with no server work and
+ * no session round trip, which is the difference between a fast page and a
+ * page Google measures as slow. The gated profiles are absent on purpose and
+ * still render on demand, because whether they show the record at all depends
+ * on who is asking, and that cannot be baked at build time.
+ *
+ * A firm promoted to Tier 1 joins this list at the next deploy with no other
+ * change, which is the same single source of truth the sitemap uses.
+ */
+export function generateStaticParams() {
+  return ALL_FIRMS.filter(isPubliclyReadable).map(f => ({ slug: f.slug }))
+}
+
+/**
+ * Per-firm metadata, which this page never had.
+ *
+ * Every profile shared the site-wide title, so fifty-nine pages went out
+ * announcing themselves as "Esquirely | Nigeria's Legal Career Platform". A
+ * search result for a firm's name has to say the firm's name, and a link
+ * pasted into WhatsApp has to preview as that firm rather than as the site.
+ *
+ * Gated firms are marked noindex on purpose. Google is welcome to read the Tier
+ * 1 profiles; it is not welcome to index a page whose substance is a prompt to
+ * sign in, because that is the page a searcher would land on and bounce from.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const firm = ALL_FIRMS.find(f => f.slug === slug)
+  if (!firm) return { title: 'Firm not found' }
+
+  const cities = firm.offices.map(o => o.city)
+  const where = [...new Set(cities)].join(', ')
+  const open = isPubliclyReadable(firm)
+
+  return {
+    title: firm.name,
+    description: open
+      ? `${firm.name}: offices, practice areas and how to apply. ${firm.description}`.slice(0, 300)
+      : `${firm.name} on Esquirely. ${where ? `Offices in ${where}. ` : ''}Sign in to see the full record.`,
+    alternates: { canonical: `/firms/${firm.slug}` },
+    openGraph: {
+      title: `${firm.name} | Esquirely`,
+      description: firm.description,
+      url: `/firms/${firm.slug}`,
+      type: 'profile',
+    },
+    ...(open ? {} : { robots: { index: false, follow: true } }),
+  }
+}
 
 /** Firm mark for the profile header.
  *
@@ -48,6 +108,17 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
   const { slug } = await params
   const firm = ALL_FIRMS.find(f => f.slug === slug)
   if (!firm) return notFound()
+
+  /* Tier 1 profiles are open to everyone, including crawlers, and the rest ask
+   * for an account. See isPubliclyReadable for why the line is drawn there.
+   *
+   * The session is only read for a gated firm, and that ordering is the whole
+   * performance argument: reading cookies opts a route out of static rendering,
+   * so checking unconditionally would make all twenty public pages dynamic to
+   * answer a question only thirty-nine of them ask. */
+  const locked = isPubliclyReadable(firm)
+    ? false
+    : !(await createClient().auth.getUser()).data.user
 
   /* Firms a reader of this page would plausibly want next: same tier, and at
    * least one practice area in common. Ranked by how much practice overlap
@@ -154,17 +225,34 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
               </div>
             </section>
 
+            {/* Offices.
+                Locked, the cities stay and the street addresses go. That split
+                is deliberate: knowing a firm has an Ilorin office is what tells
+                a reader whether this firm is relevant to them at all, and it is
+                the part worth showing for free. The address is the part you
+                need only once you have decided to write, which is a fair thing
+                to ask for an account in exchange for.
+
+                Keyed by index rather than by city, because a firm can have two
+                offices in the same city: OAL has Ikoyi and Apapa, and keying on
+                the city name silently dropped one of them. */}
             <section>
               <p className="firm-profile-section-heading">
                 {firm.offices.length === 1 ? 'Office' : 'Offices'}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
-                {firm.offices.map((office: any) => (
-                  <div key={office.city} style={{ display: 'flex', gap: '0.7rem', alignItems: 'flex-start' }}>
+                {firm.offices.map((office, i) => (
+                  <div key={`${office.city}-${i}`} style={{ display: 'flex', gap: '0.7rem', alignItems: 'flex-start' }}>
                     <span style={{ color: 'var(--ink-muted)', marginTop: '3px', flexShrink: 0 }}><MapPinIcon /></span>
                     <div>
                       <p className="firm-office-city">{office.city}</p>
-                      <p className="firm-office-address">{office.address}</p>
+                      {locked ? (
+                        <p className="firm-office-address firm-office-address-hidden">
+                          Address available to members
+                        </p>
+                      ) : (
+                        <p className="firm-office-address">{office.address}</p>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -186,6 +274,33 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
                 surface in the product answering "how do I apply" in its own
                 visual language. */}
             <div className="apply-card">
+              {locked ? (
+                /* The prompt, and the only place on the page that asks for
+                 * anything. It sits in the apply card rather than over the
+                 * whole page on purpose: an overlay that greys out a profile
+                 * teaches a reader that the site is a toll gate, while a card
+                 * in the one slot they were heading for reads as the site
+                 * telling them where the thing they want is. */
+                <>
+                  <p className="grotesk-bold apply-card-title">Where to send it</p>
+                  <p className="grotesk-regular apply-card-note" style={{ marginTop: 0 }}>
+                    {firm.shortName} takes speculative applications, and this is where the
+                    application address and the street address for each office live. Members
+                    can see both.
+                  </p>
+                  <Link href={`/auth/signup?redirect=/firms/${firm.slug}`} className="apply-card-cta grotesk-bold" style={{ marginTop: '1.1rem' }}>
+                    Create a free account
+                  </Link>
+                  <p className="grotesk-regular apply-card-note">
+                    Already have one?{' '}
+                    <Link href={`/auth/login?redirect=/firms/${firm.slug}`} className="apply-card-mail">
+                      Sign in
+                    </Link>
+                    . It takes a minute and the whole directory opens up, not just this firm.
+                  </p>
+                </>
+              ) : (
+              <>
               <p className="grotesk-bold apply-card-title">Apply directly</p>
 
               {firm.email && (
@@ -211,7 +326,12 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
                   </p>
                 </>
               )}
+              </>
+              )}
 
+              {/* Outside the gate. The firm's own website is public knowledge
+                  and one search away, so withholding it would cost a reader
+                  something real and cost us nothing they could not get. */}
               {firm.website && (
                 <a href={firm.website} target="_blank" rel="noopener noreferrer" className="apply-card-link">
                   <GlobeIcon /> Visit website
