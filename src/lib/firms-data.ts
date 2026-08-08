@@ -175,6 +175,35 @@ const LOCAL_ONLY_LOGO = new Set([
   'pavestones',
   'sofunde-osakwe',
   'the-new-practice',
+  // Added 2026-08-08 with the nine-firm batch, same route: art pulled from each
+  // firm's own site by scripts/fetch-new-firm-logos.mjs.
+  //
+  // Four needed more than a download. Babalakin and Kola Awodein publish JPEGs,
+  // so their marks arrived on an opaque white plate and the white is keyed out.
+  // F. R. A. Williams publish only a reversed mark, inverted here the same way
+  // Ikeyi Shittu's was. Femi Atoyebi publish only a white SVG, so the fill is
+  // swapped to ink before rasterising, which keeps the paths exact.
+  //
+  // Chris Ogunbanjo trips the LIGHT check at lum 186 and is deliberately kept:
+  // it is a pale blue device, not reversed artwork, and it reads fine on cream.
+  //
+  // abdulai-taiwo is NOT here and keeps its monogram. That is not a gap waiting
+  // to be filled: abdulaitaiwo.com sets the firm's name as text rather than as
+  // art, so there is no mark to fetch.
+  'babalakin',
+  'solola-akpana',
+  'advocaat',
+  'kola-awodein',
+  'fra-law',
+  'chris-ogunbanjo',
+  'femi-atoyebi',
+  'idowu-sofola',
+  // Third batch, same day. All three came down clean on the first attempt,
+  // which is what a normal run of this script looks like when a firm publishes
+  // its own mark at full size and not only as a header thumbnail.
+  'olisa-agbakoba',
+  'yusuf-ali',
+  'ao2-law',
   // abe-asotie: re-sourced 2026-08-08 from the firm's own site, replacing the
   // opaque crop taken off a hiring flier when abeandasotie.com was unreachable.
   // The download is already RGBA, and it is trimmed to its content box rather
@@ -1055,7 +1084,11 @@ const FIRMS_UNSORTED: Firm[] = [
     shortName: 'Solola & Akpana',
     tier: 'Tier 2',
     email: 'info@sololaakpana.com',
-    website: 'https://sololaakpana.com',
+    /* The .ng, not the .com. sololaakpana.com is a stub whose entire body is a
+       script that sends the browser to sololaakpana.ng, so it works for a human
+       and looks like a dead end to anything that does not run JavaScript. The
+       mail stays on the .com because that is the address they publish. */
+    website: 'https://sololaakpana.ng',
     /* Read from the firm's contact record on Chambers Global 2026. Its own site
        renders its contact details in a way that could not be read.
 
@@ -1203,11 +1236,12 @@ const FIRMS_UNSORTED: Firm[] = [
     shortName: 'Femi Atoyebi',
     tier: 'Boutique',
     email: 'careers@femiatoyebi.com.ng',
-    /* The firm's site is on a .click domain while its email is on
-       femiatoyebi.com.ng. That mismatch is unusual enough to note rather than
-       tidy away, but both were live on 2026-08-08 and the site carries the
-       firm's own content. */
-    website: 'https://faandco.click',
+    /* Was faandco.click, on the note that the .click site and the .com.ng email
+       were an odd pair but both live. Rechecked later the same day and the
+       .click domain no longer resolves at all: NXDOMAIN on a public resolver,
+       not a timeout. The firm's site is on femiatoyebi.com.ng, which is also
+       where their mail is, so the odd pair resolved itself. */
+    website: 'https://femiatoyebi.com.ng',
     offices: [
       { city: 'Lagos', address: 'Sea Voyager House, 29 Norman Williams Street, Off Awolowo Road, South West Ikoyi, Lagos' },
     ],
@@ -1222,6 +1256,13 @@ const FIRMS_UNSORTED: Firm[] = [
     shortName: 'Idowu Sofola',
     tier: 'Tier 2',
     email: 'contact@idowusofola.com',
+    /* ⚠ Serving an EXPIRED TLS certificate as of 2026-08-08. Every browser puts
+       a full-page "your connection is not private" interstitial in front of it,
+       so the Visit website link on this firm's profile lands a student on a
+       security warning. The site itself is fine behind it and the firm is
+       plainly still practising, so the link stays rather than being removed;
+       the fix belongs to them, not to us. Recheck before assuming it is still
+       true, since a renewal clears it in an afternoon. */
     website: 'https://idowusofola.com',
     offices: [
       { city: 'Lagos', address: 'Ereke House, 4th and 5th Floors, Plot 15 CIPM Road, Alausa, Ikeja, Lagos' },
@@ -1231,7 +1272,129 @@ const FIRMS_UNSORTED: Firm[] = [
     description: 'A full service practice founded by Chief Idowu Sofola SAN, with offices in Lagos and Abuja. The Lagos office is in Alausa rather than on the island, which puts it next to the Lagos State secretariat and the courts there.',
     openRoles: 0,
   },
+
+  /* ———————————————————————————————————————————————————————————————————————
+   * Third batch, 8 August 2026. Same rule as the two above: the firm's own
+   * page wins over any directory that disagrees with it.
+   *
+   * Two of these three widen the map. Yusuf Ali & Co is the first Ilorin entry
+   * in the directory and AO2 brings Awka and Akure, so a student in Kwara,
+   * Anambra or Ondo can now find a firm in their own city rather than reading
+   * about Lagos. Worth keeping in mind when the next firm is added: this
+   * directory has been drifting towards a list of Lagos island addresses, and
+   * that is a bias in what students think their options are, not just a gap.
+   * ——————————————————————————————————————————————————————————————————————— */
+
+  {
+    slug: 'olisa-agbakoba',
+    logoFile: null,
+    name: 'Olisa Agbakoba Legal',
+    shortName: 'OAL',
+    tier: 'Tier 1',
+    /* The address their live contact page publishes. It is capitalised
+       Clientsupport@ there; written lowercase here because the local part is
+       case insensitive in practice and a capitalised mailto looks like a typo
+       to the person about to send their CV. */
+    email: 'clientsupport@oal.law',
+    website: 'https://oal.law',
+    /* ⚠ NOT from the live site. oal.law now publishes only city names on its
+       contact page: Ikoyi, Apapa, FCT Abuja, Port Harcourt. The street
+       addresses below come from the firm's OWN /our-offices/ page as archived
+       on 5 April 2025, which 404s today. That is a weaker source than a live
+       page and it is recorded as such rather than presented as current.
+       Recheck when the firm republishes an offices page.
+
+       Their fourth location, Port Harcourt, is listed with no address anywhere,
+       so it is not invented here. Three offices are recorded because three are
+       sourceable. */
+    offices: [
+      { city: 'Lagos', address: '10A Ilabere Street, Ikoyi, Lagos' },
+      { city: 'Lagos', address: '2nd Floor, Maritime Complex, 34 Creek Road, Apapa, Lagos' },
+      { city: 'Abuja', address: 'Purplestone Mall, Plot 1265, Zone E27, Apo Resettlement, Apo, Abuja' },
+    ],
+    practiceAreas: ['Shipping & Maritime', 'Dispute Resolution', 'Corporate & Commercial', 'Energy & Natural Resources', 'Intellectual Property', 'Tax', 'Public Law & Regulatory'],
+    description: 'The firm to write to if maritime is what you actually want to do. Olisa Agbakoba SAN built his name in human rights litigation and the firm still carries that public law streak, but its centre of gravity is shipping and the blue economy, alongside corporate, energy and tax work. The Apapa office sits at the port, which tells you where the maritime practice is run from.',
+    /* Their own history page dates the firm to 1951, founded by Justice J. C. U.
+       Agbakoba, and records a re-establishment in 1980 by Olisa Agbakoba. The
+       earlier year is the one recorded because it is the one the firm claims;
+       the 1980 date is the more useful fact about the practice as it exists
+       now, which is why it is in this comment rather than lost. */
+    foundedYear: 1951,
+    openRoles: 0,
+  },
+  {
+    slug: 'yusuf-ali',
+    logoFile: null,
+    name: 'Yusuf Ali & Co',
+    shortName: 'Yusuf Ali',
+    tier: 'Tier 2',
+    email: 'info@yusufali.net',
+    website: 'https://www.yusufali.net',
+    /* All three read off yusufali.net/contact on 2026-08-08. The firm practises
+       as Ghalib Chambers and both of its owned buildings are called Ghalib
+       House, which is not a duplication error: one is in Ilorin and one is in
+       Wuse II. */
+    offices: [
+      { city: 'Ilorin', address: '2nd Floor, Ghalib House, 24 Abdul Wahab Folawiyo Road, Ilorin, Kwara State' },
+      { city: 'Abuja', address: 'Ghalib House, 4 Sakono Street, Adjacent AP Plaza, Off Adetokunbo Ademola Crescent, Wuse II, Abuja' },
+      { city: 'Lagos', address: '2nd Floor, Suite WW4, Tafawa Balewa Complex, Lagos' },
+    ],
+    /* The first five are the practice areas the firm itself lists. Dispute
+       resolution is the sixth and is not on that list, which would make the
+       record read as though this chambers does not go to court. It publishes a
+       library of its own reported cases, which is a firmer source for a
+       litigation practice than a practice-areas menu is. */
+    practiceAreas: ['Aviation', 'Banking & Finance', 'Real Estate', 'Intellectual Property', 'Telecommunications', 'Dispute Resolution'],
+    description: 'The best known chambers outside Lagos and Abuja, and the reason this directory has an Ilorin entry at all. Around seventy five lawyers under Chief Yusuf Ali SAN, with a reported case library the firm publishes itself and an aviation practice that is unusual for a firm of this size. A serious option if you are in Kwara and had assumed the work was all on the island.',
+    openRoles: 0,
+  },
+  {
+    slug: 'ao2-law',
+    logoFile: null,
+    name: 'AO2 Law',
+    shortName: 'AO2 Law',
+    tier: 'Tier 2',
+    /* They publish info@ and contact@ side by side, plus awka@ for that office
+       alone. info@ is the one printed here; a student writing to the Awka
+       office directly has the third address on the firm's contact page. */
+    email: 'info@ao2law.com',
+    website: 'https://ao2law.com',
+    /* All four read off ao2law.com/contact on 2026-08-08. Lagos is the address
+       the page gives under "Physical Address"; the other three sit under
+       "Other Offices". */
+    offices: [
+      { city: 'Lagos', address: '3A Kayode Otitoju Street, Off Admiralty Road, Lekki Phase I, Lagos' },
+      { city: 'Abuja', address: '47B Kumasi Crescent, Opposite SunTrust Bank, Wuse 2, Abuja' },
+      { city: 'Awka', address: '207 Ziks Avenue, Awka, Anambra State' },
+      { city: 'Akure', address: '1st Floor, Benin-Owena River Basin, Opposite Providus Bank, Alagbaka, Akure, Ondo State' },
+    ],
+    practiceAreas: ['Dispute Resolution', 'Energy & Natural Resources', 'Corporate & Commercial', 'Real Estate', 'Banking & Finance'],
+    description: 'AO2 is Anaje Olumide Oke Akinkugbe, and the four offices are the point: Lagos and Abuja as you would expect, then Awka and Akure, which almost no commercial firm of this size bothers with. Dispute resolution and energy lead the practice, with real estate, corporate finance and project development beside them.',
+    openRoles: 0,
+  },
 ]
+
+/**
+ * Whether a signed-out reader, or a crawler, sees the whole firm record.
+ *
+ * ONE RULE, ONE PLACE. The profile page, the sitemap and robots.txt all have to
+ * agree about this. If the sitemap offers a page the page then hides, Search
+ * Console reports it as a soft 404 and Google learns to distrust the host, so
+ * the three must never be able to drift apart. They read this function.
+ *
+ * Tier 1 is the line, and `tier` is Esquirely's own size band rather than a
+ * ranking, which makes it the right field for this: the question here is which
+ * firms a stranger is most likely to be searching for by name, not which firms
+ * are best. The twenty largest are the ones with the search demand worth
+ * meeting, and the rest of the directory is what an account is for.
+ *
+ * Everything the gate withholds is contact detail: street addresses and the
+ * application address. What stays visible is the firm's shape, because a page
+ * that shows nothing is not a preview, it is a wall with a headline on it.
+ */
+export function isPubliclyReadable(firm: Pick<Firm, 'tier'>): boolean {
+  return firm.tier === 'Tier 1'
+}
 
 export function getMonogram(name: string): string {
   return name
