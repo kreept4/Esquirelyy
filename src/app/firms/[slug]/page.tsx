@@ -8,22 +8,26 @@ import LogoFrame from '@/components/ui/LogoFrame'
 import RankingBadges from '@/components/ui/RankingBadges'
 import { createClient } from '@/lib/supabase/server'
 
-/**
- * Prerender the public profiles, and only those.
+/* ⚠ THERE IS NO generateStaticParams HERE, AND IT MUST NOT BE ADDED BACK.
  *
- * The twenty Tier 1 pages never read a cookie, so they can be built once and
- * served as flat HTML: a crawler gets the whole record with no server work and
- * no session round trip, which is the difference between a fast page and a
- * page Google measures as slow. The gated profiles are absent on purpose and
- * still render on demand, because whether they show the record at all depends
- * on who is asking, and that cannot be baked at build time.
+ * Prerendering the twenty one Tier 1 slugs looks free: they never read a
+ * cookie, so they could be flat HTML. It was tried and it broke every OTHER
+ * profile in production. With generateStaticParams present, Next's default for
+ * a param outside the list is to render it statically on demand and cache it,
+ * and a static render cannot read cookies. Every gated profile answered 500
+ * with digest DYNAMIC_SERVER_USAGE.
  *
- * A firm promoted to Tier 1 joins this list at the next deploy with no other
- * change, which is the same single source of truth the sitemap uses.
+ * `await connection()` does not rescue it either. It signals that a render
+ * needs a request, but the render Next has already committed to here is a
+ * prerender, so the signal is an error rather than a switch.
+ *
+ * The route is therefore dynamic for everybody. That is a real cost paid for
+ * correctness, and a small one: these pages are server rendered per request
+ * rather than served from cache, which Google indexes exactly the same way.
+ * Getting both would mean Partial Prerendering, or serving gated addresses
+ * from an authenticated route instead of the page. Either is a bigger change
+ * than a fast TTFB on twenty one pages is worth today.
  */
-export function generateStaticParams() {
-  return ALL_FIRMS.filter(isPubliclyReadable).map(f => ({ slug: f.slug }))
-}
 
 /**
  * Per-firm metadata, which this page never had.
@@ -112,13 +116,14 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
   /* Tier 1 profiles are open to everyone, including crawlers, and the rest ask
    * for an account. See isPubliclyReadable for why the line is drawn there.
    *
-   * The session is only read for a gated firm, and that ordering is the whole
-   * performance argument: reading cookies opts a route out of static rendering,
-   * so checking unconditionally would make all twenty public pages dynamic to
-   * answer a question only thirty-nine of them ask. */
-  const locked = isPubliclyReadable(firm)
-    ? false
-    : !(await createClient().auth.getUser()).data.user
+   * The session is still only read for a gated firm. It no longer buys static
+   * rendering (see the note above generateMetadata), but it does mean a Tier 1
+   * page serves without waiting on an auth round trip, which is the part of
+   * that saving actually worth keeping. */
+  let locked = false
+  if (!isPubliclyReadable(firm)) {
+    locked = !(await createClient().auth.getUser()).data.user
+  }
 
   /* Firms a reader of this page would plausibly want next: same tier, and at
    * least one practice area in common. Ranked by how much practice overlap
