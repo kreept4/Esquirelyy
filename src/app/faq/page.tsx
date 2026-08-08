@@ -401,8 +401,8 @@ export default function FAQPage() {
             <p className="grotesk-regular faq-tail-body">
               Ask us directly. Questions that come up more than once end up on this page.
             </p>
-            <a href="mailto:hello@esquirely.com" className="grotesk-bold faq-tail-cta">
-              hello@esquirely.com
+            <a href="mailto:hello@esquirely.com.ng" className="grotesk-bold faq-tail-cta">
+              hello@esquirely.com.ng
             </a>
           </div>
           </div>

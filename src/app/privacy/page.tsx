@@ -331,7 +331,7 @@ export default function PrivacyPage() {
       <Clause n={11} heading="Contact">
         <p>
           For anything in this notice, including requests under clause 7, contact us at{' '}
-          <a href="mailto:privacy@esquirely.com">privacy@esquirely.com</a>.
+          <a href="mailto:privacy@esquirely.com.ng">privacy@esquirely.com.ng</a>.
         </p>
       </Clause>
     </LegalPage>

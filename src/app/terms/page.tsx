@@ -123,7 +123,7 @@ export default function TermsPage() {
         </p>
         <p>
           If you own a mark or a listing and want it changed or removed, write to{' '}
-          <a href="mailto:legal@esquirely.com">legal@esquirely.com</a>. We act on reasonable requests
+          <a href="mailto:legal@esquirely.com.ng">legal@esquirely.com.ng</a>. We act on reasonable requests
           promptly and without argument.
         </p>
       </Clause>
@@ -235,7 +235,7 @@ export default function TermsPage() {
       <Clause n={13} heading="Contact">
         <p>
           Questions, complaints and takedown requests:{' '}
-          <a href="mailto:legal@esquirely.com">legal@esquirely.com</a>.
+          <a href="mailto:legal@esquirely.com.ng">legal@esquirely.com.ng</a>.
         </p>
       </Clause>
     </LegalPage>

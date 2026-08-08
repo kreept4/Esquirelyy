@@ -3,7 +3,24 @@ import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import SmallScreenNotice from '@/components/layout/SmallScreenNotice'
 
+/**
+ * The live host, and the base every relative metadata URL is resolved against.
+ *
+ * Without metadataBase, Next resolves OG and Twitter image paths against
+ * localhost at build time and warns; the tags ship pointing at a machine nobody
+ * else can reach, so link previews render blank. It has to be an absolute URL
+ * known at build, which is why it is a constant here and not read from a
+ * request.
+ *
+ * Preview deployments should describe themselves rather than production, so
+ * NEXT_PUBLIC_SITE_URL wins where it is set. Production leaves it unset or sets
+ * it to the same value.
+ */
+const SITE = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://esquirely.com.ng'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE),
+  alternates: { canonical: '/' },
   title: {
     default: 'Esquirely | Nigeria\'s Legal Career Platform',
     template: '%s | Esquirely',
@@ -13,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Esquirely | Nigeria\'s Legal Career Platform',
     description: 'Jobs, internships, scholarships, and opportunities for Nigerian legal professionals.',
-    url: 'https://esquirely.ng',
+    url: SITE,
     siteName: 'Esquirely',
     locale: 'en_NG',
     type: 'website',

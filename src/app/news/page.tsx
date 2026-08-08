@@ -170,7 +170,7 @@ export default function NewsPage() {
 
           <p className="grotesk-regular news-note">
             Something we should be covering? Tell us at{' '}
-            <a href="mailto:hello@esquirely.com">hello@esquirely.com</a>. If it names a firm or a
+            <a href="mailto:hello@esquirely.com.ng">hello@esquirely.com.ng</a>. If it names a firm or a
             deadline, we check it against the source before it goes up.
           </p>
         </div>

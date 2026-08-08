@@ -23,14 +23,14 @@ export const metadata = {
 const ROUTES = [
   {
     what: 'Something on the site is wrong',
-    who: 'corrections@esquirely.com',
+    who: 'corrections@esquirely.com.ng',
     body:
       'A closed role still listed as open, a deadline that has moved, a firm address that is out of date, a broken application link. These are the messages we act on fastest, because everything else here depends on the board being right. Tell us which page and what is wrong with it.',
     aside: 'Include the URL. It saves us a search and you a follow-up email.',
   },
   {
     what: 'You want a role on the board',
-    who: 'roles@esquirely.com',
+    who: 'roles@esquirely.com.ng',
     body:
       'Firms, in-house teams and chambers can send openings directly. Listing is free and there is no account to create. Send the role, the requirements, the deadline and where applications should go, and we will put it up.',
     aside: (
@@ -41,7 +41,7 @@ const ROUTES = [
   },
   {
     what: 'A question about your data',
-    who: 'privacy@esquirely.com',
+    who: 'privacy@esquirely.com.ng',
     body:
       'Access, correction and deletion requests under the Nigeria Data Protection Act 2023. We answer within 30 days and there is no charge. You do not need to give a reason.',
     aside: (
@@ -52,7 +52,7 @@ const ROUTES = [
   },
   {
     what: 'Campus ambassadors',
-    who: 'ambassadors@esquirely.com',
+    who: 'ambassadors@esquirely.com.ng',
     body:
       'Applications, questions about the commitment, or a note from a faculty that wants a session run. The terms are published rather than negotiated, so read them first and the reply will be quicker.',
     aside: (
@@ -63,7 +63,7 @@ const ROUTES = [
   },
   {
     what: 'Anything else',
-    who: 'hello@esquirely.com',
+    who: 'hello@esquirely.com.ng',
     body:
       'Partnerships, press, a story we should be covering, or a piece of the site that is simply annoying to use. This one is read by a person, not a queue.',
     aside: 'Feedback on what is missing is genuinely the most useful thing you can send.',

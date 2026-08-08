@@ -100,14 +100,19 @@ async function stampWelcomed(userId: string, existing: Record<string, unknown>) 
 /**
  * Absolute base for every link in the message.
  *
- * The fallback is the Vercel URL, not esquirely.com. The apex domain is
- * registered but not yet pointed here, and what it serves answers EVERY path
- * with 200 text/html. Move this to esquirely.com in the same commit as the DNS
- * cutover, not before, and set NEXT_PUBLIC_SITE_URL in the Vercel project so
- * the fallback is never what actually runs.
+ * The fallback is now the live domain. It used to be the Vercel URL, on the
+ * reasoning that the apex was registered but not yet pointed here and answered
+ * every path with 200 text/html. That reading was wrong in an important way:
+ * esquirely.com is a THIRD PARTY's parked domain, which is why it answered
+ * everything, and it was never ours to cut over to. esquirely.com.ng is, and it
+ * serves this app on both apex and www.
+ *
+ * Still set NEXT_PUBLIC_SITE_URL in the Vercel project. Preview deployments
+ * should link to themselves, not to production, and the env var is the only
+ * thing that makes that true.
  */
 function siteUrl() {
-  return process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://esquirelyy.vercel.app'
+  return process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://esquirely.com.ng'
 }
 
 export async function sendWelcomeOnce(user: User): Promise<WelcomeOutcome> {

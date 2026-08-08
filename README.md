@@ -92,7 +92,7 @@ Follow the prompts. When asked about environment variables, add them via the Ver
 ### After deployment
 
 - Update `NEXT_PUBLIC_APP_URL` to your Vercel URL (e.g. `https://esquirely.vercel.app`)
-- Set up your custom domain in Vercel if you have one (e.g. `esquirely.ng`)
+- Set up your custom domain in Vercel if you have one (e.g. `esquirely.com.ng`)
 
 ---
 

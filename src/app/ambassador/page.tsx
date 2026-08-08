@@ -199,7 +199,7 @@ export default function AmbassadorPage() {
               </p>
               <div className="amb-apply-actions">
                 <a
-                  href="mailto:ambassadors@esquirely.com?subject=Ambassador%20application"
+                  href="mailto:ambassadors@esquirely.com.ng?subject=Ambassador%20application"
                   className="grotesk-bold amb-apply-cta"
                 >
                   Apply to join

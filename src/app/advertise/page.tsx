@@ -30,7 +30,7 @@ const STEPS = [
   {
     title: 'Send the role',
     body:
-      'Email it to roles@esquirely.com. A job description as an attachment is fine, a link to your own careers page is fine, and the body of an email is fine. There is no template to fill in and no form to create an account for.',
+      'Email it to roles@esquirely.com.ng. A job description as an attachment is fine, a link to your own careers page is fine, and the body of an email is fine. There is no template to fill in and no form to create an account for.',
     aside: 'One email per role keeps the thread clean when a deadline later moves.',
   },
   {
@@ -174,10 +174,10 @@ export default function AdvertisePage() {
               </p>
               <div className="amb-apply-actions">
                 <a
-                  href="mailto:roles@esquirely.com?subject=Role%20for%20the%20Esquirely%20board"
+                  href="mailto:roles@esquirely.com.ng?subject=Role%20for%20the%20Esquirely%20board"
                   className="grotesk-bold amb-apply-cta"
                 >
-                  Email roles@esquirely.com
+                  Email roles@esquirely.com.ng
                 </a>
                 <Link href="/jobs" className="grotesk-regular amb-apply-alt">
                   See what is on the board
