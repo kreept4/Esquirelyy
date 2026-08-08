@@ -129,8 +129,7 @@ export const CONTACT_SEPARATOR = ' | '
 export const SECTION_ORDER = [
   'PROFESSIONAL SUMMARY',
   'EDUCATION',
-  'CERTIFICATIONS',
-  'ADMISSIONS',
+  'PROFESSIONAL CERTIFICATIONS',
   'WORK EXPERIENCE',
   'INDEPENDENT PROJECTS',
   'LEADERSHIP EXPERIENCE',
@@ -157,13 +156,87 @@ const TAIL_SECTIONS = ['LANGUAGES', 'SKILLS & INTERESTS']
 
 const UNKNOWN_RANK = SECTION_ORDER.length - TAIL_SECTIONS.length - 0.5
 
+/**
+ * Headings that mean PROFESSIONAL CERTIFICATIONS.
+ *
+ * There is no longer an ADMISSIONS section. A call to the Nigerian Bar is a
+ * professional qualification, and on a two-page CV giving it a heading of its
+ * own spends a whole section — heading, spacing, one entry — on a single line
+ * that sits perfectly well beside the Law School result and any other
+ * certificate.
+ *
+ * This map is enforcement, not documentation. The prompt asks the model for the
+ * right heading, but the model is free text and will sometimes return
+ * CERTIFICATIONS or BAR ADMISSIONS anyway; a rename that lived only in the
+ * prompt would fail silently and leave the old heading on the page. Renaming
+ * here means the document is correct whatever comes back.
+ */
+const CERTIFICATIONS_HEADING = 'PROFESSIONAL CERTIFICATIONS'
+
+const HEADING_ALIASES: Record<string, string> = {
+  'CERTIFICATIONS': CERTIFICATIONS_HEADING,
+  'CERTIFICATIONS & ADMISSIONS': CERTIFICATIONS_HEADING,
+  'CERTIFICATIONS AND ADMISSIONS': CERTIFICATIONS_HEADING,
+  'ADMISSIONS': CERTIFICATIONS_HEADING,
+  'ADMISSION': CERTIFICATIONS_HEADING,
+  'BAR ADMISSIONS': CERTIFICATIONS_HEADING,
+  'BAR ADMISSION': CERTIFICATIONS_HEADING,
+  'CALL TO BAR': CERTIFICATIONS_HEADING,
+  'PROFESSIONAL QUALIFICATIONS': CERTIFICATIONS_HEADING,
+  'LICENCES & CERTIFICATIONS': CERTIFICATIONS_HEADING,
+  'LICENSES & CERTIFICATIONS': CERTIFICATIONS_HEADING,
+}
+
+function canonicalHeading(heading: string): string {
+  const key = heading.trim().toUpperCase().replace(/\s+/g, ' ')
+  return HEADING_ALIASES[key] ?? key
+}
+
+/**
+ * Canonicalise headings, fold duplicates together, then order.
+ *
+ * The fold matters as much as the rename. Once ADMISSIONS and CERTIFICATIONS
+ * both canonicalise to one name, a model that returned both would otherwise put
+ * two identical headings on the page, one under the other. Merging is only
+ * attempted for 'entries' sections, which is the only kind these headings ever
+ * produce and the only kind where concatenating is meaningful — a prose body
+ * and an entry list cannot be joined, so anything else keeps its own section
+ * and simply sorts to the same place.
+ */
 export function sortSections<T extends { heading: string }>(sections: T[]): T[] {
+  const merged: T[] = []
+  const byHeading = new Map<string, T>()
+
+  for (const section of sections) {
+    const heading = canonicalHeading(section.heading)
+    const renamed = { ...section, heading } as T
+
+    const existing = byHeading.get(heading)
+    const bothEntries =
+      existing &&
+      (existing as any).kind === 'entries' &&
+      (renamed as any).kind === 'entries'
+
+    if (bothEntries) {
+      // Order within the merged section follows the order the model produced,
+      // which puts the call to bar beside the Law School entry it belongs with.
+      ;(existing as any).entries = [
+        ...(existing as any).entries,
+        ...(renamed as any).entries,
+      ]
+      continue
+    }
+
+    if (!existing) byHeading.set(heading, renamed)
+    merged.push(renamed)
+  }
+
   const rank = (h: string) => {
     const i = SECTION_ORDER.indexOf(h.trim().toUpperCase() as any)
     return i === -1 ? UNKNOWN_RANK : i
   }
   // Stable, so unrecognised headings keep the order the model produced them in.
-  return sections
+  return merged
     .map((s, i) => ({ s, i }))
     .sort((a, b) => rank(a.s.heading) - rank(b.s.heading) || a.i - b.i)
     .map(x => x.s)

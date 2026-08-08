@@ -107,6 +107,13 @@ export default function CVReviewPage() {
   const [firstName, setFirstName] = useState('')
   const [targetRole, setTargetRole] = useState('')
   const [careerStage, setCareerStage] = useState('')
+  /* Asked for rather than parsed out of the upload. A LinkedIn URL is the one
+     contact line that is routinely wrong on a CV — truncated by a PDF export,
+     left as the "www.linkedin.com/in/" stub, or missing because the source was
+     written before the profile existed — and it is the only one a reader is
+     likely to click. Typing it once is more reliable than any amount of
+     extraction, and an empty box simply means the line is omitted. */
+  const [linkedinUrl, setLinkedinUrl] = useState('')
   const [jobDescription, setJobDescription] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [dragOver, setDragOver] = useState(false)
@@ -286,6 +293,7 @@ export default function CVReviewPage() {
     setGenerated(null)
     try {
       const fd = baseFormData()
+      if (linkedinUrl.trim()) fd.append('linkedinUrl', linkedinUrl.trim())
       if (jobDescription.trim()) fd.append('jobDescription', jobDescription.trim())
       if (review) fd.append('review', JSON.stringify(review))
 
@@ -477,6 +485,26 @@ export default function CVReviewPage() {
                       placeholder="e.g. Litigation Associate"
                     />
                   </div>
+                </div>
+
+                <div className="tool-row">
+                  <label htmlFor="cv-linkedin" className="tool-label">
+                    LinkedIn <span className="tool-label-hint">(optional)</span>
+                  </label>
+                  {/* type="url" would make the browser reject "linkedin.com/in/x"
+                      for having no scheme, which is how most people write it.
+                      The server normalises instead, so what is typed is accepted
+                      and what lands on the CV is a real link. */}
+                  <input
+                    id="cv-linkedin"
+                    type="text"
+                    inputMode="url"
+                    autoComplete="url"
+                    className="tool-input grotesk-regular"
+                    value={linkedinUrl}
+                    onChange={e => setLinkedinUrl(e.target.value)}
+                    placeholder="linkedin.com/in/your-profile"
+                  />
                 </div>
 
                 <div className="tool-row">

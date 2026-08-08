@@ -4796,6 +4796,12 @@ select.filter-pill {
    this file, where each state has its own shape and the filter teaches it. */
 
 .sch-main { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+
+/* `contents` so the wide layout is untouched: the wrapper box disappears and
+   its three children are placed directly by .sch-row's grid, exactly as they
+   were when they had no wrapper. It becomes a real box again below 1100px,
+   where it is the single thing occupying the `meta` area. */
+.sch-meta { display: contents; }
 .sch-title { font-size: 1rem; color: var(--ink); line-height: 1.3; }
 .sch-provider { font-size: 0.82rem; color: var(--ink-muted); }
 .sch-desc {
@@ -4838,8 +4844,12 @@ select.filter-pill {
   .sch-status { grid-area: status; }
   .sch-main { grid-area: main; }
   .sch-action { grid-area: action; align-self: start; }
-  /* The three facts run together as one line rather than three orphans. */
-  .sch-cell { grid-area: meta; display: inline; font-size: 0.78rem; }
+  /* The three facts run together as one line rather than three orphans.
+     The wrapper is what takes the area — putting all three cells in it directly
+     stacked them on top of each other, because grid items sharing an area
+     overlap by design. */
+  .sch-meta { display: block; grid-area: meta; min-width: 0; }
+  .sch-cell { display: inline; font-size: 0.78rem; }
   .sch-cell + .sch-cell::before { content: ' · '; }
 }
 

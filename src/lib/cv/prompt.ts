@@ -60,7 +60,17 @@ Use the conventional section names an ATS is built to recognise. Prefer these, i
 
 ${SECTION_ORDER.map(s => `  ${s}`).join('\n')}
 
-You may add a section not on this list where the candidate genuinely has one, for example ADMISSIONS or MEMBERSHIPS. Do not rename a conventional section to something inventive. "Where I Have Worked" does not parse. WORK EXPERIENCE does.
+You may add a section not on this list where the candidate genuinely has one, for example MEMBERSHIPS or PUBLICATIONS. Do not rename a conventional section to something inventive. "Where I Have Worked" does not parse. WORK EXPERIENCE does.
+
+Do NOT create an ADMISSIONS section, or any variation of one. A call to the Nigerian Bar belongs in PROFESSIONAL CERTIFICATIONS, alongside the Law School result and any other certificate. It is one line, and giving it a heading of its own spends an entire section on it. Where the call reads naturally as part of the Nigerian Law School entry, it may instead stay on that entry's "detail" line, which is what the example below shows. Either is correct; a separate ADMISSIONS heading is not.
+
+## Length
+
+Two pages is the hard ceiling. One is better for a student, a corps member or anyone under about three years in. A Nigerian firm reading a trainee application will not turn to a third page, and a document that runs long reads as an inability to judge what matters rather than as a fuller record.
+
+Cut by selection, never by mutilation. Drop the weakest entries and the weakest bullets whole; do not keep everything and shorten every line into a stub. Older, smaller and less relevant roles go first, and a role that stays keeps enough bullets to be worth having read. Two well-made pages beat three thin ones, and one strong page beats two padded ones.
+
+As a rough gauge of what fits: a full page is around 45 to 50 lines of body text once headings and spacing are counted, and a bullet of ordinary length is one to two of those lines.
 
 Dates must be complete and consistently formatted across the whole document. Use "Month YYYY" and "Month YYYY - Month YYYY", with "Present" for current roles. Never leave a range half open or a year bare when the source gives a month.
 
@@ -166,6 +176,7 @@ export function buildUserPrompt(input: {
   firstName?: string | null
   targetRole?: string | null
   careerStage?: string | null
+  linkedinUrl?: string | null
   jobDescription?: string | null
   review?: {
     overallImpression?: string
@@ -186,6 +197,21 @@ export function buildUserPrompt(input: {
   if (input.targetRole) {
     parts.push(
       `Angle the document at "${input.targetRole}". Bring the experience that supports it forward within each section, use the vocabulary that role is screened on, and let the summary say plainly what the candidate is moving towards. Do not add experience the candidate does not have in order to fit the role.`
+    )
+  }
+
+  /* Supplied by hand on the form, so it outranks anything in the upload — the
+     URL in the source is the one that is stale or truncated, which is why it is
+     asked for at all. Given as an instruction rather than merged after the fact
+     so the model places it in the contact line's usual position rather than
+     appending a second LinkedIn item beside one it already found. */
+  if (input.linkedinUrl?.trim()) {
+    parts.push(
+      `The candidate's LinkedIn profile is ${input.linkedinUrl.trim()}. Put it in the contact line as a "LinkedIn" item whose "href" is exactly that URL. Use this URL even if the source CV shows a different or partial one, and do not output more than one LinkedIn item.`
+    )
+  } else {
+    parts.push(
+      `No LinkedIn URL was given. Include one in the contact line ONLY if the source CV contains a complete, working profile URL. Never invent a profile path from the candidate's name, and never emit a bare "linkedin.com/in/" stub.`
     )
   }
 

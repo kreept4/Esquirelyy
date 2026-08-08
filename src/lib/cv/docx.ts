@@ -244,6 +244,26 @@ export async function renderDocx(cv: GeneratedCV): Promise<Buffer> {
     styles: {
       default: {
         document: { run: { font: FONT, size: hp(FONT_SIZE.body), color: '000000' } },
+        /**
+         * Heading 1, forced back to black.
+         *
+         * Section headings are tagged HeadingLevel.HEADING_1 so the document has
+         * a real outline an ATS can follow — that is worth keeping. What comes
+         * with it is Word's built-in Heading 1 style, which is blue (and Calibri
+         * Light) by default. The run properties on each heading paragraph set
+         * size and weight but said nothing about colour, so Word applied its
+         * own, and every section title on the exported .docx came out blue while
+         * the PDF renderer — which never touches Word styles — drew them black.
+         * The same document in two formats did not match.
+         *
+         * Overriding the style itself rather than colouring each run keeps the
+         * outline intact and fixes every heading at once, including any added
+         * later. The font is restated here too because Word's Heading 1 also
+         * substitutes Calibri Light, which is a different weight from the body.
+         */
+        heading1: {
+          run: { font: FONT, size: hp(FONT_SIZE.heading), bold: true, color: '000000' },
+        },
       },
     },
     sections: [

@@ -39,6 +39,41 @@ function str(v: FormDataEntryValue | null): string | null {
   return s.length ? s : null
 }
 
+/**
+ * Make a typed LinkedIn URL into one that will actually open.
+ *
+ * People write this four ways — "linkedin.com/in/x", "www.linkedin.com/in/x",
+ * "https://…/in/x", and just "x" — and only the third is a working href. A CV
+ * whose LinkedIn line is not clickable is worse than one with no LinkedIn line,
+ * because it looks like a link and fails, so the scheme is added here rather
+ * than hoped for from the model.
+ *
+ * Deliberately conservative about what it accepts. A bare handle becomes a
+ * profile URL, but anything that is not recognisably LinkedIn is returned as
+ * typed rather than coerced: guessing wrong would put a confident, wrong link
+ * on a real person's CV, and the prompt already refuses to invent one.
+ */
+function normaliseLinkedIn(raw: string | null): string | null {
+  if (!raw) return null
+  const value = raw.trim().replace(/^@/, '')
+  if (!value) return null
+
+  // Already absolute. Trust it, minus a trailing slash for tidiness.
+  if (/^https?:\/\//i.test(value)) return value.replace(/\/+$/, '')
+
+  // A LinkedIn host without a scheme is the common case.
+  if (/^(www\.)?linkedin\.com\//i.test(value)) {
+    return `https://${value.replace(/^www\./i, 'www.').replace(/\/+$/, '')}`
+  }
+
+  // A bare handle: no slashes, no spaces, no dots. "damian-obi" and nothing else.
+  if (/^[A-Za-z0-9][A-Za-z0-9-]{1,98}$/.test(value)) {
+    return `https://www.linkedin.com/in/${value}`
+  }
+
+  return value
+}
+
 /** The model returns nulls for absent optional fields; the renderers want them gone. */
 function prune<T extends Record<string, any>>(obj: T): T {
   const out = {} as T
@@ -149,6 +184,7 @@ export async function POST(req: NextRequest) {
         firstName: str(formData.get('firstName')),
         targetRole: str(formData.get('targetRole')),
         careerStage: str(formData.get('careerStage')),
+        linkedinUrl: normaliseLinkedIn(str(formData.get('linkedinUrl'))),
         jobDescription: str(formData.get('jobDescription')),
         review,
       }),

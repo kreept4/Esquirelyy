@@ -185,9 +185,22 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
                   </span>
                 </span>
 
-                <span className="grotesk-regular sch-cell">{s.level}</span>
-                <span className="grotesk-regular sch-cell">{s.funding}</span>
-                <span className="grotesk-regular sch-cell sch-deadline">{s.deadline}</span>
+                {/* Wrapped, and the wrapper is what the narrow layout places.
+                    These three were bare grid items that each took
+                    `grid-area: meta` below 1100px — and grid items sharing an
+                    area STACK, so level, funding and deadline painted on top of
+                    one another as unreadable overlapping text. `display: inline`
+                    could never have fixed that: it changes how a grid item lays
+                    out its own contents, not whether it is still a grid item.
+                    One wrapper occupies the area, and the three run together
+                    inside it as ordinary inline text, which is what the rule
+                    below always meant. Contents-only on wide screens, where the
+                    three still need to be separate columns. */}
+                <span className="sch-meta">
+                  <span className="grotesk-regular sch-cell">{s.level}</span>
+                  <span className="grotesk-regular sch-cell">{s.funding}</span>
+                  <span className="grotesk-regular sch-cell sch-deadline">{s.deadline}</span>
+                </span>
 
                 <span className="sch-action">
                   <a
