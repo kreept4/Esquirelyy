@@ -52,7 +52,7 @@ export default function NotificationBell({
   /* Same rule as the wordmark: cream over the dark home hero, ink over every
      light inner header. A fixed colour vanishes on one or the other. */
   color = '#1A1A1A',
-}: { hidden?: boolean; user: { id: string } | null; color?: string }) {
+}: { hidden?: boolean; user: { id: string; created_at?: string } | null; color?: string }) {
   const [open, setOpen] = useState(false)
   const [feed, setFeed] = useState<Notification[]>([])
   const [seen, setSeen] = useState(0)
@@ -71,7 +71,14 @@ export default function NotificationBell({
       supabase.from('applications').select('*').eq('user_id', user.id).order('updated_at', { ascending: false }).limit(20),
     ])
 
-    setFeed(buildFeed(jobs || [], apps || [], readPrefs(), readWelcomedAt()))
+    /* Dated to when the ACCOUNT was created, not when this browser first saw
+       the site. The earlier per-device timestamp meant a returning user on a
+       new device, a cleared cache, or a private window looked exactly like a
+       first-time visitor and got welcomed again. `created_at` comes from the
+       Supabase user object and is stable no matter where they sign in.
+       `readWelcomedAt()` only covers the case a signed-in user's `created_at`
+       is unavailable for some reason. */
+    setFeed(buildFeed(jobs || [], apps || [], readPrefs(), user.created_at || readWelcomedAt()))
   }, [user])
 
   useEffect(() => {
@@ -103,15 +110,27 @@ export default function NotificationBell({
   const unread = unreadCount(feed, seen)
 
   function toggle() {
-    const next = !open
-    setOpen(next)
-    // Marked on open, not on close: the badge should clear the moment the list
-    // is on screen, not when the reader gets round to dismissing it.
-    if (next && unread > 0) {
+    setOpen(o => !o)
+  }
+
+  /* Marked on open, not on close: the badge should clear the moment the list
+     is on screen, not when the reader gets round to dismissing it.
+
+     This has to be an effect keyed on `feed` rather than logic inlined in
+     `toggle()`. `feed` loads over the network, so opening the bell right
+     after signing in (before that request resolves) used to read `unread`
+     against the still-empty initial feed, see 0, and skip marking anything
+     seen — the welcome note would then populate a moment later while the
+     panel sat open, and come back as unread on the next visit because
+     nothing had actually been recorded. Re-running this whenever `feed`
+     changes catches that case instead of only checking once at the click. */
+  useEffect(() => {
+    if (!open) return
+    if (unreadCount(feed, seen) > 0) {
       markSeen()
       setSeen(Date.now())
     }
-  }
+  }, [open, feed, seen])
 
   // Nothing to notify a signed-out visitor about, and a bell that opens onto
   // "sign in to see this" is a control that does nothing.

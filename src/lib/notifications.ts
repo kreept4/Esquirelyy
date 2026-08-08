@@ -23,9 +23,12 @@ import { ALL_SCHOLARSHIPS } from './scholarships-data'
  */
 
 export const SEEN_KEY = 'esquirely:notifications-seen'
-/** When this browser first saw the welcome note. Stored so the note keeps its
- *  place in the feed rather than jumping to the top on every visit, and so it
- *  survives a sign-out — nothing here is tied to a session. */
+/** Fallback only. The welcome note is normally dated to the signed-in user's
+ *  account creation date (`user.created_at`), passed into `buildFeed` by the
+ *  caller, so a returning user on a new device or browser doesn't look like a
+ *  first-time visitor. This key only matters if that value is ever
+ *  unavailable, in which case the note is dated to whenever this browser
+ *  first ran this code. */
 export const WELCOME_KEY = 'esquirely:welcomed-at'
 export const PREFS_KEY = 'esquirely:prefs'
 
@@ -121,9 +124,10 @@ export function buildFeed(
 ): Notification[] {
   const out: Notification[] = []
 
-  // 0. The welcome. Always present, dated to when this browser first saw it, so
-  //    it sits at the top on day one and is pushed down by real events after
-  //    that rather than being pinned forever.
+  // 0. The welcome. Always present, dated to the account's creation (see the
+  //    caller), so it sits at the top on day one and is pushed down by real
+  //    events after that rather than being pinned forever — and so a
+  //    returning user never sees it as new again.
   out.push({
     id: 'welcome',
     kind: 'welcome',

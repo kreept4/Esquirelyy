@@ -203,7 +203,10 @@ export default function SignupPage() {
                 <label className="grotesk-bold auth-label">Password</label>
                 <div style={{ position: 'relative' }}>
                   <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required placeholder="Min. 8 characters" className="auth-input" style={{ paddingRight: '2.75rem' }} />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '0.875rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9A9A9A', padding: 0, display: 'flex' }}>
+                  {/* padding grows the tap target well past the 15px icon (a bare
+                      15x15 button is a genuinely hard tap on a phone); `right` is
+                      pulled in by the same amount so the icon itself doesn't move. */}
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'} style={{ position: 'absolute', right: '0.125rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9A9A9A', padding: '0.75rem', display: 'flex' }}>
                     {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                 </div>

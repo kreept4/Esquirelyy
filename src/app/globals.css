@@ -83,6 +83,19 @@ body {
   overflow-x: hidden;
 }
 
+/* iOS Safari zooms the whole page in the instant a form field under 16px gets
+   focus, on every input, on every form site-wide: auth, contact, the job and
+   firm filters, the tracker. Most of this site's inputs sit around 13-14px at
+   the root's mobile floor. Rather than hunt down and bump every input's own
+   font-size (and risk breaking a desktop layout tuned around the smaller
+   one), this only overrides the computed size on small viewports, where the
+   zoom actually happens. */
+@media (max-width: 640px) {
+  input, textarea, select {
+    font-size: 16px;
+  }
+}
+
 /* Scrollbar — subtle, on-brand */
 ::-webkit-scrollbar {
   width: 6px;
