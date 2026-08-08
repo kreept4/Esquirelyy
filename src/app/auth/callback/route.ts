@@ -32,6 +32,18 @@ export async function GET(request: Request) {
   const code = searchParams.get('code')
   const next = safeNext(searchParams.get('next'))
 
+  /* An OAuth provider that can't complete (not enabled, misconfigured
+     redirect URI, consent denied) sends `error` / `error_description` back
+     here instead of `code`. Silently falling through to "no code" bounced
+     people to login with zero explanation, indistinguishable from every
+     other kind of failure. Pass the real reason through so it's at least
+     visible instead of guessed at. */
+  const oauthError = searchParams.get('error_description') || searchParams.get('error')
+  if (oauthError) {
+    console.error('[auth] oauth provider error', oauthError)
+    return NextResponse.redirect(`${origin}/auth/login?error=${encodeURIComponent(oauthError)}`)
+  }
+
   if (!code) {
     return NextResponse.redirect(`${origin}/auth/login?error=callback_failed`)
   }
@@ -41,7 +53,7 @@ export async function GET(request: Request) {
 
   if (exchangeError) {
     console.error('[auth] code exchange failed', exchangeError)
-    return NextResponse.redirect(`${origin}/auth/login?error=callback_failed`)
+    return NextResponse.redirect(`${origin}/auth/login?error=${encodeURIComponent(exchangeError.message)}`)
   }
 
   const { data: { user } } = await supabase.auth.getUser()
