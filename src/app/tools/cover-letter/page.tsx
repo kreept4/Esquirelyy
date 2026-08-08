@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Copy, Check, AlertCircle, ArrowRight, X, Loader2 } from 'lucide-react'
 import { useRequireAuth } from '../useRequireAuth'
 import { createClient } from '@/lib/supabase/client'
@@ -38,8 +38,16 @@ const TONES = [
   { value: 'direct and concise', label: 'Direct and concise' },
 ]
 
+/** Upload is an alternative to typing a background summary, not an addition
+ *  to it, same choice interview-prep already offers between a target role
+ *  and a CV. */
+type Mode = 'manual' | 'cv'
+
 export default function CoverLetterPage() {
   const { checking, userId } = useRequireAuth()
+  const [mode, setMode] = useState<Mode>('manual')
+  const [cvFile, setCvFile] = useState<File | null>(null)
+  const fileRef = useRef<HTMLInputElement>(null)
   const [form, setForm] = useState({
     firstName: '',
     targetRole: '',
@@ -89,15 +97,32 @@ export default function CoverLetterPage() {
       setError('Please enter the target role and employer.')
       return
     }
+    if (mode === 'cv' && !cvFile) {
+      setError('Please upload your CV, or switch to entering details manually.')
+      return
+    }
     setLoading(true)
     setError('')
     setResult(null)
     try {
-      const res = await fetch('/api/cover-letter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
+      let res: Response
+      if (mode === 'cv' && cvFile) {
+        const fd = new FormData()
+        fd.append('cv', cvFile)
+        fd.append('firstName', form.firstName)
+        fd.append('targetRole', form.targetRole)
+        fd.append('employer', form.employer)
+        if (form.careerStage) fd.append('careerStage', form.careerStage)
+        fd.append('tone', form.tone)
+        if (form.highlights) fd.append('highlights', form.highlights)
+        res = await fetch('/api/cover-letter', { method: 'POST', body: fd })
+      } else {
+        res = await fetch('/api/cover-letter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(form),
+        })
+      }
       const data = await res.json()
       if (!res.ok || data.error) { setError(data.error || 'Something went wrong.'); return }
       setResult(data)
@@ -130,6 +155,8 @@ export default function CoverLetterPage() {
   const handleReset = () => {
     setResult(null)
     setForm({ firstName: '', targetRole: '', employer: '', careerStage: '', tone: 'formal and confident', cvSummary: '', highlights: '' })
+    setCvFile(null)
+    setMode('manual')
     setError('')
   }
 
@@ -141,7 +168,7 @@ export default function CoverLetterPage() {
     )
   }
 
-  const blocked = loading || !form.targetRole || !form.employer
+  const blocked = loading || !form.targetRole || !form.employer || (mode === 'cv' && !cvFile)
 
   return (
     <>
@@ -204,12 +231,48 @@ export default function CoverLetterPage() {
                 </div>
 
                 <div className="tool-row">
-                  <label htmlFor="cl-bg" className="tool-label">
-                    Brief background <span className="tool-label-hint">(optional, and it improves the draft a lot)</span>
+                  <label className="tool-label">
+                    Background <span className="tool-label-hint">(optional, and it improves the draft a lot)</span>
                   </label>
-                  <textarea id="cl-bg" className="tool-textarea grotesk-regular" rows={3}
-                    value={form.cvSummary} onChange={e => set('cvSummary', e.target.value)}
-                    placeholder="e.g. LL.B from Unilag, NYSC at Streamsowers, one year at a Lagos litigation firm" />
+                  <div className="tool-tabs" role="tablist">
+                    {(['manual', 'cv'] as const).map(m => (
+                      <button
+                        key={m}
+                        type="button"
+                        role="tab"
+                        aria-selected={mode === m}
+                        className="grotesk-bold tool-tab"
+                        data-active={mode === m}
+                        onClick={() => { setMode(m); setError('') }}
+                      >
+                        {m === 'manual' ? 'Enter manually' : 'Upload your CV'}
+                      </button>
+                    ))}
+                  </div>
+
+                  {mode === 'manual' ? (
+                    <textarea id="cl-bg" className="tool-textarea grotesk-regular" rows={3}
+                      value={form.cvSummary} onChange={e => set('cvSummary', e.target.value)}
+                      placeholder="e.g. LL.B from Unilag, NYSC at Streamsowers, one year at a Lagos litigation firm" />
+                  ) : (
+                    <div className="tool-drop" data-over={!!cvFile} onClick={() => fileRef.current?.click()} style={{ cursor: 'pointer' }}>
+                      <p className="grotesk-bold tool-drop-title">
+                        {cvFile ? cvFile.name : 'Click to upload a PDF, DOCX or TXT'}
+                      </p>
+                      {cvFile ? (
+                        <button type="button" className="tool-drop-swap"
+                          onClick={e => { e.stopPropagation(); setCvFile(null) }}>
+                          Remove
+                        </button>
+                      ) : (
+                        <p className="grotesk-regular tool-drop-note">
+                          The file is read for this session and not stored.
+                        </p>
+                      )}
+                      <input ref={fileRef} type="file" accept=".pdf,.docx,.txt" style={{ display: 'none' }}
+                        onChange={e => setCvFile(e.target.files?.[0] || null)} />
+                    </div>
+                  )}
                 </div>
 
                 <div className="tool-row">
