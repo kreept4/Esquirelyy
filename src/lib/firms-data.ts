@@ -1096,10 +1096,12 @@ export const FIRM_RANKINGS: Record<string, FirmRankings> = {
   /* Chambers and Legal 500. No IFLR firm page was reachable for these. */
   'aluko-oyebode': {
     chambers: { band: 'Band 1', year: 2026 }, // B1 Banking, Cap Mkts, Corporate, Dispute Res, IP & TMT, Projects
+    iflr:     { band: 'Tier 1', year: 2026 }, // T1 Banking, Cap Mkts Debt + Equity, M&A, Private Equity, Projects
     emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res
   },
   'g-elias': {
     chambers: { band: 'Band 1', year: 2026 }, // B1 Corporate, Dispute Res, Tax
+    iflr:     { band: 'Tier 1', year: 2026 }, // T1 Banking, Cap Mkts Debt + Equity, M&A, Projects
     emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res, Energy
   },
   'aelex': {
