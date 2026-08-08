@@ -4823,6 +4823,114 @@ video::-webkit-media-controls-play-button {
 }
 video::-webkit-media-controls { display: none !important; }
 
+/* ============================================================
+   Account page
+   ============================================================ */
+
+.acct-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-bottom: 5rem;
+  max-width: 44rem;
+}
+
+.acct-card {
+  border: 1px solid #EDE9E2;
+  border-radius: 2px;
+  padding: 1.75rem;
+  background: #fff;
+}
+
+/* The one card carrying a deadline. A left rule rather than a filled panel:
+   loud enough to find without turning the page into a warning. */
+.acct-card-alert { border-left: 3px solid var(--amber, #FBBF24); }
+.acct-card-quiet { background: transparent; }
+
+.acct-card-title {
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5rem 0;
+}
+
+.acct-sub {
+  font-size: 0.9rem;
+  margin: 1.5rem 0 0.6rem 0;
+}
+
+.acct-note {
+  display: block;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--ink-muted, #6B6B6B);
+  margin: 0 0 1rem 0;
+}
+
+.acct-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 640px) {
+  .acct-fields { grid-template-columns: minmax(0, 1fr); }
+  .acct-card { padding: 1.25rem; }
+}
+
+.acct-toggles { display: flex; flex-direction: column; gap: 0.85rem; }
+
+.acct-toggle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: start;
+  cursor: pointer;
+}
+.acct-toggle input { margin-top: 0.25rem; }
+.acct-toggle .acct-note { margin: 0.15rem 0 0 0; }
+
+.acct-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+}
+.acct-actions .auth-btn-primary { width: auto; margin: 0; }
+
+.acct-breaks { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+
+.acct-break-btn,
+.acct-ghost-btn {
+  font-size: 0.85rem;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--ink, #1A1A1A);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink, #1A1A1A);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.acct-break-btn:hover:not(:disabled),
+.acct-ghost-btn:hover { background: var(--ink, #1A1A1A); color: #fff; }
+.acct-break-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* Deletion sits below a rule rather than in a red box. It is a legitimate thing
+   to want, and styling it as a hazard makes leaving feel like misbehaving. */
+.acct-danger { margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid #EDE9E2; }
+
+.acct-danger-btn {
+  font-size: 0.85rem;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid #B42318;
+  border-radius: 2px;
+  background: transparent;
+  color: #B42318;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.acct-danger-btn:hover:not(:disabled) { background: #B42318; color: #fff; }
+.acct-danger-btn:disabled { opacity: 0.45; cursor: default; }
+
 .sch-main { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
 
 /* `contents` so the wide layout is untouched: the wrapper box disappears and

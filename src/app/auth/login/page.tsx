@@ -32,6 +32,19 @@ function LoginForm() {
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) { setError(error.message); setLoading(false); return }
+
+    /* Signing in cancels a scheduled deletion, which is the promise the account
+       page makes. The OAuth path does this server side in /auth/callback; a
+       password sign-in never touches that route, so it is done here instead.
+       Not awaited and failure is ignored on purpose: this is a no-op for almost
+       everyone, and a correct password must never fail to get someone in
+       because of a write that did not concern them. Anyone it does concern is
+       shown the pending-deletion banner on the account page regardless. */
+    fetch('/api/account', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ action: 'cancel-deletion' }),
+    }).catch(() => {})
     // Straight to wherever they were going. The onboarding step asked three
     // questions the homepage quiz already asks and put a screen between a
     // correct password and the page the visitor came for.

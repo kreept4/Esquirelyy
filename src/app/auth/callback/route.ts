@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { sendWelcomeOnce } from '@/lib/email/welcome-once'
+import { cancelPendingDeletion } from '@/lib/account'
 import { createClient } from '@/lib/supabase/server'
 
 /**
@@ -81,6 +82,13 @@ export async function GET(request: Request) {
    * A password user does not double up: by the time they reach here — if they
    * ever do — the signup page has already sent theirs and the stamp is set.
    */
+  /* Coming back IS the undo. Someone who scheduled a deletion and then signed in
+     has answered the question, and making them find a settings page to confirm
+     it would lose the people who did not know there was anything to undo. Never
+     throws, and writes nothing for the overwhelming majority of sign-ins that
+     have no deletion pending. */
+  await cancelPendingDeletion(supabase, user.id)
+
   const welcome = await sendWelcomeOnce(user)
   if (!welcome.ok) {
     // Logged, never fatal. Someone who just proved their identity with Google
