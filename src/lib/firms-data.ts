@@ -72,6 +72,12 @@ const LOCAL_ONLY_LOGO = new Set([
   'pavestones',
   'sofunde-osakwe',
   'the-new-practice',
+  // abe-asotie: no reachable site (blocked from this environment) and no
+  // bucket file, so this is cropped straight from a hiring flyer instead of
+  // a proper download. It is opaque and not trimmed to transparent like the
+  // rest of this set, so it renders on the ticker's plate rather than
+  // floating free — worth re-sourcing from the firm directly once possible.
+  'abe-asotie',
 ])
 
 /** Preferred source for a firm mark.
@@ -127,10 +133,9 @@ const FIRMS_UNSORTED: Firm[] = [
   },
   {
     slug: 'abe-asotie',
-    // No clean mark sourced yet — the only copy available was a low-resolution
-    // crop off a hiring flyer, which would look visibly worse than every other
-    // logo in the directory. Falls through to the monogram tile until a real
-    // download is found, same as CLP and ALP did before theirs were sourced.
+    // Mark is cropped from a hiring flyer, not a proper download — see the
+    // LOCAL_ONLY_LOGO comment above for why. logoFile stays null on purpose;
+    // the local file is picked up through that set instead.
     logoFile: null,
     name: 'Abe & Asotie LP',
     shortName: 'Abe & Asotie',
