@@ -61,6 +61,8 @@ export interface NewsItem {
 }
 
 /** Label shown on a slide. Kept here so the carousel and the news page agree. */
+import { ALL_FIRMS } from '@/lib/firms-data'
+
 export const KIND_LABEL: Record<NewsKind, string> = {
   update: "What's new",
   tip: 'Did you know',
@@ -113,12 +115,18 @@ const ITEMS: NewsItem[] = [
     media: { type: 'logos', slugs: ['omaplex', 'lekan-bamidele'] }
   },
   {
-    slug: 'directory-at-44',
+    /* Slug no longer carries the count. It was 'directory-at-44', which meant
+       the URL went stale the moment a firm was added, and the card was still
+       advertising 44 with 47 in the directory. */
+    slug: 'firms-directory',
     kind: 'update',
-    date: '2026-08-06',
-    title: '44 firms in the directory',
+    date: '2026-08-08',
+    /* Counted, never typed. This is the only number on the site that changes
+       every time someone edits a different file, so hardcoding it guarantees it
+       is wrong again within a week. */
+    title: `${ALL_FIRMS.length} firms in the directory`,
     summary:
-      'Every profile carries the practice areas, the real office addresses and the address to write to. Twelve firms added this week, including Duale Ovia & Alex-Adedipe, Paul Usoro & Co and SOOB.',
+      'Every profile carries the practice areas, the real office addresses and the address to write to. Independent rankings from Chambers, IFLR1000 and The Legal 500 now sit on the profiles too, naming the practice areas each band was earned in.',
     href: '/firms',
     cta: 'Browse the firms directory',
     media: {
