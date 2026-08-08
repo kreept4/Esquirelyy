@@ -6,12 +6,27 @@
   pointer-events: none;
 }
 
+/* `dvh`, not `vh`. On iOS Safari `100vh` is the LARGE viewport: the height the
+   page would have if the browser's bottom bar were hidden. The bar is not
+   hidden until you scroll, so a `100vh` panel is taller than what is actually
+   on screen, and whatever sits at its bottom edge — here the Sign In and Join
+   Esquirely links, which `.sm-socials` pins there with `margin-top: auto` — is
+   rendered underneath Safari's search bar and cannot be tapped. Scrolling
+   collapsed the bar and made them reachable, which is precisely the symptom
+   this was reported as.
+
+   `100dvh` is the DYNAMIC viewport height: it tracks the visible area and
+   shrinks while the bar is showing, so the panel ends where the screen does.
+   The `100vh` line above it is the fallback for browsers without `dvh` (and is
+   what those browsers were already getting), so this is only ever an
+   improvement — never a regression. */
 .staggered-menu-wrapper.fixed-wrapper {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   z-index: 40;
   overflow: hidden;
 }
@@ -216,6 +231,13 @@
   display: flex;
   flex-direction: column;
   padding: 6em 2em 2em 2em;
+  /* The bottom inset is added on top of the 2em, not instead of it. `dvh` above
+     stops the panel running under the browser bar; this clears the *hardware*
+     inset — the home indicator on Face ID iPhones and iPads — which sits inside
+     the viewport and would otherwise cross the last link. `env()` resolves to
+     0px everywhere it does not apply, so this is inert on desktop and on older
+     devices rather than something that needs a query around it. */
+  padding-bottom: calc(2em + env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
   z-index: 10;
   pointer-events: auto;

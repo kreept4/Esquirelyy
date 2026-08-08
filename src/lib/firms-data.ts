@@ -38,7 +38,15 @@ export interface FirmOffice {
  * Absent means unverified, NOT unranked. A firm with no entry here is one
  * nobody has checked; do not render anything that says otherwise.
  */
-export type RankingBand = 'Band 1' | 'Band 2' | 'Band 3' | 'Tier 1' | 'Tier 2' | 'Tier 3' | 'Ranked'
+/* Band 4 and Tier 4 are real bands in these guides, not padding — Chambers runs
+   to Band 4 in Corporate/Commercial, Dispute Resolution, IP & TMT and Projects
+   & Energy for Nigeria. They are listed here so a fourth-band firm can be
+   recorded as what it is. Collapsing it to 'Ranked' would have been the only
+   alternative, and that reads as "band unclear", which would be false. */
+export type RankingBand =
+  | 'Band 1' | 'Band 2' | 'Band 3' | 'Band 4'
+  | 'Tier 1' | 'Tier 2' | 'Tier 3' | 'Tier 4'
+  | 'Ranked'
 
 export interface FirmRankings {
   chambers?: { band: RankingBand; year: number }
@@ -991,7 +999,7 @@ function sortKey(name: string): string {
  * a build.
  *
  * ————————————————————————————————————————————————————————————————
- * THIS TABLE IS DELIBERATELY EMPTY. DO NOT FILL IT FROM MEMORY.
+ * DO NOT FILL THIS FROM MEMORY. EVERY LINE IS READ OFF THE GUIDE.
  * ————————————————————————————————————————————————————————————————
  *
  * Every entry is a factual claim about a real firm made by a named third party,
@@ -1002,29 +1010,76 @@ function sortKey(name: string): string {
  *
  * So each line is read off the guide itself and nowhere else:
  *
- *   Chambers   chambers.com/legal-guide/nigeria-7  → firm → the Nigeria band
- *   IFLR1000   iflr1000.com/Jurisdiction/Nigeria   → firm → the tier
- *   EMEA       legal500.com/c/nigeria              → firm → the tier
+ *   Chambers   chambers.com/downloads/rankings/1190/nigeria.pdf → the band
+ *   IFLR1000   iflr1000.com/Jurisdiction/Nigeria                → the tier
+ *   EMEA       legal500.com/c/nigeria                           → the tier
  *
  * Record the coarse band and the edition year, nothing finer — see the note on
  * FirmRankings for why per-practice detail cannot be maintained. When a firm is
  * listed but the band is unclear, use 'Ranked': it claims only presence in the
  * guide, which is both true and worth showing.
  *
- * The badge row, the profile panel and the "Ranked" filter are all built and
- * working; they render nothing until a line appears below, and everything
- * downstream lights up the moment one does.
+ * ———————————————————————————————————————————————————————————————————————
+ * PROVENANCE OF WHAT IS BELOW
+ * ———————————————————————————————————————————————————————————————————————
  *
- * Example of the intended shape, commented out because it is illustrative and
- * not a reading:
+ * `chambers` — read on 2026-08-08 from Chambers Global 2026, the Nigeria
+ * section, published by Chambers as a PDF at the URL above. Every band below
+ * was taken from the "Leading Firms" table of a named practice area in that
+ * document. Nothing here is inferred, and no firm absent from those tables has
+ * an entry.
  *
- *   'templars': {
- *     chambers: { band: 'Band 1', year: 2025 },
- *     iflr:     { band: 'Tier 1', year: 2025 },
- *     emea:     { band: 'Tier 1', year: 2025 },
- *   },
+ * HOW A PER-PRACTICE BAND BECAME ONE BAND. Chambers does not band a firm as a
+ * whole; it bands it once per practice area, and the good firms sit in several.
+ * This table holds one band per guide, so the rule applied is *the highest band
+ * the firm holds in any Nigeria practice area*. That is the reading a badge
+ * conventionally carries — "Band 1 in Chambers" is understood as "Band 1 in
+ * something", not "Band 1 in everything" — and it is the only rule that is
+ * stable as the practice mix changes. It is recorded here because it is a
+ * choice, and a reader auditing a badge is entitled to know which one was made.
+ *
+ * The source practice area for each firm's best band is named in the comment
+ * beside it, so any single line can be checked against the PDF without
+ * re-reading all seven tables.
+ *
+ * `iflr` and `emea` — NOT YET READ. Absent, which the type and the UI already
+ * treat as "nobody has checked", not "unranked". IFLR1000 and Legal 500 both
+ * put their Nigeria tables behind client-side rendering that could not be read
+ * reliably, and a tier taken from a search-result summary is exactly the
+ * secondhand claim the warning above exists to prevent. They stay empty until
+ * someone reads them. The badge row already handles one-of-three.
  */
-export const FIRM_RANKINGS: Record<string, FirmRankings> = {}
+export const FIRM_RANKINGS: Record<string, FirmRankings> = {
+  /* Band 1 — each is Band 1 in at least one Nigeria practice area. */
+  'aluko-oyebode':          { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Banking, Capital Markets, Corporate, Dispute Res, IP & TMT, Projects
+  'olaniwun-ajayi':         { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Banking, Corporate, Dispute Res, Projects, Tax
+  'templars':               { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Banking, Corporate, Dispute Res, Projects
+  'udo-udoma-bello-osagie': { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Banking, Capital Markets, Corporate
+  'banwo-ighodalo':         { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Capital Markets, Corporate, Projects
+  'g-elias':                { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Corporate, Dispute Res, Tax
+  'aelex':                  { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Tax
+  'jackson-etti-edu':       { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in IP & TMT
+
+  /* Band 2 */
+  'acas-law':               { chambers: { band: 'Band 2', year: 2026 } }, // Band 2 in Projects & Energy (listed as Dentons ACAS-Law)
+  'olajide-oyewole':        { chambers: { band: 'Band 2', year: 2026 } }, // Band 2 in IP & TMT (listed as Olajide Oyewole LLP)
+
+  /* Band 3 */
+  'bloomfield-law':         { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Corporate, Projects
+  'detail-solicitors':      { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Banking & Finance
+  'odujinrin-adefulu':      { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Banking & Finance
+  'streamsowers-kohn':      { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Projects & Energy
+  'spa-ajibade':            { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Dispute Resolution
+  'wole-olanipekun':        { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Dispute Resolution
+  'sofunde-osakwe':         { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Dispute Resolution
+
+  /* Band 4 */
+  'doa-law':                { chambers: { band: 'Band 4', year: 2026 } }, // Band 4 in Corporate (listed as Duale, Ovia & Alex-Adedipe)
+  'stren-blan-partners':    { chambers: { band: 'Band 4', year: 2026 } }, // Band 4 in Corporate, IP & TMT
+  'the-new-practice':       { chambers: { band: 'Band 4', year: 2026 } }, // Band 4 in Corporate (listed as TNP – The New Practice)
+  'perchstone-graeys':      { chambers: { band: 'Band 4', year: 2026 } }, // Band 4 in Dispute Resolution
+  'tayo-oyetibo':           { chambers: { band: 'Band 4', year: 2026 } }, // Band 4 in Dispute Resolution (listed as Tayo Oyetibo LP)
+}
 
 /** Alphabetical by firm name. Every consumer reads from here.
  *
