@@ -97,14 +97,11 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Tier 2',
     email: 'info@clplegal.com.ng',
     website: 'https://clplegal.com.ng',
-    // Only the Lagos street address is published. The firm names Abuja, Port
-    // Harcourt and Uyo as offices without giving addresses, so the cities are
-    // recorded and the addresses are not guessed at.
     offices: [
       { city: 'Lagos', address: '62 Awolowo Road, Ikoyi, Lagos' },
-      { city: 'Abuja', address: 'Abuja' },
-      { city: 'Port Harcourt', address: 'Port Harcourt' },
-      { city: 'Uyo', address: 'Uyo' },
+      { city: 'Abuja', address: '6th Floor Right Wing, NICON Plaza, Plot 242, Muhammadu Buhari Way, Central Business District, Abuja' },
+      { city: 'Port Harcourt', address: '60 Mbonu Street, D-Line, Port Harcourt, Rivers State' },
+      { city: 'Uyo', address: 'Second Floor, Right Wing, Suite 201, Peace Plaza, 300 Oron Road, Uyo, Akwa Ibom State' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Dispute Resolution', 'Energy & Natural Resources', 'Intellectual Property', 'Tax', 'Shipping & Maritime'],
     description: 'A commercial firm founded in 1990, acting for multinationals, Nigerian corporates, family businesses and government ministries. Four offices, with corporate, finance, litigation and energy at the core of the practice.',
@@ -120,8 +117,8 @@ const FIRMS_UNSORTED: Firm[] = [
     email: 'info@alp.company',
     website: 'https://alp.company',
     offices: [
-      { city: 'Lagos', address: 'Lagos' },
-      { city: 'Abuja', address: 'Abuja' },
+      { city: 'Lagos', address: '15 Military Street, Onikan, Lagos' },
+      { city: 'Abuja', address: '3 Lobito Crescent, Wuse II, Abuja' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Arbitration', 'Banking & Finance', 'Energy & Natural Resources', 'Intellectual Property', 'Public Law & Regulatory'],
     description: 'Africa Law Practice NG & Co, formed by a merger of Nigerian practices and built as a pan-African firm. Strong in commercial dispute resolution, appearing before the Nigerian courts and in ICSID and ICC arbitrations.',
