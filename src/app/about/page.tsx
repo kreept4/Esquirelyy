@@ -37,10 +37,13 @@ function ArrowDefs({ id }: { id: string }) {
 /**
  * The link between two people in the team row.
  *
- * A straight run of dots: a round-capped stroke on a very short dash with a
- * wide gap, so it draws as dots rather than as a dashed line. Arrowheads at
- * both ends, because the relationship is not directional — nobody leads to
- * anybody, they run alongside each other.
+ * A straight run of dots: a round-capped stroke on a ZERO-length dash with a
+ * wide gap, so it draws as dots rather than as a dashed line. Zero rather than
+ * the 0.1 this used to carry — see the note on Connector in
+ * src/components/features/EverythingYouNeed.tsx for why the difference is
+ * visible on a phone and not on a desktop. Arrowheads at both ends, because the
+ * relationship is not directional — nobody leads to anybody, they run alongside
+ * each other.
  *
  * Two orientations, swapped by the breakpoint rather than one hidden. A
  * left-to-right sweep between columns that have stacked points at nothing.
@@ -49,10 +52,10 @@ function PeerLink() {
   return (
     <div className="about-link" aria-hidden>
       <svg viewBox="0 0 180 40" fill="none" className="about-link-h" style={{ overflow: 'visible' }}>
-        <path d="M14 20 H166" stroke={INK} strokeWidth="3.4" strokeLinecap="round" strokeDasharray="0.1 9" markerStart="url(#aboutHeadH)" markerEnd="url(#aboutHeadH)" />
+        <path d="M14 20 H166" stroke={INK} strokeWidth="3.4" strokeLinecap="round" strokeDasharray="0 9" shapeRendering="geometricPrecision" markerStart="url(#aboutHeadH)" markerEnd="url(#aboutHeadH)" />
       </svg>
       <svg viewBox="0 0 40 130" fill="none" className="about-link-v" style={{ overflow: 'visible' }}>
-        <path d="M20 12 V118" stroke={INK} strokeWidth="4.4" strokeLinecap="round" strokeDasharray="0.1 9" markerStart="url(#aboutHeadV)" markerEnd="url(#aboutHeadV)" />
+        <path d="M20 12 V118" stroke={INK} strokeWidth="4.4" strokeLinecap="round" strokeDasharray="0 9" shapeRendering="geometricPrecision" markerStart="url(#aboutHeadV)" markerEnd="url(#aboutHeadV)" />
       </svg>
     </div>
   )

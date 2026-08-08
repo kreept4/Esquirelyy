@@ -14,6 +14,10 @@ export const metadata = {
  *   - profiles hold career_stage, goals and location, and nothing else
  *   - the tracker writes to the `applications` table
  *   - the quiz writes localStorage key `esquirely:prefs`
+ *   - the bell writes `esquirely:notifications-seen`, `-read` and
+ *     `esquirely:welcomed-at`; all three are read markers and stay on-device
+ *   - there is NO analytics, advertising or third-party tracking, which is why
+ *     there is no cookie consent banner — see the clause on cookies below
  *   - CV files are parsed in memory and NOT persisted anywhere; only extracted
  *     text is sent to Anthropic, and the buffer is discarded when the request
  *     ends. That is a genuine minimisation point and worth stating plainly.
@@ -82,10 +86,29 @@ export default function PrivacyPage() {
             the rewrite, and a generated CV contains your name, contact details and full history, so
             treat these as holding the same personal data your CV does.
           </li>
+          {/* Named in full, and deliberately not behind a consent banner.
+              Everything listed here is either strictly necessary (the sign-in
+              cookie) or first-party functional state that never leaves the
+              device. Neither category requires prior consent under the NDPA or
+              the GDPR — that threshold is for analytics, advertising and
+              cross-site tracking, and there is none of any of those on this
+              site: no Google Analytics, no pixels, no third-party cookies, no
+              tags of any kind. What IS owed is a plain statement of what is
+              stored and why, which is this clause.
+              If an analytics or advertising tool is ever added, that changes:
+              it would need consent BEFORE it loads, and a banner would have to
+              come with it. */}
           <li>
-            <strong>Browser storage.</strong> If you answer the questions on the home page without an
-            account, your answers are kept in your own browser under the key{' '}
-            <code>esquirely:prefs</code>. That never reaches us until you create an account.
+            <strong>Cookies and browser storage.</strong> We use no advertising cookies, no
+            analytics, and no third-party trackers. What we do store is:
+            {' '}a sign-in cookie, set by Supabase, which is what keeps you signed in and is deleted
+            when you sign out; and a small amount of storage in your own browser that never reaches
+            us — <code>esquirely:prefs</code>, holding your answers to the questions on the home page
+            if you answer them without an account, and{' '}
+            <code>esquirely:notifications-seen</code>, <code>esquirely:notifications-read</code> and{' '}
+            <code>esquirely:welcomed-at</code>, which only record which notifications you have
+            already looked at so the same ones stop being flagged as new. Clearing your browser data
+            removes all of these; the only thing you lose is those read markers.
           </li>
           <li>
             <strong>Technical logs.</strong> Standard server and security logs kept by our hosting

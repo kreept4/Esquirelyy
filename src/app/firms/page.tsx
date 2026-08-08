@@ -6,13 +6,25 @@ import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/layout/PageHeader'
 import LogoFrame from '@/components/ui/LogoFrame'
 import EmptyState from '@/components/ui/EmptyState'
-import { ALL_FIRMS, firmLogo, getMonogram } from '@/lib/firms-data'
+import RankingBadges from '@/components/ui/RankingBadges'
+import { ALL_FIRMS, firmLogo, getMonogram, rankingsOf } from '@/lib/firms-data'
 
 const TIER_OPTIONS = [
   { value: '', label: 'All Tiers' },
   { value: 'Tier 1', label: 'Tier 1' },
   { value: 'Tier 2', label: 'Tier 2' },
   { value: 'Boutique', label: 'Boutique' },
+]
+/** Which directory ranked the firm. Options are the three guides plus "any",
+ *  because "is this firm in any of them" is the question most readers actually
+ *  have; the individual guides are there for someone who knows they care about
+ *  one of them in particular. */
+const RANKED_OPTIONS = [
+  { value: '', label: 'All Firms' },
+  { value: 'any', label: 'Ranked (any guide)' },
+  { value: 'chambers', label: 'Chambers' },
+  { value: 'iflr', label: 'IFLR1000' },
+  { value: 'emea', label: 'Legal 500 EMEA' },
 ]
 /** Derived from the data, not hand-listed.
  *
@@ -81,6 +93,7 @@ export default function FirmsPage() {
   const [tier, setTier] = useState('')
   const [city, setCity] = useState('')
   const [practiceArea, setPracticeArea] = useState('')
+  const [ranked, setRanked] = useState('')
 
   const filtered = useMemo(() => {
     return ALL_FIRMS.filter(f => {
@@ -88,11 +101,19 @@ export default function FirmsPage() {
       if (tier && f.tier !== tier) return false
       if (city && !f.offices.some((o: { city: string; address: string }) => o.city === city)) return false
       if (practiceArea && !f.practiceAreas.includes(practiceArea)) return false
+      if (ranked === 'any' && rankingsOf(f).length === 0) return false
+      if (ranked && ranked !== 'any' && !rankingsOf(f).some(r => r.key === ranked)) return false
       return true
     })
-  }, [search, tier, city, practiceArea])
+  }, [search, tier, city, practiceArea, ranked])
 
-  const hasFilters = tier || city || practiceArea
+  const hasFilters = tier || city || practiceArea || ranked
+
+  /* The ranking filter is hidden until the table behind it has something in it.
+     A select whose every option returns an empty directory is worse than no
+     select: it reads as a broken filter rather than as an unpopulated one.
+     Delete nothing to turn it on — adding a firm to FIRM_RANKINGS is enough. */
+  const anyRankings = useMemo(() => ALL_FIRMS.some(f => rankingsOf(f).length > 0), [])
 
   return (
     <>
@@ -135,11 +156,17 @@ export default function FirmsPage() {
                 {PRACTICE_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
 
+              {anyRankings && (
+                <select className="filter-pill" data-active={!!ranked} value={ranked} onChange={e => setRanked(e.target.value)}>
+                  {RANKED_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </select>
+              )}
+
               {/* Colour is left to .filter-pill so the ink header can invert it.
                   The inline `color: var(--ink)` this button used to carry made
                   the label invisible against the dark ground. */}
               {hasFilters && (
-                <button className="filter-pill" onClick={() => { setTier(''); setCity(''); setPracticeArea('') }}
+                <button className="filter-pill" onClick={() => { setTier(''); setCity(''); setPracticeArea(''); setRanked('') }}
                   style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <XIcon /> Clear
                 </button>
@@ -189,7 +216,15 @@ export default function FirmsPage() {
                     <FirmAvatar firm={firm} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p className="grotesk-bold firm-card-name">{firm.name}</p>
-                      <p className="grotesk-regular firm-card-tier">{firm.tier}</p>
+                      {/* Tier is ours; the badges beside it are not. They sit
+                          on the same line so the reader sees at a glance which
+                          of the two labels came from outside. Renders nothing
+                          for a firm with no checked rankings, which is most of
+                          them — that absence is the signal working. */}
+                      <p className="grotesk-regular firm-card-tier">
+                        {firm.tier}
+                        <RankingBadges firm={firm} />
+                      </p>
                     </div>
                   </div>
 

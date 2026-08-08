@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import Footer from '@/components/layout/Footer'
 import { ALL_FIRMS, firmLogo, getMonogram, type Firm } from '@/lib/firms-data'
 import LogoFrame from '@/components/ui/LogoFrame'
+import RankingBadges from '@/components/ui/RankingBadges'
 
 /** Firm mark for the profile header.
  *
@@ -131,6 +132,13 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
 
           {/* Left — details */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+
+            {/* First, above the practice areas. Whether an independent guide
+                ranks the firm qualifies everything below it, so it belongs
+                before the list of what the firm says it does — and it renders
+                nothing at all for a firm with no checked entry, so the page
+                shape is unchanged for most of the directory. */}
+            <RankingBadges firm={firm} variant="full" />
 
             <section>
               <p className="firm-profile-section-heading">Practice areas</p>

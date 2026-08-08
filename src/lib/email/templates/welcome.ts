@@ -16,9 +16,10 @@
  *   - Every colour is inline and literal. `<style>` blocks are stripped by
  *     Gmail's clipper and CSS custom properties resolve nowhere.
  *
- * There is no image in the body. Outlook and Gmail block remote images by
- * default, and a welcome whose content is a picture arrives blank for a large
- * share of readers.
+ * There is no image anywhere in this message — not in the body and not in the
+ * masthead. Outlook and Gmail block remote images by default, so anything
+ * served over HTTP arrives as an empty box for a large share of readers. Every
+ * mark here is made of table cells, background colours and type.
  */
 
 const INK = '#241F16'
@@ -27,20 +28,32 @@ const CREAM = '#FAF7F2'
 const MUTED = '#8A8378'
 
 /**
- * Contour texture, drawn in amber on the ink masthead.
+ * Contour texture — INK strokes, on the cream around the amber panel.
  *
- * The site's `--contour` strokes in INK because it goes on cream. Here the
- * ground is ink, so the same lines are drawn in amber at low opacity instead.
- * Inlined as a data URI rather than referenced by URL: a remote image would be
- * blocked by default in Outlook and Gmail, and a texture that only appears for
- * some readers is worse than one that appears for none.
+ * This used to stroke AMBER, and that was the bug behind "the header is brown,
+ * not yellow". Amber lines at 0.16 alpha over cream do not read as texture;
+ * they wash the ground toward a flat sand, and sitting next to the ink rule and
+ * the ink offset shadow the whole band reads brown rather than as a bright
+ * yellow panel on paper.
  *
- * Outlook's Word engine ignores background-image on a <td> and will render the
- * flat `bgcolor` underneath. That is the intended fallback, which is why the
- * colour is set as an attribute as well as in CSS.
+ * The site does not do that. `--contour` in globals.css strokes INK because the
+ * ground is cream, and the footer — which this masthead is a copy of — puts the
+ * texture on the cream AROUND the amber panel, never inside it. Same colour and
+ * same alpha here, so the mail and the footer are the same object.
+ *
+ * (The amber-stroked variant is still correct for a DARK ground and still
+ * exists, as --contour-amber in globals.css and inline in the confirm-signup
+ * template. It just does not belong on cream.)
+ *
+ * Inlined as a data URI rather than referenced by URL: a remote image is
+ * blocked by default in Outlook and Gmail, and a texture that appears for only
+ * some readers is worse than one that appears for none. Outlook's Word engine
+ * ignores background-image on a <td> and renders the flat `bgcolor` underneath,
+ * which is the intended fallback — hence the colour is set as an attribute as
+ * well as in CSS.
  */
 const CONTOUR =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23FBBF24' stroke-opacity='0.16' stroke-width='1.5'%3E%3Cpath d='M0 20c26-14 54 14 80 0s54-14 80 0'/%3E%3Cpath d='M0 47c26-11 54 11 80 0s54-11 80 0'/%3E%3Cpath d='M0 74c26-16 54 16 80 0s54-16 80 0'/%3E%3Cpath d='M0 101c26-9 54 9 80 0s54-9 80 0'/%3E%3Cpath d='M0 128c26-15 54 15 80 0s54-15 80 0'/%3E%3C/g%3E%3C/svg%3E\")"
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23241F16' stroke-opacity='0.28' stroke-width='1.5'%3E%3Cpath d='M0 20c26-14 54 14 80 0s54-14 80 0'/%3E%3Cpath d='M0 47c26-11 54 11 80 0s54-11 80 0'/%3E%3Cpath d='M0 74c26-16 54 16 80 0s54-16 80 0'/%3E%3Cpath d='M0 101c26-9 54 9 80 0s54-9 80 0'/%3E%3Cpath d='M0 128c26-15 54 15 80 0s54-15 80 0'/%3E%3C/g%3E%3C/svg%3E\")"
 
 export function welcomeEmail({ name, siteUrl }: { name?: string; siteUrl: string }) {
   const first = (name || '').trim().split(/\s+/)[0]
@@ -70,6 +83,9 @@ export function welcomeEmail({ name, siteUrl }: { name?: string; siteUrl: string
     `   ${siteUrl}/tools/cv-review`,
     '',
     'Go and find something worth applying for.',
+    '',
+    'from Bolu & Ipinu',
+    'Co-founders, Esquirely',
     '',
     `Esquirely. ${siteUrl}`,
   ].join('\n')
@@ -102,15 +118,29 @@ export function welcomeEmail({ name, siteUrl }: { name?: string; siteUrl: string
      ignores box-shadow entirely. -->
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${CREAM}" style="border-collapse:collapse;background-color:${CREAM};background-image:${CONTOUR};background-repeat:repeat;">
   <tr>
-    <td style="padding:14px 10px 18px 10px;">
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:${INK};">
+    <!-- 10px of cream all round, so the contour reads as the paper the panel is
+         printed on rather than as a wide margin. Any more and the amber stops
+         filling the screen; any less and the texture disappears. -->
+    <td style="padding:10px;">
+      <!-- The offset shadow, drawn as an ink cell because Word ignores
+           box-shadow. bgcolor as well as CSS: this is the layer that shows
+           through if a client drops a background, so it has to be the one thing
+           that never fails to be ink. -->
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${INK}" style="border-collapse:collapse;background-color:${INK};">
         <tr>
           <td style="padding:0 5px 5px 0;">
+            <!-- The panel. The bgcolor ATTRIBUTE and the inline
+                 background-color, always both. A table carrying the colour only
+                 in CSS can have it stripped by Gmail, and what shows through is
+                 the ink cell above — which is precisely how a bright yellow
+                 masthead arrives brown.
+                 (No backticks in these comments: this whole document is a JS
+                 template literal, and one would end it.) -->
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${AMBER}" style="border-collapse:collapse;background-color:${AMBER};border:2px solid ${INK};">
               <tr>
-                <td align="center" style="padding:26px 18px;">
-                  <p style="margin:0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:44px;line-height:0.92;font-weight:900;letter-spacing:-2px;color:${INK};">ESQUIRELY</p>
-                  <p style="margin:8px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.4;letter-spacing:1.6px;text-transform:uppercase;color:${INK};">Nigeria&rsquo;s legal career platform</p>
+                <td align="center" bgcolor="${AMBER}" style="background-color:${AMBER};padding:30px 18px;">
+                  <p style="margin:0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:52px;line-height:0.9;font-weight:900;letter-spacing:-2.4px;color:${INK};">ESQUIRELY</p>
+                  <p style="margin:10px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.4;letter-spacing:1.6px;text-transform:uppercase;color:${INK};">Nigeria&rsquo;s legal career platform</p>
                 </td>
               </tr>
             </table>
@@ -132,22 +162,23 @@ export function welcomeEmail({ name, siteUrl }: { name?: string; siteUrl: string
           <td style="padding:0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;">
             <p style="margin:0 0 14px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:-0.6px;color:${INK};">${greeting}</p>
 
-            <!-- The illustration.
-                 A PNG, because Gmail strips <svg> and refuses SVG in <img src>
-                 and Outlook cannot draw it. Rendered from the same
-                 welcome.svg the site uses, by scripts/render-email-art.mjs.
+            <!-- NO ILLUSTRATION HERE, DELIBERATELY.
+                 This carried a 220px PNG rendered from welcome.svg. It is gone,
+                 and should not come back as an <img> of any kind.
 
-                 It sits BELOW the greeting and carries no information, with an
-                 empty alt, because Outlook and Gmail block remote images by
-                 default: for a good share of readers this space is simply
-                 blank, and the message has to read exactly as well when it is.
-                 Width and height are set as attributes so the layout does not
-                 reflow when it does load. -->
-            <p style="margin:0 0 16px 0;">
-              <img src="${siteUrl}/email/welcome-art.png" width="220" height="220" alt=""
-                   style="display:block;margin:0 auto;border:0;outline:none;text-decoration:none;width:220px;height:auto;max-width:100%;" />
-            </p>
+                 A remote image in an email is blocked by default in Outlook and
+                 in Gmail's default settings, so for a large share of readers it
+                 was never a picture — it was a 220px empty box, or a broken-image
+                 icon, sitting between the greeting and the first line. It also
+                 made the message depend on siteUrl resolving to a host that
+                 serves the file with the right content-type, which is exactly
+                 what went wrong when the apex domain answered every path with
+                 200 text/html.
 
+                 The masthead already carries the identity, and it is drawn in
+                 tables and background colours that every client renders. The
+                 message reads the same for everyone now, which an image cannot
+                 promise. -->
             <p style="margin:0 0 14px 0;font-size:15px;line-height:1.7;color:${INK};">
               You are in.
             </p>
@@ -182,16 +213,22 @@ export function welcomeEmail({ name, siteUrl }: { name?: string; siteUrl: string
 
             <!-- Primary action. A bordered cell, not a rounded button: Word
                  ignores border-radius and renders a square anyway, so the
-                 square is drawn deliberately with the site's rule and offset. -->
+                 square is drawn deliberately with the site's rule and offset.
+                 The mint is #14B8A6, the site's --mint, and it now carries the
+                 bgcolor ATTRIBUTE as well as CSS. Without the attribute Gmail
+                 could strip the background and leave the ink offset cell
+                 showing through the button — which is why this arrived as a
+                 dull dark green rather than mint. Same failure as the masthead,
+                 same fix. -->
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 26px 0;">
               <tr>
-                <td style="background-color:${INK};">
+                <td bgcolor="${INK}" style="background-color:${INK};">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
                     <tr>
                       <td style="padding:0 3px 3px 0;">
-                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;background-color:#14B8A6;border:2px solid ${INK};">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#14B8A6" style="border-collapse:collapse;background-color:#14B8A6;border:2px solid ${INK};">
                           <tr>
-                            <td align="center" style="padding:12px 26px;">
+                            <td align="center" bgcolor="#14B8A6" style="background-color:#14B8A6;padding:14px 28px;">
                               <a href="${siteUrl}/jobs" style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FFFFFF;text-decoration:none;">Go and find something worth applying for</a>
                             </td>
                           </tr>
@@ -199,6 +236,22 @@ export function welcomeEmail({ name, siteUrl }: { name?: string; siteUrl: string
                       </td>
                     </tr>
                   </table>
+                </td>
+              </tr>
+            </table>
+            <!-- Sign-off. The short names, and only the short names.
+                 An inbox shows "Esquirely" as the sender, which is a company
+                 and not a correspondent, so the message has to say who is
+                 writing — and it says it the way they actually introduce
+                 themselves. Full legal names under a friendly note read like a
+                 letterhead. The same line appears on the welcome note in the
+                 app, word for word: one greeting arriving twice, not two
+                 greetings. -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 4px 0;">
+              <tr>
+                <td style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;font-weight:700;color:${INK};">
+                  from Bolu &amp; Ipinu
+                  <span style="display:block;font-size:11px;line-height:1.6;letter-spacing:1px;text-transform:uppercase;font-weight:400;color:${MUTED};padding-top:3px;">Co-founders, Esquirely</span>
                 </td>
               </tr>
             </table>

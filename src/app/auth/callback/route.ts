@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { sendWelcomeOnce } from '@/lib/email/welcome-once'
 import { createClient } from '@/lib/supabase/server'
 
 /**
@@ -59,6 +60,33 @@ export async function GET(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
     return NextResponse.redirect(`${origin}/auth/login?error=callback_failed`)
+  }
+
+  /**
+   * The welcome message, for anyone who arrived by Google.
+   *
+   * This has to run BEFORE the `next` short-circuit below. The login page
+   * always appends a `next` — it defaults to '/' — so anything placed after
+   * that early return would never fire for a Google user who happened to press
+   * the button on the sign-in page rather than the sign-up page. Those are the
+   * same account creation; only the door differs.
+   *
+   * Awaited, not fired and forgotten. This route returns a redirect and then
+   * the function is done, so a promise left running has no guarantee of
+   * finishing — on a serverless host the instance can be frozen the moment the
+   * response is written. `sendWelcomeOnce` bounds itself with timeouts and
+   * never throws, and it returns immediately for the overwhelming majority of
+   * calls, which are returning users failing the once-only check. Only a
+   * genuinely new account pays the cost, once.
+   *
+   * A password user does not double up: by the time they reach here — if they
+   * ever do — the signup page has already sent theirs and the stamp is set.
+   */
+  const welcome = await sendWelcomeOnce(user)
+  if (!welcome.ok) {
+    // Logged, never fatal. Someone who just proved their identity with Google
+    // must not be bounced back to a sign-in page because Brevo was slow.
+    console.error('[auth] welcome message not sent', user.id, welcome.reason)
   }
 
   // Wherever they were heading beats anything we would pick for them.

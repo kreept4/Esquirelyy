@@ -99,6 +99,56 @@ export function markSeen() {
   }
 }
 
+/**
+ * TWO KINDS OF READ, AND WHY THE WELCOME NEEDS THE SECOND ONE
+ *
+ * The timestamp above answers "have you looked at the list", which is the right
+ * question for a new role or a moved deadline: seeing the headline in the panel
+ * IS reading it, and there is nothing further to open.
+ *
+ * The welcome note is not like that. Its whole content is behind a second
+ * click, so clearing it when the panel opens marks as read the one
+ * notification the reader definitely has not read. It is tracked by id instead
+ * and only goes quiet once the note itself has been opened.
+ *
+ * `ACK_KINDS` is the set that works this way. Nothing below branches on
+ * 'welcome' by name, so anything added to the set gets the same treatment
+ * everywhere at once.
+ */
+export const READ_KEY = 'esquirely:notifications-read'
+
+export const ACK_KINDS: ReadonlySet<NotificationKind> = new Set<NotificationKind>(['welcome'])
+
+export function readReadIds(): Set<string> {
+  if (typeof window === 'undefined') return new Set()
+  try {
+    const raw = JSON.parse(localStorage.getItem(READ_KEY) || '[]')
+    return new Set(Array.isArray(raw) ? raw.filter((x): x is string => typeof x === 'string') : [])
+  } catch {
+    return new Set()
+  }
+}
+
+/** Records one notification as opened. Returns the new set so a caller can put
+ *  it straight into state without re-reading storage. */
+export function markRead(id: string): Set<string> {
+  const next = readReadIds()
+  next.add(id)
+  try {
+    localStorage.setItem(READ_KEY, JSON.stringify([...next]))
+  } catch {
+    // Private browsing. The note reopens unread next time, which is harmless.
+  }
+  return next
+}
+
+/** The single definition of unread, used by both the badge and the row styling
+ *  so the two can never disagree about what is still waiting. */
+export function isUnread(n: Notification, seen: number, readIds: Set<string>) {
+  if (ACK_KINDS.has(n.kind)) return !readIds.has(n.id)
+  return Date.parse(n.at) > seen
+}
+
 /** Scholarships closing inside this window are worth interrupting someone for. */
 const DEADLINE_WINDOW_DAYS = 30
 
@@ -132,7 +182,7 @@ export function buildFeed(
     id: 'welcome',
     kind: 'welcome',
     title: 'Welcome to Esquirely',
-    detail: 'A note from the co-founders',
+    detail: 'A note from Bolu & Ipinu',
     at: welcomedAt,
   })
   const today = now.toISOString().slice(0, 10)
@@ -195,8 +245,8 @@ export function buildFeed(
     .slice(0, 20)
 }
 
-export function unreadCount(feed: Notification[], seen: number) {
-  return feed.filter(n => Date.parse(n.at) > seen).length
+export function unreadCount(feed: Notification[], seen: number, readIds: Set<string> = new Set()) {
+  return feed.filter(n => isUnread(n, seen, readIds)).length
 }
 
 /** "3h", "2d". Absolute dates in a notification list are noise; what a reader

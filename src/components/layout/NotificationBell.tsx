@@ -5,8 +5,11 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import {
   buildFeed,
+  isUnread,
+  markRead,
   markSeen,
   readPrefs,
+  readReadIds,
   readSeen,
   readWelcomedAt,
   timeAgo,
@@ -33,7 +36,38 @@ const KIND_DOT: Record<Notification['kind'], string> = {
   welcome: '#FBBF24',
 }
 
-function NotifRow({ n }: { n: Notification }) {
+/**
+ * The mark on the welcome note.
+ *
+ * Inline, not an <img src="…svg">. An external SVG is a separate document
+ * fetch, so it renders as an empty box for every reason a fetch can fail — a
+ * path that does not resolve under the deployed basePath, a content-type the
+ * host serves wrong, a CSP that does not list img-src. Inlined there is nothing
+ * left to fail, and `currentColor` lets one drawing sit on ink here and on
+ * amber anywhere else.
+ *
+ * An envelope with the seal broken open, which is what the note is.
+ */
+function WelcomeMark() {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className="notif-modal-mark"
+    >
+      <path d="M6 17.5 24 6l18 11.5v20a2.5 2.5 0 0 1-2.5 2.5h-31A2.5 2.5 0 0 1 6 37.5Z" />
+      <path d="M6 17.5 24 29l18-11.5" />
+      <path d="M17 44V29m14 15V29" />
+    </svg>
+  )
+}
+
+function NotifRow({ n, unread }: { n: Notification; unread: boolean }) {
   return (
     <>
       <span className="notif-dot" style={{ background: KIND_DOT[n.kind] }} aria-hidden />
@@ -41,6 +75,9 @@ function NotifRow({ n }: { n: Notification }) {
         <span className="grotesk-bold notif-item-title">{n.title}</span>
         <span className="grotesk-regular notif-item-detail">{n.detail}</span>
       </span>
+      {/* Two signals, one meaning. The word is for a screen reader, which
+          cannot see a bolder row; the pip is for everyone else. */}
+      {unread && <span className="notif-item-new" aria-label="Unread" />}
       <span className="grotesk-regular notif-item-time">{timeAgo(n.at)}</span>
     </>
   )
@@ -56,6 +93,7 @@ export default function NotificationBell({
   const [open, setOpen] = useState(false)
   const [feed, setFeed] = useState<Notification[]>([])
   const [seen, setSeen] = useState(0)
+  const [readIds, setReadIds] = useState<Set<string>>(() => new Set())
   const [showWelcome, setShowWelcome] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
 
@@ -83,12 +121,17 @@ export default function NotificationBell({
 
   useEffect(() => {
     setSeen(readSeen())
+    setReadIds(readReadIds())
     load()
   }, [load])
 
-  function openNote() {
+  /* Opening the note is what marks it read — not listing it, and not closing
+     the panel. That is the whole reason the welcome is tracked by id rather
+     than by the panel-open timestamp. */
+  function openNote(n: Notification) {
     setOpen(false)
     setShowWelcome(true)
+    setReadIds(markRead(n.id))
   }
 
   // Close on outside click and on Escape, the two ways anyone expects to
@@ -107,7 +150,7 @@ export default function NotificationBell({
     }
   }, [open])
 
-  const unread = unreadCount(feed, seen)
+  const unread = unreadCount(feed, seen, readIds)
 
   function toggle() {
     setOpen(o => !o)
@@ -126,6 +169,9 @@ export default function NotificationBell({
      changes catches that case instead of only checking once at the click. */
   useEffect(() => {
     if (!open) return
+    /* Deliberately unaware of `readIds`. This clears the timestamp kinds only,
+       so the badge can legitimately still read 1 after the panel has been
+       looked at — that 1 is the unopened welcome note, and it is correct. */
     if (unreadCount(feed, seen) > 0) {
       markSeen()
       setSeen(Date.now())
@@ -174,23 +220,32 @@ export default function NotificationBell({
             </p>
           ) : (
             <ul className="notif-list">
-              {feed.map(n => (
-                <li key={n.id}>
-                  {n.href ? (
-                    <Link href={n.href} className="notif-item" onClick={() => setOpen(false)}>
-                      <NotifRow n={n} />
-                    </Link>
-                  ) : (
-                    <button
-                      type="button"
-                      className="notif-item notif-item-btn"
-                      onClick={openNote}
-                    >
-                      <NotifRow n={n} />
-                    </button>
-                  )}
-                </li>
-              ))}
+              {feed.map(n => {
+                const isNew = isUnread(n, seen, readIds)
+                return (
+                  <li key={n.id}>
+                    {n.href ? (
+                      <Link
+                        href={n.href}
+                        className="notif-item"
+                        data-unread={isNew || undefined}
+                        onClick={() => setOpen(false)}
+                      >
+                        <NotifRow n={n} unread={isNew} />
+                      </Link>
+                    ) : (
+                      <button
+                        type="button"
+                        className="notif-item notif-item-btn"
+                        data-unread={isNew || undefined}
+                        onClick={() => openNote(n)}
+                      >
+                        <NotifRow n={n} unread={isNew} />
+                      </button>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
           )}
         </div>
@@ -217,6 +272,18 @@ export default function NotificationBell({
               ×
             </button>
 
+            {/* Masthead. Ink ground carrying the contour in amber, the same
+                construction as the signup email, so the note the site shows and
+                the note that arrives by mail are recognisably one thing.
+                The site's --contour strokes in ink because it goes on cream; on
+                ink it would be invisible, so --contour-amber exists for dark
+                grounds. */}
+            <div className="notif-modal-head">
+              <WelcomeMark />
+              <p className="grotesk-bold notif-modal-kind">A note from the founders</p>
+            </div>
+
+            <div className="notif-modal-inner">
             <p className="display-black notif-modal-title">Welcome to Esquirely.</p>
 
             <div className="notif-modal-body">
@@ -233,10 +300,14 @@ export default function NotificationBell({
               <p className="grotesk-regular">Glad you are here. Take your time and look around.</p>
             </div>
 
+            {/* The short names, matching the welcome email word for word. Two
+                different sign-offs from the same two people, arriving within a
+                minute of each other, read as two different senders. */}
             <p className="grotesk-bold notif-modal-sign">
-              Boluwatife and Ipinuoluwa
+              from Bolu &amp; Ipinu
               <span className="grotesk-regular notif-modal-sign-role">Co-founders, Esquirely</span>
             </p>
+            </div>
           </div>
         </div>
       )}

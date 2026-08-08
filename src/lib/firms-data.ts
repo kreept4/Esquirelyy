@@ -5,6 +5,64 @@ export interface FirmOffice {
   address: string
 }
 
+/**
+ * Independent directory rankings.
+ *
+ * WHAT THESE ARE
+ *
+ *   chambers  Chambers and Partners, Global guide, Nigeria section
+ *   iflr      IFLR1000, financial and corporate, Nigeria
+ *   emea      The Legal 500 EMEA, Nigeria
+ *
+ * All three are researched by interviewing the firm's own clients and opposing
+ * counsel, which is why a student should care: unlike a firm's own website, no
+ * firm can put itself in one. Three are listed rather than one because they do
+ * not agree — each weights different work — and a firm ranked by all three is
+ * saying something a firm ranked by one is not.
+ *
+ * WHAT `tier` IS NOT
+ *
+ * The `tier` field on the record below is Esquirely's own rough size band and
+ * is not a ranking. These are. Keeping them in separate fields stops the
+ * directory implying that our banding carries a researcher's authority.
+ *
+ * HOW TO MAINTAIN THIS
+ *
+ * A band, never a numeric rank, and never a practice area. The guides re-rank
+ * annually and per-practice, so "Band 1 for Corporate/M&A, 2025" would be stale
+ * within a year and wrong the moment the firm's other practices moved. The
+ * coarse band survives an edition; the detail does not. `year` records the
+ * edition the band was read from, and the UI shows it, so an unmaintained badge
+ * dates itself in public rather than quietly ageing into a lie.
+ *
+ * Absent means unverified, NOT unranked. A firm with no entry here is one
+ * nobody has checked; do not render anything that says otherwise.
+ */
+export type RankingBand = 'Band 1' | 'Band 2' | 'Band 3' | 'Tier 1' | 'Tier 2' | 'Tier 3' | 'Ranked'
+
+export interface FirmRankings {
+  chambers?: { band: RankingBand; year: number }
+  iflr?: { band: RankingBand; year: number }
+  emea?: { band: RankingBand; year: number }
+}
+
+/** The three directories, in the order they are shown. Kept here so the badge
+ *  row, the filter and the profile page cannot drift apart. */
+export const RANKING_SOURCES = [
+  { key: 'chambers', label: 'Chambers', full: 'Chambers and Partners, Global' },
+  { key: 'iflr', label: 'IFLR1000', full: 'IFLR1000, Financial & Corporate' },
+  { key: 'emea', label: 'EMEA', full: 'The Legal 500 EMEA' },
+] as const
+
+export type RankingKey = (typeof RANKING_SOURCES)[number]['key']
+
+export function rankingsOf(firm: Pick<Firm, 'rankings'>) {
+  return RANKING_SOURCES.flatMap(source => {
+    const entry = firm.rankings?.[source.key]
+    return entry ? [{ ...source, ...entry }] : []
+  })
+}
+
 export interface Firm {
   slug: string
   logoFile?: string | null
@@ -18,6 +76,8 @@ export interface Firm {
   description: string
   foundedYear?: number
   openRoles: number
+  /** Absent means nobody has checked this firm yet, not that it is unranked. */
+  rankings?: FirmRankings
 }
 
 const STORAGE = 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/'
@@ -72,11 +132,13 @@ const LOCAL_ONLY_LOGO = new Set([
   'pavestones',
   'sofunde-osakwe',
   'the-new-practice',
-  // abe-asotie: no reachable site (blocked from this environment) and no
-  // bucket file, so this is cropped straight from a hiring flyer instead of
-  // a proper download. It is opaque and not trimmed to transparent like the
-  // rest of this set, so it renders on the ticker's plate rather than
-  // floating free — worth re-sourcing from the firm directly once possible.
+  // abe-asotie: re-sourced 2026-08-08 from the firm's own site, replacing the
+  // opaque crop taken off a hiring flier when abeandasotie.com was unreachable.
+  // The download is already RGBA, and it is trimmed to its content box rather
+  // than keyed to transparent: this mark is DRAWN on a two-tone plate — a navy
+  // block behind the monogram, a pale field behind the lettering — so keying
+  // the field would cut the design in half. It goes on the cream plate as the
+  // firm supplies it.
   'abe-asotie',
 ])
 
@@ -133,22 +195,40 @@ const FIRMS_UNSORTED: Firm[] = [
   },
   {
     slug: 'abe-asotie',
-    // Mark is cropped from a hiring flyer, not a proper download — see the
-    // LOCAL_ONLY_LOGO comment above for why. logoFile stays null on purpose;
-    // the local file is picked up through that set instead.
+    // logoFile stays null on purpose: the mark came from the firm's own site
+    // rather than the Supabase bucket, so it is picked up through
+    // LOCAL_ONLY_LOGO above instead.
     logoFile: null,
     name: 'Abe & Asotie LP',
     shortName: 'Abe & Asotie',
     tier: 'Boutique',
     email: 'info@abeandasotie.com',
     website: 'https://abeandasotie.com',
-    // No verified street-level address found; not guessed at, same rule as
-    // every other firm here.
-    offices: [{ city: 'Lagos', address: 'Lagos' }],
-    practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Tax', 'Oil & Gas', 'Intellectual Property', 'Employment Law', 'Real Estate'],
-    description: 'A full-service commercial firm launched in June 2024 by former University of Benin classmates Joshua Abe and Theokalus Asotie, built with ambitions to grow into a large pan-African practice.',
-    foundedYear: 2024,
-    openRoles: 0,
+    // Read off the firm's own contact block at abeandasotie.com. The earlier
+    // 'Lagos' / 'Lagos' placeholder was written when the site was unreachable;
+    // it is published, so it is recorded rather than left as the city twice.
+    offices: [
+      { city: 'Lagos', address: '2nd Floor, Left Wing, LCA Building, 1a Remi Olowude Street, 2nd Roundabout, Lekki-Epe Expressway, Lagos' },
+    ],
+    // Mapped onto this directory's shared vocabulary, not copied verbatim from
+    // the firm's own list. 'Oil & Gas', 'Employment Law' and 'Real Estate' are
+    // things this firm genuinely does, but none of them is a PRACTICE_OPTIONS
+    // value, so no filter on /firms could ever select them — a practice area no
+    // filter reaches is dead text on the card.
+    practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Banking & Finance', 'Energy & Natural Resources', 'Intellectual Property', 'Tax', 'Shipping & Maritime'],
+    // The firm, not the people who started it. Every other entry in this
+    // directory describes what the firm does and who it acts for; a profile
+    // that opens on two names reads as a founder story rather than as an answer
+    // to "would I want to work here".
+    description: 'A full-service Lagos firm working across corporate and commercial practice, dispute resolution, banking and finance, energy and oil and gas, aviation, shipping and admiralty, tax, intellectual property, immigration, employment, data protection and ESG. Acts for individuals, companies and not-for-profits, with company secretarial and business advisory work alongside the contentious practice. Founded in 2025 and growing quickly, from an office in the Lagos Court of Arbitration building at Lekki.',
+    // 2025, not 2024. Africa Legal's launch report dates it to June 2025, and
+    // the firm was still announcing its first associate hires through that
+    // autumn.
+    foundedYear: 2025,
+    // Hand-kept, not derived from the jobs table: the Lawyer (Legal Aid and
+    // Prison Decongestion) row seeded by scripts/seed-abe-asotie-role.mjs.
+    // Return this to 0 when that role closes.
+    openRoles: 1,
   },
   {
     slug: 'acas-law',
@@ -901,10 +981,58 @@ function sortKey(name: string): string {
     .toLowerCase()
 }
 
-/** Alphabetical by firm name. Every consumer reads from here. */
-export const ALL_FIRMS: Firm[] = [...FIRMS_UNSORTED].sort((a, b) =>
-  sortKey(a.name).localeCompare(sortKey(b.name), 'en')
-)
+/**
+ * Directory rankings, by firm slug.
+ *
+ * Kept out of the firm records on purpose. These change once a year, all at
+ * once, from three sources — so they are edited as one table on one afternoon,
+ * not by hunting through forty-seven object literals. A slug here that is not a
+ * firm is ignored rather than throwing, so a typo costs a missing badge and not
+ * a build.
+ *
+ * ————————————————————————————————————————————————————————————————
+ * THIS TABLE IS DELIBERATELY EMPTY. DO NOT FILL IT FROM MEMORY.
+ * ————————————————————————————————————————————————————————————————
+ *
+ * Every entry is a factual claim about a real firm made by a named third party,
+ * and the whole value of the badge is that it was not written by us or by the
+ * firm. A plausible-looking band typed in from recollection is indistinguishable
+ * on the page from a checked one, and it would put an invented Chambers band
+ * next to a real firm's name in public. That is not a cosmetic error.
+ *
+ * So each line is read off the guide itself and nowhere else:
+ *
+ *   Chambers   chambers.com/legal-guide/nigeria-7  → firm → the Nigeria band
+ *   IFLR1000   iflr1000.com/Jurisdiction/Nigeria   → firm → the tier
+ *   EMEA       legal500.com/c/nigeria              → firm → the tier
+ *
+ * Record the coarse band and the edition year, nothing finer — see the note on
+ * FirmRankings for why per-practice detail cannot be maintained. When a firm is
+ * listed but the band is unclear, use 'Ranked': it claims only presence in the
+ * guide, which is both true and worth showing.
+ *
+ * The badge row, the profile panel and the "Ranked" filter are all built and
+ * working; they render nothing until a line appears below, and everything
+ * downstream lights up the moment one does.
+ *
+ * Example of the intended shape, commented out because it is illustrative and
+ * not a reading:
+ *
+ *   'templars': {
+ *     chambers: { band: 'Band 1', year: 2025 },
+ *     iflr:     { band: 'Tier 1', year: 2025 },
+ *     emea:     { band: 'Tier 1', year: 2025 },
+ *   },
+ */
+export const FIRM_RANKINGS: Record<string, FirmRankings> = {}
+
+/** Alphabetical by firm name. Every consumer reads from here.
+ *
+ *  Rankings are merged in here rather than stored on the literals, so
+ *  FIRM_RANKINGS stays the single place they are edited. */
+export const ALL_FIRMS: Firm[] = [...FIRMS_UNSORTED]
+  .map(f => (FIRM_RANKINGS[f.slug] ? { ...f, rankings: FIRM_RANKINGS[f.slug] } : f))
+  .sort((a, b) => sortKey(a.name).localeCompare(sortKey(b.name), 'en'))
 
 /** Firms that actually have a logo asset — used by the home page logo loop so
  *  the marquee has no empty slots and its 50% translate stays exact. */

@@ -98,7 +98,44 @@ function Panel({ children, pad = '1.1rem' }: { children: React.ReactNode; pad?: 
 /** Dotted spiral linking one block to the next, so the eye is led down the
  *  narrative instead of jumping. Mirrored to follow the alternating layout.
  *  The arrowhead is a marker with orient="auto" so it stays aligned to the curve
- *  (and to the mirrored curve) instead of being hand-placed and drifting. */
+ *  (and to the mirrored curve) instead of being hand-placed and drifting.
+ *
+ *  HOW THE DOTS ARE DRAWN, AND WHY IT IS `0 9` AND NOT `0.1 9`
+ *
+ *  A dot here is a ZERO-length dash with a round cap. SVG requires a
+ *  zero-length subpath with `stroke-linecap: round` to be painted as a full
+ *  circle of the stroke width, so `0 9` is a circle every 9 units, exactly and
+ *  by specification.
+ *
+ *  `0.1 9` looks like the same thing and is not. It is a real dash of positive
+ *  length, so it goes down the general dashing path instead, and a sliver
+ *  0.08 CSS px long is below what a rasteriser can cover: it comes out as
+ *  partial coverage — a grey smudge rather than a solid dot. That is why these
+ *  read as washed out and soft-edged on a phone while looking fine on a desktop,
+ *  where the same artwork is scaled up enough to survive it. The stroke colour
+ *  was never transparent; the coverage was.
+ *
+ *  `shape-rendering="geometricPrecision"` keeps the mobile rasteriser off the
+ *  speed-optimised path that produced the same softness by a second route.
+ *
+ *  WHY THE STROKE WIDTH IS SET IN CSS AND NOT HERE
+ *
+ *  The sweep spans the full column, so the viewBox scale is the viewport:
+ *  measured, 0.29 on a 360px phone against 1.40 on a 1536px desktop. A painted
+ *  dot is stroke-width × that scale, so the authored 3.4 lands at 0.99px on the
+ *  phone and 4.74px on the desktop — the same artwork, five times lighter, and
+ *  a 1px round dot is below what a rasteriser can cover so it comes out as a
+ *  pale smudge. That is the whole of the "the arrow looks faded on mobile"
+ *  report. globals.css compensates per breakpoint to hold the painted dot near
+ *  4px everywhere, moving the gap with it so the rhythm is unchanged.
+ *
+ *  `markerUnits="userSpaceOnUse"` is what makes that safe. Markers scale with
+ *  stroke-width by default, so raising the stroke to fix the dots would have
+ *  inflated the arrowhead with it — at the phone breakpoint, to roughly four
+ *  times its size. Pinned to user space at 22 units, which is exactly what
+ *  6.5 × 3.4 already produced, the head keeps today's proportions at every
+ *  width while the dots are free to be corrected.
+ */
 function Connector({ flip, id, color }: { flip: boolean; id: string; color: string }) {
   const head = `arrow-${id}`
   return (
@@ -110,7 +147,7 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
       {/* Wide layout: sweeps across from the panel above to the one below. */}
       <svg viewBox="0 0 1000 130" fill="none" className="glide-connector-svg glide-connector-h" style={{ transform: flip ? 'scaleX(-1)' : 'none', overflow: 'visible' }}>
         <defs>
-          <marker id={head} viewBox="0 0 16 16" refX="11" refY="8" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          <marker id={head} viewBox="0 0 16 16" refX="11" refY="8" markerUnits="userSpaceOnUse" markerWidth="22" markerHeight="22" orient="auto-start-reverse">
             <path d="M2 1.5 L13 8 L2 14.5" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
           </marker>
         </defs>
@@ -125,7 +162,8 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
           stroke={color}
           strokeWidth="3.4"
           strokeLinecap="round"
-          strokeDasharray="0.1 9"
+          strokeDasharray="0 9"
+          shapeRendering="geometricPrecision"
           markerEnd={`url(#${head})`}
         />
       </svg>
@@ -135,7 +173,12 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
           error, but dropping the connector entirely loses the through-line. */}
       <svg viewBox="0 0 180 210" fill="none" className="glide-connector-svg glide-connector-v" style={{ overflow: 'visible' }}>
         <defs>
-          <marker id={`${head}-v`} viewBox="0 0 16 16" refX="11" refY="8" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+          {/* 36, not the sweep's 22. Both markers are pinned to user space so
+              they cannot be inflated by a stroke-width correction, but the two
+              paths carry different weights — 5.5 here against 3.4 there — and
+              6.5 × 5.5 is what this arrowhead has always been. Copying the
+              sweep's number would have shrunk it by a third. */}
+          <marker id={`${head}-v`} viewBox="0 0 16 16" refX="11" refY="8" markerUnits="userSpaceOnUse" markerWidth="36" markerHeight="36" orient="auto-start-reverse">
             <path d="M2 1.5 L13 8 L2 14.5" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
           </marker>
         </defs>
@@ -148,7 +191,8 @@ function Connector({ flip, id, color }: { flip: boolean; id: string; color: stri
           stroke={color}
           strokeWidth="5.5"
           strokeLinecap="round"
-          strokeDasharray="0.1 9"
+          strokeDasharray="0 9"
+          shapeRendering="geometricPrecision"
           markerEnd={`url(#${head}-v)`}
         />
       </svg>

@@ -29,13 +29,14 @@ export default function SignupPage() {
   const [verifying, setVerifying] = useState(false)
   const [resent, setResent] = useState(false)
   const [cooldown, setCooldown] = useState(0)
+  const [existingAccount, setExistingAccount] = useState(false)
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
     const supabase = createClient()
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -44,6 +45,38 @@ export default function SignupPage() {
       },
     })
     if (error) { setError(error.message); setLoading(false); return }
+
+    /**
+     * The address is already registered.
+     *
+     * One account per email is enforced by the database — a second signup does
+     * NOT create a second user, measured directly against the project. What it
+     * does instead is return 200 with a decoy user object: a random id, no
+     * session, and `identities: []`. That is GoTrue refusing to confirm or deny
+     * that the address is in use, and an empty identities array is the
+     * documented way to tell the decoy from a real new account, which always
+     * comes back with exactly one identity.
+     *
+     * Untreated this was the worse failure of the two: the page took the 200 as
+     * success and showed the code screen, so someone who already had an account
+     * sat waiting for a code that was never going to arrive.
+     *
+     * A NOTE ON WHAT THIS GIVES AWAY. Saying "this address already has an
+     * account" is, strictly, email enumeration — someone can learn whether an
+     * address is registered here. That is the exact thing GoTrue's decoy exists
+     * to prevent, so overriding it is a deliberate trade, not an oversight. It
+     * is made because the alternative is a dead end with no way out for a real
+     * person who simply forgot they had signed up, and because membership of a
+     * public careers board is not a secret worth a broken signup. If that
+     * calculus ever changes, delete this block and the decoy behaviour returns
+     * on its own.
+     */
+    if (data.user && (data.user.identities?.length ?? 0) === 0) {
+      setExistingAccount(true)
+      setLoading(false)
+      return
+    }
+
     setSuccess(true)
     setLoading(false)
     setCooldown(RESEND_COOLDOWN_SECONDS)
@@ -104,6 +137,45 @@ export default function SignupPage() {
       options: { redirectTo: `${window.location.origin}/auth/callback` },
     })
   }
+
+  /* Already has an account. Both routes out are offered because the one thing
+     this person demonstrably does not remember is that they signed up, so they
+     are unlikely to remember whether they used a password or Google either. */
+  if (existingAccount) return (
+    <div className="auth-page">
+      <div className="auth-form-col">
+        <div className="auth-form-wrap">
+          <h2 className="auth-title" style={{ marginBottom: '0.5rem' }}>You already have an account.</h2>
+          <p className="grotesk-regular auth-note">
+            <strong>{email}</strong> is already registered with Esquirely, so there is nothing to
+            create. Sign in instead.
+          </p>
+
+          <div className="auth-form">
+            <Link
+              href="/auth/login"
+              className="grotesk-bold auth-btn-primary"
+              style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}
+            >
+              Go to sign in
+            </Link>
+          </div>
+
+          <p className="grotesk-regular auth-alt">
+            Forgotten your password? <Link href="/auth/forgot-password">Reset it</Link>
+            {' · '}
+            <button
+              type="button"
+              className="auth-linkbtn"
+              onClick={() => { setExistingAccount(false); setEmail('') }}
+            >
+              Use a different email
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
 
   if (success) return (
     <div className="auth-page">
