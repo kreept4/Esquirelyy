@@ -1042,43 +1042,120 @@ function sortKey(name: string): string {
  * beside it, so any single line can be checked against the PDF without
  * re-reading all seven tables.
  *
- * `iflr` and `emea` — NOT YET READ. Absent, which the type and the UI already
- * treat as "nobody has checked", not "unranked". IFLR1000 and Legal 500 both
- * put their Nigeria tables behind client-side rendering that could not be read
- * reliably, and a tier taken from a search-result summary is exactly the
- * secondhand claim the warning above exists to prevent. They stay empty until
- * someone reads them. The badge row already handles one-of-three.
+ * `emea` — read on 2026-08-08 from The Legal 500 EMEA 2026, Nigeria, at
+ * legal500.com/c/nigeria. Four practice-area tables were read in full:
+ * Commercial, corporate and M&A; Banking, finance and capital markets; Dispute
+ * resolution; and Energy and natural resources. Same highest-tier rule as
+ * Chambers, and the source table is named beside each entry.
+ *
+ * COVERAGE IS PARTIAL AND THAT IS SAFE. Legal 500 ranks Nigeria in more tables
+ * than those four. A firm ranked only in, say, TMT therefore has no entry here
+ * and shows no EMEA badge — which reads as "not checked", which is true. The
+ * failure mode runs one way: a firm can be under-credited, never over-credited.
+ *
+ * `iflr` — read on 2026-08-08 from IFLR1000's own firm pages, which now live at
+ * iflr.com/iflr1000/firms/<firm>-nigeria and carry a per-practice tier table.
+ * Only the firms actually opened are recorded. Several firm pages 404 under
+ * every slug tried, so their absence here is a URL that could not be found and
+ * NOT evidence they are unranked — the same one-way failure as above.
+ *
+ * A NOTE ON WHY IFLR IS THINNEST. Its jurisdiction table could not be read at
+ * all; the firm pages were the way in, one fetch each. It also bands below the
+ * numbered tiers with words like "Notable", which is a real listing but not a
+ * tier — those are recorded as 'Ranked', which claims presence and nothing
+ * more, exactly as the guidance above says to.
  */
 export const FIRM_RANKINGS: Record<string, FirmRankings> = {
-  /* Band 1 — each is Band 1 in at least one Nigeria practice area. */
-  'aluko-oyebode':          { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Banking, Capital Markets, Corporate, Dispute Res, IP & TMT, Projects
-  'olaniwun-ajayi':         { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Banking, Corporate, Dispute Res, Projects, Tax
-  'templars':               { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Banking, Corporate, Dispute Res, Projects
-  'udo-udoma-bello-osagie': { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Banking, Capital Markets, Corporate
-  'banwo-ighodalo':         { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Capital Markets, Corporate, Projects
-  'g-elias':                { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Corporate, Dispute Res, Tax
-  'aelex':                  { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in Tax
-  'jackson-etti-edu':       { chambers: { band: 'Band 1', year: 2026 } }, // Band 1 in IP & TMT
+  /* Ranked by all three. */
+  'templars': {
+    chambers: { band: 'Band 1', year: 2026 }, // B1 Banking, Corporate, Dispute Res, Projects
+    iflr:     { band: 'Tier 1', year: 2026 }, // T1 Banking, Cap Mkts Debt + Equity, M&A, Projects
+    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res, Energy
+  },
+  'olaniwun-ajayi': {
+    chambers: { band: 'Band 1', year: 2026 }, // B1 Banking, Corporate, Dispute Res, Projects, Tax
+    iflr:     { band: 'Tier 1', year: 2026 }, // T1 in all six ranked areas
+    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res, Energy
+  },
+  'udo-udoma-bello-osagie': {
+    chambers: { band: 'Band 1', year: 2026 }, // B1 Banking, Capital Markets, Corporate
+    iflr:     { band: 'Tier 1', year: 2026 }, // T1 Banking, Cap Mkts Debt + Equity, M&A, Private Equity
+    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res
+  },
+  'banwo-ighodalo': {
+    chambers: { band: 'Band 1', year: 2026 }, // B1 Capital Markets, Corporate, Projects
+    iflr:     { band: 'Tier 1', year: 2026 }, // T1 Banking, Cap Mkts Debt + Equity, M&A, Private Equity, Projects
+    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Energy
+  },
+  'odujinrin-adefulu': {
+    chambers: { band: 'Band 3', year: 2026 }, // B3 Banking & Finance
+    iflr:     { band: 'Tier 2', year: 2026 }, // T2 Banking; lower tiers elsewhere
+    emea:     { band: 'Tier 3', year: 2026 }, // T3 Banking, Dispute Res, Energy
+  },
 
-  /* Band 2 */
-  'acas-law':               { chambers: { band: 'Band 2', year: 2026 } }, // Band 2 in Projects & Energy (listed as Dentons ACAS-Law)
-  'olajide-oyewole':        { chambers: { band: 'Band 2', year: 2026 } }, // Band 2 in IP & TMT (listed as Olajide Oyewole LLP)
+  /* Chambers and Legal 500. No IFLR firm page was reachable for these. */
+  'aluko-oyebode': {
+    chambers: { band: 'Band 1', year: 2026 }, // B1 Banking, Cap Mkts, Corporate, Dispute Res, IP & TMT, Projects
+    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res
+  },
+  'g-elias': {
+    chambers: { band: 'Band 1', year: 2026 }, // B1 Corporate, Dispute Res, Tax
+    emea:     { band: 'Tier 1', year: 2026 }, // T1 Corporate/M&A, Banking, Dispute Res, Energy
+  },
+  'aelex': {
+    chambers: { band: 'Band 1', year: 2026 }, // B1 Tax
+    emea:     { band: 'Tier 2', year: 2026 }, // T2 Corporate/M&A, Banking, Dispute Res, Energy
+  },
+  'jackson-etti-edu': {
+    chambers: { band: 'Band 1', year: 2026 }, // B1 IP & TMT
+    emea:     { band: 'Tier 2', year: 2026 }, // T2 Banking, Dispute Res
+  },
+  'acas-law': {
+    chambers: { band: 'Band 2', year: 2026 }, // B2 Projects & Energy (listed as Dentons ACAS-Law)
+    emea:     { band: 'Tier 1', year: 2026 }, // T1 Energy & Natural Resources
+  },
+  'olajide-oyewole': {
+    chambers: { band: 'Band 2', year: 2026 }, // B2 IP & TMT (listed as Olajide Oyewole LLP)
+    emea:     { band: 'Tier 2', year: 2026 }, // T2 Dispute Res (listed as DLA Piper Africa, Nigeria)
+  },
+  'bloomfield-law': {
+    chambers: { band: 'Band 3', year: 2026 }, // B3 Corporate, Projects
+    emea:     { band: 'Tier 2', year: 2026 }, // T2 Corporate/M&A, Banking, Energy
+  },
+  'doa-law': {
+    chambers: { band: 'Band 4', year: 2026 }, // B4 Corporate (listed as Duale, Ovia & Alex-Adedipe)
+    emea:     { band: 'Tier 2', year: 2026 }, // T2 Corporate/M&A
+  },
+  'spa-ajibade': {
+    chambers: { band: 'Band 3', year: 2026 }, // B3 Dispute Resolution
+    emea:     { band: 'Tier 3', year: 2026 }, // T3 Dispute Resolution
+  },
+  'stren-blan-partners': {
+    chambers: { band: 'Band 4', year: 2026 }, // B4 Corporate, IP & TMT
+    emea:     { band: 'Tier 4', year: 2026 }, // T4 Dispute Resolution (listed as Stren and Blan Partners)
+  },
 
-  /* Band 3 */
-  'bloomfield-law':         { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Corporate, Projects
-  'detail-solicitors':      { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Banking & Finance
-  'odujinrin-adefulu':      { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Banking & Finance
-  'streamsowers-kohn':      { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Projects & Energy
-  'spa-ajibade':            { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Dispute Resolution
-  'wole-olanipekun':        { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Dispute Resolution
-  'sofunde-osakwe':         { chambers: { band: 'Band 3', year: 2026 } }, // Band 3 in Dispute Resolution
+  /* Chambers only. */
+  'detail-solicitors':  { chambers: { band: 'Band 3', year: 2026 } }, // B3 Banking & Finance
+  'streamsowers-kohn':  { chambers: { band: 'Band 3', year: 2026 } }, // B3 Projects & Energy
+  'wole-olanipekun':    { chambers: { band: 'Band 3', year: 2026 } }, // B3 Dispute Resolution
+  'sofunde-osakwe':     { chambers: { band: 'Band 3', year: 2026 } }, // B3 Dispute Resolution
+  'the-new-practice':   { chambers: { band: 'Band 4', year: 2026 } }, // B4 Corporate (listed as TNP – The New Practice)
+  'perchstone-graeys':  { chambers: { band: 'Band 4', year: 2026 } }, // B4 Dispute Resolution
+  'tayo-oyetibo':       { chambers: { band: 'Band 4', year: 2026 } }, // B4 Dispute Resolution (listed as Tayo Oyetibo LP)
 
-  /* Band 4 */
-  'doa-law':                { chambers: { band: 'Band 4', year: 2026 } }, // Band 4 in Corporate (listed as Duale, Ovia & Alex-Adedipe)
-  'stren-blan-partners':    { chambers: { band: 'Band 4', year: 2026 } }, // Band 4 in Corporate, IP & TMT
-  'the-new-practice':       { chambers: { band: 'Band 4', year: 2026 } }, // Band 4 in Corporate (listed as TNP – The New Practice)
-  'perchstone-graeys':      { chambers: { band: 'Band 4', year: 2026 } }, // Band 4 in Dispute Resolution
-  'tayo-oyetibo':           { chambers: { band: 'Band 4', year: 2026 } }, // Band 4 in Dispute Resolution (listed as Tayo Oyetibo LP)
+  /* Legal 500 only — no Chambers entry, which for these means Chambers does not
+     rank them in the seven Nigeria tables, not that they went unchecked. */
+  'alliance-law-firm':  { emea: { band: 'Tier 3', year: 2026 } }, // T3 Banking, finance and capital markets
+  'dealhq-partners':    { emea: { band: 'Tier 3', year: 2026 } }, // T3 Commercial, corporate and M&A
+  'tope-adebayo':       { emea: { band: 'Tier 4', year: 2026 } }, // T4 Dispute Resolution (listed as Tope Adebayo LP)
+
+  'alp-ng': {
+    // IFLR lists ALP but bands it below the numbered tiers ("Notable" in
+    // Banking), so 'Ranked' claims presence and nothing further.
+    iflr: { band: 'Ranked', year: 2026 },
+    emea: { band: 'Tier 3', year: 2026 }, // T3 Banking, finance and capital markets (listed as ALP NG & Company)
+  },
 }
 
 /** Alphabetical by firm name. Every consumer reads from here.
