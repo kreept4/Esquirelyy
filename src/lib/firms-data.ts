@@ -1010,6 +1010,117 @@ const FIRMS_UNSORTED: Firm[] = [
     description: 'An IFLR1000 ranked corporate practice known for technology, venture financing and cross border transaction work for founders and investors.',
     openRoles: 0,
   },
+
+  /* ———————————————————————————————————————————————————————————————————————
+   * Batch added 8 August 2026. Provenance for every address below.
+   *
+   * The rule this file runs on is that an address is a public claim about a
+   * real firm, so each one here was read off a page that firm controls, or off
+   * a directory that publishes the firm's own contact record. Where a source
+   * disagreed with an earlier note, the disagreement is recorded rather than
+   * quietly resolved, because the next person to audit a line deserves to know
+   * it was contested.
+   *
+   * `foundedYear` is omitted where the firm states only a duration ("over 25
+   * years") rather than a year. Subtracting a vague duration from the current
+   * year produces a number that looks sourced and is not.
+   * ——————————————————————————————————————————————————————————————————————— */
+
+  {
+    slug: 'babalakin',
+    logoFile: null,
+    name: 'Babalakin & Co',
+    shortName: 'Babalakin',
+    tier: 'Tier 1',
+    email: 'info@babalakinandco.com',
+    website: 'https://www.babalakinandco.com',
+    /* All three read from babalakinandco.com on 2026-08-08. */
+    offices: [
+      { city: 'Lagos', address: '1261A Adeola Hopewell Street, 3rd to 6th Floors, Victoria Island, Lagos' },
+      { city: 'Abuja', address: '4 River Benue Street, Off IBB Boulevard, Maitama, Abuja' },
+      { city: 'Port Harcourt', address: '3 Williams Jumbo Street, Old GRA, Port Harcourt' },
+    ],
+    practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Dispute Resolution', 'Tax', 'Banking & Finance', 'Public Law & Regulatory'],
+    description: 'One of the larger commercial practices in the country, with more than seventy lawyers across three offices and three Senior Advocates among them. Strongest in energy, tax and infrastructure, and it runs a separate company secretarial arm for regulatory and compliance work.',
+    /* The site says "38 Years of Excellence" and ICLG dates the firm to July
+       1988. Both point at the same year from 2026, which is why it is here as a
+       number rather than as a duration. */
+    foundedYear: 1988,
+    openRoles: 0,
+  },
+  {
+    slug: 'solola-akpana',
+    logoFile: null,
+    name: 'Solola & Akpana',
+    shortName: 'Solola & Akpana',
+    tier: 'Tier 2',
+    email: 'info@sololaakpana.com',
+    website: 'https://sololaakpana.com',
+    /* Read from the firm's contact record on Chambers Global 2026. Its own site
+       renders its contact details in a way that could not be read.
+
+       NOTE A CONFLICT ON LAGOS. An earlier pass recorded NIM House, 22 Idowu
+       Taylor Street, Victoria Island. Chambers 2026 gives Plot 239 Kofo Abayomi
+       Street, also Victoria Island. The Chambers record is the current and
+       citable one so it is what is published here, but if someone writes to
+       this address and it bounces, the Idowu Taylor address is the other
+       candidate and not a typo. */
+    offices: [
+      { city: 'Lagos', address: 'Plot 239 Kofo Abayomi Street, Victoria Island, Lagos' },
+      { city: 'Abuja', address: 'No. 1 Block 2, River Patoka Close, Off Nile Street, Maitama, Abuja' },
+      { city: 'Port Harcourt', address: '12 Igbodo Street, Old GRA, Port Harcourt' },
+    ],
+    practiceAreas: ['Energy & Natural Resources', 'Corporate & Commercial', 'Dispute Resolution', 'Capital Markets', 'Arbitration', 'Banking & Finance'],
+    description: 'An oil and gas practice first, built around upstream and downstream work in the Niger Delta, with a litigation and arbitration team that defends the same clients when the deals go wrong. Offices in all three of the cities where that work happens.',
+    /* No foundedYear. The firm advertises "over 25 years" without dating the
+       statement, and a year derived from that would be a guess wearing a
+       source's clothes. */
+    openRoles: 0,
+  },
+  {
+    slug: 'abdulai-taiwo',
+    logoFile: null,
+    name: 'Abdulai, Taiwo & Co',
+    shortName: 'Abdulai Taiwo',
+    tier: 'Tier 2',
+    email: 'law@abdulaitaiwo.com',
+    website: 'https://www.abdulaitaiwo.com',
+    /* Both read from abdulaitaiwo.com/contact.html on 2026-08-08. The postal
+       boxes the page also lists are dropped: a P.O. box is not somewhere a
+       student can walk into, and this field is the address to write to. */
+    offices: [
+      { city: 'Lagos', address: 'Goodwill House, 278 Ikorodu Road, Anthony, Lagos' },
+      { city: 'Abuja', address: 'Ndamella House, Suite A-11, Plot 500 Tafawa Balewa Way, Area 3, Garki, Abuja' },
+    ],
+    practiceAreas: ['Capital Markets', 'Banking & Finance', 'Corporate & Commercial', 'Energy & Natural Resources'],
+    description: 'One of the oldest commercial firms still practising under its founding name, and known chiefly for capital markets. IFLR1000 puts its strength in debt and equity issues and project finance, and it has acted for the Debt Management Office and the Federal Government.',
+    foundedYear: 1976,
+    openRoles: 0,
+  },
+  {
+    slug: 'advocaat',
+    logoFile: null,
+    name: 'Advocaat Law Practice',
+    shortName: 'Advocaat',
+    tier: 'Tier 2',
+    /* The firm publishes info@ on its contact page. careers@ came from the
+       Esquirely team's own careers list, which is why it is the one printed
+       here: this field exists to be written to by a student. */
+    email: 'careers@advocaat-law.com',
+    website: 'https://www.advocaat-law.com',
+    /* Read from advocaat-law.com/contact on 2026-08-08. Calabar is the reason
+       to re-read a contact page rather than trust an earlier note: an earlier
+       pass had this firm at two offices, and the third is the only entry in
+       this directory outside Lagos, Abuja and Port Harcourt. */
+    offices: [
+      { city: 'Lagos', address: '13 Norman Williams Street, Off Ribadu Road, South West Ikoyi, Lagos' },
+      { city: 'Abuja', address: 'Nigerian National Merit House, 1st Floor, Plot 22 Aguiyi Ironsi Way, Maitama, Abuja' },
+      { city: 'Calabar', address: 'Akom Building, 15 Murtala Muhammed Highway, Calabar, Cross River' },
+    ],
+    practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Dispute Resolution', 'Capital Markets', 'Shipping & Maritime', 'Public Law & Regulatory'],
+    description: 'Seven practice groups across corporate, energy, financing and regulatory work, with a shipping, aviation and trade group that few firms this size keep. The Calabar office is unusual and worth knowing about if you are in Cross River and assumed the work was all in Lagos.',
+    openRoles: 0,
+  },
 ]
 
 export function getMonogram(name: string): string {
@@ -1192,6 +1303,13 @@ export const FIRM_RANKINGS: Record<string, FirmRankings> = {
   'the-new-practice':   { chambers: { band: 'Band 4', year: 2026, areas: ['Corporate/Commercial'] } }, // listed as TNP, The New Practice
   'perchstone-graeys':  { chambers: { band: 'Band 4', year: 2026, areas: ['Dispute Resolution'] } },
   'tayo-oyetibo':       { chambers: { band: 'Band 4', year: 2026, areas: ['Dispute Resolution'] } }, // listed as Tayo Oyetibo LP
+  /* Read 2026-08-08 from the firm's Chambers Global 2026 office record, which
+     reports one Nigeria ranking and names the table. The other three firms
+     added in the same batch get no entry: Babalakin, Abdulai Taiwo and Advocaat
+     all have profile pages in one guide or another, but a profile page is not a
+     band, and the one-way failure this table is built around says an absent
+     entry means nobody has checked rather than that a firm is unranked. */
+  'solola-akpana':      { chambers: { band: 'Band 4', year: 2026, areas: ['Dispute Resolution'] } },
 
   /* Legal 500 only. No Chambers entry here means Chambers does not rank them in
      the seven Nigeria tables, not that they went unchecked. */
