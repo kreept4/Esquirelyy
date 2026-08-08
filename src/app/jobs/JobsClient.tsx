@@ -7,6 +7,7 @@ import { Search, X, Bookmark, ChevronRight } from 'lucide-react'
 import { logoForEmployer, ballBgForEmployer } from '@/lib/firms-data'
 import EmptyState from '@/components/ui/EmptyState'
 import { useSavedJobs } from '@/lib/saved-jobs'
+import { stateOptions, matchesState } from '@/lib/nigeria'
 
 /**
  * The job board.
@@ -129,23 +130,18 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
   const [onlySaved, setOnlySaved] = useState(false)
 
   /**
-   * The three cities Nigerian legal hiring actually happens in.
+   * All 36 states and the FCT, from lib/nigeria.ts.
    *
-   * This was derived from the listings, which kept surfacing whatever odd value
-   * a row happened to carry ("Lekki", "Nigeria") as though it were a peer of
-   * Lagos. A fixed list reads better and matches how people actually search.
+   * This used to offer Lagos, Abuja and Port Harcourt only. That covers most
+   * hiring, but it quietly told anyone practising outside those three that the
+   * board was not for them, and it made a role in Enugu or Kano reachable only
+   * by scrolling every listing. The shared list is used by the account page and
+   * the tracker as well, so one place cannot start offering a different answer
+   * to the same question.
    *
-   * The known cost is that a role whose location matches none of the three is
-   * only reachable under "All locations". The filter matches on substring, so
-   * "Lekki, Lagos" would still be found by Lagos, but "Nigeria" would not.
-   * Keeping listing locations tidy is what keeps that from biting.
+   * Matching is still substring, so "Victoria Island, Lagos" is found by Lagos.
    */
-  const LOCATION_OPTIONS = [
-    { value: '', label: 'All locations' },
-    { value: 'Lagos', label: 'Lagos' },
-    { value: 'Abuja', label: 'Abuja' },
-    { value: 'Port Harcourt', label: 'Port Harcourt' },
-  ]
+  const LOCATION_OPTIONS = stateOptions('All locations')
 
   const filtered = useMemo(
     () =>
@@ -156,7 +152,7 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
         if (sector && l.sector !== sector) return false
         if (type && l.type !== type) return false
         if (level && l.level !== level) return false
-        if (location && !l.location?.toLowerCase().includes(location.toLowerCase())) return false
+        if (!matchesState(l.location, location)) return false
         return true
       }),
     [jobs, search, sector, type, level, location, onlySaved, isSaved]

@@ -90,7 +90,7 @@ export default function PrivacyPage() {
               Everything listed here is either strictly necessary (the sign-in
               cookie) or first-party functional state that never leaves the
               device. Neither category requires prior consent under the NDPA or
-              the GDPR — that threshold is for analytics, advertising and
+              the GDPR. That threshold is for analytics, advertising and
               cross-site tracking, and there is none of any of those on this
               site: no Google Analytics, no pixels, no third-party cookies, no
               tags of any kind. What IS owed is a plain statement of what is
@@ -103,7 +103,7 @@ export default function PrivacyPage() {
             analytics, and no third-party trackers. What we do store is:
             {' '}a sign-in cookie, set by Supabase, which is what keeps you signed in and is deleted
             when you sign out; and a small amount of storage in your own browser that never reaches
-            us — <code>esquirely:prefs</code>, holding your answers to the questions on the home page
+            us. <code>esquirely:prefs</code> holds your answers to the questions on the home page
             if you answer them without an account, and{' '}
             <code>esquirely:notifications-seen</code>, <code>esquirely:notifications-read</code> and{' '}
             <code>esquirely:welcomed-at</code>, which only record which notifications you have

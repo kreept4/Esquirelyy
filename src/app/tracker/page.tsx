@@ -10,6 +10,7 @@ import {
 import Footer from '@/components/layout/Footer'
 import BrandLoader from '@/components/ui/BrandLoader'
 import { createClient } from '@/lib/supabase/client'
+import { stateOptions } from '@/lib/nigeria'
 
 /**
  * The tracker.
@@ -262,7 +263,7 @@ function LedgerRow({
             ? dl.daysLeft !== null && dl.daysLeft >= 0
               ? `${dl.text} · ${dl.daysLeft}d`
               : dl.text
-            : '—'}
+            : 'Not set'}
         </span>
 
         <span className="trk-chev" aria-hidden><ChevronDown size={15} /></span>
@@ -406,7 +407,12 @@ function AddModal({ onClose, onAdd }: {
           </div>
           <div className="trk-field">
             <label className="grotesk-regular tool-label" htmlFor="f-loc">Location</label>
-            <input id="f-loc" className="tool-input" value={form.location} onChange={e => set('location', e.target.value)} placeholder="Lagos" />
+            {/* The shared state list, same as the board and the account page.
+                Typed locations drifted into four spellings of one place, and
+                nothing downstream could group them. */}
+            <select id="f-loc" className="tool-input" value={form.location} onChange={e => set('location', e.target.value)}>
+              {stateOptions('Pick a state').map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
           </div>
           <div className="trk-field">
             <label className="grotesk-regular tool-label" htmlFor="f-dl">

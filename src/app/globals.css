@@ -4876,6 +4876,47 @@ video::-webkit-media-controls { display: none !important; }
   .acct-card { padding: 1.25rem; }
 }
 
+/* Read-only, and it has to look it. An input that accepts focus but rejects
+   typing is worse than one that plainly says it is fixed. */
+.acct-input-locked {
+  background: #F5F2EC;
+  color: var(--ink-muted, #6B6B6B);
+  cursor: default;
+}
+.acct-input-locked:focus { outline-color: #D9D3C8; }
+
+.acct-hint {
+  display: block;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: var(--ink-muted, #6B6B6B);
+  margin-top: 0.35rem;
+}
+
+.acct-conns { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+
+.acct-conn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid #EDE9E2;
+}
+.acct-conn:first-child { border-top: none; }
+.acct-conn-main { display: flex; flex-direction: column; min-width: 0; }
+.acct-conn-main .acct-hint { margin-top: 0.2rem; }
+
+/* A word, not a tick. A green check beside "Google" reads as a rating of Google
+   rather than a statement about this account. */
+.acct-conn-on {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #0F7A4A;
+  white-space: nowrap;
+}
+
 .acct-toggles { display: flex; flex-direction: column; gap: 0.85rem; }
 
 .acct-toggle {

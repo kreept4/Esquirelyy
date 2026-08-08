@@ -47,7 +47,7 @@ export default function RankingBadges({
         {ranked.map(r => (
           // The title carries the guide's full name and the edition, so the
           // information the compact form drops is still one hover away.
-          <span key={r.key} className="grotesk-bold rank-badge" title={`${r.full} — ${r.band}, ${r.year}`}>
+          <span key={r.key} className="grotesk-bold rank-badge" title={`${r.full}: ${r.band}, ${r.year}`}>
             {r.label}
           </span>
         ))}

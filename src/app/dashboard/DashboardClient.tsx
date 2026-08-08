@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { stateOptions } from '@/lib/nigeria'
 import {
   BREAK_LENGTHS,
   DELETION_GRACE_DAYS,
@@ -20,9 +21,37 @@ const CAREER_STAGES = [
 ]
 
 const NOTIFICATION_LABELS: { key: keyof NotificationPreferences; label: string; note: string }[] = [
-  { key: 'deadlines', label: 'Deadline reminders', note: 'Before something you are tracking closes.' },
-  { key: 'new_listings', label: 'New roles', note: 'When a listing matches what you are looking for.' },
-  { key: 'weekly_digest', label: 'Weekly digest', note: 'One summary a week. Nothing in between.' },
+  { key: 'deadlines', label: 'Deadline reminders', note: 'A nudge before anything you are tracking closes.' },
+  { key: 'new_listings', label: 'New roles', note: 'When something lands that fits what you are after.' },
+  { key: 'weekly_digest', label: 'Weekly digest', note: 'One roundup a week. Nothing in between.' },
+]
+
+/** Every way into the account, each with its own state. `email` is the password
+ *  sign-in and cannot be linked from here, so it only ever reports. */
+const CONNECTIONS: {
+  provider: 'google' | 'linkedin_oidc' | 'email'
+  label: string
+  onNote: string
+  offNote: string
+}[] = [
+  {
+    provider: 'google',
+    label: 'Google',
+    onNote: 'You can sign in with Google.',
+    offNote: 'One tap to sign in, nothing to remember.',
+  },
+  {
+    provider: 'linkedin_oidc',
+    label: 'LinkedIn',
+    onNote: 'You can sign in with LinkedIn.',
+    offNote: 'Sign in with the profile your work already lives on.',
+  },
+  {
+    provider: 'email',
+    label: 'Email and password',
+    onNote: 'Your password works on this account.',
+    offNote: 'No password set. You sign in through a provider above.',
+  },
 ]
 
 function longDate(iso: string) {
@@ -61,8 +90,6 @@ export default function DashboardClient({
   const [error, setError] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [confirmText, setConfirmText] = useState('')
-
-  const hasLinkedIn = providers.includes('linkedin_oidc')
 
   async function call(body: Record<string, unknown>, label: string) {
     setBusy(label)
@@ -103,29 +130,29 @@ export default function DashboardClient({
   }
 
   /**
-   * Link LinkedIn to the account that is already signed in.
+   * Attach another sign-in method to the account already signed in.
    *
-   * linkIdentity, not signInWithOAuth. Signing in with LinkedIn on an account
-   * that exists under a different provider creates a SECOND account on the same
-   * address, or fails, depending on the project's settings — neither is what
-   * "connect" means. Linking attaches the identity to the account already here.
+   * linkIdentity, not signInWithOAuth. Signing in with a second provider on an
+   * address that already has an account either makes a duplicate account or
+   * fails outright, depending on project settings. Neither is what Connect
+   * means. Linking attaches the identity to the account that is already here.
    *
-   * Requires manual linking to be enabled on the Supabase project; the error is
-   * surfaced rather than swallowed so it says so instead of silently doing
-   * nothing.
+   * Needs manual linking enabled on the Supabase project. The error is
+   * translated rather than swallowed, so a switch that is off says so instead of
+   * looking like a button that does nothing.
    */
-  async function connectLinkedIn() {
-    setBusy('linkedin')
+  async function connect(provider: 'google' | 'linkedin_oidc') {
+    setBusy(provider)
     setError('')
     const supabase = createClient()
     const { error } = await supabase.auth.linkIdentity({
-      provider: 'linkedin_oidc',
+      provider,
       options: { redirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
     })
     if (error) {
       setError(
         error.message.toLowerCase().includes('manual linking')
-          ? 'Account linking is turned off for this project. Enable manual linking in Supabase to use this.'
+          ? 'Account linking is switched off for this project. Turn on manual linking in Supabase and this will work.'
           : error.message
       )
       setBusy(null)
@@ -153,8 +180,8 @@ export default function DashboardClient({
       <div className="shell acct-wrap">
         {readError && (
           <p className="grotesk-regular auth-error">
-            We could not load your saved details, so the fields below may be blank. Saving will
-            still work.
+            We could not load your saved details just now, so some fields may look empty.
+            Saving still works.
           </p>
         )}
         {error && <p className="grotesk-regular auth-error">{error}</p>}
@@ -166,8 +193,8 @@ export default function DashboardClient({
           <section className="acct-card acct-card-alert">
             <h2 className="grotesk-bold acct-card-title">This account is scheduled for deletion</h2>
             <p className="grotesk-regular acct-note">
-              Everything will be permanently erased on <strong>{longDate(deletionOn)}</strong>. You
-              can stop this at any point before then, and simply signing in again will also stop it.
+              Everything goes for good on <strong>{longDate(deletionOn)}</strong>. Change your mind
+              any time before then. Even just signing in again calls it off.
             </p>
             <button
               type="button"
@@ -189,8 +216,18 @@ export default function DashboardClient({
           <div className="acct-fields">
             <div>
               <label className="grotesk-bold auth-label" htmlFor="acct-name">Full name</label>
-              <input id="acct-name" type="text" className="auth-input" value={fullName}
-                onChange={e => setFullName(e.target.value)} placeholder="Your full name" />
+              {/* Locked. The name here is the one that goes on a CV and beside
+                  an application a firm receives, so it is set once at signup and
+                  left alone. `readOnly` rather than `disabled`: a disabled input
+                  is skipped by keyboard navigation and read out as unavailable,
+                  where read-only is still focusable and still announced, which
+                  is the honest description of a value you may look at but not
+                  change. */}
+              <input id="acct-name" type="text" className="auth-input acct-input-locked"
+                value={fullName} readOnly aria-describedby="acct-name-note" />
+              <span id="acct-name-note" className="grotesk-regular acct-hint">
+                Locked to keep your applications consistent. Need it changed? Just email us.
+              </span>
             </div>
             <div>
               <label className="grotesk-bold auth-label" htmlFor="acct-stage">Career stage</label>
@@ -201,8 +238,10 @@ export default function DashboardClient({
             </div>
             <div>
               <label className="grotesk-bold auth-label" htmlFor="acct-location">Location</label>
-              <input id="acct-location" type="text" className="auth-input" value={location}
-                onChange={e => setLocation(e.target.value)} placeholder="e.g. Lagos" />
+              <select id="acct-location" className="auth-input" value={location}
+                onChange={e => setLocation(e.target.value)}>
+                {stateOptions('Pick a state').map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
             </div>
             <div>
               <label className="grotesk-bold auth-label" htmlFor="acct-linkedin">LinkedIn</label>
@@ -237,19 +276,44 @@ export default function DashboardClient({
           </div>
         </form>
 
-        {/* Connected accounts */}
+        {/* Connected accounts.
+            Every way in is listed with its real state, rather than one sentence
+            describing whichever happened to be first. Someone who signed up with
+            Google should see Google marked connected, not be told about it in
+            passing. */}
         <section className="acct-card">
           <h2 className="grotesk-bold acct-card-title">Connected accounts</h2>
           <p className="grotesk-regular acct-note">
-            Sign in with {providers.includes('google') ? 'Google' : 'your password'} today.
-            {hasLinkedIn ? ' LinkedIn is connected.' : ' Connect LinkedIn to sign in with it too.'}
+            The ways you can get back in. Connect more than one and you will never be
+            locked out because you forgot which you used.
           </p>
-          {!hasLinkedIn && (
-            <button type="button" className="auth-btn-google" disabled={busy === 'linkedin'}
-              onClick={connectLinkedIn}>
-              {busy === 'linkedin' ? 'Opening LinkedIn...' : 'Connect LinkedIn'}
-            </button>
-          )}
+
+          <ul className="acct-conns">
+            {CONNECTIONS.map(c => {
+              const connected = providers.includes(c.provider)
+              return (
+                <li key={c.provider} className="acct-conn">
+                  <span className="acct-conn-main">
+                    <span className="grotesk-bold">{c.label}</span>
+                    <span className="grotesk-regular acct-hint">
+                      {connected ? c.onNote : c.offNote}
+                    </span>
+                  </span>
+                  {connected ? (
+                    <span className="grotesk-bold acct-conn-on">Connected</span>
+                  ) : c.provider === 'email' ? (
+                    <span className="grotesk-regular acct-hint">Not set</span>
+                  ) : (
+                    <button type="button" className="grotesk-bold acct-ghost-btn"
+                      disabled={busy === c.provider}
+                      onClick={() => { if (c.provider !== 'email') connect(c.provider) }}>
+                      {busy === c.provider ? 'Opening...' : 'Connect'}
+                    </button>
+                  )}
+                </li>
+              )
+            })}
+          </ul>
         </section>
 
         {/* Take a break */}
@@ -258,8 +322,8 @@ export default function DashboardClient({
           {breakUntil ? (
             <>
               <p className="grotesk-regular acct-note">
-                You are on a break until <strong>{longDate(breakUntil)}</strong>. Nothing will be
-                emailed to you before then, and everything is still here when you want it.
+                You are on a break until <strong>{longDate(breakUntil)}</strong>. Nothing lands in
+                your inbox before then, and everything is exactly where you left it.
               </p>
               <button type="button" className="grotesk-bold auth-btn-primary" disabled={busy === 'end'}
                 onClick={async () => {
@@ -272,11 +336,11 @@ export default function DashboardClient({
           ) : (
             <>
               <p className="grotesk-regular acct-note">
-                Applying for a long time without hearing back is genuinely wearing, and there is
-                nothing clever about pushing through it. Pause everything we send you for a while.
-                Your applications, saved roles and tracker stay exactly as they are, and the board
-                is still here if you want to look — the market does not sleep, and neither do the
-                opportunities. They will still be here when you are ready.
+                Applying for months without hearing back wears anyone down, and pushing through
+                it is not a badge of honour. Mute everything we send you for a while. Your
+                applications, saved roles and tracker stay exactly where you left them, and the
+                board is here whenever you feel like looking. The market keeps moving and the
+                opportunities keep coming. They will still be here when you are.
               </p>
               <div className="acct-breaks">
                 {BREAK_LENGTHS.map(b => (
@@ -307,9 +371,9 @@ export default function DashboardClient({
             <div className="acct-danger">
               <h3 className="grotesk-bold acct-sub">Delete your account</h3>
               <p className="grotesk-regular acct-note">
-                Your profile, applications, tracker and everything the tools have generated for you
-                are erased. We wait {DELETION_GRACE_DAYS} days first, and signing in during that
-                time cancels it — so if you change your mind, just come back.
+                Your profile, applications, tracker and everything the tools have made for you
+                gets wiped. We hold off for {DELETION_GRACE_DAYS} days first, and signing in during
+                that window calls it off. If you change your mind, just come back.
               </p>
 
               {!confirmDelete ? (
@@ -319,18 +383,20 @@ export default function DashboardClient({
                 </button>
               ) : (
                 <>
-                  {/* Typed, not a second button. The whole point of the grace
-                      period is that this is pressed in a bad moment; asking for
-                      the word is a beat of friction that costs nothing to
-                      someone who means it. */}
+                  {/* Typed, not a second button. This gets pressed in a bad
+                      moment, and a beat of friction costs nothing to someone who
+                      means it. The word is ESQUIRELY rather than DELETE because
+                      DELETE is muscle memory from every other product, and a
+                      word you have to read and think about is the point. */}
                   <label className="grotesk-bold auth-label" htmlFor="acct-confirm">
-                    Type DELETE to confirm
+                    Type ESQUIRELY to confirm
                   </label>
                   <input id="acct-confirm" type="text" className="auth-input" value={confirmText}
-                    onChange={e => setConfirmText(e.target.value)} placeholder="DELETE" />
+                    onChange={e => setConfirmText(e.target.value)} placeholder="ESQUIRELY"
+                    autoComplete="off" spellCheck={false} />
                   <div className="acct-actions">
                     <button type="button" className="grotesk-bold acct-danger-btn"
-                      disabled={confirmText !== 'DELETE' || busy === 'delete'}
+                      disabled={confirmText.trim().toUpperCase() !== 'ESQUIRELY' || busy === 'delete'}
                       onClick={async () => {
                         const data = await call({ action: 'request-deletion' }, 'delete')
                         if (data?.deletionOn) { setDeletionOn(data.deletionOn); setConfirmDelete(false); setConfirmText('') }
