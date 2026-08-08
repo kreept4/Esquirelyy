@@ -321,7 +321,7 @@ const GROUPS: Group[] = [
 export default function FAQPage() {
   return (
     <>
-      <main className="page-main closing-glide">
+      <main className="page-main">
         <PageHeader
           tone="ink"
           heading="Questions, answered."

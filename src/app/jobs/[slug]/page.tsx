@@ -90,7 +90,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 
   return (
     <div>
-      <main className="jobs-page closing-glide">
+      <main className="jobs-page">
         <header className="jobs-header job-detail-header">
           <div className="shell">
             <Link href="/jobs" className="grotesk-regular job-back">

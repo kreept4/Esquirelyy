@@ -99,7 +99,7 @@ const FIT = [
 export default function AmbassadorPage() {
   return (
     <>
-      <main className="page-main amb-page closing-glide">
+      <main className="page-main amb-page">
         {/* Masthead. The terms strip sits inside the ink band rather than below
             it, so the ask and its cost arrive together instead of the cost
             being discovered three scrolls later. */}
