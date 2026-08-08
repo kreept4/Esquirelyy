@@ -246,7 +246,15 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Tier 1',
     email: 'recruit@acas-law.com',
     website: 'https://acas-law.com',
-    offices: [{ city: 'Lagos', address: '9th Floor, St. Nicholas House, Catholic Mission Street, Lagos Island, Lagos' }],
+    /* Three offices, not one. The Abuja address was supplied by hand: the firm's
+       own office-details page returns 403 to every automated request, and Legal
+       500's contact listing shows only Lagos and Port Harcourt, so neither
+       source could confirm it. Port Harcourt is from that Legal 500 listing. */
+    offices: [
+      { city: 'Lagos', address: '9th Floor, St. Nicholas House, Catholic Mission Street, Lagos Island, Lagos' },
+      { city: 'Abuja', address: '2nd Floor, Abia House, Michika Street, Central Business District, Abuja' },
+      { city: 'Port Harcourt', address: '10 Igboukwu Street, D-Line, Port Harcourt' },
+    ],
     practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Banking & Finance', 'Dispute Resolution'],
     description: 'A leading Nigerian commercial law firm with particular strength in energy, corporate transactions, and dispute resolution. Combined with Dentons in 2021 and now practises as Dentons ACAS-Law.',
     foundedYear: 2000,
@@ -1106,6 +1114,7 @@ export const FIRM_RANKINGS: Record<string, FirmRankings> = {
   },
   'aelex': {
     chambers: { band: 'Band 1', year: 2026 }, // B1 Tax
+    iflr:     { band: 'Tier 2', year: 2026 }, // T2 Banking, Cap Mkts Debt, M&A, Projects; T3 Cap Mkts Equity
     emea:     { band: 'Tier 2', year: 2026 }, // T2 Corporate/M&A, Banking, Dispute Res, Energy
   },
   'jackson-etti-edu': {
