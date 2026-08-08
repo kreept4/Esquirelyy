@@ -4,18 +4,15 @@ Written 8 August 2026, the day the domain went live. Everything in the codebase
 already points at `esquirely.com.ng`. Nothing in this file is done yet, because
 all of it happens in a registrar and two dashboards rather than in the repo.
 
-Do the sections in order. Section 3 depends on section 2 having propagated, and
-section 5 depends on section 4.
-
 ---
 
 ## 0. The thing worth knowing first
 
-`esquirely.com` is **not ours**. It resolves to registrar parking IPs and belongs
-to somebody else. Every address on the site used to be `@esquirely.com`, which
-meant the contact page, the privacy notice and the terms were all inviting people
-to write to a stranger's domain. That is fixed in code; this file is how the
-addresses become real.
+`esquirely.com` is **not ours**. It resolves to registrar parking and belongs to
+somebody else. Every address on the site used to be `@esquirely.com`, which
+meant the contact page, the privacy notice and the terms were all inviting
+people to write to a stranger's domain. That is fixed in code; this file is how
+the addresses become real.
 
 Six addresses are published on the site and all six need to exist:
 
@@ -34,138 +31,160 @@ promises, so `privacy@` in particular has to be an inbox somebody actually opens
 
 ---
 
-## 1. Zoho, and what the free plan really gives you
+## 1. Which host, and why not Zoho
 
-**One mailbox, five aliases.** Not six mailboxes. The free plan allows five
-users, but every address above should land in ONE inbox anyway: six separate
-logins for a two person team is six places to forget to check. Create
-`hello@esquirely.com.ng` as the single user and add the other five as aliases on
-it. Aliases are free and unlimited enough for this, and you can still reply
-*from* any of them by picking the address in the From dropdown.
+**Zoho's free plan could not be signed up for from here.** It still exists in
+2026 but only for accounts on the US, IN and EU data centres, and a Nigerian
+signup gets steered to a region that does not offer it. If you want to try
+again, the plan is never shown in the normal signup flow: it is at the very
+bottom of `zoho.com/mail/zohomail-pricing.html` under "Forever Free Plan", and
+you have to force the data centre by starting at `zoho.eu` rather than
+`zoho.com`. It is not worth much effort, because the free plan also has no IMAP,
+no POP and no forwarding, which means a separate app you have to remember to
+open.
 
-**Answering the monitoring question directly:** yes, but only in two places.
+**Use Cloudflare Email Routing instead, and read the mail in the Gmail you
+already have.** It is free, it has no user limit, and it removes the "will I
+remember to check it" problem entirely, because there is nothing new to check.
 
-- ✅ Web, at `mail.zoho.com`.
-- ✅ The Zoho Mail app on Android and iOS, with push notifications. This is the
-  one to install, and it is how you will actually notice a `privacy@` request
-  inside the 30 days.
-- ❌ **Not** Gmail, Outlook, Apple Mail or any desktop client. The free plan has
-  no IMAP, no POP and no ActiveSync. That is the real cost of the free tier.
-- ❌ **No forwarding either.** You cannot have Zoho push mail into your Gmail.
+How the two halves work:
 
-If living inside a separate app turns out to be the thing that makes you stop
-checking, Mail Lite is about $1 per user per month and turns IMAP, POP and SMTP
-back on. Worth paying the moment you notice yourself not opening the app.
+- **Receiving** is Cloudflare Email Routing. It accepts mail for any address at
+  the domain and forwards it to your existing Gmail. Free, and unlimited
+  addresses, so all six cost nothing.
+- **Sending** is Gmail's "Send mail as", pointed at Brevo's SMTP relay. You
+  already have a Brevo account for the welcome email, so this is a credential
+  you are getting anyway. Replies then leave as
+  `hello@esquirely.com.ng` rather than as your personal address.
 
-One signup detail: the forever free plan is only offered in the US, IN and EU
-data centres. Pick **EU** at signup unless you have a reason not to. The choice
-is permanent and it decides which hostnames you use below, so write down which
-one you picked.
+The one cost: Cloudflare Email Routing needs Cloudflare to be your DNS, so the
+nameservers move. That is a free Cloudflare account and two records to recreate.
+Section 2 covers it.
+
+**If you would rather not move nameservers**, Zoho Mail Lite is about $1 per
+user per month, needs no nameserver change, and gives real IMAP so it works in
+Gmail or Outlook. One mailbox plus five free aliases is about $1 a month total.
+That is the paid path; everything from section 4 onwards is identical either way.
 
 ---
 
-## 2. DNS records
+## 2. Moving DNS to Cloudflare
 
-Your nameservers are `ns1.dyna-ns.net` and `ns2.dyna-ns.net`, so these go in
-your registrar's DNS panel, not in Vercel.
+⚠ Do this carefully. The site is live and these records are what serve it.
 
-⚠ **Do not touch the existing A record.** `esquirely.com.ng` points at
-`216.198.79.1`, which is Vercel, and that is what serves the site. Mail records
-are MX and TXT and do not collide with it.
+**What exists today**, and what has to still exist afterwards:
 
-### 2a. Prove you own the domain
-
-Zoho gives you a unique verification value during setup. It looks like
-`zoho-verification=zb********.zmverify.zoho.eu`.
-
-| Type | Host | Value |
-| --- | --- | --- |
-| TXT | `@` | *(the exact value Zoho shows you)* |
-
-### 2b. Route the mail
-
-Three MX records. Use `.eu` hostnames for the EU data centre, `.com` for US.
-Lower priority number wins, so `mx` is tried first.
-
-| Type | Host | Priority | Value (EU) |
+| Type | Host | Value | What it does |
 | --- | --- | --- | --- |
-| MX | `@` | 10 | `mx.zoho.eu` |
-| MX | `@` | 20 | `mx2.zoho.eu` |
-| MX | `@` | 50 | `mx3.zoho.eu` |
+| A | `@` | `216.198.79.1` | Points the apex at Vercel |
+| CNAME | `www` | `588a6212a13c7dc5.vercel-dns-017.com` | Points www at Vercel |
 
-Delete any other MX record on the domain. There are none today, which is why
-mail to these addresses currently bounces.
+There are no MX and no TXT records at all today, which is exactly why mail to
+those six addresses bounces right now.
 
-### 2c. SPF, and the mistake to avoid here
+Steps:
+
+1. Create a free Cloudflare account and **Add a site**: `esquirely.com.ng`.
+2. Cloudflare scans your existing DNS and imports what it finds. **Check that
+   both records above came across** before going further. If either is missing,
+   add it by hand from the table.
+3. Set both records to **DNS only** (grey cloud, not orange). Proxying a Vercel
+   site through Cloudflare's CDN puts two CDNs in series and causes more
+   problems than it solves.
+4. Cloudflare gives you two nameservers. Replace `ns1.dyna-ns.net` and
+   `ns2.dyna-ns.net` with them at your registrar.
+5. Wait for Cloudflare to report the domain as Active. Usually under an hour,
+   occasionally longer.
+6. **Check the site still loads** at `https://esquirely.com.ng` before doing
+   anything else.
+
+---
+
+## 3. Turning on the six addresses
+
+In Cloudflare: **Email** → **Email Routing** → Get started.
+
+1. Cloudflare offers to add its MX and SPF records for you. Accept. That is
+   three MX records pointing at `mx.cloudflare.net` and friends.
+2. Add your Gmail as a **destination address** and click the verification link
+   Cloudflare sends to it.
+3. Create six **custom addresses**, each forwarding to that Gmail:
+   `hello`, `roles`, `corrections`, `privacy`, `ambassadors`, `legal`.
+4. Optionally turn on **catch-all** as well, so a message to a typo'd address
+   still reaches you instead of bouncing.
+
+### The SPF record, and the one trap here
 
 **One SPF record. Never two.** A domain with two `v=spf1` records is treated as
-having a broken SPF by every receiver, which is worse than having none. Two
-different systems will be sending as this domain, so both go in the same line:
+having a broken SPF by every receiver, which is worse than having none.
 
-| Type | Host | Value |
-| --- | --- | --- |
-| TXT | `@` | `v=spf1 include:zoho.eu include:spf.brevo.com ~all` |
+Cloudflare will add an SPF record for its own forwarding. Brevo also needs to be
+in SPF, because Brevo sends the welcome email and, after section 5, the signup
+and password reset codes. So **edit** the record Cloudflare created rather than
+adding a second one, and make it:
 
-Zoho sends the mail you type by hand. Brevo sends the welcome email and, after
-section 5, the signup and password reset codes. Leave either one out and that
-system's mail starts landing in spam.
+```
+v=spf1 include:_spf.mx.cloudflare.net include:spf.brevo.com ~all
+```
 
-### 2d. DKIM
+### DKIM and DMARC
 
-Two records, and they do not conflict because each uses its own selector.
+- **Brevo DKIM**: in Brevo, under Senders, Domains & Dedicated IPs, authenticate
+  `esquirely.com.ng`. It prints its own selector and key. Add exactly as shown.
+- **DMARC**: start permissive, so it reports without affecting delivery.
 
-- **Zoho**: generate it in Zoho Mail Admin under Domains → DKIM. It gives you a
-  selector (usually `zoho`) and a long key. Host becomes
-  `zoho._domainkey`.
-- **Brevo**: in Brevo under Senders, Domains & Dedicated IPs → authenticate your
-  domain. It gives you its own selector and key, plus a DMARC suggestion.
+  | Type | Host | Value |
+  | --- | --- | --- |
+  | TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:hello@esquirely.com.ng` |
 
-Add both exactly as each dashboard prints them.
+  Move to `p=quarantine` later, once a fortnight of reports comes back clean.
 
-### 2e. DMARC
+### Test it
 
-Start permissive. `p=none` monitors without touching delivery, which is what you
-want until you have seen a fortnight of reports and know both senders pass.
-
-| Type | Host | Value |
-| --- | --- | --- |
-| TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:hello@esquirely.com.ng` |
-
-Move to `p=quarantine` later, once the reports are clean. Not before.
+Send a real message from a phone to each of the six addresses and confirm all
+six land in Gmail. Do this before section 5: an auth flow that cannot send is
+much harder to debug than a mailbox that was never wired up.
 
 ---
 
-## 3. After it propagates
+## 4. Replying as the address, not as your Gmail
 
-Give it up to a few hours, then check from a machine that is not yours:
+Receiving is only half of it. Out of the box, replies leave as your personal
+Gmail, which undoes the point.
 
-```
-nslookup -type=MX esquirely.com.ng 8.8.8.8
-nslookup -type=TXT esquirely.com.ng 8.8.8.8
-```
+First get the Brevo SMTP credentials: Brevo → **SMTP & API** → SMTP tab. You
+need the **SMTP login** and an **SMTP key**. ⚠ The key is not the API key; they
+are different strings on the same page and the API key fails authentication with
+an unhelpful error.
 
-Then send a real message from a Gmail account to each of the six addresses and
-confirm all six arrive in the one inbox. Do this before section 5, because a
-Supabase auth flow that cannot send is much harder to debug than a mailbox that
-was never wired up.
+Then in Gmail: **Settings** → **Accounts and Import** → **Send mail as** → **Add
+another email address**.
 
----
+| Field | Value |
+| --- | --- |
+| Name | Esquirely |
+| Email address | `hello@esquirely.com.ng` |
+| Treat as alias | untick |
+| SMTP Server | `smtp-relay.brevo.com` |
+| Port | `587` |
+| Username | your Brevo SMTP login |
+| Password | your Brevo SMTP key |
+| Secured connection | TLS |
 
-## 4. Point Brevo at the new domain
+Gmail sends a confirmation code to `hello@esquirely.com.ng`, which arrives back
+in the same Gmail through Cloudflare. Enter it.
 
-`BREVO_SENDER_EMAIL` is currently a personal Gmail address. That was the right
-call when there was no domain: Brevo verifies a single sender address, which is
-why it was chosen over Resend in the first place (see the comment at the top of
-`src/lib/email/send.ts`). There is a domain now, so:
+Repeat for any of the other five you expect to reply from. `roles@` and
+`corrections@` are the two worth doing straight away.
 
-1. In Brevo, add `hello@esquirely.com.ng` as a sender and verify it. The
-   verification email lands in Zoho, which is why section 3 comes first.
-2. Complete the domain authentication from 2d, so Brevo signs as the domain
-   rather than sending on behalf of a Gmail address.
-3. Update `BREVO_SENDER_EMAIL` in **both** `.env.local` and the Vercel project.
+Then set `hello@esquirely.com.ng` as the **default** send-as address, so a
+reply typed in a hurry goes out as the brand rather than as you.
 
-A welcome email from `hello@esquirely.com.ng` and one from a personal Gmail read
-completely differently to somebody deciding whether this site is real.
+Finally, update `BREVO_SENDER_EMAIL` to `hello@esquirely.com.ng` in both
+`.env.local` and the Vercel project. It is currently a personal Gmail address,
+which was the right call when there was no domain (see the comment at the top of
+`src/lib/email/send.ts` for why Brevo was chosen over Resend for exactly that
+reason) and is the wrong one now.
 
 ---
 
@@ -178,43 +197,44 @@ signup confirmation code and every password reset currently goes through it, so
 the first time more than a few people sign up in an hour, the rest silently get
 no code and cannot create an account.
 
-The templates are already written and living in this folder:
+The templates are already written and in this folder:
 `supabase-confirm-signup.html` and `supabase-reset-password.html`.
 
-In the Supabase dashboard, Project Settings → Authentication → SMTP Settings,
-enable custom SMTP and enter:
+Supabase dashboard → Project Settings → Authentication → SMTP Settings → enable
+custom SMTP:
 
 | Field | Value |
 | --- | --- |
 | Host | `smtp-relay.brevo.com` |
 | Port | `587` |
-| Username | your Brevo **SMTP login** (from Brevo → SMTP & API) |
-| Password | your Brevo **SMTP key** |
+| Username | your Brevo SMTP login |
+| Password | your Brevo SMTP key |
 | Sender email | `hello@esquirely.com.ng` |
 | Sender name | `Esquirely` |
 
-⚠ The password is the **SMTP key**, not the API key. They are different strings
-in the same Brevo dashboard and the API key fails authentication here with an
-unhelpful error.
+Same key, same trap as section 4.
 
-While you are in that screen, raise the rate limit under Auth → Rate Limits.
-The default is tuned for the built-in sender and stays low after you replace it.
+While you are in that screen, raise the limit under Auth → **Rate Limits**. The
+default is tuned for the built-in sender and stays low after you replace it.
 
-Then send yourself a real signup and a real password reset and read both on a
-phone. The templates carry the subject lines they need in a comment at the top
-of each file; those go in Supabase's template editor, not in the HTML.
+Then send yourself a real signup and a real password reset, and read both on a
+phone. The subject lines live in a comment at the top of each template file and
+go in Supabase's template editor, not in the HTML.
+
+⚠ Brevo's free tier is 300 emails a day, shared between the welcome email, the
+auth codes and anything you send by hand. Fine now. Worth watching once signups
+pick up.
 
 ---
 
 ## 6. Two Vercel settings while you are in there
 
-1. **`NEXT_PUBLIC_SITE_URL`** should be `https://esquirely.com.ng` in the
-   production environment. Without it the code falls back to the same value, so
-   nothing breaks, but preview deployments should be set to their own URL so a
-   preview's emails and canonical tags do not point at production.
+1. **`NEXT_PUBLIC_SITE_URL`** should be `https://esquirely.com.ng` in
+   Production. Without it the code falls back to the same value, so nothing
+   breaks, but preview deployments should be set to their own URL so a preview's
+   emails and canonical tags do not point at production.
 
-2. **Redirect `www` to the apex.** Right now `https://esquirely.com.ng/` and
-   `https://www.esquirely.com.ng/` both answer 200 with the same page. To Google
-   that is two sites with identical content, and the ranking signal splits
-   between them. In the Vercel project's Domains tab, set `www` to redirect to
-   the apex.
+2. **Redirect `www` to the apex.** Right now `esquirely.com.ng` and
+   `www.esquirely.com.ng` both answer 200 with the same page. To Google that is
+   two sites with identical content and the ranking signal splits between them.
+   Project → Domains → edit `www.esquirely.com.ng` → Redirect to the apex, 308.
