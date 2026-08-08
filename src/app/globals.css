@@ -84,8 +84,32 @@ body {
      when closed (position: fixed, right: 0, slid out with a transform). Fixed
      descendants still grow the document's scrollable area even though they're
      never meant to be seen, so without this a swipe on a phone rubber-bands
-     the whole page sideways into that dead space. */
-  overflow-x: hidden;
+     the whole page sideways into that dead space.
+
+     CLIP, NOT HIDDEN — and the difference is not cosmetic.
+
+     `overflow-x: hidden` makes an element a SCROLL CONTAINER, and it drags the
+     other axis with it: the computed style here was `hidden auto`. Once body is
+     a scroll container, every `position: sticky` inside it measures against
+     body's scrollport rather than the viewport — and body's scrollport does not
+     move, because the viewport is what actually scrolls. So sticky silently
+     does nothing. That is why the closing statement stopped pinning and the
+     footer stopped gliding over it: the glide is two CSS rules and a sticky,
+     and the sticky had been disabled from four thousand lines away.
+
+     `clip` does the same clipping without creating a scroll container, and it
+     does not force the other axis to `auto`, so overflow-y stays `visible` and
+     sticky works again. Do not swap this back to `hidden` — if a horizontal
+     overflow ever needs fixing, fix the element that overflows. */
+  overflow-x: clip;
+}
+
+/* Safari below 16 and Firefox below 81 do not know `clip`, and would fall back
+   to `visible` — which brings back the sideways rubber-band this rule exists to
+   stop. There, take the old behaviour: no glide, but no dead space either. Every
+   browser that can run the glide gets it; the rest lose an effect, not a page. */
+@supports not (overflow: clip) {
+  body { overflow-x: hidden; }
 }
 
 /* iOS Safari zooms the whole page in the instant a form field under 16px gets
