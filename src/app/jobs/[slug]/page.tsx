@@ -76,7 +76,7 @@ function longDate(d: string) {
 // `params` is a Promise in Next 16 — see the note on the firm detail page.
 export default async function JobDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
   const { data: job } = await supabase.from('jobs').select('*').eq('slug', slug).single()
   if (!job) return notFound()
 
@@ -90,7 +90,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 
   return (
     <div>
-      <main className="jobs-page">
+      <main className="jobs-page closing-glide">
         <header className="jobs-header job-detail-header">
           <div className="shell">
             <Link href="/jobs" className="grotesk-regular job-back">

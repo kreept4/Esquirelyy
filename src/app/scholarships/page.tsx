@@ -11,7 +11,9 @@ export const metadata = {
 export default function ScholarshipsPage() {
   return (
     <div>
-      <ScholarshipsClient scholarships={ALL_SCHOLARSHIPS} />
+      <div className="closing-glide">
+        <ScholarshipsClient scholarships={ALL_SCHOLARSHIPS} />
+      </div>
       <Footer />
     </div>
   )

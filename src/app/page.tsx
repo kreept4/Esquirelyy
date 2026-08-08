@@ -24,7 +24,7 @@ const SECTOR_ACCENT: Record<string, string> = {
 export const INK_BLACK = '#000000'
 
 export default async function HomePage() {
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
   const { data: jobs } = await supabase.from('jobs').select('*').order('created_at', { ascending: false })
   const listings = jobs || []
   // 'Open right now' must mean it. Anything past its deadline is excluded;

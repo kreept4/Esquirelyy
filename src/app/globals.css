@@ -75,6 +75,12 @@ body {
   font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.6;
+  /* The off-canvas nav panel sits just past the right edge of the viewport
+     when closed (position: fixed, right: 0, slid out with a transform). Fixed
+     descendants still grow the document's scrollable area even though they're
+     never meant to be seen, so without this a swipe on a phone rubber-bands
+     the whole page sideways into that dead space. */
+  overflow-x: hidden;
 }
 
 /* Scrollbar — subtle, on-brand */
@@ -3391,6 +3397,11 @@ select.filter-pill {
     position: static;
     padding-bottom: 1.5rem;
     border-bottom: 0.5px solid var(--cream-border);
+    /* A grid item defaults to min-width: auto, so without this it refuses to
+       shrink below the intrinsic width of the chip row inside it and forces
+       the whole page wider instead of letting that row's own overflow-x:auto
+       scroll internally. */
+    min-width: 0;
   }
   /* Horizontal chip row on narrow screens: a vertical list of five section
      names above the content pushes the first question below the fold. */
@@ -5782,6 +5793,11 @@ select.filter-pill {
   padding: 0;
   cursor: pointer;
   border-bottom: 1.5px solid var(--on-amber);
+}
+.auth-linkbtn:disabled {
+  color: var(--charcoal-muted, #4A4A4A);
+  border-bottom-color: transparent;
+  cursor: default;
 }
 
 /* ============================================================

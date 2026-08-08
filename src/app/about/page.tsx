@@ -105,7 +105,7 @@ function PersonCard({ person, className = '' }: { person: Person; className?: st
 export default function AboutPage() {
   return (
     <>
-      <main className="page-main doc-page">
+      <main className="page-main doc-page closing-glide">
         <header className="doc-masthead">
           <div className="shell doc-masthead-inner">
             <h1 className="display-black doc-title">About us.</h1>

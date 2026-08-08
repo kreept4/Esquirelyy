@@ -96,7 +96,7 @@ export default function FirmsPage() {
 
   return (
     <>
-      <main className="page-main">
+      <main className="page-main closing-glide">
 
         <PageHeader
           tone="ink"
