@@ -34,7 +34,10 @@ function FirmAvatar({ firm }: { firm: Firm }) {
   return <LogoFrame src={url} alt={firm.name} capHeight={3} maxWidth={9} plate />
 }
 
-const MapPinIcon = () => (<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>)
+/* Solid, matching the directory card this page is reached from. Same pin, one
+   size up. A firm's offices are the one thing shown in both places, so the mark
+   beside them should not change between the card and the profile. */
+const MapPinIcon = () => (<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path fillRule="evenodd" clipRule="evenodd" d="M12 1.5a8.5 8.5 0 0 0-8.5 8.5c0 3.2 2 6.4 4 8.7a30 30 0 0 0 4.1 3.9.7.7 0 0 0 .8 0 30 30 0 0 0 4.1-3.9c2-2.3 4-5.5 4-8.7A8.5 8.5 0 0 0 12 1.5Zm0 5.9a2.9 2.9 0 1 1 0 5.8 2.9 2.9 0 0 1 0-5.8Z"/></svg>)
 const GlobeIcon = () => (<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>)
 const MailIcon = () => (<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>)
 const ArrowLeftIcon = () => (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7M19 12H5"/></svg>)

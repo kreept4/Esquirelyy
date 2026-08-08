@@ -61,7 +61,7 @@ export interface NewsItem {
 }
 
 /** Label shown on a slide. Kept here so the carousel and the news page agree. */
-import { ALL_FIRMS } from '@/lib/firms-data'
+import { ALL_FIRMS, FIRM_RANKINGS } from '@/lib/firms-data'
 
 export const KIND_LABEL: Record<NewsKind, string> = {
   update: "What's new",
@@ -80,6 +80,27 @@ export const KIND_LABEL: Record<NewsKind, string> = {
  * decides a palette and nothing has to be re-baked after a reorder.
  */
 const ITEMS: NewsItem[] = [
+  {
+    slug: 'firm-rankings',
+    kind: 'update',
+    date: '2026-08-08',
+    /* Counted off the table, like the directory total below it, because this
+       number moves every time someone reads another guide page.
+
+       THE CLAIM IS DELIBERATELY NOT "WE RANK FIRMS". We do not, and a careers
+       site that appeared to would be worth less, not more: the whole reason a
+       band means anything is that the guides research it by interviewing a
+       firm's clients and its opponents, so nobody — including us — can place
+       themselves in one. The slide says whose rankings these are twice, in the
+       title and again in the last line, because that is the sentence a student
+       needs to weigh the badge and it is the one a skimmed slide would drop. */
+    title: `Independent rankings on ${Object.keys(FIRM_RANKINGS).length} firms`,
+    summary:
+      'Chambers, IFLR1000 and The Legal 500 EMEA, 2026 editions, read and put on the profiles: the band, the edition, and the practice areas it was earned in. We do not rank firms ourselves, and no firm can pay its way into any of the three.',
+    href: '/firms',
+    cta: 'See who is ranked',
+    media: { type: 'image', src: '/illustrations/rankings.png', alt: '' }
+  },
   {
     slug: 'nba-president-elect-2026',
     kind: 'news',
@@ -125,8 +146,11 @@ const ITEMS: NewsItem[] = [
        every time someone edits a different file, so hardcoding it guarantees it
        is wrong again within a week. */
     title: `${ALL_FIRMS.length} firms in the directory`,
+    /* The rankings sentence that used to close this summary has moved to the
+       slide of its own above. Two cards in one rotation making the same
+       announcement is how a carousel starts reading as filler. */
     summary:
-      'Every profile carries the practice areas, the real office addresses and the address to write to. Independent rankings from Chambers, IFLR1000 and The Legal 500 now sit on the profiles too, naming the practice areas each band was earned in.',
+      'Every profile carries the practice areas, the real office addresses and the address to write to — so you can write to a firm directly rather than wait for it to advertise.',
     href: '/firms',
     cta: 'Browse the firms directory',
     media: {

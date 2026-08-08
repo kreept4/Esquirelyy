@@ -84,8 +84,29 @@ function FirmAvatar({ firm }: { firm: { slug: string; logoFile?: string | null; 
 }
 
 const SearchIcon = () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>)
-const MapPinIcon = () => (<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>)
-const BriefcaseIcon = () => (<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>)
+/**
+ * The card-foot marks are solid, not stroked, and that is the whole change.
+ *
+ * Both of these were the stock stroked icons at 11px, which is the size at
+ * which a 2-unit stroke on a 24 viewBox lands under one device pixel. The pin
+ * lost its point and read as a faint ◎; the briefcase's lid line and body
+ * outline merged. Two grey smudges before the only two facts on the row.
+ *
+ * The instinct is to draw something more detailed. That is the wrong lever at
+ * this size — every extra line is another sub-pixel to smear. Weight is the
+ * right one: a filled silhouette is legible down to about 9px because the
+ * shape survives even when nothing inside it does. So the pin is a solid
+ * teardrop with the hole KNOCKED OUT rather than stroked (evenodd, so the
+ * cream shows through and the mark stays one path), and the briefcase is a
+ * solid body with a separate handle instead of a rectangle plus a lid line.
+ *
+ * Kept as a pair on purpose. They sit 1rem apart on the same row, so one
+ * solid and one stroked would read as two different icon sets rather than as
+ * a considered choice. The 15px SearchIcon above is left stroked — at that
+ * size the stroke resolves, and it belongs to the filter bar, not to this row.
+ */
+const MapPinIcon = () => (<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path fillRule="evenodd" clipRule="evenodd" d="M12 1.5a8.5 8.5 0 0 0-8.5 8.5c0 3.2 2 6.4 4 8.7a30 30 0 0 0 4.1 3.9.7.7 0 0 0 .8 0 30 30 0 0 0 4.1-3.9c2-2.3 4-5.5 4-8.7A8.5 8.5 0 0 0 12 1.5Zm0 5.9a2.9 2.9 0 1 1 0 5.8 2.9 2.9 0 0 1 0-5.8Z"/></svg>)
+const BriefcaseIcon = () => (<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M9.5 2.5h5A3 3 0 0 1 17.5 5.5V7h-2.4V5.8a1 1 0 0 0-1-1h-4.2a1 1 0 0 0-1 1V7H6.5V5.5a3 3 0 0 1 3-3Z"/><rect x="2" y="8.2" width="20" height="13.3" rx="2.6"/></svg>)
 const XIcon = () => (<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>)
 
 export default function FirmsPage() {
