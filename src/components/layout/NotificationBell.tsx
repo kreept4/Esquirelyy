@@ -36,37 +36,6 @@ const KIND_DOT: Record<Notification['kind'], string> = {
   welcome: '#FBBF24',
 }
 
-/**
- * The mark on the welcome note.
- *
- * Inline, not an <img src="…svg">. An external SVG is a separate document
- * fetch, so it renders as an empty box for every reason a fetch can fail — a
- * path that does not resolve under the deployed basePath, a content-type the
- * host serves wrong, a CSP that does not list img-src. Inlined there is nothing
- * left to fail, and `currentColor` lets one drawing sit on ink here and on
- * amber anywhere else.
- *
- * An envelope with the seal broken open, which is what the note is.
- */
-function WelcomeMark() {
-  return (
-    <svg
-      viewBox="0 0 48 48"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      className="notif-modal-mark"
-    >
-      <path d="M6 17.5 24 6l18 11.5v20a2.5 2.5 0 0 1-2.5 2.5h-31A2.5 2.5 0 0 1 6 37.5Z" />
-      <path d="M6 17.5 24 29l18-11.5" />
-      <path d="M17 44V29m14 15V29" />
-    </svg>
-  )
-}
-
 function NotifRow({ n, unread }: { n: Notification; unread: boolean }) {
   return (
     <>
@@ -272,17 +241,15 @@ export default function NotificationBell({
               ×
             </button>
 
-            {/* Masthead. Ink ground carrying the contour in amber, the same
-                construction as the signup email, so the note the site shows and
-                the note that arrives by mail are recognisably one thing.
-                The site's --contour strokes in ink because it goes on cream; on
-                ink it would be invisible, so --contour-amber exists for dark
-                grounds. */}
-            <div className="notif-modal-head">
-              <WelcomeMark />
-              <p className="grotesk-bold notif-modal-kind">A note from the founders</p>
-            </div>
-
+            {/* NO MASTHEAD HERE, DELIBERATELY.
+                This carried the wordmark on an ink contour ground, mirroring
+                the welcome email. It is gone. The email needs a masthead
+                because it arrives cold in an inbox with nothing around it to
+                say who sent it. This dialog opens from the notification bell,
+                inside the site, one click after the reader looked at the
+                wordmark in the header — so it re-announced the brand to
+                someone who had just seen it, and pushed the actual note below
+                the fold on a phone. The greeting carries it instead. */}
             <div className="notif-modal-inner">
             <p className="display-black notif-modal-title">Welcome to Esquirely.</p>
 

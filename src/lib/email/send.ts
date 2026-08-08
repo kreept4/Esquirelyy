@@ -69,6 +69,26 @@ export async function sendEmail({ to, toName, subject, html, text }: SendArgs): 
         subject,
         htmlContent: html,
         textContent: text,
+        /**
+         * Turn Brevo's open and click tracking OFF for transactional mail.
+         *
+         * Left on, Brevo rewrites every link in the message to bounce through a
+         * brevo.com redirector and appends an invisible 1x1 tracking pixel.
+         * Both are things bulk marketing does and personal mail does not, and
+         * Gmail reads them as exactly that — a welcome note landing in
+         * Promotions instead of Primary. The Brevo event log for this project
+         * showed `opened` and `clicks` events, which is the proof both were
+         * active.
+         *
+         * Nothing here needs them. This is one message sent to one person who
+         * just made an account; there is no campaign to measure, and the cost
+         * of measuring it is the message not being seen.
+         *
+         * `X-Mailin-Track: 0` disables opens and clicks together. The name is
+         * Brevo's, from before the Sendinblue rename, and is still the header
+         * their API accepts.
+         */
+        headers: { 'X-Mailin-Track': '0' },
       }),
       /* Bounded. This runs inside a request the user is waiting on, and Brevo
          occasionally hangs rather than refusing; ten seconds is far longer than
