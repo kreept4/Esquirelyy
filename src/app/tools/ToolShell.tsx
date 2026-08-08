@@ -27,7 +27,7 @@ export default function ToolShell({
 }) {
   return (
     <>
-      <main className="page-main doc-page tool-page">
+      <main className="page-main doc-page tool-page closing-glide">
         <header className="doc-masthead">
           <div className="shell doc-masthead-inner tool-masthead-inner">
             <div className="tool-masthead-row">

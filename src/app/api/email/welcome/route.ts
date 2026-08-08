@@ -38,7 +38,7 @@ export async function POST() {
 
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
-    'https://esquirely.com'
+    'https://esquirelyy.vercel.app'
 
   const { subject, html, text } = welcomeEmail({
     name: (user.user_metadata?.full_name as string) || '',

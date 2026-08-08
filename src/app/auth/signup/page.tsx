@@ -1,11 +1,19 @@
 'use client'
 export const dynamic = 'force-dynamic'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Eye, EyeOff } from 'lucide-react'
+
+/* Matches the Supabase project's Auth > Email OTP expiry, set to 600s there.
+   That setting is server-side and can't be read from the client, so this is
+   duplicated by hand — if the dashboard value changes, update this too. */
+const OTP_EXPIRY_MINUTES = 10
+/* A code was just sent the moment the OTP screen mounts, so resend starts
+   cooled down rather than immediately available. */
+const RESEND_COOLDOWN_SECONDS = 60
 
 export default function SignupPage() {
   const router = useRouter()
@@ -20,6 +28,7 @@ export default function SignupPage() {
   const [code, setCode] = useState('')
   const [verifying, setVerifying] = useState(false)
   const [resent, setResent] = useState(false)
+  const [cooldown, setCooldown] = useState(0)
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
@@ -37,7 +46,14 @@ export default function SignupPage() {
     if (error) { setError(error.message); setLoading(false); return }
     setSuccess(true)
     setLoading(false)
+    setCooldown(RESEND_COOLDOWN_SECONDS)
   }
+
+  useEffect(() => {
+    if (cooldown <= 0) return
+    const t = window.setTimeout(() => setCooldown(s => s - 1), 1000)
+    return () => window.clearTimeout(t)
+  }, [cooldown])
 
   /**
    * Verify the six-digit code.
@@ -71,12 +87,14 @@ export default function SignupPage() {
   }
 
   async function handleResend() {
+    if (cooldown > 0) return
     setError('')
     setResent(false)
     const supabase = createClient()
     const { error } = await supabase.auth.resend({ type: 'signup', email })
     if (error) { setError(error.message); return }
     setResent(true)
+    setCooldown(RESEND_COOLDOWN_SECONDS)
   }
 
   async function handleGoogleSignup() {
@@ -93,7 +111,7 @@ export default function SignupPage() {
         <div className="auth-form-wrap">
           <h2 className="auth-title" style={{ marginBottom: '0.5rem' }}>Enter your code.</h2>
           <p className="grotesk-regular auth-note">
-            We sent a six-digit code to <strong>{email}</strong>. It expires in an hour.
+            We sent a six-digit code to <strong>{email}</strong>. It expires in {OTP_EXPIRY_MINUTES} minutes.
           </p>
           {/* Said up front, not buried under a failure. Mail from a new sender
               lands in spam often enough that telling people first saves them
@@ -135,7 +153,9 @@ export default function SignupPage() {
 
           <p className="grotesk-regular auth-alt">
             No code yet?{' '}
-            <button type="button" onClick={handleResend} className="auth-linkbtn">Send another</button>
+            <button type="button" onClick={handleResend} disabled={cooldown > 0} className="auth-linkbtn">
+              {cooldown > 0 ? `Send another (${cooldown}s)` : 'Send another'}
+            </button>
             {' · '}
             <Link href="/auth/login">Back to sign in</Link>
           </p>
@@ -183,7 +203,10 @@ export default function SignupPage() {
                 <label className="grotesk-bold auth-label">Password</label>
                 <div style={{ position: 'relative' }}>
                   <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} required placeholder="Min. 8 characters" className="auth-input" style={{ paddingRight: '2.75rem' }} />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '0.875rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9A9A9A', padding: 0, display: 'flex' }}>
+                  {/* padding grows the tap target well past the 15px icon (a bare
+                      15x15 button is a genuinely hard tap on a phone); `right` is
+                      pulled in by the same amount so the icon itself doesn't move. */}
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? 'Hide password' : 'Show password'} style={{ position: 'absolute', right: '0.125rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9A9A9A', padding: '0.75rem', display: 'flex' }}>
                     {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                   </button>
                 </div>

@@ -75,7 +75,7 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
       {/* No min-height. It was 100vh, which on a firm with one office and no
           open roles left a full screen of empty cream between the last line of
           content and the footer. The page is as long as it has things to say. */}
-      <main style={{ backgroundColor: '#FAF6F0', paddingTop: '64px' }}>
+      <main className="closing-glide" style={{ backgroundColor: '#FAF6F0', paddingTop: '64px' }}>
 
         {/* Breadcrumb */}
         <div className="firm-profile-crumb">

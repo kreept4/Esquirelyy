@@ -75,6 +75,25 @@ body {
   font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.6;
+  /* The off-canvas nav panel sits just past the right edge of the viewport
+     when closed (position: fixed, right: 0, slid out with a transform). Fixed
+     descendants still grow the document's scrollable area even though they're
+     never meant to be seen, so without this a swipe on a phone rubber-bands
+     the whole page sideways into that dead space. */
+  overflow-x: hidden;
+}
+
+/* iOS Safari zooms the whole page in the instant a form field under 16px gets
+   focus, on every input, on every form site-wide: auth, contact, the job and
+   firm filters, the tracker. Most of this site's inputs sit around 13-14px at
+   the root's mobile floor. Rather than hunt down and bump every input's own
+   font-size (and risk breaking a desktop layout tuned around the smaller
+   one), this only overrides the computed size on small viewports, where the
+   zoom actually happens. */
+@media (max-width: 640px) {
+  input, textarea, select {
+    font-size: 16px;
+  }
 }
 
 /* Scrollbar — subtle, on-brand */
@@ -3391,6 +3410,11 @@ select.filter-pill {
     position: static;
     padding-bottom: 1.5rem;
     border-bottom: 0.5px solid var(--cream-border);
+    /* A grid item defaults to min-width: auto, so without this it refuses to
+       shrink below the intrinsic width of the chip row inside it and forces
+       the whole page wider instead of letting that row's own overflow-x:auto
+       scroll internally. */
+    min-width: 0;
   }
   /* Horizontal chip row on narrow screens: a vertical list of five section
      names above the content pushes the first question below the fold. */
@@ -5782,6 +5806,11 @@ select.filter-pill {
   padding: 0;
   cursor: pointer;
   border-bottom: 1.5px solid var(--on-amber);
+}
+.auth-linkbtn:disabled {
+  color: var(--charcoal-muted, #4A4A4A);
+  border-bottom-color: transparent;
+  cursor: default;
 }
 
 /* ============================================================

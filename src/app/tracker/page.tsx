@@ -581,7 +581,7 @@ export default function TrackerPage() {
 
   return (
     <>
-      <main className="page-main doc-page trk-page">
+      <main className="page-main doc-page trk-page closing-glide">
         <header className="doc-masthead">
           <div className="shell doc-masthead-inner trk-masthead">
             <div className="trk-masthead-row">
