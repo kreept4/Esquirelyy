@@ -4096,11 +4096,10 @@ select.filter-pill {
   .glide-block > * {
     order: initial !important;
   }
-  /* Swap the cross-column sweep for the vertical spiral: same look, correct
-     direction for a stacked layout. */
+  /* Same connector as desktop, just narrower — the separate vertical spiral
+     variant read as a different shape entirely rather than the same motif
+     scaled down, so it's dropped in favour of literally reusing the sweep. */
   .glide-connector { margin: -0.5rem 0 0.5rem; display: flex; justify-content: center; }
-  .glide-connector-h { display: none; }
-  .glide-connector-v { display: block; width: 150px; }
 }
 
 .quick-q-option {
