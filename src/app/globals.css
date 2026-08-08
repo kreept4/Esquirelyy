@@ -4795,6 +4795,34 @@ select.filter-pill {
    shown. Replaced by .sch-mark in the SCHOLARSHIP STATUS section at the end of
    this file, where each state has its own shape and the filter teaches it. */
 
+/**
+ * The play button iOS draws over the hero video.
+ *
+ * The hero video is autoPlay + muted + playsInline, which is the combination
+ * iOS requires, and it plays normally most of the time — which is why this only
+ * showed up "sometimes". When iOS refuses the autoplay anyway, the usual cause
+ * being Low Power Mode or Data Saver, Safari paints its own start-playback
+ * control in the middle of the element. It is a native shadow-DOM part, so it
+ * appears over a video that has no `controls` attribute and cannot be removed
+ * from the markup.
+ *
+ * Hiding it is the whole fix, because nothing is lost by hiding it: the video is
+ * decoration behind the headline, muted and looping, and the hero reads
+ * correctly as a still frame. A button inviting a tap that starts a silent
+ * background loop is worse than no button.
+ *
+ * Both selectors are needed — older WebKit exposes the control under the
+ * -webkit-media-controls-start-playback-button part, current Safari under the
+ * generic media controls panel — and the -webkit-appearance reset stops the
+ * element reserving its box after display:none on some versions.
+ */
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+video::-webkit-media-controls { display: none !important; }
+
 .sch-main { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
 
 /* `contents` so the wide layout is untouched: the wrapper box disappears and

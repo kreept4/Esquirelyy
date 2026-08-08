@@ -5,18 +5,17 @@ import { createClient } from '@/lib/supabase/server'
 /**
  * OAuth return leg.
  *
- * Two things were wrong here.
+ * `next` was once parsed and then never used, so anything that sent a visitor
+ * here with a destination in hand silently lost it. It is honoured now.
  *
- * The profile read discarded its error, so a returning Google user who had
- * completed onboarding was sent through it again on every single sign-in. The
- * cause was a missing GRANT on `profiles` (see
- * scripts/2026-08-07-grant-profiles.sql), but the reason nobody noticed is that
- * a failed read and a genuinely new user were indistinguishable: both produced
- * a null profile and both fell through to /auth/welcome. Those are now told
- * apart, and only one of them is normal.
- *
- * And `next` was parsed and then never used, so anything that sent a visitor
- * here with a destination in hand silently lost it.
+ * This route used to end by reading `profiles.onboarding_complete` to decide
+ * between the board and the onboarding form. That read is gone along with the
+ * form itself — see the note above the final redirect. Worth knowing if you are
+ * reading scripts/2026-08-07-grant-profiles.sql and wondering what needed the
+ * GRANT: it was this, and a returning Google user was being sent back through
+ * onboarding on every sign-in because the read failed silently and a failed read
+ * looked exactly like a new account. Nothing on this path reads the table now,
+ * so that class of bug cannot recur here.
  */
 
 /** Only same-origin relative paths. An unvalidated `next` is an open redirect:
@@ -92,26 +91,24 @@ export async function GET(request: Request) {
   // Wherever they were heading beats anything we would pick for them.
   if (next) return NextResponse.redirect(`${origin}${next}`)
 
-  /* maybeSingle, not single: a first-time user having no row is the expected
-   * case, and single() turns that into an error, which is what made a real
-   * failure impossible to see among the noise. */
-  const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('onboarding_complete')
-    .eq('id', user.id)
-    .maybeSingle()
-
-  if (error) {
-    /* A read that fails is not a user who has not onboarded. We cannot tell
-     * where they should go, so we send them to the board rather than making a
-     * returning user redo onboarding on every sign-in, which is what the old
-     * fall-through did. */
-    console.error('[auth] could not read profile, skipping onboarding check', error)
-    return NextResponse.redirect(`${origin}/jobs`)
-  }
-
-  if ((profile as { onboarding_complete?: boolean } | null)?.onboarding_complete) {
-    return NextResponse.redirect(`${origin}/jobs`)
-  }
-  return NextResponse.redirect(`${origin}/auth/welcome`)
+  /**
+   * Straight to the board. There is no onboarding questionnaire any more.
+   *
+   * This used to read `profiles.onboarding_complete` and send anyone without it
+   * to /auth/welcome, which forwarded to a three-step form. That form was the
+   * first thing a new account saw, and it stood between someone who had just
+   * proved their identity and the thing they actually came for. The questions it
+   * asked — career stage, goal, city — are the same ones QuickQuestions asks on
+   * the home page, where they are optional, answerable in passing, and asked of
+   * someone who has already seen what the site is for.
+   *
+   * A new account is now told there is something waiting for it the same way
+   * every other account is: the unread dot on the notification bell. That is a
+   * prompt rather than a gate, which is the right shape for a greeting.
+   *
+   * The profile read is gone with it. It existed only to answer "has this person
+   * onboarded", nothing here asks that now, and it was one query on every single
+   * OAuth sign-in.
+   */
+  return NextResponse.redirect(`${origin}/jobs`)
 }
