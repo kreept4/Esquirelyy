@@ -106,11 +106,21 @@ const GROUPS: Group[] = [
       {
         q: 'Can I delete my account and everything in it?',
         a: (
-          <p>
-            Yes. Write to us and we will delete your account and every review, generated CV, cover
-            letter and interview session attached to it. Under the Nigeria Data Protection Act 2023
-            that is your right, not a favour.
-          </p>
+          <>
+            <p>
+              Yes, and you do not have to ask us. There is a button on your{' '}
+              <Link href="/dashboard">account page</Link>. It takes your account and every review,
+              generated CV, cover letter, interview session and tracker entry attached to it. Under
+              the Nigeria Data Protection Act 2023 that is your right, not a favour.
+            </p>
+            <p>
+              One thing worth knowing before you press it. Deletion runs 30 days later rather than
+              straight away, and signing in during those 30 days cancels it. That is deliberate:
+              people delete accounts at 2am after a bad rejection, and coming back should be enough
+              to undo it. But it does mean that if you want to be gone, stay gone. Do not sign in to
+              check whether it worked.
+            </p>
+          </>
         ),
       },
     ],
@@ -232,10 +242,18 @@ const GROUPS: Group[] = [
       {
         q: 'Do I need an account?',
         a: (
-          <p>
-            For the tools, yes, so your reviews and generated CVs are saved and you can come back to
-            them. Browsing jobs, scholarships and firms needs nothing at all.
-          </p>
+          <>
+            <p>
+              Yes, for almost everything. The jobs board, the firms directory, scholarships, the news
+              page and all three tools sit behind sign-in. What stays open is this page, the home
+              page, about, contact, the ambassador terms, the page for employers who want to list a
+              role, and the privacy and terms pages.
+            </p>
+            <p>
+              It is free, it takes an email address, and it is there so your tracker, your saved
+              roles and everything the tools write stay attached to you and come back when you do.
+            </p>
+          </>
         ),
       },
       {

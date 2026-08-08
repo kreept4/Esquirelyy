@@ -10,12 +10,33 @@ export const metadata = {
  * Privacy notice, written against what the code actually does rather than from
  * a template. Every claim here was checked in the source:
  *
- *   - accounts and sessions run through Supabase Auth; we never see a password
- *   - profiles hold career_stage, goals and location, and nothing else
- *   - the tracker writes to the `applications` table
+ *   - accounts and sessions run through Supabase Auth; we never see a password.
+ *     Google is a second sign-in path (auth/login and auth/signup both call
+ *     signInWithOAuth), so Google IS a processor for anyone who uses it and has
+ *     to be named. It was missing from clause 4 until the 8 August audit.
+ *   - profiles hold rather more than the three fields this page used to claim.
+ *     PROFILE_COLUMNS in lib/account.ts is the authority: full_name, email,
+ *     career_stage, location, practice_areas, linkedin_url,
+ *     notification_preferences, break_started_at, break_until,
+ *     deletion_requested_at. linkedin_url is the one that matters most, because
+ *     it points at a page naming the person.
+ *   - the tracker writes to `applications`; USER_DATA_TABLES in lib/account.ts
+ *     lists every user-keyed table, and `rejection_log` was the one this notice
+ *     had never mentioned
+ *   - transactional mail goes through BREVO, not Resend (lib/email/send.ts), so
+ *     it is a fourth processor holding name and email. Also missing until the
+ *     8 August audit, and the most serious of the omissions: an unnamed
+ *     processor is the kind of gap the Commission asks about first.
  *   - the quiz writes localStorage key `esquirely:prefs`
  *   - the bell writes `esquirely:notifications-seen`, `-read` and
  *     `esquirely:welcomed-at`; all three are read markers and stay on-device
+ *   - saved roles and firms write `esquirely.saved.v1`, also on-device only.
+ *     Note the dot, not a colon: it does not match the `esquirely:` prefix the
+ *     rest use, which is why a grep for that prefix missed it for so long.
+ *   - deletion is SELF-SERVE from /dashboard and runs on a 30 day grace period
+ *     that cancelPendingDeletion() clears on any sign-in. The grace period is a
+ *     material fact, not an implementation detail: a person can cancel their own
+ *     deletion by signing in to see whether it worked. Clause 6 says so plainly.
  *   - there is NO analytics, advertising or third-party tracking, which is why
  *     there is no cookie consent banner — see the clause on cookies below
  *   - CV files are parsed in memory and NOT persisted anywhere; only extracted
@@ -37,16 +58,16 @@ export default function PrivacyPage() {
   return (
     <LegalPage
       title="Privacy"
-      updated="7 August 2026"
+      updated="8 August 2026"
       intro="What we collect, why we collect it, who else sees it, and what you can make us do about it. Written to be read, not to be survived."
       summary={{
         heading: 'Headnote',
         points: [
-          'We collect your email, three optional profile preferences, and whatever you put in the tracker.',
+          'We collect your email, your account profile, and whatever you put in the tracker.',
           'Your CV file is never stored. What the tools write from it is: the review, and any CV you generate.',
-          'Three processors: Supabase, Anthropic and Vercel. Nobody else.',
+          'Five processors: Supabase, Anthropic, Vercel, Brevo and, if you sign in with Google, Google.',
           'We do not sell your data or pass it to employers.',
-          'You can ask us to show it, fix it or delete it, free, within 30 days.',
+          'You can delete your account yourself from the account page. It runs 30 days later, and signing in cancels it.',
         ],
         footnote: 'The gist, not the grounds. The numbered clauses below are what actually govern.',
       }}
@@ -65,15 +86,24 @@ export default function PrivacyPage() {
           <li>
             <strong>Account details.</strong> Your email address, and a password managed by our
             authentication provider. Passwords are hashed by that provider and are never visible to
-            us.
+            us. If you sign in with Google instead, there is no password at all: Google confirms who
+            you are and passes us your email address and the name on your Google account. We never
+            see your Google password, and we get nothing else from your Google account.
           </li>
           <li>
-            <strong>Profile preferences.</strong> Your career stage, what you are looking for, and
-            your preferred location. All optional. You can use most of the site without them.
+            <strong>Your profile.</strong> Your name, career stage, preferred location, the practice
+            areas you are interested in, and a LinkedIn address if you add one. All optional, and
+            you can edit or clear any of them on your account page. Bear in mind that a LinkedIn
+            address points at a page naming you, so it identifies you more directly than the rest.
           </li>
           <li>
-            <strong>Application tracker entries.</strong> The roles you choose to record, and the
-            stage you have reached with each.
+            <strong>Account settings.</strong> Which alerts you want to receive, and whether you
+            have put your alerts on a break and until when. Settings rather than preferences,
+            because they change what we send you.
+          </li>
+          <li>
+            <strong>Application tracker entries.</strong> The roles you choose to record, the stage
+            you have reached with each, and anything you log about a rejection.
           </li>
           <li>
             <strong>Text you submit to the career tools.</strong> Your CV, draft cover letter inputs,
@@ -107,8 +137,12 @@ export default function PrivacyPage() {
             if you answer them without an account, and{' '}
             <code>esquirely:notifications-seen</code>, <code>esquirely:notifications-read</code> and{' '}
             <code>esquirely:welcomed-at</code>, which only record which notifications you have
-            already looked at so the same ones stop being flagged as new. Clearing your browser data
-            removes all of these; the only thing you lose is those read markers.
+            already looked at so the same ones stop being flagged as new. One more,{' '}
+            <code>esquirely.saved.v1</code>, holds the roles and firms you have saved. Saved items
+            live in your browser and are not copied to our database, which is the trade: they cost
+            us nothing and tell us nothing, and they do not follow you to another device. Clearing
+            your browser data removes all of these, and what you lose is the read markers and your
+            saved list.
           </li>
           <li>
             <strong>Technical logs.</strong> Standard server and security logs kept by our hosting
@@ -187,6 +221,16 @@ export default function PrivacyPage() {
           <li>
             <strong>Vercel</strong> for hosting and delivery. Handles technical logs.
           </li>
+          <li>
+            <strong>Brevo</strong> for the emails we send you, such as the welcome message. Receives
+            your email address and your name so the message can be addressed and delivered, and
+            nothing else. It does not receive your CV, your tool output or your tracker.
+          </li>
+          <li>
+            <strong>Google</strong>, but only if you choose to sign in with Google. It then confirms
+            your identity to us and tells us your email address and account name. If you sign up
+            with an email and password instead, Google is not involved at any point.
+          </li>
         </ul>
         <p>
           We do not sell your data. We do not share it with employers or law firms. Applying for a
@@ -197,7 +241,7 @@ export default function PrivacyPage() {
 
       <Clause n={5} heading="Data leaving Nigeria">
         <p>
-          Anthropic and Vercel process data outside Nigeria. Where the destination has not been
+          Anthropic, Vercel, Brevo and Google process data outside Nigeria. Where the destination has not been
           recognised as providing adequate protection, we rely on the providers&rsquo; contractual data
           protection terms, which oblige them to protect your data to a comparable standard. You can
           ask us for details of those arrangements.
@@ -218,8 +262,13 @@ export default function PrivacyPage() {
             come back.
           </li>
           <li>
-            After you delete your account: removed within 30 days, except anything we must keep by
-            law.
+            After you delete your account: your data is removed 30 days later, except anything we
+            must keep by law. The 30 days are a grace period, not a queue, and they work in a way
+            you should know about before you use the button. <strong>Signing in during those 30
+            days cancels the deletion</strong> and puts your account back as it was. That is there
+            for the person who deletes an account in a bad moment and wants it back on Tuesday, but
+            it cuts both ways: if you mean to leave, do not sign in again to check, because checking
+            is what undoes it.
           </li>
           <li>Technical logs: kept for a short period for security and diagnostics.</li>
         </ul>
@@ -236,9 +285,17 @@ export default function PrivacyPage() {
           <li>stop relying on consent you have withdrawn</li>
         </ul>
         <p>
-          That includes deleting one item rather than everything. If you want a single review or a
-          single generated CV gone but want to keep your account, say which one and we will remove
-          it. You do not have to justify the request.
+          <strong>You can delete everything without asking us.</strong> The button is on your{' '}
+          <Link href="/dashboard">account page</Link>, it takes your account and all of the data
+          attached to it, and clause 6 explains the 30 day grace period and how to avoid cancelling
+          your own deletion by accident. You never need our permission and you never need to give a
+          reason.
+        </p>
+        <p>
+          Deleting one item rather than everything is still a request to us. If you want a single
+          review or a single generated CV gone but want to keep your account, say which one and we
+          will remove it. There is no button for that yet, which is slower than it should be, and it
+          is on the list.
         </p>
         <p>
           Write to us and we will respond within 30 days. Exercising these rights costs nothing. If

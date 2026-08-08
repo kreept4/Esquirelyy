@@ -150,7 +150,7 @@ const ITEMS: NewsItem[] = [
        slide of its own above. Two cards in one rotation making the same
        announcement is how a carousel starts reading as filler. */
     summary:
-      'Every profile carries the practice areas, the real office addresses and the address to write to — so you can write to a firm directly rather than wait for it to advertise.',
+      'Every profile carries the practice areas, the real office addresses and the address to write to. So you can write to a firm directly instead of waiting for it to advertise.',
     href: '/firms',
     cta: 'Browse the firms directory',
     media: {
