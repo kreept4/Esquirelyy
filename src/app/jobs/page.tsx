@@ -13,11 +13,9 @@ export default async function JobsPage() {
     <div>
       {/* JobsClient reads useSearchParams to seed its filters from the URL, and
           Next requires that to sit inside a Suspense boundary. */}
-      <div className="closing-glide">
-        <Suspense fallback={null}>
-          <JobsClient jobs={jobs || []} />
-        </Suspense>
-      </div>
+      <Suspense fallback={null}>
+        <JobsClient jobs={jobs || []} />
+      </Suspense>
       <Footer />
     </div>
   )

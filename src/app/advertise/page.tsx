@@ -59,7 +59,7 @@ const NEEDED = [
 export default function AdvertisePage() {
   return (
     <>
-      <main className="page-main doc-page closing-glide">
+      <main className="page-main doc-page">
         <header className="doc-masthead">
           <div className="shell doc-masthead-inner">
             <h1 className="display-black doc-title">Post a role.</h1>

@@ -126,6 +126,26 @@ const FIRMS_UNSORTED: Firm[] = [
     openRoles: 0,
   },
   {
+    slug: 'abe-asotie',
+    // No clean mark sourced yet — the only copy available was a low-resolution
+    // crop off a hiring flyer, which would look visibly worse than every other
+    // logo in the directory. Falls through to the monogram tile until a real
+    // download is found, same as CLP and ALP did before theirs were sourced.
+    logoFile: null,
+    name: 'Abe & Asotie LP',
+    shortName: 'Abe & Asotie',
+    tier: 'Boutique',
+    email: 'info@abeandasotie.com',
+    website: 'https://abeandasotie.com',
+    // No verified street-level address found; not guessed at, same rule as
+    // every other firm here.
+    offices: [{ city: 'Lagos', address: 'Lagos' }],
+    practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Tax', 'Oil & Gas', 'Intellectual Property', 'Employment Law', 'Real Estate'],
+    description: 'A full-service commercial firm launched in June 2024 by former University of Benin classmates Joshua Abe and Theokalus Asotie, built with ambitions to grow into a large pan-African practice.',
+    foundedYear: 2024,
+    openRoles: 0,
+  },
+  {
     slug: 'acas-law',
     logoFile: 'ACAS.jpg',
     name: 'ACAS-Law',
