@@ -21,8 +21,11 @@ import { Check, Copy, X } from 'lucide-react'
  * disliked pattern on the mobile web and the reason so many sites lose the
  * visit entirely.
  *
- * IT ASKS ONCE, EVER. The dismissal goes to localStorage. A note that reappears
- * every navigation is an advert.
+ * IT ASKS ONCE A SESSION. The dismissal goes to sessionStorage, so it is gone
+ * for the rest of the visit and back on the next one. A note that reappears on
+ * every navigation is an advert; one that is silenced forever after a single
+ * tap never reaches the visitor who dismissed it on a bus and came back later
+ * meaning to sit down with the board properly.
  *
  * IT WAITS FOR THE FIRST PAINT. Rendering this during hydration would push it
  * into the largest-contentful-paint window and let it flash on desktop before
@@ -36,12 +39,12 @@ const KEY = 'esquirely.smallscreen.v1'
    the same point, so below this is where the claim is actually true. */
 const QUERY = '(max-width: 900px)'
 
-/* Entry points only.
-   Home is where someone arrives, and the two auth pages are where they commit
-   to an account, so those are the three moments the note is worth making. On an
-   inner page it would interrupt work already in progress to tell the reader
-   something about the site rather than about what they are doing. */
-const ROUTES = ['/', '/auth/login', '/auth/signup']
+/* Everywhere but the auth pages.
+   Signing in is the one moment on the site with a keyboard up, a half-typed
+   password and a single thing to finish, and a sheet sliding in under it costs
+   accounts. Anyone arriving that way lands on home straight after, which is
+   where the note catches them instead, with nothing half-done in front of it. */
+const EXCLUDED = ['/auth/login', '/auth/signup']
 
 export default function SmallScreenNotice() {
   const pathname = usePathname()
@@ -50,11 +53,11 @@ export default function SmallScreenNotice() {
   const [leaving, setLeaving] = useState(false)
 
   useEffect(() => {
-    if (!pathname || !ROUTES.includes(pathname)) { setShow(false); return }
+    if (!pathname || EXCLUDED.includes(pathname)) { setShow(false); return }
     try {
-      if (window.localStorage.getItem(KEY)) return
+      if (window.sessionStorage.getItem(KEY)) return
     } catch {
-      // Private mode. Showing it once per session is an acceptable fallback.
+      // Private mode. Showing it on each page is an acceptable fallback.
     }
     if (!window.matchMedia(QUERY).matches) return
 
@@ -74,11 +77,11 @@ export default function SmallScreenNotice() {
    * The curve is ease-IN: barely moving at the start, quickest as it goes off
    * the bottom edge. That is the same shape as the footer's back-to-top, and it
    * is what makes a departure feel decisive instead of draggy. The remembering
-   * happens immediately, so a fast second visit cannot beat the animation and
-   * see the notice again.
+   * happens immediately, so a fast tap through to the next page cannot beat the
+   * animation and see the notice again.
    */
   function dismiss() {
-    try { window.localStorage.setItem(KEY, '1') } catch { /* nothing to do */ }
+    try { window.sessionStorage.setItem(KEY, '1') } catch { /* nothing to do */ }
 
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduce) { setShow(false); return }
