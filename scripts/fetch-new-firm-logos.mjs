@@ -187,10 +187,12 @@ const PICKS = {
  *                   variant anywhere on the site. A white logo on our cream
  *                   card is an invisible logo, so the monogram is the honest
  *                   result until someone supplies the art.
- *   abdulai-taiwo   abdulaitaiwo.com sets its name in TEXT, not art: the header
- *                   is <a class="navbar-brand">Abdulai Taiwo & Co</a>. There is
- *                   no logo file on the site to find, so the monogram is not a
- *                   failure here, it is the firm's own treatment. */
+ *   abdulai-taiwo   RESOLVED 2026-08-09 by hand, so this script no longer has
+ *                   anything to do for it. Nothing on abdulaitaiwo.com could
+ *                   have been fetched: the header sets the name as text in
+ *                   <a class="navbar-brand">, favicon.ico is a zero byte file,
+ *                   and every image on the site is stock photography. The
+ *                   wordmark came from elsewhere and was processed by hand. */
 
 /** GET that tolerates an expired certificate, for the one host that has one. */
 function getInsecure(url, headers) {

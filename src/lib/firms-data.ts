@@ -187,9 +187,15 @@ const LOCAL_ONLY_LOGO = new Set([
   // Chris Ogunbanjo trips the LIGHT check at lum 186 and is deliberately kept:
   // it is a pale blue device, not reversed artwork, and it reads fine on cream.
   //
-  // abdulai-taiwo is NOT here and keeps its monogram. That is not a gap waiting
-  // to be filled: abdulaitaiwo.com sets the firm's name as text rather than as
-  // art, so there is no mark to fetch.
+  // abdulai-taiwo was the one firm with no mark anywhere. Their own site sets
+  // the name as text, their favicon.ico is a zero byte file, and every image on
+  // the site is stock photography. The wordmark here was supplied by hand on
+  // 2026-08-09, as lekan-bamidele's was. Processing it needed one step the
+  // fetch script does not do: the file carries a thin grey rule around the art,
+  // which survives white keying and then defeats a crop to the ink, since the
+  // rule becomes the outermost opaque thing in the frame. Four pixels off each
+  // edge first, then key, then crop to the alpha bounding box.
+  'abdulai-taiwo',
   'babalakin',
   'solola-akpana',
   'advocaat',
@@ -1803,6 +1809,46 @@ export const FIRM_RANKINGS: Record<string, FirmRankings> = {
     iflr: { band: 'Ranked', year: 2026 },
     emea: { band: 'Tier 3', year: 2026, areas: ['Banking, finance and capital markets'] }, // listed as ALP NG & Company
   },
+
+  /* ———————————————————————————————————————————————————————————————————————
+   * Read 9 August 2026, off the guides themselves rather than from memory.
+   *
+   * Sources, so the next person can re-check the same way: the six Legal 500
+   * EMEA Nigeria tables at legal500.com/c/nigeria (banking finance and capital
+   * markets, commercial corporate and M&A, dispute resolution, energy and
+   * natural resources, real estate and construction, shipping and transport),
+   * and the Chambers Global 2026 Nigeria tables at chambers.com/legal-rankings.
+   *
+   * A warning for whoever does this next. Chambers publishes the same content
+   * as a Nigeria PDF, and parsing it looked like the fast route to all of it at
+   * once. It is not. The PDF is flowing profile prose rather than a table, so
+   * band markers do not reliably attach to the firm beside them: a parse of it
+   * put Babalakin in Band 1 for Dispute Resolution when the web table says
+   * Band 2. Use the web tables. They are structured and they are right.
+   * ——————————————————————————————————————————————————————————————————————— */
+
+  /* Solola & Akpana is not repeated here. It was already recorded above at
+     Band 4 for Dispute Resolution, and today's reading of the same table
+     agreed with it, which is the outcome you want from a re-check. */
+  'babalakin':      { chambers: { band: 'Band 2', year: 2026, areas: ['Dispute Resolution'] } },
+  /* A boutique in Band 2 alongside ǼLEX, G. Elias and Udo Udoma, which is the
+     single most interesting fact about this firm and the reason its record
+     says energy is the whole proposition. */
+  'enr-advisory':   { chambers: { band: 'Band 2', year: 2026, areas: ['Projects & Energy'] } },
+
+  /* Tier 2 in three tables and Tier 3 in two more. Only the Tier 2 areas are
+     listed, per the rule at the top of this file: banking, finance and capital
+     markets and energy and natural resources are both Tier 3 and would read as
+     though they shared the higher band. */
+  'abdulai-taiwo':  { emea: { band: 'Tier 2', year: 2026, areas: ['Commercial, corporate and M&A', 'Shipping and transport', 'Real estate and construction'] } },
+  'pinheiro':       { emea: { band: 'Tier 4', year: 2026, areas: ['Dispute resolution'] } },
+
+  /* CHECKED AND NOT FOUND, so nobody spends the afternoon looking again.
+   * Kenna Partners, Paul Usoro & Co, Olisa Agbakoba Legal and Afe Babalola & Co
+   * appear in none of the six Legal 500 Nigeria tables and none of the Chambers
+   * Nigeria tables read on 9 August 2026. Paul Usoro SAN is ranked by Chambers
+   * as an individual, which is a different thing from the firm being ranked and
+   * is not what this table records. Absent stays absent. */
 }
 
 /** Alphabetical by firm name. Every consumer reads from here.

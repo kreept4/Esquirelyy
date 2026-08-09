@@ -13,6 +13,8 @@
  * has to replace; nothing else imports the array.
  */
 
+import { ALL_FIRMS } from '@/lib/firms-data'
+
 export type NewsKind = 'update' | 'tip' | 'news'
 
 /**
@@ -61,8 +63,6 @@ export interface NewsItem {
 }
 
 /** Label shown on a slide. Kept here so the carousel and the news page agree. */
-import { ALL_FIRMS, FIRM_RANKINGS } from '@/lib/firms-data'
-
 export const KIND_LABEL: Record<NewsKind, string> = {
   update: "What's new",
   tip: 'Did you know',
@@ -94,7 +94,14 @@ const ITEMS: NewsItem[] = [
        themselves in one. The slide says whose rankings these are twice, in the
        title and again in the last line, because that is the sentence a student
        needs to weigh the badge and it is the one a skimmed slide would drop. */
-    title: `Independent rankings on ${Object.keys(FIRM_RANKINGS).length} firms`,
+    /* Counted off ALL_FIRMS, not off Object.keys(FIRM_RANKINGS).
+       Those two numbers are the same today and are not guaranteed to be. The
+       rankings table is keyed by slug and, by its own design, a slug in it that
+       matches no firm is ignored rather than throwing, so a single typo would
+       silently inflate this headline while the badge it promises appears
+       nowhere. Counting the firms that actually resolve a ranking means the
+       number can only ever describe badges a reader can go and find. */
+    title: `Independent rankings on ${ALL_FIRMS.filter(f => f.rankings).length} firms`,
     summary:
       'Chambers, IFLR1000 and The Legal 500 EMEA, 2026 editions, read and put on the profiles: the band, the edition, and the practice areas it was earned in. We do not rank firms ourselves, and no firm can pay its way into any of the three.',
     href: '/firms',
