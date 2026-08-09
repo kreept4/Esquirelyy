@@ -32,6 +32,7 @@ export default function OnboardingPage() {
   const [city, setCity] = useState('')
   const [saving, setSaving] = useState(false)
   const [direction, setDirection] = useState<'forward' | 'back'>('forward')
+  const [showEmailNudge, setShowEmailNudge] = useState(false)
 
   function next() {
     setDirection('forward')
@@ -57,7 +58,8 @@ export default function OnboardingPage() {
         updated_at: new Date().toISOString(),
       })
     }
-    router.push('/jobs')
+    setSaving(false)
+    setShowEmailNudge(true)
   }
 
   const questions = [
@@ -190,6 +192,90 @@ export default function OnboardingPage() {
           </div>
 
         </div>
+      </div>
+
+      {showEmailNudge && <EmailNudgeModal onContinue={() => router.push('/jobs')} />}
+    </div>
+  )
+}
+
+function EmailNudgeModal({ onContinue }: { onContinue: () => void }) {
+  return (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 300,
+        backgroundColor: 'rgba(139,58,58,0.45)',
+        backdropFilter: 'blur(4px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '1rem',
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: '#FAF7F2',
+          border: '0.5px solid #E8E0D5',
+          borderRadius: '4px',
+          padding: '2.5rem 2.25rem',
+          width: '100%',
+          maxWidth: '440px',
+          textAlign: 'center',
+        }}
+      >
+        <div
+          style={{
+            width: '52px',
+            height: '52px',
+            borderRadius: '50%',
+            backgroundColor: '#F2EBE1',
+            border: '0.5px solid #E8D5C4',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1.5rem',
+          }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B3A3A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 4h16v16H4z" />
+            <path d="m4 6 8 7 8-7" />
+          </svg>
+        </div>
+
+        <h2 style={{ fontFamily: 'Playfair Display, Georgia, serif', fontSize: '1.4rem', fontWeight: 700, color: '#1A1A1A', marginBottom: '0.85rem', lineHeight: 1.25 }}>
+          We left something in your inbox.
+        </h2>
+        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.88rem', color: '#4A4A4A', lineHeight: 1.7, marginBottom: '0.5rem' }}>
+          A quick note is on its way to help you get around Esquirely, find roles faster, and make the most of your account.
+        </p>
+        <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.88rem', color: '#4A4A4A', lineHeight: 1.7, marginBottom: '2rem' }}>
+          Don't see it yet? Check your Spam or Promotions folder, it sometimes ends up there before it settles into your main inbox.
+        </p>
+
+        <button
+          onClick={onContinue}
+          style={{
+            width: '100%',
+            padding: '0.85rem',
+            backgroundColor: '#8B3A3A',
+            color: '#FAF6F0',
+            border: 'none',
+            borderRadius: '2px',
+            fontFamily: 'DM Sans, sans-serif',
+            fontSize: '0.78rem',
+            fontWeight: 600,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s ease',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#7A2E2E' }}
+          onMouseLeave={e => { e.currentTarget.style.backgroundColor = '#8B3A3A' }}
+        >
+          Take me to jobs
+        </button>
       </div>
     </div>
   )
