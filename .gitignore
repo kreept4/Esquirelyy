@@ -38,3 +38,7 @@ firm-addresses.json
 # pulled from the database to exercise the generator against actual data.
 # Personal information: generated locally, never committed.
 scripts/fixtures/
+
+# Agent notifier fallback log. Local record of what the agents would have sent;
+# never a commit, since it holds run output rather than source.
+.notify-log.ndjson
