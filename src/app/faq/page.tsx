@@ -1,4 +1,4 @@
-import { openGraph } from '@/components/seo/JsonLd'
+import JsonLd, { SITE_URL, breadcrumb, openGraph } from '@/components/seo/JsonLd'
 import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/layout/PageHeader'
 import Link from 'next/link'
@@ -11,18 +11,31 @@ export const metadata = {
   openGraph: openGraph({ path: '/faq' }),
 }
 
-/* ⚠ FAQPage SCHEMA IS NOT HERE YET, AND THIS PAGE IS THE BEST CANDIDATE ON THE
- * SITE FOR IT. Twenty two real questions with substantive answers, already in
- * the HTML rather than behind a click, already anchored. What blocks it is that
- * every `a` below is a React node rather than a string, and schema needs text.
+/* THE `short` FIELD, WHICH IS WHY THIS TYPE HAS TWO ANSWERS IN IT.
  *
- * The fix is a `short` field on QA carrying a plain-text answer of under about
- * forty five words, which the schema is generated from. That is not a
- * workaround, it is the same discipline an answer engine rewards: extraction
- * takes the first coherent span under a heading, so the sentence that answers
- * the question has to come before the sentence that qualifies it. Writing the
- * twenty two shorts is content work, not plumbing, which is why it is a
- * separate commit rather than a line here. */
+ * `a` is a React node and schema needs text, so every question carries a
+ * plain-text answer of under about forty five words that the FAQPage block is
+ * generated from. Stringifying the nodes was the obvious alternative and is
+ * worse: it would emit three paragraphs of qualification into a field a
+ * consumer shows as one, and it would silently change the markup every time
+ * somebody edited a sentence of prose.
+ *
+ * Writing them separately is not a workaround, it is the discipline the format
+ * rewards. Extraction takes the first coherent span it finds, so the sentence
+ * that answers the question has to come before the sentence that qualifies it.
+ * "Not the file" leads; what we do keep follows. Read the shorts in order and
+ * they are also the best summary of the product that exists anywhere in this
+ * repo, which is a fair test of whether they are honest.
+ *
+ * ⚠ A `short` MAY NEVER CLAIM MORE THAN ITS `a` DOES. Same rule as the firm
+ * schema: the gap between markup and page is what Google issues manual actions
+ * for, and here it would also be a promise to a reader that the page then
+ * breaks. If you edit an answer, edit its short in the same commit.
+ *
+ * THREE QUESTIONS WERE REWORDED TO STAND ALONE. "Are these checked?", "How
+ * current are they?" and "My question is not here." all read fine under a
+ * heading and mean nothing extracted on their own, which is the state a
+ * question in this block is served in. They now name their subject. */
 
 /**
  * Frequently asked questions.
@@ -45,7 +58,7 @@ export const metadata = {
  * again, this answer and clause 2 of the privacy notice move together.
  */
 
-type QA = { q: string; a: React.ReactNode }
+type QA = { q: string; a: React.ReactNode; short: string }
 type Group = { heading: string; items: QA[] }
 
 /** Anchor id from a heading, so the index and the sections cannot drift apart. */
@@ -58,6 +71,10 @@ const GROUPS: Group[] = [
     items: [
       {
         q: 'Do you keep my CV?',
+        short:
+          'Not the file. It is read in memory and then discarded, never written to disk. We do ' +
+          'save what the tools write: your review, and any CV generated for you. Both sit against ' +
+          'your account, are private, and can be deleted.',
         a: (
           <>
             <p>
@@ -84,6 +101,10 @@ const GROUPS: Group[] = [
       },
       {
         q: 'What happens to a CV the generator writes for me?',
+        short:
+          'It is saved against your account so you can download it again, and it appears in your ' +
+          'history. Nobody else sees it and it is never sent to employers. It is also yours ' +
+          'outright: we claim no ownership and no licence over it.',
         a: (
           <>
             <p>
@@ -101,6 +122,10 @@ const GROUPS: Group[] = [
       },
       {
         q: 'Can I delete a saved review or a generated CV without deleting my account?',
+        short:
+          'Yes, and no reason is needed. There is no delete button in the history drawer yet, so ' +
+          'for now it takes an email rather than a click. That is slower than it should be and ' +
+          'is on the list to fix.',
         a: (
           <p>
             Yes. Tell us which one and it goes, and you do not have to give a reason. There is no
@@ -111,6 +136,10 @@ const GROUPS: Group[] = [
       },
       {
         q: 'Is my CV used to train an AI model?',
+        short:
+          'No. Your CV goes to Anthropic’s API to produce your review or to write your new ' +
+          'CV, and is not used to train any model. We do not sell, share or license anything you ' +
+          'upload, or anything the tools write for you.',
         a: (
           <p>
             No. Your CV goes to Anthropic&rsquo;s API to produce your review or to write your new
@@ -121,6 +150,10 @@ const GROUPS: Group[] = [
       },
       {
         q: 'Can I delete my account and everything in it?',
+        short:
+          'Yes, from a button on your account page, without asking us. It takes every review, ' +
+          'generated CV, cover letter, interview session and tracker entry with it. Deletion runs ' +
+          '30 days later rather than straight away, and signing in during those 30 days cancels it.',
         a: (
           <>
             <p>
@@ -146,6 +179,10 @@ const GROUPS: Group[] = [
     items: [
       {
         q: 'Where do the listings come from?',
+        short:
+          'From the firms and employers themselves, and from the recruiters they use. We link ' +
+          'straight to the original posting or application address, so you apply to the employer ' +
+          'rather than to us. We do not repost adverts in full.',
         a: (
           <p>
             From the firms and employers themselves, and from the recruiters they use. We link
@@ -155,7 +192,11 @@ const GROUPS: Group[] = [
         ),
       },
       {
-        q: 'How current are they?',
+        q: 'How current are the listings?',
+        short:
+          'Roles come off the board once their deadline passes. Anything marked rolling has no ' +
+          'stated deadline and is reviewed as it arrives. If you find something stale, tell us ' +
+          'and it goes.',
         a: (
           <p>
             Roles come off the board once their deadline passes. Anything marked rolling has no
@@ -166,6 +207,10 @@ const GROUPS: Group[] = [
       },
       {
         q: 'Why are there so few internships?',
+        short:
+          'Because Nigerian firms almost never advertise them. Placements and attachments here ' +
+          'are arranged by writing to the firm directly, and a good speculative letter is how ' +
+          'most students get in. Every profile in the firms directory carries an address for that.',
         a: (
           <p>
             Because Nigerian firms almost never advertise them. Placements and attachments here are
@@ -177,6 +222,10 @@ const GROUPS: Group[] = [
       },
       {
         q: 'How does a firm get into the directory?',
+        short:
+          'On merit and on demand, never for payment. Nobody has paid to appear and nobody can ' +
+          'pay to rank higher. Details come from each firm’s own site where it is reachable, ' +
+          'and from published legal directories where it is not.',
         a: (
           <p>
             We add firms on merit and on demand, not for payment. Nobody has paid to appear, and
@@ -187,6 +236,9 @@ const GROUPS: Group[] = [
       },
       {
         q: 'I run a firm. How do I post a role?',
+        short:
+          'Send it to us and we will list it. There is no charge, and no account is needed at ' +
+          'the moment.',
         a: (
           <p>
             Send it to us and we will list it. There is no charge and no account needed at the
@@ -201,6 +253,10 @@ const GROUPS: Group[] = [
     items: [
       {
         q: 'What do the CV, cover letter and interview tools actually do?',
+        short:
+          'They read what you give them and write back something specific: a scored CV review ' +
+          'with your own bullets rewritten, a cover letter for a named role at a named employer, ' +
+          'and interview questions with a critique of your answers. All are tuned to Nigeria.',
         a: (
           <>
             <p>
@@ -219,6 +275,10 @@ const GROUPS: Group[] = [
       },
       {
         q: 'What is the difference between reviewing a CV and generating one?',
+        short:
+          'A review tells you what is wrong and shows you stronger versions of your own lines, ' +
+          'and you edit your CV yourself. Generating writes the whole document for you, formatted ' +
+          'to survive an applicant tracking system, and hands you a Word file and a PDF.',
         a: (
           <>
             <p>
@@ -236,6 +296,10 @@ const GROUPS: Group[] = [
       },
       {
         q: 'Will a generated CV get me past the ATS?',
+        short:
+          'It is built to: standard headings, clean dates, no tables, no columns, no graphics and ' +
+          'a real text layer. But those systems are numerous, private and change without notice, ' +
+          'so nobody can honestly guarantee a given employer’s software will parse a given file.',
         a: (
           <p>
             It is built to. Standard headings, clean dates, no tables, no columns, no graphics, and a
@@ -248,6 +312,9 @@ const GROUPS: Group[] = [
       },
       {
         q: 'Why does the CV review take so long?',
+        short:
+          'Because it reads the whole document and writes several hundred words back. Expect ' +
+          'somewhere under a minute. If it fails, it will tell you why rather than spinning.',
         a: (
           <p>
             Because it reads the whole document and writes several hundred words back. Expect
@@ -257,13 +324,24 @@ const GROUPS: Group[] = [
       },
       {
         q: 'Do I need an account?',
+        short:
+          'Yes, for almost everything. The jobs board, scholarships, the news page and all three ' +
+          'tools sit behind sign-in. The firms directory, the home page, this page, about, contact ' +
+          'and the legal pages stay open. An account is free and takes an email address.',
         a: (
           <>
+            {/* The firms directory used to be named in this list, and it stopped
+                being true when /firms came out from behind the gate. A FAQ that
+                tells a reader they need an account for the page they are one
+                click from reading for free is worse than no FAQ, because it is
+                the answer they will believe. If PUBLIC_PATHS in middleware.ts
+                changes again, this sentence and its short change with it. */}
             <p>
-              Yes, for almost everything. The jobs board, the firms directory, scholarships, the news
-              page and all three tools sit behind sign-in. What stays open is this page, the home
-              page, about, contact, the ambassador terms, the page for employers who want to list a
-              role, and the privacy and terms pages.
+              Yes, for almost everything. The jobs board, scholarships, the news page and all three
+              tools sit behind sign-in. What stays open is the{' '}
+              <Link href="/firms">firms directory</Link>, this page, the home page, about, contact,
+              the ambassador terms, the page for employers who want to list a role, and the privacy
+              and terms pages.
             </p>
             <p>
               It is free, it takes an email address, and it is there so your tracker, your saved
@@ -274,6 +352,9 @@ const GROUPS: Group[] = [
       },
       {
         q: 'Should I send what the tool writes without reading it?',
+        short:
+          'No. It is a draft and a second opinion, not a signature. Read it, cut what is not true ' +
+          'of you, and keep your own voice. Anything you send goes out under your name.',
         a: (
           <p>
             No. It is a draft and a second opinion, not a signature. Read it, cut what is not true
@@ -287,7 +368,11 @@ const GROUPS: Group[] = [
     heading: 'Scholarships',
     items: [
       {
-        q: 'Are these checked?',
+        q: 'Are the scholarships checked?',
+        short:
+          'Yes. Each one was verified against the provider’s own page, and every entry has to be ' +
+          'open to law. That last requirement rules out most of what the general “scholarships ' +
+          'for African students” lists carry, because they restrict by subject and fund STEM.',
         a: (
           <p>
             Each one was verified against the provider&rsquo;s own page, and every entry has to be
@@ -298,7 +383,10 @@ const GROUPS: Group[] = [
         ),
       },
       {
-        q: 'A deadline looks wrong.',
+        q: 'A scholarship deadline looks wrong.',
+        short:
+          'Cycles move every year. We recheck each term and mark entries open, upcoming or closed, ' +
+          'but the provider’s own page is always the authority. Tell us when you spot a change.',
         a: (
           <p>
             Cycles move every year. We recheck each term and mark entries open, upcoming or closed,
@@ -313,6 +401,9 @@ const GROUPS: Group[] = [
     items: [
       {
         q: 'What does it cost?',
+        short:
+          'Nothing. Everything on Esquirely is free to use right now. If that ever changes, it ' +
+          'will change with notice, and anything you have already saved stays yours.',
         a: (
           <p>
             Nothing. Everything on Esquirely is free to use right now. If that ever changes, it will
@@ -322,6 +413,10 @@ const GROUPS: Group[] = [
       },
       {
         q: 'Can you get me a job?',
+        short:
+          'No, and be wary of anyone who says otherwise. We can put the openings in one place, ' +
+          'tell you what a firm does before you apply, and make your application read better. ' +
+          'The application is still yours to make, the decision still theirs.',
         a: (
           <p>
             No, and be wary of anyone who says otherwise. We can put the openings in one place, tell
@@ -331,7 +426,10 @@ const GROUPS: Group[] = [
         ),
       },
       {
-        q: 'Who is behind this?',
+        q: 'Who is behind Esquirely?',
+        short:
+          'Esquirely is built in Abuja by Nigerian lawyers. The people behind it are named on the ' +
+          'about page.',
         a: (
           <p>
             Esquirely is built in Abuja by Nigerian lawyers. The people behind it are named on
@@ -340,7 +438,10 @@ const GROUPS: Group[] = [
         ),
       },
       {
-        q: 'My question is not here.',
+        q: 'What if my question is not answered here?',
+        short:
+          'Then ask it. We would rather answer it once here than have fifty people wonder the ' +
+          'same thing.',
         a: (
           <p>
             Then ask it. We would rather answer it once here than have fifty people wonder the same
@@ -352,9 +453,72 @@ const GROUPS: Group[] = [
   },
 ]
 
+/**
+ * The FAQ, stated for machines.
+ *
+ * WHAT THIS IS AND IS NOT WORTH. It will almost certainly not draw an expanding
+ * FAQ block in a Google result: that treatment was restricted in August 2023 to
+ * well-known government and health sites, and a legal careers directory in
+ * Nigeria is not getting it. Anyone selling FAQ schema on the promise of rich
+ * results is selling a 2022 product.
+ *
+ * It is here for the other consumer. Twenty two question-and-answer pairs in a
+ * declared format is the single most retrievable shape a page can have, and the
+ * questions are the literal sentences somebody types into an assistant: what
+ * does it cost, do you keep my CV, can you get me a job. An assistant answering
+ * one of those about Esquirely either quotes this block or invents something.
+ * Given the third question is whether we are a job guarantee, the difference
+ * between those two outcomes is worth a JSON blob.
+ *
+ * Built from `short`, never from `a`. See the note above the QA type.
+ *
+ * The answers sit inside collapsed <details>, which is allowed: the requirement
+ * is that the text is in the HTML, not that it is visible without a click, and
+ * <details> ships its content either way. That is the same property that made
+ * the element the right choice for readers, and it is why this page could carry
+ * schema at all without being rebuilt.
+ */
+function faqSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    '@id': `${SITE_URL}/faq#faq`,
+    url: `${SITE_URL}/faq`,
+    name: 'Esquirely FAQ',
+    inLanguage: 'en-NG',
+    isPartOf: { '@id': `${SITE_URL}/#website` },
+    mainEntity: GROUPS.flatMap(group =>
+      group.items.map(item => ({
+        '@type': 'Question',
+        name: item.q,
+        answerCount: 1,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: item.short,
+          /* The section anchor rather than the bare page, so a consumer that
+             cites one answer links a reader to the part of the page it came
+             from. Only the five group headings are anchored, which is why this
+             is the group's id and not the question's: pointing at an id the
+             page does not have would be worse than pointing at the page. */
+          url: `${SITE_URL}/faq#${slug(group.heading)}`,
+        },
+      }))
+    ),
+  }
+}
+
 export default function FAQPage() {
   return (
     <>
+      <JsonLd
+        data={[
+          faqSchema(),
+          breadcrumb([
+            { name: 'Home', path: '/' },
+            { name: 'FAQ', path: '/faq' },
+          ]),
+        ]}
+      />
       <main className="page-main">
         <PageHeader
           tone="ink"
