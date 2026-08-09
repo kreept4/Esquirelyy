@@ -14,16 +14,36 @@
     its edge against both light and dark tab bars, and it is the colour the site
     already uses for its own mastheads.
 
+    A ROUND PIP, NOT A SQUIRCLE, AND THE E FILLS IT. This was a 6px-radius tile
+    with a small E floating in the middle of it, which is the shape that loses
+    twice. Google renders a favicon into a circle beside a search result and
+    most chat clients do the same beside a pasted link, so the rounded square
+    was being cropped to a circle anyway — by someone else, at their radius,
+    with the corners of the ground thrown away. Drawing the circle here means
+    the crop is a no-op rather than a surprise. The letter then grew from 15×18
+    to 18×20 to sit in it properly: at pip size the mark has one job, which is
+    to be recognisably an E, and the old margin was spending a third of the
+    area on nothing.
+
+    THE LETTER STAYS OFF THE CROP EDGE. Its corners sit about 13.5 units from
+    the centre against a radius of 16, so there is roughly a pixel and a quarter
+    of clearance at 16px. That margin is the reason the E is 18 wide and not the
+    22 it could geometrically be: a consumer that insets the icon slightly, and
+    several do, would otherwise shave the arms.
+
     THE MIDDLE ARM IS SHORT AND THE OUTER TWO ARE FULL, which is the standard
     grotesque E and the reason this reads as a letter rather than as a bar
-    chart. The 3px gaps are the smallest that survive a downscale to 16: at 2px
-    the arms bleed together and the mark turns into a filled block.
+    chart. It is 13 of 18 here against 11 of 15 before, so the proportion is
+    unchanged. The gaps between arms went from 3px to 4px in the rescale, which
+    is margin in the right direction: 3 was the documented floor for surviving a
+    downscale to 16, where the arms bleed together and the mark turns into a
+    filled block.
   -->
-  <rect width="32" height="32" rx="6" fill="#FBBF24"/>
+  <circle cx="16" cy="16" r="16" fill="#FBBF24"/>
   <g fill="#241F16">
-    <rect x="9" y="7"  width="4"  height="18" rx="1"/>
-    <rect x="9" y="7"  width="15" height="4"  rx="1"/>
-    <rect x="9" y="14" width="11" height="4"  rx="1"/>
-    <rect x="9" y="21" width="15" height="4"  rx="1"/>
+    <rect x="7" y="6"  width="4"  height="20" rx="1"/>
+    <rect x="7" y="6"  width="18" height="4"  rx="1"/>
+    <rect x="7" y="14" width="13" height="4"  rx="1"/>
+    <rect x="7" y="22" width="18" height="4"  rx="1"/>
   </g>
 </svg>

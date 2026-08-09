@@ -45,18 +45,30 @@ export default async function Image() {
         }}
       >
         {/* The wordmark, set as the tile plus the name so the favicon and the
-            share card are visibly the same object. */}
+            share card are visibly the same object.
+
+            ROUND, AND THE LETTER SET LARGE, TRACKING icon.svg. That file is now
+            a circular pip with the E filling it, and this tile is the only
+            other place the mark is drawn. The two have to move together or the
+            claim in the line above stops being true — a share card and the
+            favicon of the same link sit inches apart in a chat client, which is
+            the one place a mismatch is unmissable.
+
+            Still set as text here rather than as the favicon's four rects,
+            because this renderer has a real font and the constraint that forced
+            rects on the favicon does not apply. 42 rather than 34 puts the cap
+            height at about the same fraction of the circle as the drawn E. */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           <div
             style={{
               width: 52,
               height: 52,
-              borderRadius: 10,
+              borderRadius: 999,
               backgroundColor: '#FBBF24',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 34,
+              fontSize: 42,
               fontWeight: 700,
               color: '#191510',
             }}

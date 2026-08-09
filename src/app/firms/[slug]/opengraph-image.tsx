@@ -57,14 +57,17 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
           <div
             style={{
+              /* Round and set large, tracking icon.svg and the site card. See
+                 the note beside the same tile in src/app/opengraph-image.tsx:
+                 the mark is drawn in three places and they move together. */
               width: 44,
               height: 44,
-              borderRadius: 9,
+              borderRadius: 999,
               backgroundColor: '#FBBF24',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 29,
+              fontSize: 36,
               fontWeight: 700,
               color: '#191510',
             }}
