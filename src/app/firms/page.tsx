@@ -85,28 +85,65 @@ function FirmAvatar({ firm }: { firm: { slug: string; logoFile?: string | null; 
 
 const SearchIcon = () => (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>)
 /**
- * The card-foot marks are solid, not stroked, and that is the whole change.
+ * The card-foot marks. Solid, and drawn to geometry rather than sketched.
  *
- * Both of these were the stock stroked icons at 11px, which is the size at
- * which a 2-unit stroke on a 24 viewBox lands under one device pixel. The pin
- * lost its point and read as a faint ◎; the briefcase's lid line and body
- * outline merged. Two grey smudges before the only two facts on the row.
+ * They were stock stroked icons once, which at this size is hopeless: a 2-unit
+ * stroke on a 24 viewBox lands under one device pixel, so the pin lost its
+ * point and read as a faint ◎ and the briefcase's lid line merged with its
+ * body. Filling them fixed legibility and left them looking generic, which is
+ * the state this replaces. Both are now constructed, and the construction is
+ * written down because it is the part that is easy to lose in a later edit.
  *
- * The instinct is to draw something more detailed. That is the wrong lever at
- * this size — every extra line is another sub-pixel to smear. Weight is the
- * right one: a filled silhouette is legible down to about 9px because the
- * shape survives even when nothing inside it does. So the pin is a solid
- * teardrop with the hole KNOCKED OUT rather than stroked (evenodd, so the
- * cream shows through and the mark stays one path), and the briefcase is a
- * solid body with a separate handle instead of a rectangle plus a lid line.
+ * THE PIN is a true teardrop, not a rounded blob with a spike. A circle of
+ * r 6.5 centred at (12, 9.5), an apex at (12, 21.8), and the two flanks are the
+ * actual TANGENTS from that apex to that circle. Tangency is the whole trick:
+ * where a hand-drawn curve meets the point there is always a slight shoulder or
+ * a kink, and at 12px a kink is a blurred pixel. A tangent meets the circle at
+ * exactly one point with no change of direction, so the silhouette runs
+ * unbroken from tip to bulb. Contact points fall at (6.53, 13.02) and
+ * (17.47, 13.02), from cos θ = r/d with d = 12.
  *
- * Kept as a pair on purpose. They sit 1rem apart on the same row, so one
- * solid and one stroked would read as two different icon sets rather than as
- * a considered choice. The 15px SearchIcon above is left stroked — at that
- * size the stroke resolves, and it belongs to the filter bar, not to this row.
+ * THE HOLE is knocked out with evenodd rather than drawn in the page colour, so
+ * the mark stays a single path and works on cream, on the carton panels and on
+ * ink without carrying a fill that has to match its ground.
+ *
+ * THE BRIEFCASE gets shoulders on its handle and a knocked-out clasp. The old
+ * one was a plain rounded rectangle with a bar floating over it, which is the
+ * shape of a suitcase in a stock icon set and not of a case a lawyer carries.
+ * The handle now steps down into the body instead of hovering, and the clasp is
+ * a knocked-out pill on the centre line. One interior detail is the limit at
+ * this size; two would smear into a grey band.
+ *
+ * SIZE went from 11 to 12. At 11 the pin's hole was landing on 1.3 device
+ * pixels and closing up on non-retina screens, which is what made it read as a
+ * solid lump. 12 buys the hole a clean pixel and a half and costs nothing in
+ * the row's rhythm.
+ *
+ * Kept as a matched pair on purpose: same optical weight, same corner radius
+ * family, same one-interior-detail rule. They sit 1rem apart on the same row,
+ * so any mismatch between them reads as two icon sets. The 15px SearchIcon
+ * above stays stroked, because at 15px a stroke resolves and it belongs to the
+ * filter bar rather than to this row.
  */
-const MapPinIcon = () => (<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path fillRule="evenodd" clipRule="evenodd" d="M12 1.5a8.5 8.5 0 0 0-8.5 8.5c0 3.2 2 6.4 4 8.7a30 30 0 0 0 4.1 3.9.7.7 0 0 0 .8 0 30 30 0 0 0 4.1-3.9c2-2.3 4-5.5 4-8.7A8.5 8.5 0 0 0 12 1.5Zm0 5.9a2.9 2.9 0 1 1 0 5.8 2.9 2.9 0 0 1 0-5.8Z"/></svg>)
-const BriefcaseIcon = () => (<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M9.5 2.5h5A3 3 0 0 1 17.5 5.5V7h-2.4V5.8a1 1 0 0 0-1-1h-4.2a1 1 0 0 0-1 1V7H6.5V5.5a3 3 0 0 1 3-3Z"/><rect x="2" y="8.2" width="20" height="13.3" rx="2.6"/></svg>)
+const MapPinIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M6.53 13.02A6.5 6.5 0 1 1 17.47 13.02L12 21.8Z M12 6.6a2.9 2.9 0 1 0 0 5.8 2.9 2.9 0 0 0 0-5.8Z"
+    />
+  </svg>
+)
+const BriefcaseIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <path d="M9.9 2.6h4.2a2.5 2.5 0 0 1 2.5 2.5v2h-2.1V5.4a.8.8 0 0 0-.8-.8h-3.4a.8.8 0 0 0-.8.8v1.7H7.4v-2a2.5 2.5 0 0 1 2.5-2.5Z" />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M4.6 7.9h14.8A2.6 2.6 0 0 1 22 10.5v8.4a2.6 2.6 0 0 1-2.6 2.6H4.6A2.6 2.6 0 0 1 2 18.9v-8.4a2.6 2.6 0 0 1 2.6-2.6Zm5.9 5.3a.95.95 0 0 0 0 1.9h3a.95.95 0 0 0 0-1.9h-3Z"
+    />
+  </svg>
+)
 const XIcon = () => (<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>)
 
 export default function FirmsPage() {
