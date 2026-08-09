@@ -1,9 +1,12 @@
+import { openGraph } from '@/components/seo/JsonLd'
 import Link from 'next/link'
 import LegalPage, { Clause } from '@/components/layout/LegalPage'
 
 export const metadata = {
   title: 'Privacy Policy',
   description: 'What Esquirely collects, why, who it is shared with, and your rights under the Nigeria Data Protection Act 2023.',
+  alternates: { canonical: '/privacy' },
+  openGraph: openGraph({ path: '/privacy' }),
 }
 
 /**

@@ -1,3 +1,4 @@
+import { openGraph } from '@/components/seo/JsonLd'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 
@@ -5,6 +6,8 @@ export const metadata = {
   title: 'Contact',
   description:
     'How to reach Esquirely: corrections to a listing, questions about your data, partnership enquiries, and where to send a role.',
+  alternates: { canonical: '/contact' },
+  openGraph: openGraph({ path: '/contact' }),
 }
 
 /**

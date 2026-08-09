@@ -1,3 +1,4 @@
+import { openGraph } from '@/components/seo/JsonLd'
 import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/layout/PageHeader'
 import Link from 'next/link'
@@ -6,7 +7,22 @@ export const metadata = {
   title: 'FAQ',
   description:
     'Straight answers about how Esquirely works: what happens to your CV, where the listings come from, what it costs, and what we cannot do for you.',
+  alternates: { canonical: '/faq' },
+  openGraph: openGraph({ path: '/faq' }),
 }
+
+/* ⚠ FAQPage SCHEMA IS NOT HERE YET, AND THIS PAGE IS THE BEST CANDIDATE ON THE
+ * SITE FOR IT. Twenty two real questions with substantive answers, already in
+ * the HTML rather than behind a click, already anchored. What blocks it is that
+ * every `a` below is a React node rather than a string, and schema needs text.
+ *
+ * The fix is a `short` field on QA carrying a plain-text answer of under about
+ * forty five words, which the schema is generated from. That is not a
+ * workaround, it is the same discipline an answer engine rewards: extraction
+ * takes the first coherent span under a heading, so the sentence that answers
+ * the question has to come before the sentence that qualifies it. Writing the
+ * twenty two shorts is content work, not plumbing, which is why it is a
+ * separate commit rather than a line here. */
 
 /**
  * Frequently asked questions.

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!--
+    The favicon, which the site did not have.
+
+    DRAWN AS RECTS, NOT SET AS TEXT. A <text> element in a favicon renders in
+    whatever face the consumer happens to resolve, and the consumers here are a
+    browser tab, a bookmark bar, a WhatsApp link preview and an Android home
+    screen. Four different renderers, no guarantee any of them has Schibsted
+    Grotesk, and a fallback serif would read as a different brand. Four
+    rectangles render identically everywhere.
+
+    AMBER GROUND RATHER THAN INK. At 16 device pixels a dark tile disappears
+    into a dark browser chrome and reads as an empty favicon slot. Amber holds
+    its edge against both light and dark tab bars, and it is the colour the site
+    already uses for its own mastheads.
+
+    THE MIDDLE ARM IS SHORT AND THE OUTER TWO ARE FULL, which is the standard
+    grotesque E and the reason this reads as a letter rather than as a bar
+    chart. The 3px gaps are the smallest that survive a downscale to 16: at 2px
+    the arms bleed together and the mark turns into a filled block.
+  -->
+  <rect width="32" height="32" rx="6" fill="#FBBF24"/>
+  <g fill="#241F16">
+    <rect x="9" y="7"  width="4"  height="18" rx="1"/>
+    <rect x="9" y="7"  width="15" height="4"  rx="1"/>
+    <rect x="9" y="14" width="11" height="4"  rx="1"/>
+    <rect x="9" y="21" width="15" height="4"  rx="1"/>
+  </g>
+</svg>

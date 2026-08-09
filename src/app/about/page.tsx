@@ -1,3 +1,4 @@
+import { openGraph } from '@/components/seo/JsonLd'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { TEAM, AMBASSADORS, type Person } from './people'
@@ -6,6 +7,8 @@ export const metadata = {
   title: 'About us',
   description:
     'Who builds Esquirely: two co-founders, a creative designer, and the honorary ambassadors who shaped it.',
+  alternates: { canonical: '/about' },
+  openGraph: openGraph({ path: '/about' }),
 }
 
 /**

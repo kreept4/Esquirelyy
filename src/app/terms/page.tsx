@@ -1,9 +1,12 @@
+import { openGraph } from '@/components/seo/JsonLd'
 import Link from 'next/link'
 import LegalPage, { Clause } from '@/components/layout/LegalPage'
 
 export const metadata = {
   title: 'Terms of Use',
   description: 'The terms on which Esquirely is provided, including accuracy, third-party content, the career tools, and limits on liability.',
+  alternates: { canonical: '/terms' },
+  openGraph: openGraph({ path: '/terms' }),
 }
 
 /**

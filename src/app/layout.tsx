@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import SmallScreenNotice from '@/components/layout/SmallScreenNotice'
+import JsonLd from '@/components/seo/JsonLd'
 
 /**
  * The live host, and the base every relative metadata URL is resolved against.
@@ -18,9 +19,24 @@ import SmallScreenNotice from '@/components/layout/SmallScreenNotice'
  */
 const SITE = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://esquirely.com.ng'
 
+/**
+ * ⚠ THERE IS NO `alternates.canonical` HERE, AND IT MUST NOT COME BACK.
+ *
+ * It used to read `alternates: { canonical: '/' }`, and App Router metadata is
+ * inherited, so every page that did not override it shipped
+ * <link rel="canonical" href="https://esquirely.com.ng/">. Only the firm
+ * profiles overrode it. Eight public pages — the firms directory among them —
+ * were telling Google they were duplicates of the homepage, which is an
+ * instruction to drop them from the index and credit their content to a URL
+ * that does not contain it.
+ *
+ * A canonical is per-page by definition, so it belongs on the page. Every
+ * public route now sets its own, and the homepage sets one in app/page.tsx like
+ * any other. Making this line dynamic would work and would be worse: the next
+ * person to add a route would inherit a value they never wrote.
+ */
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
-  alternates: { canonical: '/' },
   title: {
     default: 'Esquirely | Nigeria\'s Legal Career Platform',
     template: '%s | Esquirely',
@@ -46,14 +62,59 @@ export const metadata: Metadata = {
   },
 }
 
+/**
+ * Who we are, in the one format a machine reads.
+ *
+ * Two blocks, and they do different jobs. `Organization` is the entity record:
+ * it is what a knowledge panel is built from, and it is the only lever available
+ * against the problem that "Esquirely" sits one letter from Esquire, a global
+ * magazine with enormous authority. You do not out-rank that with keywords, you
+ * out-identify it, by stating the entity consistently and pointing `sameAs` at
+ * every profile that also describes it. `WebSite` is the site record, and its
+ * `inLanguage` and `publisher` link are what tie individual pages back here.
+ *
+ * ⚠ `sameAs` IS DELIBERATELY EMPTY AND IS THE NEXT THING TO FILL. Its value
+ * comes entirely from corroboration: two or three independent profiles naming
+ * the same entity is what turns a claim into a fact. A LinkedIn company page is
+ * the highest-value single entry for this audience. Add them as they exist
+ * rather than listing profiles that do not, since a `sameAs` pointing at a 404
+ * is worse than a short list.
+ */
+const ORGANIZATION = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${SITE}/#organization`,
+  name: 'Esquirely',
+  url: SITE,
+  description:
+    'Nigeria\'s legal careers platform: an independent directory of Nigerian law firms, verified job and internship listings, and scholarship deadlines.',
+  areaServed: { '@type': 'Country', name: 'Nigeria' },
+  knowsLanguage: 'en-NG',
+  sameAs: [],
+}
+
+const WEBSITE = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE}/#website`,
+  url: SITE,
+  name: 'Esquirely',
+  inLanguage: 'en-NG',
+  publisher: { '@id': `${SITE}/#organization` },
+}
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    /* en-NG, not en. The market is the whole proposition here, and the region
+       subtag is a signal to every consumer of this page that the content is
+       Nigerian rather than generically English. */
+    <html lang="en-NG">
       <head>
+        <JsonLd data={[ORGANIZATION, WEBSITE]} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />

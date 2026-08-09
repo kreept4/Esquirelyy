@@ -1,3 +1,4 @@
+import { openGraph } from '@/components/seo/JsonLd'
 import Footer from '@/components/layout/Footer'
 import Link from 'next/link'
 
@@ -5,6 +6,8 @@ export const metadata = {
   title: 'Be an ambassador',
   description:
     'Bring Esquirely to your faculty. Run one session when it suits you, pass on what is worth passing on, and leave with a signed reference.',
+  alternates: { canonical: '/ambassador' },
+  openGraph: openGraph({ path: '/ambassador' }),
 }
 
 /**

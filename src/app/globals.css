@@ -6145,6 +6145,14 @@ video::-webkit-media-controls { display: none !important; }
   .jobs-select,
   .jobs-clear { flex: 1 1 calc(50% - 0.25rem); min-width: 0; }
   .page-header-panel .filter-pill { flex: 1 1 calc(50% - 0.375rem); min-width: 0; }
+
+  /* The layout switch is off on a phone, along with the two dense modes it
+     selects. display:none rather than a conditional render so the control never
+     paints and then vanishes a frame later, and so nothing shifts under a thumb
+     already on its way to a filter. The view itself is pinned to 'detailed' in
+     firms/page.tsx; hiding the control without that would strand a reader whose
+     stored choice was the grid. */
+  .view-toggle { display: none; }
 }
 
 @media (max-width: 640px) {

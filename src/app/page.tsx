@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
@@ -13,6 +14,22 @@ import { FIRMS_WITH_LOGOS, firmLogo } from '@/lib/firms-data'
 import LogoFrame from '@/components/ui/LogoFrame'
 
 export const revalidate = 3600
+
+/**
+ * The homepage's own canonical, which it used to get by inheritance.
+ *
+ * The root layout no longer sets one, so this page states its own like every
+ * other route. It is the only page for which the old inherited value happened to
+ * be correct, and that accident is exactly why the inherited version was hard to
+ * spot: the page you check first is the one page it did not break.
+ *
+ * Title and description are left to the layout deliberately. The default title
+ * IS the homepage title, and repeating it here would mean two places to edit the
+ * same string.
+ */
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+}
 
 const SECTOR_ACCENT: Record<string, string> = {
   law_firm: '#1A1A1A', banking: '#1A1A1A', energy: '#7A3B00', fintech: '#0E5C3A', other: '#3B3B3B'

@@ -53,6 +53,33 @@ function isPublic(pathname: string) {
   return PUBLIC_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'))
 }
 
+/**
+ * Generated metadata routes, which must never be gated.
+ *
+ * ⚠ THE MATCHER BELOW DOES NOT COVER THESE, AND THE REASON IS SUBTLE ENOUGH TO
+ * BE WORTH WRITING DOWN. It exempts anything ending in an image extension, which
+ * is the right rule for a file in /public. But Next's file-based metadata
+ * conventions are ROUTES, not files: an opengraph-image.tsx compiles to
+ * `/opengraph-image` with no extension at all. So the site share card sailed
+ * straight into the auth gate and answered a 307 to /auth/login.
+ *
+ * That failure is invisible from inside the app. Nothing on the site requests
+ * these URLs. The only consumers are Facebook's, WhatsApp's, LinkedIn's and X's
+ * scrapers, none of which carry a session, all of which would have been handed a
+ * redirect to a login page instead of an image, and none of which report back.
+ * The card would simply never appear, and the obvious place to look for the
+ * cause is the image route, which is working perfectly.
+ *
+ * Suffix match rather than a prefix, because these sit at whatever depth their
+ * segment does: /opengraph-image at the root, /firms/templars/opengraph-image
+ * three levels down.
+ */
+const METADATA_ROUTES = ['/opengraph-image', '/twitter-image', '/icon', '/apple-icon']
+
+function isMetadataRoute(pathname: string) {
+  return METADATA_ROUTES.some(r => pathname === r || pathname.endsWith(r))
+}
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
@@ -61,7 +88,8 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/api') ||
     pathname.startsWith('/device-preview') ||
     pathname === '/robots.txt' ||
-    pathname === '/sitemap.xml'
+    pathname === '/sitemap.xml' ||
+    isMetadataRoute(pathname)
   ) {
     return NextResponse.next()
   }

@@ -1,3 +1,4 @@
+import { openGraph } from '@/components/seo/JsonLd'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 
@@ -5,6 +6,8 @@ export const metadata = {
   title: 'Post a role',
   description:
     'How to list a role on Esquirely. Free, no account, and read by Nigerian lawyers and law students who are actually looking.',
+  alternates: { canonical: '/advertise' },
+  openGraph: openGraph({ path: '/advertise' }),
 }
 
 /**
