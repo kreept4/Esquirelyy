@@ -2264,11 +2264,16 @@ select.filter-pill {
   border: none;
   font-size: 1.6rem;
   line-height: 1;
-  /* Sits on the ink masthead now, so it takes the masthead's colour. */
-  color: #FBBF24;
+  /* Ink, not amber: this used to sit on an ink masthead and take that
+     colour, but the masthead is gone (see the comment in
+     NotificationBell.tsx) and amber-on-amber made the × invisible against
+     the modal body it actually sits on now. */
+  color: #241F16;
+  opacity: 0.55;
   cursor: pointer;
   z-index: 1;
 }
+.notif-modal-close:hover { opacity: 1; }
 .notif-modal-kind {
   font-size: 0.72rem;
   letter-spacing: 0.1em;
