@@ -142,6 +142,20 @@ export function markRead(id: string): Set<string> {
   return next
 }
 
+/** The other direction, for an ack-kind notification someone wants back on
+ *  their unread list on purpose (the welcome note's "Mark as unread"). Only
+ *  meaningful for kinds in ACK_KINDS — nothing else reads readIds. */
+export function markUnread(id: string): Set<string> {
+  const next = readReadIds()
+  next.delete(id)
+  try {
+    localStorage.setItem(READ_KEY, JSON.stringify([...next]))
+  } catch {
+    // Private browsing. Already unread every time, which is harmless.
+  }
+  return next
+}
+
 /** The single definition of unread, used by both the badge and the row styling
  *  so the two can never disagree about what is still waiting. */
 export function isUnread(n: Notification, seen: number, readIds: Set<string>) {

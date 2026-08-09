@@ -8,6 +8,7 @@ import {
   isUnread,
   markRead,
   markSeen,
+  markUnread,
   readPrefs,
   readReadIds,
   readSeen,
@@ -65,6 +66,30 @@ export default function NotificationBell({
   const [readIds, setReadIds] = useState<Set<string>>(() => new Set())
   const [showWelcome, setShowWelcome] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
+  const checkedWelcomeParam = useRef(false)
+
+  /* Auto-open, once, right after a brand new account finishes signing up.
+     The signup OTP screen and the OAuth callback route both land here with
+     `?welcome=1` on the very first redirect for a new account — see the
+     comments there for why that flag is trustworthy and not just "a session
+     that has never seen the note".
+
+     Read from `window.location` directly rather than `useSearchParams()`:
+     that hook forces every page rendering this component (which, via
+     Navbar, is every page) out of static generation unless wrapped in its
+     own Suspense boundary, which Navbar is not. A plain effect has no such
+     cost and only needs to run once per mount. */
+  useEffect(() => {
+    if (!user || checkedWelcomeParam.current) return
+    checkedWelcomeParam.current = true
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('welcome') !== '1') return
+    setShowWelcome(true)
+    params.delete('welcome')
+    const qs = params.toString()
+    window.history.replaceState(null, '', window.location.pathname + (qs ? `?${qs}` : '') + window.location.hash)
+  }, [user])
 
   const load = useCallback(async () => {
     if (!user) { setFeed([]); return }
@@ -94,13 +119,30 @@ export default function NotificationBell({
     load()
   }, [load])
 
-  /* Opening the note is what marks it read — not listing it, and not closing
-     the panel. That is the whole reason the welcome is tracked by id rather
-     than by the panel-open timestamp. */
-  function openNote(n: Notification) {
+  /* Listing the note is not reading it — that is the whole reason the welcome
+     is tracked by id rather than by the panel-open timestamp. Opening it
+     is not quite reading it either, now that the same dialog can appear
+     unasked right after signup: someone who dismisses it a second after it
+     appears has still seen the greeting, but someone who opens it from the
+     list and then reconsiders and closes it without reading has too, so
+     dismissal is the one signal both paths agree on. See closeWelcome. */
+  function openNote() {
     setOpen(false)
     setShowWelcome(true)
-    setReadIds(markRead(n.id))
+  }
+
+  function closeWelcome() {
+    setShowWelcome(false)
+    setReadIds(markRead('welcome'))
+  }
+
+  /* The opposite of closeWelcome, for someone who wants the badge back —
+     "deal with this later" rather than "I have read this". Closes the
+     dialog too: leaving it open in a state that contradicts what it just
+     did would be confusing. */
+  function markWelcomeUnread() {
+    setShowWelcome(false)
+    setReadIds(markUnread('welcome'))
   }
 
   // Close on outside click and on Escape, the two ways anyone expects to
@@ -207,7 +249,7 @@ export default function NotificationBell({
                         type="button"
                         className="notif-item notif-item-btn"
                         data-unread={isNew || undefined}
-                        onClick={() => openNote(n)}
+                        onClick={openNote}
                       >
                         <NotifRow n={n} unread={isNew} />
                       </button>
@@ -224,7 +266,7 @@ export default function NotificationBell({
           one-off greeting and giving it a URL would mean a page that exists
           forever to say hello once. */}
       {showWelcome && (
-        <div className="notif-modal-scrim" onClick={() => setShowWelcome(false)}>
+        <div className="notif-modal-scrim" onClick={closeWelcome}>
           <div
             className="notif-modal"
             role="dialog"
@@ -235,7 +277,7 @@ export default function NotificationBell({
             <button
               type="button"
               className="notif-modal-close"
-              onClick={() => setShowWelcome(false)}
+              onClick={closeWelcome}
               aria-label="Close"
             >
               ×
@@ -274,6 +316,10 @@ export default function NotificationBell({
               from Bolu &amp; Ipinu
               <span className="grotesk-regular notif-modal-sign-role">Co-founders, Esquirely</span>
             </p>
+
+            <button type="button" className="grotesk-regular notif-modal-unread-btn" onClick={markWelcomeUnread}>
+              Mark as unread
+            </button>
             </div>
           </div>
         </div>

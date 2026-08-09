@@ -96,8 +96,20 @@ export async function GET(request: Request) {
     console.error('[auth] welcome message not sent', user.id, welcome.reason)
   }
 
+  /* `sent` is only true the one time sendWelcomeOnce actually mailed someone,
+     which is exactly the "brand new account" signal the welcome-note dialog
+     needs — unlike being signed in, which is true of every visit forever.
+     Every OAuth sign-in comes through this route, so without this check a
+     returning user would get the dialog again on every login. */
+  const withWelcomeParam = (url: string) => {
+    if (!(welcome.ok && welcome.sent)) return url
+    const u = new URL(url)
+    u.searchParams.set('welcome', '1')
+    return u.toString()
+  }
+
   // Wherever they were heading beats anything we would pick for them.
-  if (next) return NextResponse.redirect(`${origin}${next}`)
+  if (next) return NextResponse.redirect(withWelcomeParam(`${origin}${next}`))
 
   /**
    * Straight to the board. There is no onboarding questionnaire any more.
@@ -110,13 +122,15 @@ export async function GET(request: Request) {
    * the home page, where they are optional, answerable in passing, and asked of
    * someone who has already seen what the site is for.
    *
-   * A new account is now told there is something waiting for it the same way
-   * every other account is: the unread dot on the notification bell. That is a
-   * prompt rather than a gate, which is the right shape for a greeting.
+   * A new account sees the welcome note itself the moment it lands (see
+   * `withWelcomeParam` above and NotificationBell's handling of `?welcome=1`),
+   * and every account after that finds it, read or not, on the notification
+   * bell. Neither is a gate: both let the visit continue underneath, unlike
+   * the three-step form this replaced.
    *
    * The profile read is gone with it. It existed only to answer "has this person
    * onboarded", nothing here asks that now, and it was one query on every single
    * OAuth sign-in.
    */
-  return NextResponse.redirect(`${origin}/jobs`)
+  return NextResponse.redirect(withWelcomeParam(`${origin}/jobs`))
 }
