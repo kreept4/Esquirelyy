@@ -182,7 +182,7 @@ esquirely/
 - [ ] Individual listing page (`/jobs/[slug]`)
 - [ ] Firm directory and profiles (`/firms`, `/firms/[slug]`)
 - [ ] Scholarship directory
-- [ ] Auth (Supabase email)
+- [ ] Auth (Supabase email + Google OAuth)
 - [ ] Application tracker dashboard
 - [ ] Inbound email webhook + AI status parsing
 - [ ] Job alerts (Resend)
