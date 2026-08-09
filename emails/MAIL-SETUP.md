@@ -31,160 +31,202 @@ promises, so `privacy@` in particular has to be an inbox somebody actually opens
 
 ---
 
-## 1. Which host, and why not Zoho
+## 1. The host: Zoho Mail, Forever Free plan
 
-**Zoho's free plan could not be signed up for from here.** It still exists in
-2026 but only for accounts on the US, IN and EU data centres, and a Nigerian
-signup gets steered to a region that does not offer it. If you want to try
-again, the plan is never shown in the normal signup flow: it is at the very
-bottom of `zoho.com/mail/zohomail-pricing.html` under "Forever Free Plan", and
-you have to force the data centre by starting at `zoho.eu` rather than
-`zoho.com`. It is not worth much effort, because the free plan also has no IMAP,
-no POP and no forwarding, which means a separate app you have to remember to
-open.
+Registered on 8 August 2026, after an initial attempt failed. Worth recording
+why, because anyone repeating this will hit the same wall: the Forever Free plan
+is not offered in the normal signup flow and is not available on every data
+centre. It exists at the bottom of `zoho.com/mail/zohomail-pricing.html`, and
+the account has to sit on the US, IN or EU data centre.
 
-**Use Cloudflare Email Routing instead, and read the mail in the Gmail you
-already have.** It is free, it has no user limit, and it removes the "will I
-remember to check it" problem entirely, because there is nothing new to check.
+**This account is on the US data centre**, confirmed by its verification value
+ending `.zmverify.zoho.com` rather than `.zoho.eu`. That decides every Zoho
+hostname in this file: they are all the `.com` set. If a record is ever rejected
+or verification hangs, a data centre mismatch is the first thing to check, and
+the rule is always to use the hostnames Zoho's own screen prints rather than any
+copied from a guide written for a different region.
 
-How the two halves work:
+### How the five user slots are spent
 
-- **Receiving** is Cloudflare Email Routing. It accepts mail for any address at
-  the domain and forwards it to your existing Gmail. Free, and unlimited
-  addresses, so all six cost nothing.
-- **Sending** is Gmail's "Send mail as", pointed at Brevo's SMTP relay. You
-  already have a Brevo account for the welcome email, so this is a credential
-  you are getting anyway. Replies then leave as
-  `hello@esquirely.com.ng` rather than as your personal address.
+The plan allows five USERS. It does not limit ALIASES, and that distinction is
+what makes six published addresses plus two personal ones fit inside five slots
+with room to spare. An alias is another address delivering into an existing
+mailbox; a user is a whole separate login, password and app.
 
-The one cost: Cloudflare Email Routing needs Cloudflare to be your DNS, so the
-nameservers move. That is a free Cloudflare account and two records to recreate.
-Section 2 covers it.
+| Slot | Address | What it is |
+| --- | --- | --- |
+| 1 | `hello@esquirely.com.ng` | The shared brand inbox. Super admin. |
+| 2 | `bolu@esquirely.com.ng` | Personal, Bolu Ogunleye |
+| 3 | `ipinu@esquirely.com.ng` | Personal, Ipinu Ogunleye |
+| 4 | free | |
+| 5 | free | |
 
-**If you would rather not move nameservers**, Zoho Mail Lite is about $1 per
-user per month, needs no nameserver change, and gives real IMAP so it works in
-Gmail or Outlook. One mailbox plus five free aliases is about $1 a month total.
-That is the paid path; everything from section 4 onwards is identical either way.
+`roles`, `corrections`, `privacy`, `ambassadors` and `legal` are **aliases on
+slot 1**, not users. All five deliver into the `hello@` inbox and can be replied
+from by choosing the address in the From dropdown. Six published addresses, one
+inbox, one slot.
+
+That is also the right shape regardless of the limit. Six separate logins would
+be six places to forget to check, and the privacy notice promises a 30 day
+answer to data requests sent to one of them.
+
+Two things follow from having personal mailboxes as real users:
+
+- Each is a genuine second login, with its own password, its own 2FA and its own
+  copy of the Zoho app. The cost of a personal mailbox is that admin, not the
+  slot.
+- **Make both co-founders admins** in Mail Admin, and keep the `hello@`
+  credentials somewhere both can reach. Sole control of the super admin account
+  by one person is the failure that locks a company out of its own domain when
+  that person is unreachable.
+
+**What the free plan cannot do**, so it is not discovered later:
+
+- ✅ Web at `mail.zoho.com`, and the Zoho Mail mobile app with push
+  notifications. Install the app. It is how you will notice a `privacy@` request
+  inside the 30 days the privacy notice promises.
+- ❌ No IMAP, no POP, no ActiveSync. It will not work in Gmail, Outlook or Apple
+  Mail.
+- ❌ No forwarding, so it cannot be pushed into an existing Gmail either.
+
+If living in a separate app turns out to be what stops you checking, Mail Lite
+is about $1 per user per month and turns IMAP, POP and SMTP on. The rest of this
+file is unchanged either way.
 
 ---
 
-## 2. Moving DNS to Cloudflare
+## 2. DNS records
 
-⚠ Do this carefully. The site is live and these records are what serve it.
+Nameservers are `ns1.dyna-ns.net` and `ns2.dyna-ns.net`, so all of this happens
+in the registrar's DNS or Zone Editor panel, not in Vercel.
 
-**What exists today**, and what has to still exist afterwards:
+⚠ **Do not touch these two.** They are what serve the site:
 
-| Type | Host | Value | What it does |
+| Type | Host | Value |
+| --- | --- | --- |
+| A | `@` | `216.198.79.1` |
+| CNAME | `www` | `588a6212a13c7dc5.vercel-dns-017.com` |
+
+Mail records are MX and TXT and do not collide with either.
+
+The registrar is **Dynadot**, and the domain uses Dynadot's own DNS rather than
+an external provider. Everything below goes in one screen: My Domains, Manage
+Domains, click the domain, DNS Settings. That page has a **Domain Record**
+section, which is the root and needs no host field because the section itself is
+`@`, and a **Subdomain Record** section, where you type only the prefix such as
+`zoho._domainkey` or `_dmarc`. Nothing saves until **Save DNS** at the bottom.
+
+### 2a. Domain verification
+
+✅ Done, 8 August 2026:
+
+| Type | Host | Value |
+| --- | --- | --- |
+| TXT | `@` | `zoho-verification=zb36937646.zmverify.zoho.com` |
+
+A note for the next time a record is added here. It appeared on the
+authoritative nameserver immediately but took a few more minutes to show up on
+Google's and Cloudflare's public resolvers, because they were still holding a
+cached "no TXT record exists" answer. That is negative caching, the TTL is 300
+seconds, and it clears on its own. Check the authoritative server directly to
+find out whether a record is really live:
+
+```
+nslookup -type=TXT esquirely.com.ng ns1.dyna-ns.net
+```
+
+### 2b. MX records
+
+Three, and delete anything else in MX.
+
+| Type | Host | Priority | Value |
 | --- | --- | --- | --- |
-| A | `@` | `216.198.79.1` | Points the apex at Vercel |
-| CNAME | `www` | `588a6212a13c7dc5.vercel-dns-017.com` | Points www at Vercel |
+| MX | `@` | 10 | `mx.zoho.com` |
+| MX | `@` | 20 | `mx2.zoho.com` |
+| MX | `@` | 50 | `mx3.zoho.com` |
 
-There are no MX and no TXT records at all today, which is exactly why mail to
-those six addresses bounces right now.
+In Dynadot these go in the **Domain Record** section, with the priority in the
+field Dynadot labels **Distance**.
 
-Steps:
+### 2c. SPF, and the one real trap
 
-1. Create a free Cloudflare account and **Add a site**: `esquirely.com.ng`.
-2. Cloudflare scans your existing DNS and imports what it finds. **Check that
-   both records above came across** before going further. If either is missing,
-   add it by hand from the table.
-3. Set both records to **DNS only** (grey cloud, not orange). Proxying a Vercel
-   site through Cloudflare's CDN puts two CDNs in series and causes more
-   problems than it solves.
-4. Cloudflare gives you two nameservers. Replace `ns1.dyna-ns.net` and
-   `ns2.dyna-ns.net` with them at your registrar.
-5. Wait for Cloudflare to report the domain as Active. Usually under an hour,
-   occasionally longer.
-6. **Check the site still loads** at `https://esquirely.com.ng` before doing
-   anything else.
+**One SPF record. Never two.** A domain with two `v=spf1` records has a broken
+SPF at every receiver, which is worse than having none. Zoho will tell you to
+add one and Brevo will tell you to add one. They go on the same line:
 
----
+| Type | Host | Value |
+| --- | --- | --- |
+| TXT | `@` | `v=spf1 include:zoho.com include:spf.brevo.com ~all` |
 
-## 3. Turning on the six addresses
+Zoho carries the mail you type by hand. Brevo carries the welcome email and,
+after section 5, the signup and reset codes. Omit either and that system's mail
+starts landing in spam.
 
-In Cloudflare: **Email** → **Email Routing** → Get started.
+### 2d. DKIM
 
-1. Cloudflare offers to add its MX and SPF records for you. Accept. That is
-   three MX records pointing at `mx.cloudflare.net` and friends.
-2. Add your Gmail as a **destination address** and click the verification link
-   Cloudflare sends to it.
-3. Create six **custom addresses**, each forwarding to that Gmail:
-   `hello`, `roles`, `corrections`, `privacy`, `ambassadors`, `legal`.
-4. Optionally turn on **catch-all** as well, so a message to a typo'd address
-   still reaches you instead of bouncing.
+Two records, and they coexist because each has its own selector.
 
-### The SPF record, and the one trap here
+- **Zoho**: Mail Admin → Domains → DKIM. It generates a selector, usually
+  `zoho`, and a long key. Host becomes `zoho._domainkey`.
+- **Brevo**: Senders, Domains & Dedicated IPs → authenticate the domain. Its own
+  selector and key.
 
-**One SPF record. Never two.** A domain with two `v=spf1` records is treated as
-having a broken SPF by every receiver, which is worse than having none.
+### 2e. DMARC
 
-Cloudflare will add an SPF record for its own forwarding. Brevo also needs to be
-in SPF, because Brevo sends the welcome email and, after section 5, the signup
-and password reset codes. So **edit** the record Cloudflare created rather than
-adding a second one, and make it:
+Start permissive. `p=none` reports without touching delivery.
 
-```
-v=spf1 include:_spf.mx.cloudflare.net include:spf.brevo.com ~all
-```
+| Type | Host | Value |
+| --- | --- | --- |
+| TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:hello@esquirely.com.ng` |
 
-### DKIM and DMARC
-
-- **Brevo DKIM**: in Brevo, under Senders, Domains & Dedicated IPs, authenticate
-  `esquirely.com.ng`. It prints its own selector and key. Add exactly as shown.
-- **DMARC**: start permissive, so it reports without affecting delivery.
-
-  | Type | Host | Value |
-  | --- | --- | --- |
-  | TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:hello@esquirely.com.ng` |
-
-  Move to `p=quarantine` later, once a fortnight of reports comes back clean.
-
-### Test it
-
-Send a real message from a phone to each of the six addresses and confirm all
-six land in Gmail. Do this before section 5: an auth flow that cannot send is
-much harder to debug than a mailbox that was never wired up.
+Move to `p=quarantine` once a fortnight of reports is clean. Not before.
 
 ---
 
-## 4. Replying as the address, not as your Gmail
+## 3. Check it, then create the addresses
 
-Receiving is only half of it. Out of the box, replies leave as your personal
-Gmail, which undoes the point.
+From a machine that is not yours:
 
-First get the Brevo SMTP credentials: Brevo → **SMTP & API** → SMTP tab. You
-need the **SMTP login** and an **SMTP key**. ⚠ The key is not the API key; they
-are different strings on the same page and the API key fails authentication with
-an unhelpful error.
+```
+nslookup -type=MX esquirely.com.ng 8.8.8.8
+nslookup -type=TXT esquirely.com.ng 8.8.8.8
+```
 
-Then in Gmail: **Settings** → **Accounts and Import** → **Send mail as** → **Add
-another email address**.
+Then in Zoho, create `hello@` as the user and add `roles`, `corrections`,
+`privacy`, `ambassadors` and `legal` as aliases on it.
 
-| Field | Value |
-| --- | --- |
-| Name | Esquirely |
-| Email address | `hello@esquirely.com.ng` |
-| Treat as alias | untick |
-| SMTP Server | `smtp-relay.brevo.com` |
-| Port | `587` |
-| Username | your Brevo SMTP login |
-| Password | your Brevo SMTP key |
-| Secured connection | TLS |
+Send a real message from a phone to each of the six and confirm all six arrive.
+Do this before section 5: an auth flow that cannot send is much harder to debug
+than a mailbox that was never wired up.
 
-Gmail sends a confirmation code to `hello@esquirely.com.ng`, which arrives back
-in the same Gmail through Cloudflare. Enter it.
+---
 
-Repeat for any of the other five you expect to reply from. `roles@` and
-`corrections@` are the two worth doing straight away.
+## 4. Point Brevo at the domain
 
-Then set `hello@esquirely.com.ng` as the **default** send-as address, so a
-reply typed in a hurry goes out as the brand rather than as you.
+Replying by hand is already handled: Zoho webmail and the Zoho app send as
+`hello@` or any of the five aliases. This section is about the mail the SITE
+sends, which is a separate system.
 
-Finally, update `BREVO_SENDER_EMAIL` to `hello@esquirely.com.ng` in both
-`.env.local` and the Vercel project. It is currently a personal Gmail address,
-which was the right call when there was no domain (see the comment at the top of
-`src/lib/email/send.ts` for why Brevo was chosen over Resend for exactly that
-reason) and is the wrong one now.
+First, the credentials, because section 5 needs them too. Brevo → **SMTP & API**
+→ SMTP tab, and take the **SMTP login** and an **SMTP key**. ⚠ The key is not
+the API key. They are different strings on the same page, and the API key fails
+authentication with an unhelpful error.
+
+Then:
+
+1. In Brevo, add `hello@esquirely.com.ng` as a sender and verify it. The
+   verification email lands in Zoho, which is why section 3 comes first.
+2. Complete the domain authentication from 2d so Brevo signs as the domain
+   rather than sending on behalf of a Gmail address.
+3. Update `BREVO_SENDER_EMAIL` to `hello@esquirely.com.ng` in **both**
+   `.env.local` and the Vercel project.
+
+It is currently a personal Gmail address. That was the right call when there was
+no domain, and it is the reason Brevo was chosen over Resend in the first place
+(the comment at the top of `src/lib/email/send.ts` has the full argument). It is
+the wrong one now: a welcome email from `hello@esquirely.com.ng` and one from a
+personal Gmail read completely differently to somebody deciding whether this
+site is real.
 
 ---
 

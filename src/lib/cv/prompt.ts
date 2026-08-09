@@ -1,4 +1,5 @@
 import { CONTACT_SEPARATOR, SECTION_ORDER } from './template'
+import { HOUSE_STYLE } from '@/lib/house-style'
 
 /**
  * The generator's brief.
@@ -88,9 +89,9 @@ Cut these openings wherever they appear and replace them with the verb that desc
 
 Vary the construction. Do not open six consecutive bullets with the same verb, do not give every bullet the same clause count, and do not run the same "did X, achieving Y" shape down the whole page. A document where every line has the same rhythm reads as machine written even when every fact in it is true.
 
-Do not use em dashes anywhere. Use commas, semicolons or full stops.
-
-Do not use: delve, tapestry, testament, leverage as a verb, showcase, elevate, unlock, robust, seamless, spearhead, game changer, landscape as a metaphor, dynamic professional, results driven, proven track record, passionate about, in today's competitive market, it is worth noting.
+The shared language rules at the end of this document are absolute, and three
+more apply to a CV specifically: no "dynamic professional", no "results driven",
+no "proven track record".
 
 No emoji. No first person pronouns. No "references available upon request". No personal details that do not belong on a CV, so no date of birth, marital status, state of origin, religion or photograph.`
 
@@ -159,7 +160,12 @@ Bullets are plain sentences with no leading dash, bullet character or number.
 "gaps" may be empty. Where it is not, each entry names something real and absent, such as a Law School class of degree, or the value or sector of a transaction the candidate worked on.`
 
 export function buildSystemPrompt(): string {
-  return [ROLE, TASK, TRUTH, ATS, WRITING, SUMMARY, SKILLS, NIGERIA, OUTPUT].join('\n\n')
+  /* HOUSE_STYLE goes last, and last on purpose. It is the section the other
+     four AI routes also append, so the language rules are identical across
+     everything the product writes. Trailing instructions are also the ones a
+     model weights most heavily, which is what you want for a rule that exists
+     to be obeyed rather than balanced against the others. */
+  return [ROLE, TASK, TRUTH, ATS, WRITING, SUMMARY, SKILLS, NIGERIA, OUTPUT, HOUSE_STYLE].join('\n\n')
 }
 
 /**
