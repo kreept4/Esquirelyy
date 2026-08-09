@@ -17,17 +17,20 @@ export const metadata = {
  *     gone from clause 4 and clause 5 with it — the 8 August audit added Google
  *     because the code offered it then; this pass removes it because the code
  *     does not offer it now, which is the same rule applied twice.
- *   - LinkedIn moved the other way. It used to be a free-text field
- *     (`linkedin_url`) anyone could type any string into, which the notice
- *     described as profile data with no processor behind it. The 9 August
- *     change deleted that field — DashboardClient.tsx has no such input any
- *     more — and replaced it with `connect('linkedin_oidc')`, an
- *     `auth.linkIdentity` call on the account page. So the fact pattern is now
- *     the one Google used to have: LinkedIn is a processor, but only for
- *     someone who chooses to connect it, and what it hands us is an identity
- *     (email, name), not a URL someone typed. Clause 1 and clause 4 both had to
- *     change, not just clause 4, because the profile bullet in clause 1 is
- *     where the old free-text field was described.
+ *   - LinkedIn had a shorter life as a processor than this sentence took to
+ *     write. The free-text `linkedin_url` field was deleted on 9 August and
+ *     replaced same day with `connect('linkedin_oidc')`, an `auth.linkIdentity`
+ *     call on the account page — which made LinkedIn a processor for anyone who
+ *     chose to connect it, the same shape Google used to have. That Connect
+ *     feature was removed later the same day: it existed only as an extra
+ *     sign-in method with nothing built on it, and the button, the
+ *     `linkIdentity` call and the whole Connected Accounts section are gone
+ *     from DashboardClient.tsx. So as of this notice there is no OAuth
+ *     provider anywhere in the product, Google or LinkedIn, and clause 1 and
+ *     clause 4 are back to describing account details as email and password
+ *     only. Nothing about LinkedIn as a plain profile field returns either —
+ *     that was the free-text era, and it is gone for a different reason
+ *     (nobody could verify what was typed into it), not resurrected by this.
  *   - profiles hold rather more than the three fields this page used to claim.
  *     PROFILE_COLUMNS in lib/account.ts is the authority: full_name, email,
  *     career_stage, location, practice_areas, notification_preferences,
@@ -80,7 +83,7 @@ export default function PrivacyPage() {
         points: [
           'We collect your email, your account profile, and whatever you put in the tracker.',
           'Your CV file is never stored. What the tools write from it is: the review, and any CV you generate.',
-          'Five processors: Supabase, Anthropic, Vercel, Brevo and, if you connect LinkedIn, LinkedIn.',
+          'Four processors: Supabase, Anthropic, Vercel and Brevo.',
           'We do not sell your data or pass it to employers.',
           'You can delete your account yourself from the account page. It runs 30 days later, and signing in cancels it.',
         ],
@@ -101,10 +104,7 @@ export default function PrivacyPage() {
           <li>
             <strong>Account details.</strong> Your email address, and a password managed by our
             authentication provider. Passwords are hashed by that provider and are never visible to
-            us. From your account page you can also connect LinkedIn as a second way to sign in: if
-            you do, there is no password on that path either, LinkedIn confirms who you are and
-            passes us your email address and the name on your LinkedIn account. We never see your
-            LinkedIn password, and we get nothing else from your LinkedIn account.
+            us. There is no other way to sign in at present.
           </li>
           <li>
             <strong>Your profile.</strong> Your name, career stage, preferred location, and the
@@ -241,11 +241,6 @@ export default function PrivacyPage() {
             your email address and your name so the message can be addressed and delivered, and
             nothing else. It does not receive your CV, your tool output or your tracker.
           </li>
-          <li>
-            <strong>LinkedIn</strong>, but only if you choose to connect it from your account page.
-            It then confirms your identity to us and tells us your email address and account name.
-            If you never connect it, LinkedIn is not involved at any point.
-          </li>
         </ul>
         <p>
           We do not sell your data. We do not share it with employers or law firms. Applying for a
@@ -256,7 +251,7 @@ export default function PrivacyPage() {
 
       <Clause n={5} heading="Data leaving Nigeria">
         <p>
-          Anthropic, Vercel, Brevo and LinkedIn process data outside Nigeria. Where the destination has not been
+          Anthropic, Vercel and Brevo process data outside Nigeria. Where the destination has not been
           recognised as providing adequate protection, we rely on the providers&rsquo; contractual data
           protection terms, which oblige them to protect your data to a comparable standard. You can
           ask us for details of those arrangements.

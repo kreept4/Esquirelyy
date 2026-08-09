@@ -34,16 +34,10 @@ export default async function DashboardPage() {
 
   const { state, error } = await getAccountState(supabase, user.id)
 
-  /* The identity comes from the session, not the profile row. A row that failed
-     to read, or was never created, must not render a page addressed to nobody —
-     and the email on the account is the one thing we always have. */
-  const identities = user.identities?.map(i => i.provider) ?? []
-
   return (
     <DashboardClient
       email={user.email ?? ''}
       joinedAt={user.created_at ?? null}
-      providers={identities}
       state={state}
       readError={error}
     />

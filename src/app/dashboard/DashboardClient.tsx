@@ -26,28 +26,6 @@ const NOTIFICATION_LABELS: { key: keyof NotificationPreferences; label: string; 
   { key: 'weekly_digest', label: 'Weekly digest', note: 'One roundup a week. Nothing in between.' },
 ]
 
-/** Every way into the account, each with its own state. `email` is the password
- *  sign-in and cannot be linked from here, so it only ever reports. */
-const CONNECTIONS: {
-  provider: 'linkedin_oidc' | 'email'
-  label: string
-  onNote: string
-  offNote: string
-}[] = [
-  {
-    provider: 'linkedin_oidc',
-    label: 'LinkedIn',
-    onNote: 'You can sign in with LinkedIn.',
-    offNote: 'Sign in with the profile your work already lives on.',
-  },
-  {
-    provider: 'email',
-    label: 'Email and password',
-    onNote: 'Your password works on this account.',
-    offNote: 'No password set. You sign in through a provider above.',
-  },
-]
-
 function longDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 }
@@ -55,13 +33,11 @@ function longDate(iso: string) {
 export default function DashboardClient({
   email,
   joinedAt,
-  providers,
   state,
   readError,
 }: {
   email: string
   joinedAt: string | null
-  providers: string[]
   state: AccountState | null
   readError: string | null
 }) {
@@ -119,36 +95,6 @@ export default function DashboardClient({
     if (data) {
       setSaved(true)
       router.refresh()
-    }
-  }
-
-  /**
-   * Attach another sign-in method to the account already signed in.
-   *
-   * linkIdentity, not signInWithOAuth. Signing in with a second provider on an
-   * address that already has an account either makes a duplicate account or
-   * fails outright, depending on project settings. Neither is what Connect
-   * means. Linking attaches the identity to the account that is already here.
-   *
-   * Needs manual linking enabled on the Supabase project. The error is
-   * translated rather than swallowed, so a switch that is off says so instead of
-   * looking like a button that does nothing.
-   */
-  async function connect(provider: 'linkedin_oidc') {
-    setBusy(provider)
-    setError('')
-    const supabase = createClient()
-    const { error } = await supabase.auth.linkIdentity({
-      provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
-    })
-    if (error) {
-      setError(
-        error.message.toLowerCase().includes('manual linking')
-          ? 'Account linking is switched off for this project. Turn on manual linking in Supabase and this will work.'
-          : error.message
-      )
-      setBusy(null)
     }
   }
 
@@ -262,46 +208,6 @@ export default function DashboardClient({
             {saved && <span className="grotesk-regular acct-note">Saved.</span>}
           </div>
         </form>
-
-        {/* Connected accounts.
-            Every way in is listed with its real state, rather than one sentence
-            describing whichever happened to be first. Someone who connected
-            LinkedIn should see LinkedIn marked connected, not be told about it
-            in passing. */}
-        <section className="acct-card">
-          <h2 className="grotesk-bold acct-card-title">Connected accounts</h2>
-          <p className="grotesk-regular acct-note">
-            The ways you can get back in. Connect more than one and you will never be
-            locked out because you forgot which you used.
-          </p>
-
-          <ul className="acct-conns">
-            {CONNECTIONS.map(c => {
-              const connected = providers.includes(c.provider)
-              return (
-                <li key={c.provider} className="acct-conn">
-                  <span className="acct-conn-main">
-                    <span className="grotesk-bold">{c.label}</span>
-                    <span className="grotesk-regular acct-hint">
-                      {connected ? c.onNote : c.offNote}
-                    </span>
-                  </span>
-                  {connected ? (
-                    <span className="grotesk-bold acct-conn-on">Connected</span>
-                  ) : c.provider === 'email' ? (
-                    <span className="grotesk-regular acct-hint">Not set</span>
-                  ) : (
-                    <button type="button" className="grotesk-bold acct-ghost-btn"
-                      disabled={busy === c.provider}
-                      onClick={() => { if (c.provider !== 'email') connect(c.provider) }}>
-                      {busy === c.provider ? 'Opening...' : 'Connect'}
-                    </button>
-                  )}
-                </li>
-              )
-            })}
-          </ul>
-        </section>
 
         {/* Take a break */}
         <section className="acct-card">

@@ -63,14 +63,20 @@ export async function GET(request: Request) {
   }
 
   /**
-   * The welcome message, for anyone who arrived by OAuth.
+   * The welcome message, for anyone who arrives here by a route other than the
+   * OTP code screen.
    *
-   * Currently that means someone connecting LinkedIn from the account page —
-   * there is no OAuth sign-up button any more, so in practice the account
-   * already exists and sendWelcomeOnce returns `sent: false` on the once-only
-   * check almost every time this runs. It stays unconditional rather than
-   * gated on "is this actually a new account" so a future OAuth sign-up path
-   * does not have to remember to wire itself through here; it already would.
+   * There is no OAuth provider wired up any more — Google is gone, and
+   * LinkedIn Connect was built and removed the same day it shipped, both
+   * covered in the privacy notice's audit comment. What still reaches this
+   * route is the signup page's `emailRedirectTo`: the confirmation email
+   * Supabase sends carries the six-digit code this app asks for, but the
+   * template can also carry a clickable link, and a magic-link confirmation
+   * arrives here rather than at the code screen. `sendWelcomeOnce` handles
+   * that new account exactly the way it handles a genuinely new OAuth account
+   * would have, which is why it stays unconditional here rather than gated on
+   * "is this a new account": whichever door someone used, this is the one
+   * place it gets checked.
    *
    * Runs BEFORE the `next` short-circuit below regardless, so it is never
    * skipped by whatever `next` happens to be set to.
@@ -95,17 +101,18 @@ export async function GET(request: Request) {
 
   const welcome = await sendWelcomeOnce(user)
   if (!welcome.ok) {
-    // Logged, never fatal. Someone who just proved their identity with an
-    // OAuth provider must not be bounced back to a sign-in page because Brevo
-    // was slow.
+    // Logged, never fatal. Someone who just proved their identity by clicking
+    // a confirmation link must not be bounced back to a sign-in page because
+    // Brevo was slow.
     console.error('[auth] welcome message not sent', user.id, welcome.reason)
   }
 
   /* `sent` is only true the one time sendWelcomeOnce actually mailed someone,
      which is exactly the "brand new account" signal the welcome-note dialog
      needs — unlike being signed in, which is true of every visit forever.
-     Every OAuth sign-in comes through this route, so without this check a
-     returning user would get the dialog again on every login. */
+     Every visit that lands here — including a returning user who clicks an
+     old confirmation link out of habit — comes through this route, so without
+     this check they would get the dialog again on every login. */
   const withWelcomeParam = (url: string) => {
     if (!(welcome.ok && welcome.sent)) return url
     const u = new URL(url)

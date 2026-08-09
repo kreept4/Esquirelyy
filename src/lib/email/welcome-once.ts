@@ -7,29 +7,30 @@ import { welcomeEmail } from './templates/welcome'
  *
  * WHY THIS IS A MODULE AND NOT A ROUTE
  *
- * Genuinely two ways to become a new user, in principle, and they would arrive
- * by completely different paths:
+ * Two ways to reach a first welcome, and they arrive by different paths:
  *
- *   password   the signup page POSTs /api/email/welcome once the six-digit
- *              code is verified — the first moment the address is proved real
- *   OAuth      /auth/callback exchanges the OAuth code; the address was proved
- *              by the provider before we ever saw it, so there is no code and
- *              no verify step to hang anything off
+ *   password      the signup page POSTs /api/email/welcome once the six-digit
+ *                 code is verified — the first moment the address is proved real
+ *   confirmation  /auth/callback exchanges a code too — the same route Google
+ *                 used to land on and LinkedIn Connect briefly did, both gone
+ *                 as of the privacy notice's audit comment. What reaches it now
+ *                 is a magic-link signup confirmation, if the account holder
+ *                 clicks the link in the confirmation email rather than typing
+ *                 the code, so the address was proved by clicking rather than
+ *                 by a code this app verified.
  *
- * In practice only the password path can currently produce a genuinely new
- * account: the one OAuth provider wired up is LinkedIn, and it is
- * connect-only — `DashboardClient.tsx` offers it as `auth.linkIdentity` on
- * the account page, reachable only once already signed in, with no LinkedIn
- * button on login or signup. This function still checks both, because that is
- * cheap and correct, and because a future OAuth *sign-up* path should not have
- * to remember to route itself through here — it already would.
+ * This function checks both regardless of which one is live today, because
+ * that is cheap and correct, and because a future OAuth sign-up path — if one
+ * ever ships again — should not have to remember to route itself through
+ * here. It already would.
  *
- * The OAuth path had no welcome at all when this shipped, back when Google was
- * that path. The fix could not be "call the API route from the callback": that
- * would mean a server route making an HTTP request to itself, carrying the
- * session cookie forward by hand, on a redirect a person is waiting on. Both
- * callers run the same function in-process instead, so the once-only rule
- * cannot be enforced in one path and forgotten in the other.
+ * /auth/callback had no welcome at all when this shipped, back when Google was
+ * the reason anyone landed there. The fix could not be "call the API route
+ * from the callback": that would mean a server route making an HTTP request
+ * to itself, carrying the session cookie forward by hand, on a redirect a
+ * person is waiting on. Both callers run the same function in-process
+ * instead, so the once-only rule cannot be enforced in one path and forgotten
+ * in the other.
  *
  * SERVER ONLY. It reads SUPABASE_SERVICE_ROLE_KEY.
  *
