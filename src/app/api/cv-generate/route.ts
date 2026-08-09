@@ -1,3 +1,4 @@
+import { requireUser } from '@/lib/api-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { askClaude, parseJSON, friendlyError, AIFormatError } from '@/lib/ai'
 import { readUpload } from '@/lib/cv/extract'
@@ -153,6 +154,9 @@ function clean(cv: any) {
 }
 
 export async function POST(req: NextRequest) {
+  const { error: unauthorized } = await requireUser()
+  if (unauthorized) return unauthorized
+
   try {
     const formData = await req.formData()
 

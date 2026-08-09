@@ -1,3 +1,4 @@
+import { requireUser } from '@/lib/api-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { askClaude, parseJSON, friendlyError } from '@/lib/ai'
 import { HOUSE_STYLE } from '@/lib/house-style'
@@ -23,6 +24,9 @@ function getPersona(targetRole: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const { error: unauthorized } = await requireUser()
+  if (unauthorized) return unauthorized
+
   try {
     const body = await req.json()
     const { question, answer, targetRole, employer } = body

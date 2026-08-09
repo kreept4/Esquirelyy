@@ -2,6 +2,42 @@
 -- ESQUIRELY DATABASE SCHEMA
 -- Run this in: Supabase → SQL Editor → New Query
 -- ============================================================
+--
+-- ⚠ THIS FILE IS NOT THE LIVE DATABASE, AND HAS NOT BEEN FOR SOME TIME.
+--
+-- Verified against production on 9 August 2026 with the anon key. Of the tables
+-- defined below, `firms`, `listings`, `scholarships`, `saved_listings`, `alerts`
+-- and `email_events` DO NOT EXIST. The live schema is:
+--
+--   jobs                 public, read-only to anon (this file calls it `listings`)
+--   profiles             RLS on, own-row only
+--   applications         RLS on, own-row only
+--   cv_reviews           RLS on, own-row only
+--   cv_generations       RLS on, own-row only
+--   cover_letters        RLS on, own-row only
+--   interview_sessions   RLS on, own-row only
+--
+-- Firms and scholarships are not database tables at all. They are TypeScript,
+-- in src/lib/firms-data.ts and src/lib/scholarships-data.ts, which is why
+-- nothing broke when the tables went away.
+--
+-- ⚠ WHY THAT IS DANGEROUS TO LEAVE UNMARKED, AND THE REASON FOR THIS BLOCK.
+-- Lines 266-268 create public-read policies on `firms`, `listings` and
+-- `scholarships` while no ALTER TABLE ... ENABLE ROW LEVEL SECURITY is ever
+-- issued for them. Read on its own, this file describes a database whose
+-- directory is writable by anyone holding the anon key, which is everyone,
+-- because the anon key ships in the browser bundle. That reading is alarming,
+-- entirely reasonable, and wrong: there is no such table to write to.
+--
+-- The risk is therefore not the database. It is that someone reads this file,
+-- believes it, and either panics or, worse, runs it to "restore" the schema —
+-- which would create exactly the unprotected tables the file appears to warn
+-- about. DO NOT RUN THIS FILE AGAINST PRODUCTION. If it is ever brought back
+-- into use, enable RLS on every table in the same statement that creates it.
+--
+-- The honest fix is to regenerate this from the live database rather than
+-- patch it. Until someone does, treat it as history.
+-- ============================================================
 
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";

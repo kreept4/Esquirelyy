@@ -1,3 +1,4 @@
+import { requireUser } from '@/lib/api-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import JSZip from 'jszip'
 import { renderDocx } from '@/lib/cv/docx'
@@ -55,6 +56,9 @@ function disposition(filename: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  const { error: unauthorized } = await requireUser()
+  if (unauthorized) return unauthorized
+
   try {
     const url = new URL(req.url)
     const format = (url.searchParams.get('format') || 'pdf').toLowerCase() as Format
