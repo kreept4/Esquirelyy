@@ -447,7 +447,14 @@ select.filter-pill {
    only a few hundred pixels wide. */
 @media (max-width: 640px) {
   .page-header-ink {
-    padding: 2.5rem 1rem 2rem !important;
+    /* Asymmetric on purpose, and it is the offset shadow that asks for it.
+       The panel throws a 5px shadow outside its own box on the right and
+       nothing on the left, so equal padding of 1rem left the shadow sitting
+       11px off the screen edge against the left's full 16px. The block read as
+       squashed against the right hand side rather than as centred, which is the
+       "no space on the width" this fixes. 1.25rem a side, plus the shadow's own
+       5px added back on the right, puts the two optical gaps level. */
+    padding: 2.5rem 1.6rem 2rem 1.25rem !important;
   }
   .page-header-panel {
     padding: 1.75rem 1.25rem 1.5rem;
@@ -501,9 +508,17 @@ select.filter-pill {
    read as one note instead of two unrelated asides. */
 .firms-tip + .firms-tip { margin-top: 0.7rem; }
 
+/* The directory grid's own gutter. This was a 2rem inline style that no media
+   query could reach, so on a phone the cards sat 44px in from each edge while
+   the note directly above them sat 32px in, and the grid looked inset from its
+   own page. Matched to .firms-tip-wrap at both widths, because a left edge that
+   two blocks share has to be one number. */
+.firms-grid-wrap { padding: 0 2rem 2rem; }
+
 @media (max-width: 640px) {
   .firms-tip-wrap { padding: 1.5rem 1.25rem 1rem; }
   .firms-tip { font-size: 0.84rem; }
+  .firms-grid-wrap { padding: 0 1.25rem 1.5rem; }
 }
 
 /* FIRM DIRECTORY CARD
@@ -715,6 +730,147 @@ select.filter-pill {
   font-family: var(--font-sans);
   font-size: 0.72rem;
   color: var(--ink-muted);
+}
+
+/* ============================================================
+   DIRECTORY LAYOUT MODES
+
+   Forty four firms in the full card is about nine phone screens of scrolling,
+   which is the complaint this answers. The reader picks the density instead of
+   being handed one.
+
+   ONE SET OF MARKUP, THREE LAYOUTS. Every mode renders the same card, and the
+   mode attribute on the grid decides what survives. Three separate card
+   components would drift the moment a field is added to one and forgotten in
+   the other two, and the fields being dropped here (description, practice
+   chips) are exactly the ones most likely to change.
+
+   WHAT GETS CUT IS THE PROSE, NOT THE FACTS. Both dense modes keep the mark,
+   the name, the tier, the rankings, the cities and the open-role count, and
+   drop the two-line description and the practice chips. Those are what a reader
+   consults after choosing a firm to look at, not what they choose it by.
+   ============================================================ */
+
+/* COMPACT GRID.
+   min(50%, 12rem) lands on exactly two columns at every phone width: 50% wins
+   below 384px of track, the 12rem wins above it, so a 390px phone gets two and
+   a tablet gets three or four with no breakpoint. Three across a phone was
+   tried and abandoned: at 130px a tile fits "Templars" but breaks
+   "Aluko & Oyebode" onto three lines, and a grid where a third of the names
+   wrap to a different height stops reading as a grid. */
+.card-grid[data-view='grid'] {
+  grid-template-columns: repeat(auto-fill, minmax(min(50%, 12rem), 1fr));
+}
+.card-grid[data-view='grid'] > a {
+  padding: 1.15rem 0.95rem 1rem;
+}
+/* The mark moves above the name. Side by side inside a 163px tile leaves the
+   name a 70px column, which is narrower than the word "Oyebode". */
+.card-grid[data-view='grid'] .firm-card-head {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 0.6rem;
+}
+.card-grid[data-view='grid'] .firm-card-name {
+  font-size: 0.88rem;
+}
+
+/* LIST.
+   One column at every width. Going multi-column here would just be the grid
+   mode with worse proportions, and the whole point of a list is a single
+   left-aligned column of names the eye can run straight down. */
+.card-grid[data-view='list'] {
+  grid-template-columns: 1fr;
+}
+.card-grid[data-view='list'] > a {
+  padding: 0.8rem 1.1rem;
+}
+.card-grid[data-view='list'] .firm-card-head {
+  gap: 0.85rem;
+  margin-bottom: 0;
+}
+.card-grid[data-view='list'] .firm-card-name {
+  font-size: 0.92rem;
+}
+
+/* Both dense modes drop the prose and unpin the footer.
+   margin-top:auto exists to align footers across a row of unequal cards; with
+   the description gone the cards are already equal, and leaving it in stretches
+   a short row to the height of the tallest logo in it. */
+.card-grid[data-view='grid'] .firm-card-desc,
+.card-grid[data-view='grid'] .firm-card-tags,
+.card-grid[data-view='list'] .firm-card-desc,
+.card-grid[data-view='list'] .firm-card-tags {
+  display: none;
+}
+.card-grid[data-view='grid'] .firm-card-foot,
+.card-grid[data-view='list'] .firm-card-foot {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: none;
+  gap: 0.7rem;
+}
+/* In list mode the footer is a continuation of the name block rather than a
+   band under the card, so it sits inside the head's text column. */
+.card-grid[data-view='list'] .firm-card-foot {
+  padding-top: 0.25rem;
+  padding-left: 4.25rem;
+}
+
+/* Smaller monogram plate for list rows, matching the LogoFrame footprint that
+   FirmAvatar switches to at the same time. Kept in step with it by hand: the
+   two have to agree or rows with art and rows without stop lining up. */
+.firm-monogram-sm {
+  width: 3.4rem;
+  height: 2.09rem;
+  border-radius: 2px;
+}
+.firm-monogram-sm span {
+  font-size: 0.6rem;
+}
+
+/* THE LAYOUT SWITCH.
+   Three segments in one pill rather than three separate pills, because they are
+   one control with one value and separate pills would read as three unrelated
+   filters in a row that already holds four. Sized to .filter-pill's height so
+   the row keeps a single baseline. */
+.view-toggle {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid rgba(36, 31, 22, 0.3);
+  border-radius: 999px;
+  overflow: hidden;
+  background-color: #FFF8E5;
+}
+.view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 2.5rem wide against a 44px tall row keeps the tap target at the 44px
+     minimum on the axis that matters for a thumb. */
+  width: 2.5rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.view-toggle-btn + .view-toggle-btn {
+  border-left: 1px solid rgba(36, 31, 22, 0.18);
+}
+.view-toggle-btn:hover {
+  background-color: rgba(36, 31, 22, 0.06);
+}
+/* The selected segment takes the same mint fill an engaged filter takes, so
+   "this control is doing something" reads the same way everywhere in the row. */
+.view-toggle-btn[data-active='true'] {
+  color: var(--on-mint);
+  background-color: var(--mint);
+}
+.view-toggle-btn[data-active='true']:hover {
+  background-color: var(--mint);
 }
 
 /* Inner pages clear the fixed header. rem so it tracks the root scale. */
