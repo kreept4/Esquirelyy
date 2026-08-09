@@ -1587,25 +1587,55 @@ const FIRMS_UNSORTED: Firm[] = [
 ]
 
 /**
- * Whether a signed-out reader, or a crawler, sees the whole firm record.
- *
- * ONE RULE, ONE PLACE. The profile page, the sitemap and robots.txt all have to
- * agree about this. If the sitemap offers a page the page then hides, Search
- * Console reports it as a soft 404 and Google learns to distrust the host, so
- * the three must never be able to drift apart. They read this function.
+ * Whether a signed-out reader sees the whole firm record.
  *
  * Tier 1 is the line, and `tier` is Esquirely's own size band rather than a
  * ranking, which makes it the right field for this: the question here is which
  * firms a stranger is most likely to be searching for by name, not which firms
- * are best. The twenty largest are the ones with the search demand worth
+ * are best. The twenty-two largest are the ones with the search demand worth
  * meeting, and the rest of the directory is what an account is for.
  *
  * Everything the gate withholds is contact detail: street addresses and the
  * application address. What stays visible is the firm's shape, because a page
  * that shows nothing is not a preview, it is a wall with a headline on it.
+ *
+ * ⚠ THIS IS NO LONGER THE INDEXING TEST. It used to be both, and conflating the
+ * two was costing forty five pages. See isIndexable below.
  */
 export function isPubliclyReadable(firm: Pick<Firm, 'tier'>): boolean {
   return firm.tier === 'Tier 1'
+}
+
+/**
+ * Whether a crawler may index the profile.
+ *
+ * ONE RULE, ONE PLACE. The profile's robots directive, the sitemap and the
+ * directory's ItemList all have to agree. If the sitemap offers a page the page
+ * then noindexes, Search Console reports the conflict and Google learns to
+ * distrust the host, so the three must never be able to drift apart. They read
+ * this function.
+ *
+ * WHY THIS IS A SEPARATE QUESTION FROM isPubliclyReadable, AND WHY IT IS NOW
+ * TRUE FOR EVERY FIRM. Those two were one function, so marking a profile
+ * "partial" also marked it noindex, and forty five profiles were withheld from
+ * search to protect two fields. That trade never made sense once written down.
+ * A gated profile still renders the firm's name, tier, founding year, full
+ * description, independent rankings, every practice area and every office city.
+ * Only the street address and the application email are held back. A page with
+ * that much on it is not a sign-in prompt, and the firm-name searches it would
+ * answer are the least contested queries this site has.
+ *
+ * The rule for a page that IS withheld stays what it was: noindex it, never
+ * disallow it, because a crawler that cannot fetch the page never reads the
+ * noindex. Nothing here is disallowed in robots.ts, which is what keeps that
+ * true.
+ *
+ * It returns a constant today and is still a function on purpose. It is the one
+ * place the decision is written down, it is what the three call sites read, and
+ * the next person to withhold a profile has somewhere obvious to say so.
+ */
+export function isIndexable(_firm: Pick<Firm, 'tier'>): boolean {
+  return true
 }
 
 export function getMonogram(name: string): string {

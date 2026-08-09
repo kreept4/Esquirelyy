@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import FirmsClient from './FirmsClient'
 import JsonLd, { SITE_URL, breadcrumb, openGraph } from '@/components/seo/JsonLd'
-import { ALL_FIRMS, isPubliclyReadable } from '@/lib/firms-data'
+import { ALL_FIRMS, isIndexable } from '@/lib/firms-data'
 
 /**
  * The firms directory, as a route.
@@ -47,15 +47,21 @@ export const metadata: Metadata = {
  * the reason this dataset is an asset rather than a table: nobody else in this
  * market publishes it in a form a machine can read.
  *
- * ⚠ ONLY THE PUBLICLY READABLE FIRMS ARE NAMED HERE, using the same
- * `isPubliclyReadable` test the profiles and the sitemap apply. Schema must
- * never describe more than the page shows a signed-out reader; the gap between
- * markup and page is what Google issues manual actions for. When the noindex
- * comes off Tier 2 and Boutique, this filter comes off in the same commit and
- * the list becomes all sixty seven.
+ * ALL SIXTY SEVEN ARE NAMED HERE. This was filtered to the twenty two Tier 1
+ * firms while the rest were noindexed, with a note that the filter came off in
+ * the same commit as the noindex. This is that commit.
+ *
+ * The rule that put the filter there still holds and is why the list is built
+ * from `isIndexable` rather than from ALL_FIRMS directly: schema must never
+ * describe more than the page shows a signed-out reader, and the gap between
+ * markup and page is what Google issues manual actions for. It is safe to name
+ * all of them because this page renders all of them to everybody — the
+ * directory grid has no signed-in branch. What a gated profile withholds is
+ * withheld on the profile, and the block here carries nothing but a name and a
+ * URL.
  */
 function directorySchema() {
-  const listed = ALL_FIRMS.filter(isPubliclyReadable)
+  const listed = ALL_FIRMS.filter(isIndexable)
 
   return {
     '@context': 'https://schema.org',

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { ALL_FIRMS, isPubliclyReadable } from '@/lib/firms-data'
+import { ALL_FIRMS, isIndexable, isPubliclyReadable } from '@/lib/firms-data'
 
 /**
  * sitemap.xml.
@@ -23,16 +23,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const pages: { path: string; priority: number; changeFrequency: 'weekly' | 'monthly' | 'yearly' }[] = [
     { path: '/', priority: 1, changeFrequency: 'weekly' },
-    /* The directory index, and then the firms a signed-out reader can actually
-     * read in full. Not the whole directory: a gated profile is a sign-in
-     * prompt, and offering Google fifty-nine URLs when thirty-nine of them
-     * answer with a prompt is how a small site teaches a crawler to stop
-     * bothering. isPubliclyReadable is the same test the page itself applies,
-     * so this list cannot drift away from what the pages do. */
+    /* The directory index, and then every profile. This used to be the twenty
+     * two Tier 1 firms alone, on the reasoning that a gated profile is a
+     * sign-in prompt and offering Google a prompt teaches it to stop bothering.
+     * The premise was wrong: a gated profile withholds a street address and an
+     * email and renders everything else, so it is a real page. isIndexable is
+     * the same test the profile's robots directive applies, so this list cannot
+     * drift away from what the pages do.
+     *
+     * The two bands keep different priorities because they are genuinely worth
+     * different amounts, not as a hedge. A Tier 1 profile answers a firm-name
+     * search with the full record; a gated one answers the same search with
+     * most of it. */
     { path: '/firms', priority: 0.9, changeFrequency: 'weekly' },
-    ...ALL_FIRMS.filter(isPubliclyReadable).map(f => ({
+    ...ALL_FIRMS.filter(isIndexable).map(f => ({
       path: `/firms/${f.slug}`,
-      priority: 0.8,
+      priority: isPubliclyReadable(f) ? 0.8 : 0.7,
       changeFrequency: 'monthly' as const,
     })),
     { path: '/about', priority: 0.7, changeFrequency: 'monthly' },
