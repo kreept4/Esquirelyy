@@ -1843,12 +1843,50 @@ export const FIRM_RANKINGS: Record<string, FirmRankings> = {
   'abdulai-taiwo':  { emea: { band: 'Tier 2', year: 2026, areas: ['Commercial, corporate and M&A', 'Shipping and transport', 'Real estate and construction'] } },
   'pinheiro':       { emea: { band: 'Tier 4', year: 2026, areas: ['Dispute resolution'] } },
 
-  /* CHECKED AND NOT FOUND, so nobody spends the afternoon looking again.
-   * Kenna Partners, Paul Usoro & Co, Olisa Agbakoba Legal and Afe Babalola & Co
-   * appear in none of the six Legal 500 Nigeria tables and none of the Chambers
-   * Nigeria tables read on 9 August 2026. Paul Usoro SAN is ranked by Chambers
-   * as an individual, which is a different thing from the firm being ranked and
-   * is not what this table records. Absent stays absent. */
+  /* ———————————————————————————————————————————————————————————————————————
+   * CHECKED AND NOT FOUND, 9 August 2026, so nobody spends the afternoon
+   * looking again. An absent entry above means one of two things and this note
+   * is what separates them.
+   *
+   * METHOD, because the first pass overstated its own coverage. Legal 500 was
+   * read as all six Nigeria tables. Chambers was read as four tables, and the
+   * gap was closed by searching the full Chambers Global 2026 Nigeria document
+   * for every unranked firm by name. That search answers PRESENCE only, never
+   * band: the document is flowing profile prose and its band markers do not
+   * attach reliably to the firm beside them, which is the trap described
+   * above. A firm absent from the text is not ranked. A firm present in it has
+   * its band read off the structured web table, never off the PDF.
+   *
+   * NOT RANKED BY CHAMBERS NIGERIA. Thirty firms, confirmed absent from the
+   * whole document: CLP Legal, Abe & Asotie, Aina Blankson, Ajumogobia & Okeke,
+   * Blackfriars, Famsville, George Etomi, Mike Igbokwe, Platinum & Taylor Hill,
+   * Primera Africa, Resolution, D.D. Dodo, Ikeyi Shittu, Lekan Bamidele,
+   * Omaplex, Pavestones, Kola Awodein, F. R. A. Williams, Chris Ogunbanjo,
+   * Femi Atoyebi, Idowu Sofola, Olisa Agbakoba Legal, Yusuf Ali, AO2 Law,
+   * Afe Babalola, OAKE Legal, The Law Crest, Matrix Solicitors, MJ Numa and
+   * Aekley. None of them is in the six Legal 500 Nigeria tables either.
+   *
+   * THE FIRM IS NOT THE LAWYER, and two of these turn on it:
+   *
+   *   Kenna Partners      Chambers lists NO department ranking. It ranks one
+   *                       individual, Fabian Ajogwu SAN, Band 3 Dispute
+   *                       Resolution. IFLR1000 has a profile page carrying no
+   *                       rankings at all.
+   *   Paul Usoro & Co     same shape. Paul Usoro SAN is ranked as an
+   *                       individual; the firm is not.
+   *
+   * This table records firms. A partner's personal band is a real distinction
+   * and a different claim, and rendering it as a firm badge would tell a
+   * student something false about where they would be applying.
+   *
+   * ⚠ STILL OPEN. Four firms appear somewhere in the Chambers document and
+   * have not been resolved to a band or to an individual: Punuka, Simmons
+   * Cooper, Giwa-Osagie and Advocaat. They are deliberately left with no entry,
+   * because absent means unchecked and that is exactly what they are. Resolve
+   * them from the Chambers web tables for Banking & Finance, Capital Markets,
+   * Tax and Restructuring/Insolvency, which are the four Nigeria tables nobody
+   * has read yet.
+   * ——————————————————————————————————————————————————————————————————————— */
 }
 
 /** Alphabetical by firm name. Every consumer reads from here.
