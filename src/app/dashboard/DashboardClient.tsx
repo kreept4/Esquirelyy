@@ -29,17 +29,11 @@ const NOTIFICATION_LABELS: { key: keyof NotificationPreferences; label: string; 
 /** Every way into the account, each with its own state. `email` is the password
  *  sign-in and cannot be linked from here, so it only ever reports. */
 const CONNECTIONS: {
-  provider: 'google' | 'linkedin_oidc' | 'email'
+  provider: 'linkedin_oidc' | 'email'
   label: string
   onNote: string
   offNote: string
 }[] = [
-  {
-    provider: 'google',
-    label: 'Google',
-    onNote: 'You can sign in with Google.',
-    offNote: 'One tap to sign in, nothing to remember.',
-  },
   {
     provider: 'linkedin_oidc',
     label: 'LinkedIn',
@@ -76,7 +70,6 @@ export default function DashboardClient({
   const [fullName, setFullName] = useState(state?.fullName ?? '')
   const [careerStage, setCareerStage] = useState(state?.careerStage ?? '')
   const [location, setLocation] = useState(state?.location ?? '')
-  const [linkedinUrl, setLinkedinUrl] = useState(state?.linkedinUrl ?? '')
   const [notifications, setNotifications] = useState<NotificationPreferences>(
     state?.notifications ?? { deadlines: true, new_listings: true, weekly_digest: true }
   )
@@ -119,7 +112,7 @@ export default function DashboardClient({
     setSaving(true)
     setSaved(false)
     const data = await call(
-      { action: 'save-profile', fullName, careerStage, location, linkedinUrl, notifications },
+      { action: 'save-profile', fullName, careerStage, location, notifications },
       'save'
     )
     setSaving(false)
@@ -141,7 +134,7 @@ export default function DashboardClient({
    * translated rather than swallowed, so a switch that is off says so instead of
    * looking like a button that does nothing.
    */
-  async function connect(provider: 'google' | 'linkedin_oidc') {
+  async function connect(provider: 'linkedin_oidc') {
     setBusy(provider)
     setError('')
     const supabase = createClient()
@@ -243,12 +236,6 @@ export default function DashboardClient({
                 {stateOptions('Pick a state').map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </div>
-            <div>
-              <label className="grotesk-bold auth-label" htmlFor="acct-linkedin">LinkedIn</label>
-              <input id="acct-linkedin" type="text" inputMode="url" className="auth-input"
-                value={linkedinUrl} onChange={e => setLinkedinUrl(e.target.value)}
-                placeholder="linkedin.com/in/your-profile" />
-            </div>
           </div>
 
           <h3 className="grotesk-bold acct-sub">What we email you about</h3>
@@ -278,9 +265,9 @@ export default function DashboardClient({
 
         {/* Connected accounts.
             Every way in is listed with its real state, rather than one sentence
-            describing whichever happened to be first. Someone who signed up with
-            Google should see Google marked connected, not be told about it in
-            passing. */}
+            describing whichever happened to be first. Someone who connected
+            LinkedIn should see LinkedIn marked connected, not be told about it
+            in passing. */}
         <section className="acct-card">
           <h2 className="grotesk-bold acct-card-title">Connected accounts</h2>
           <p className="grotesk-regular acct-note">

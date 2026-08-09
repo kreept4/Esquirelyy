@@ -11,15 +11,30 @@ export const metadata = {
  * a template. Every claim here was checked in the source:
  *
  *   - accounts and sessions run through Supabase Auth; we never see a password.
- *     Google is a second sign-in path (auth/login and auth/signup both call
- *     signInWithOAuth), so Google IS a processor for anyone who uses it and has
- *     to be named. It was missing from clause 4 until the 8 August audit.
+ *     Google was a second sign-in path until the 9 August change removed the
+ *     button from auth/login and auth/signup and the Connect option from the
+ *     account page. Nothing in the code calls Google's OAuth any more, so it is
+ *     gone from clause 4 and clause 5 with it — the 8 August audit added Google
+ *     because the code offered it then; this pass removes it because the code
+ *     does not offer it now, which is the same rule applied twice.
+ *   - LinkedIn moved the other way. It used to be a free-text field
+ *     (`linkedin_url`) anyone could type any string into, which the notice
+ *     described as profile data with no processor behind it. The 9 August
+ *     change deleted that field — DashboardClient.tsx has no such input any
+ *     more — and replaced it with `connect('linkedin_oidc')`, an
+ *     `auth.linkIdentity` call on the account page. So the fact pattern is now
+ *     the one Google used to have: LinkedIn is a processor, but only for
+ *     someone who chooses to connect it, and what it hands us is an identity
+ *     (email, name), not a URL someone typed. Clause 1 and clause 4 both had to
+ *     change, not just clause 4, because the profile bullet in clause 1 is
+ *     where the old free-text field was described.
  *   - profiles hold rather more than the three fields this page used to claim.
  *     PROFILE_COLUMNS in lib/account.ts is the authority: full_name, email,
- *     career_stage, location, practice_areas, linkedin_url,
- *     notification_preferences, break_started_at, break_until,
- *     deletion_requested_at. linkedin_url is the one that matters most, because
- *     it points at a page naming the person.
+ *     career_stage, location, practice_areas, notification_preferences,
+ *     break_started_at, break_until, deletion_requested_at. `linkedin_url` was
+ *     dropped from this list on 9 August along with the field itself; the
+ *     database column still exists for whoever had already filled it in, but
+ *     nothing in the app reads or writes it any more.
  *   - the tracker writes to `applications`; USER_DATA_TABLES in lib/account.ts
  *     lists every user-keyed table, and `rejection_log` was the one this notice
  *     had never mentioned
@@ -58,14 +73,14 @@ export default function PrivacyPage() {
   return (
     <LegalPage
       title="Privacy"
-      updated="8 August 2026"
+      updated="9 August 2026"
       intro="What we collect, why we collect it, who else sees it, and what you can make us do about it. Written to be read, not to be survived."
       summary={{
         heading: 'Headnote',
         points: [
           'We collect your email, your account profile, and whatever you put in the tracker.',
           'Your CV file is never stored. What the tools write from it is: the review, and any CV you generate.',
-          'Five processors: Supabase, Anthropic, Vercel, Brevo and, if you sign in with Google, Google.',
+          'Five processors: Supabase, Anthropic, Vercel, Brevo and, if you connect LinkedIn, LinkedIn.',
           'We do not sell your data or pass it to employers.',
           'You can delete your account yourself from the account page. It runs 30 days later, and signing in cancels it.',
         ],
@@ -86,15 +101,15 @@ export default function PrivacyPage() {
           <li>
             <strong>Account details.</strong> Your email address, and a password managed by our
             authentication provider. Passwords are hashed by that provider and are never visible to
-            us. If you sign in with Google instead, there is no password at all: Google confirms who
-            you are and passes us your email address and the name on your Google account. We never
-            see your Google password, and we get nothing else from your Google account.
+            us. From your account page you can also connect LinkedIn as a second way to sign in: if
+            you do, there is no password on that path either, LinkedIn confirms who you are and
+            passes us your email address and the name on your LinkedIn account. We never see your
+            LinkedIn password, and we get nothing else from your LinkedIn account.
           </li>
           <li>
-            <strong>Your profile.</strong> Your name, career stage, preferred location, the practice
-            areas you are interested in, and a LinkedIn address if you add one. All optional, and
-            you can edit or clear any of them on your account page. Bear in mind that a LinkedIn
-            address points at a page naming you, so it identifies you more directly than the rest.
+            <strong>Your profile.</strong> Your name, career stage, preferred location, and the
+            practice areas you are interested in. All optional, and you can edit or clear any of them
+            on your account page.
           </li>
           <li>
             <strong>Account settings.</strong> Which alerts you want to receive, and whether you
@@ -227,9 +242,9 @@ export default function PrivacyPage() {
             nothing else. It does not receive your CV, your tool output or your tracker.
           </li>
           <li>
-            <strong>Google</strong>, but only if you choose to sign in with Google. It then confirms
-            your identity to us and tells us your email address and account name. If you sign up
-            with an email and password instead, Google is not involved at any point.
+            <strong>LinkedIn</strong>, but only if you choose to connect it from your account page.
+            It then confirms your identity to us and tells us your email address and account name.
+            If you never connect it, LinkedIn is not involved at any point.
           </li>
         </ul>
         <p>
@@ -241,7 +256,7 @@ export default function PrivacyPage() {
 
       <Clause n={5} heading="Data leaving Nigeria">
         <p>
-          Anthropic, Vercel, Brevo and Google process data outside Nigeria. Where the destination has not been
+          Anthropic, Vercel, Brevo and LinkedIn process data outside Nigeria. Where the destination has not been
           recognised as providing adequate protection, we rely on the providers&rsquo; contractual data
           protection terms, which oblige them to protect your data to a comparable standard. You can
           ask us for details of those arrangements.

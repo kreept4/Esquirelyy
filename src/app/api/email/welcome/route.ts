@@ -10,8 +10,9 @@ import { sendWelcomeOnce } from '@/lib/email/welcome-once'
  * would mean mailing every address anyone types, including the typos and the
  * throwaways, and that is exactly how a sender reputation is destroyed.
  *
- * Google users do not come through here. They have no code to verify, so their
- * welcome fires from /auth/callback instead. Both call the same
+ * OAuth users (LinkedIn, connected from the account page) do not come through
+ * here. They have no code to verify, so their welcome fires from
+ * /auth/callback instead. Both call the same
  * `sendWelcomeOnce`, which owns the once-per-account rule — see
  * src/lib/email/welcome-once.ts. This file is now only the HTTP wrapper.
  *

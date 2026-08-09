@@ -74,7 +74,6 @@ export async function POST(req: NextRequest) {
         full_name: str(body.fullName, 120),
         career_stage: str(body.careerStage, 60),
         location: str(body.location, 120),
-        linkedin_url: str(body.linkedinUrl, 300),
         notification_preferences: cleanPreferences(body.notifications),
         updated_at: now.toISOString(),
       }

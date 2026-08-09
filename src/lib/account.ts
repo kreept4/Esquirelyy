@@ -36,7 +36,6 @@ export interface AccountState {
   careerStage: string | null
   location: string | null
   practiceAreas: string[]
-  linkedinUrl: string | null
   notifications: NotificationPreferences
   /** Non-null only while a break is actually running. A break whose end has
    *  passed reads as no break at all, with nothing needing to have run. */
@@ -50,7 +49,7 @@ export interface AccountState {
 /* The columns this module reads. Named explicitly rather than `*` so that a
    column added later cannot silently start travelling to the client. */
 const PROFILE_COLUMNS =
-  'full_name, email, career_stage, location, practice_areas, linkedin_url, ' +
+  'full_name, email, career_stage, location, practice_areas, ' +
   'notification_preferences, break_started_at, break_until, deletion_requested_at'
 
 function addDays(iso: string, days: number): string {
@@ -76,7 +75,6 @@ export function readAccountState(row: Record<string, any> | null): AccountState 
     careerStage: row?.career_stage ?? null,
     location: row?.location ?? null,
     practiceAreas: row?.practice_areas ?? [],
-    linkedinUrl: row?.linkedin_url ?? null,
     notifications: prefs,
     breakUntil: active ? row!.break_until : null,
     breakStartedAt: active ? (row?.break_started_at ?? null) : null,

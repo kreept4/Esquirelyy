@@ -63,13 +63,17 @@ export async function GET(request: Request) {
   }
 
   /**
-   * The welcome message, for anyone who arrived by Google.
+   * The welcome message, for anyone who arrived by OAuth.
    *
-   * This has to run BEFORE the `next` short-circuit below. The login page
-   * always appends a `next` — it defaults to '/' — so anything placed after
-   * that early return would never fire for a Google user who happened to press
-   * the button on the sign-in page rather than the sign-up page. Those are the
-   * same account creation; only the door differs.
+   * Currently that means someone connecting LinkedIn from the account page —
+   * there is no OAuth sign-up button any more, so in practice the account
+   * already exists and sendWelcomeOnce returns `sent: false` on the once-only
+   * check almost every time this runs. It stays unconditional rather than
+   * gated on "is this actually a new account" so a future OAuth sign-up path
+   * does not have to remember to wire itself through here; it already would.
+   *
+   * Runs BEFORE the `next` short-circuit below regardless, so it is never
+   * skipped by whatever `next` happens to be set to.
    *
    * Awaited, not fired and forgotten. This route returns a redirect and then
    * the function is done, so a promise left running has no guarantee of
@@ -91,8 +95,9 @@ export async function GET(request: Request) {
 
   const welcome = await sendWelcomeOnce(user)
   if (!welcome.ok) {
-    // Logged, never fatal. Someone who just proved their identity with Google
-    // must not be bounced back to a sign-in page because Brevo was slow.
+    // Logged, never fatal. Someone who just proved their identity with an
+    // OAuth provider must not be bounced back to a sign-in page because Brevo
+    // was slow.
     console.error('[auth] welcome message not sent', user.id, welcome.reason)
   }
 

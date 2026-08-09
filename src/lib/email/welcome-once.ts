@@ -7,21 +7,29 @@ import { welcomeEmail } from './templates/welcome'
  *
  * WHY THIS IS A MODULE AND NOT A ROUTE
  *
- * There are two ways to become a new user and they arrive by completely
- * different paths:
+ * Genuinely two ways to become a new user, in principle, and they would arrive
+ * by completely different paths:
  *
  *   password   the signup page POSTs /api/email/welcome once the six-digit
  *              code is verified — the first moment the address is proved real
- *   Google     /auth/callback exchanges the OAuth code; the address was proved
- *              by Google before we ever saw it, so there is no code and no
- *              verify step to hang anything off
+ *   OAuth      /auth/callback exchanges the OAuth code; the address was proved
+ *              by the provider before we ever saw it, so there is no code and
+ *              no verify step to hang anything off
  *
- * The OAuth path had no welcome at all. The fix could not be "call the API
- * route from the callback": that would mean a server route making an HTTP
- * request to itself, carrying the session cookie forward by hand, on a redirect
- * a person is waiting on. Both callers now run the same function in-process
- * instead, so the once-only rule cannot be enforced in one path and forgotten
- * in the other.
+ * In practice only the password path can currently produce a genuinely new
+ * account: the one OAuth provider wired up is LinkedIn, and it is
+ * connect-only — `DashboardClient.tsx` offers it as `auth.linkIdentity` on
+ * the account page, reachable only once already signed in, with no LinkedIn
+ * button on login or signup. This function still checks both, because that is
+ * cheap and correct, and because a future OAuth *sign-up* path should not have
+ * to remember to route itself through here — it already would.
+ *
+ * The OAuth path had no welcome at all when this shipped, back when Google was
+ * that path. The fix could not be "call the API route from the callback": that
+ * would mean a server route making an HTTP request to itself, carrying the
+ * session cookie forward by hand, on a redirect a person is waiting on. Both
+ * callers run the same function in-process instead, so the once-only rule
+ * cannot be enforced in one path and forgotten in the other.
  *
  * SERVER ONLY. It reads SUPABASE_SERVICE_ROLE_KEY.
  *
@@ -80,7 +88,7 @@ async function stampWelcomed(userId: string, existing: Record<string, unknown>) 
       // Spread what is already there: this endpoint REPLACES app_metadata
       // rather than merging, so sending only our key would drop everything
       // else in it — including the provider list Supabase keeps there, which
-      // for a Google user is how the account knows it is a Google account.
+      // for a linked account is how it knows which providers it holds.
       body: JSON.stringify({
         app_metadata: { ...existing, welcome_sent_at: new Date().toISOString() },
       }),
@@ -131,10 +139,10 @@ export async function sendWelcomeOnce(user: User): Promise<WelcomeOutcome> {
        Reported as a skip so nothing downstream surfaces an error for it. */
     if (!emailConfigured()) return { ok: true, sent: false, reason: 'email not configured' }
 
-    /* Google puts the display name in `name` and `full_name`; the password
-       signup writes `full_name` from the form. Both are checked so a Google
-       user is greeted by name rather than falling through to the generic
-       opening. */
+    /* An OAuth provider puts the display name in `name` and/or `full_name`;
+       the password signup writes `full_name` from the form. Both are checked
+       so anyone who arrives either way is greeted by name rather than falling
+       through to the generic opening. */
     const name =
       (user.user_metadata?.full_name as string) || (user.user_metadata?.name as string) || ''
 
