@@ -2,6 +2,7 @@ import { openGraph } from '@/components/seo/JsonLd'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { TEAM, AMBASSADORS, type Person } from './people'
+import { TEAM_CALL_MAILTO } from '@/lib/team-call'
 
 export const metadata = {
   title: 'About us',
@@ -162,12 +163,22 @@ export default function AboutPage() {
                 would rather hear from, which is our preference described to
                 somebody who only wanted to know what to send. It is now three
                 instructions and an address. */}
+            {/* ⚠ IT SAYS VOLUNTEER, AND IT SAYS IT IN THE FIRST SENTENCE.
+                This block read "We are hiring", which was written before anybody
+                said these were volunteer positions and would have had people
+                spending an evening on an application under the wrong
+                assumption. The word does not need "unpaid" beside it, and did
+                carry it for a while: volunteer is the plain term and every
+                reader knows it, so saying it twice reads as bracing for an
+                objection rather than stating the terms. What matters is that it
+                comes before the interesting part, not how many ways it is put. */}
             <p className="grotesk-bold about-note-title">Join us</p>
             <p className="grotesk-regular about-note">
-              We are hiring. Send a CV, tell us what you would want to own here, and name the
-              first thing you would change about Esquirely. The last one is what we read
-              closest.{' '}
-              <a href="mailto:careers@esquirely.com.ng" className="about-note-mail">
+              We are opening up the team. These are volunteer positions, on something Nigerian
+              law students are using right now. Tell us what you do and how you think you can
+              contribute. Be as expressive as you like, and be critical: if something here is
+              wrong or badly built, that is the part we will reply to first.{' '}
+              <a href={TEAM_CALL_MAILTO} className="about-note-mail">
                 careers@esquirely.com.ng
               </a>
             </p>

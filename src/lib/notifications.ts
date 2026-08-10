@@ -1,5 +1,6 @@
 import { ALL_SCHOLARSHIPS } from './scholarships-data'
 import { NEW_ROLES, NEW_ROLES_COUNT } from './new-roles'
+import { TEAM_CALL } from './team-call'
 
 /**
  * Notifications, derived rather than stored.
@@ -45,7 +46,7 @@ export const PREFS_KEY = 'esquirely:prefs'
  * differently, and folding them together would mean an announcement quietly
  * disappearing under the roles it was announcing.
  */
-export type NotificationKind = 'role' | 'deadline' | 'tracker' | 'welcome' | 'drop'
+export type NotificationKind = 'role' | 'deadline' | 'tracker' | 'welcome' | 'drop' | 'team'
 
 export interface Notification {
   id: string
@@ -133,7 +134,7 @@ export const READ_KEY = 'esquirely:notifications-read'
 /* 'drop' joins 'welcome' for exactly the reason above: its content is behind a
    second click, so clearing it when the panel opens would mark as read the one
    notification the reader has demonstrably not read yet. */
-export const ACK_KINDS: ReadonlySet<NotificationKind> = new Set<NotificationKind>(['welcome', 'drop'])
+export const ACK_KINDS: ReadonlySet<NotificationKind> = new Set<NotificationKind>(['welcome', 'drop', 'team'])
 
 export function readReadIds(): Set<string> {
   if (typeof window === 'undefined') return new Set()
@@ -225,6 +226,18 @@ export function buildFeed(
     title: `${NEW_ROLES_COUNT} new roles on the board`,
     detail: NEW_ROLES.employers.join(' · '),
     at: NEW_ROLES.at,
+  })
+
+  /* 0c. The open call to join the team. Sits below the drop because a role at
+         a firm is what somebody came here for, and this is us asking them for
+         something. It stays in the feed rather than expiring on a date: it is
+         open until it is not, and the id is what retires it. */
+  out.push({
+    id: TEAM_CALL.id,
+    kind: 'team',
+    title: 'We are opening up the team',
+    detail: 'Volunteer positions, open now',
+    at: TEAM_CALL.at,
   })
 
   const today = now.toISOString().slice(0, 10)

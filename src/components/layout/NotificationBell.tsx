@@ -17,6 +17,7 @@ import {
   unreadCount,
   type Notification,
 } from '@/lib/notifications'
+import { TEAM_CALL, TEAM_CALL_MAILTO } from '@/lib/team-call'
 import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF } from '@/lib/new-roles'
 
 /**
@@ -40,6 +41,10 @@ const KIND_DOT: Record<Notification['kind'], string> = {
      note rather than navigating. The teal of a single role would say "this is
      one more listing", which is the one thing it is not. */
   drop: '#FBBF24',
+  /* Mint, not amber. The two amber rows are things we have done for the reader;
+     this is the one row asking something of them, and it should not look like
+     another announcement. */
+  team: '#14B8A6',
 }
 
 function NotifRow({ n, unread }: { n: Notification; unread: boolean }) {
@@ -71,6 +76,7 @@ export default function NotificationBell({
   const [readIds, setReadIds] = useState<Set<string>>(() => new Set())
   const [showWelcome, setShowWelcome] = useState(false)
   const [showDrop, setShowDrop] = useState(false)
+  const [showTeam, setShowTeam] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const checkedWelcomeParam = useRef(false)
 
@@ -145,6 +151,12 @@ export default function NotificationBell({
     setOpen(false)
     setShowDrop(true)
     setReadIds(markRead(NEW_ROLES.id))
+  }
+
+  function openTeam() {
+    setOpen(false)
+    setShowTeam(true)
+    setReadIds(markRead(TEAM_CALL.id))
   }
 
   function closeWelcome() {
@@ -267,7 +279,9 @@ export default function NotificationBell({
                         data-unread={isNew || undefined}
                         /* Two hrefless kinds now, so the click has to ask which
                            note it is opening rather than assuming the welcome. */
-                        onClick={() => (n.kind === 'drop' ? openDrop() : openNote())}
+                        onClick={() =>
+                          n.kind === 'drop' ? openDrop() : n.kind === 'team' ? openTeam() : openNote()
+                        }
                       >
                         <NotifRow n={n} unread={isNew} />
                       </button>
@@ -331,6 +345,63 @@ export default function NotificationBell({
               >
                 Show me the new roles
               </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* The open call to join the team.
+          "VOLUNTEER" IS IN THE FIRST SENTENCE and the word "unpaid" is not
+          anywhere. Volunteer is not a euphemism: it is the plain word for this
+          and every reader already knows what it means, so spelling it out a
+          second time reads as a company bracing for an objection rather than
+          simply stating the terms. What matters is the position of the word,
+          not how many ways it is said. */}
+      {showTeam && (
+        <div className="notif-modal-scrim" onClick={() => setShowTeam(false)}>
+          <div
+            className="notif-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Join the Esquirely team"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="notif-modal-close"
+              onClick={() => setShowTeam(false)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+
+            <div className="notif-modal-inner">
+              <p className="display-black notif-modal-title">We are opening up the team.</p>
+
+              <div className="notif-modal-body">
+                <p className="grotesk-regular">
+                  Esquirely is built by a small group of people, and we are making room for more.
+                  These are volunteer positions, on something being used by Nigerian law students
+                  right now.
+                </p>
+                <p className="grotesk-regular">
+                  Lawyers, students, writers, designers and engineers are all useful here. Tell us
+                  what you do and how you think you can contribute.
+                </p>
+                <p className="grotesk-regular">
+                  Be as expressive as you like, and be critical. If something here is wrong, thin
+                  or badly built, we would rather read that than a compliment. It is the part we
+                  will reply to first.
+                </p>
+              </div>
+
+              <a
+                href={TEAM_CALL_MAILTO}
+                className="grotesk-bold notif-modal-cta"
+                onClick={() => setShowTeam(false)}
+              >
+                Tell us how you can help
+              </a>
             </div>
           </div>
         </div>
