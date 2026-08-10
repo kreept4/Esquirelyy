@@ -184,6 +184,16 @@ export interface Firm {
   logoFile?: string | null
   name: string
   shortName: string
+  /**
+   * What the firm was called before it rebranded.
+   *
+   * Rendered on the profile and searchable, because a rename does not reach
+   * everybody at once. A student told about "Famsville" by a lecturer, or
+   * holding a two-year-old vacation scheme note, searches the old name and must
+   * still land on the firm rather than on nothing. It also answers the question
+   * the profile otherwise raises, which is whether this is the same firm.
+   */
+  formerName?: string
   tier: FirmTier
   email: string
   website: string
@@ -565,16 +575,35 @@ const FIRMS_UNSORTED: Firm[] = [
     openRoles: 2,
   },
   {
+    /* THE SLUG STAYS 'famsville-solicitors'. The firm relaunched as Moroom
+       Africa on 2 October 2025, but the slug is the live URL and the sitemap
+       entry, and the old name is also what anyone who knew this firm will
+       search for. Same reasoning as the Udo Udoma slug above: fix it with a
+       redirect or not at all. `formerName` is what carries the old name into
+       the search index and onto the page. */
     slug: 'famsville-solicitors',
-    logoFile: 'Famsville.jpg',
-    name: 'Famsville Solicitors',
-    shortName: 'Famsville',
+    /* The Moroom mark, pulled from the firm's own site on 2026-08-10 and
+       uploaded to the bucket. Their site also carries a full lockup, but its
+       wordmark is set in white for a dark header and vanished on our cream
+       card; this is the symbol alone on transparency, which is what the square
+       logo frame wants anyway. Famsville.jpg is left in the bucket rather than
+       deleted, since nothing else costs anything and a rebrand occasionally
+       gets reversed. */
+    logoFile: 'moroom-africa.png',
+    name: 'Moroom Africa',
+    shortName: 'Moroom',
+    formerName: 'Famsville Solicitors',
     tier: 'Boutique',
-    email: 'info@famsvillesolicitors.com',
-    website: 'https://famsvillesolicitors.com',
-    offices: [{ city: 'Lagos', address: '28B Association Way, Dolphin Estate, Ikoyi, Lagos' }],
-    practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Banking & Finance'],
-    description: 'A boutique commercial law firm providing focused legal services across corporate, finance, and dispute resolution.',
+    email: 'info@moroomafrica.com',
+    website: 'https://moroomafrica.com',
+    /* From the firm's own site on 2026-08-10. Note this is a different building
+       from the Association Way address Famsville used. The firm now describes
+       itself as distributed and says it does not rely on physical offices, so
+       treat this as the registered address rather than as somewhere to turn up
+       unannounced. */
+    offices: [{ city: 'Lagos', address: '214B Eti Osa Way, Dolphin Estate, Ikoyi, Lagos' }],
+    practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Employment', 'Intellectual Property', 'Tax'],
+    description: 'A pan-African commercial firm, relaunched from Famsville Solicitors in October 2025 as a digital-first practice built on its own cloud platform rather than on a network of offices. Corporate, employment, IP and dispute resolution across African jurisdictions.',
     foundedYear: 2012,
     openRoles: 0,
   },
@@ -841,7 +870,12 @@ const FIRMS_UNSORTED: Firm[] = [
     website: 'https://spaajibade.com',
     offices: [
       { city: 'Lagos', address: 'Suite 201, SPAACO House, 27A Macarthy Street, Onikan, Lagos' },
-      { city: 'Abuja', address: 'Suite A312, Garki Mall, Plot 1580 Damaturu Crescent, Garki II, Abuja' },
+      /* Gudu, not Garki Mall. Reported first hand by someone who externed in
+         this office, which outranks the directory listing that gave us the old
+         Garki II address: a firm that has moved keeps appearing at the previous
+         address in aggregators for years, and this is a page a student may walk
+         to. */
+      { city: 'Abuja', address: '2nd Floor, Left Wing, Commercial Plaza, Plot 1075 Joseph Gomwalk Street, Gudu, Abuja' },
       { city: 'Ibadan', address: 'Top Floor Suite, SPAACO House, 138 Liberty Stadium Road, Ibadan' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Banking & Finance', 'Dispute Resolution', 'Capital Markets'],

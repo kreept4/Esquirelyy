@@ -645,6 +645,17 @@ select.filter-pill {
   opacity: 0.75;
 }
 .firm-standing-note strong { font-weight: 700; opacity: 1; }
+.firm-standing-note + .firm-standing-note { margin-top: 0.55rem; }
+/* Underlined rather than recoloured. The header ground is ink and the amber
+   accent is already carrying the filters, so a third colour here would compete
+   with them for an address most readers will never need. */
+.firm-corrections-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.firm-corrections-link:hover { text-decoration-thickness: 2px; }
 
 /* The profile panel. A ruled block rather than another card, so it reads as
    part of the page's own account of the firm and not as a third-party ad. */
@@ -3997,6 +4008,14 @@ select.filter-pill {
    body text they introduced and shouted at the same time, which is the specific
    combination that reads as cheap. Section headings are now ordinary sentence
    case at a legible size, and the palette comes from the design tokens. */
+/* Sits between the name and the meta row, quieter than both: it is context for
+   the name rather than another fact about the firm. */
+.firm-profile-former {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin: -0.35rem 0 0.75rem;
+}
+
 .firm-profile-meta {
   display: flex;
   align-items: center;

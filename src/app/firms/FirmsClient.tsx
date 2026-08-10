@@ -312,7 +312,18 @@ export default function FirmsClient() {
 
   const filtered = useMemo(() => {
     return ALL_FIRMS.filter(f => {
-      if (search && !f.name.toLowerCase().includes(search.toLowerCase()) && !f.practiceAreas.some((p: string) => p.toLowerCase().includes(search.toLowerCase()))) return false
+      /* The former name is searchable too. A firm that rebranded is still the
+         firm somebody was told about under the old name, and searching
+         "Famsville" and being told there are no results reads as the directory
+         not having it rather than as it having moved. */
+      if (search) {
+        const q = search.toLowerCase()
+        const hit =
+          f.name.toLowerCase().includes(q) ||
+          (f.formerName?.toLowerCase().includes(q) ?? false) ||
+          f.practiceAreas.some((p: string) => p.toLowerCase().includes(q))
+        if (!hit) return false
+      }
       if (tier && f.tier !== tier) return false
       if (city && !f.offices.some((o: { city: string; address: string }) => o.city === city)) return false
       if (practiceArea && !f.practiceAreas.includes(practiceArea)) return false
@@ -433,6 +444,25 @@ export default function FirmsClient() {
                 same tables. <strong>Boutique</strong> describes the kind of practice, not
                 where it places. The standing is our reading. The rankings on each profile
                 are not.
+              </p>
+
+              {/* Asking for corrections in public, beside the thing most likely
+                  to be wrong. Everything here was read off a directory or a
+                  firm's own site on a particular day, and firms move office,
+                  rebrand and get re-banded without telling anyone. The people
+                  who notice first are the ones who work there, and they only
+                  write in if there is somewhere obvious to write to.
+
+                  A mailto rather than a form: one tap on a phone, nothing to
+                  fill in, and it arrives with a real reply address attached. */}
+              <p className="grotesk-regular firm-standing-note">
+                Something here wrong or missing? A ranking, a standing, an address, an
+                office that has closed, a firm that has rebranded, or one we have not
+                listed at all. Write to{' '}
+                <a href="mailto:corrections@esquirely.com.ng" className="firm-corrections-link">
+                  corrections@esquirely.com.ng
+                </a>{' '}
+                and we will check it against the source and fix it.
               </p>
             </div>
         </PageHeader>

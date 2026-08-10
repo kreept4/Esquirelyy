@@ -129,9 +129,26 @@ export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="footer-panel">
-        <Link href="/" className="display-black footer-wordmark" aria-label="Esquirely home">
-          ESQUIRELY
-        </Link>
+        {/* The wordmark and the one outbound link share a line. The icon was
+            stacked above the scroll-to-top button, which read as a third
+            control in a column of controls rather than as the brand's own
+            address. Beside the wordmark it belongs to the signature. */}
+        <div className="footer-mark">
+          <Link href="/" className="display-black footer-wordmark" aria-label="Esquirely home">
+            ESQUIRELY
+          </Link>
+          <a
+            href="https://www.linkedin.com/company/esquirely"
+            target="_blank"
+            rel="me noopener noreferrer"
+            className="footer-social"
+            aria-label="Esquirely on LinkedIn"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+          </a>
+        </div>
 
         <div className="footer-body">
           <nav className="footer-cols" aria-label="Footer">
@@ -187,7 +204,9 @@ export default function Footer() {
           letter-spacing: -0.045em;
           color: ${INK};
           text-decoration: none;
-          margin-bottom: 1.75rem;
+          /* The gap below now belongs to .footer-mark, the row that holds this
+             and the LinkedIn tile. Left here it would be a margin on a flex
+             item and would push the wordmark off centre against the tile. */
         }
 
         .footer-body {
@@ -242,6 +261,49 @@ export default function Footer() {
           text-align: right;
         }
 
+        /* The signature line. The icon is pushed to the far edge rather than
+           set immediately after the wordmark, because the wordmark's width is
+           a clamp against the viewport and a gap that looks right at 1400px is
+           a collision at 900px. Baseline alignment is deliberately not used:
+           the wordmark's box is six rem tall and its baseline sits near the
+           bottom of it, which would hang the icon off the underside of the
+           panel's first line. */
+        .footer-mark {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          margin-bottom: 1.75rem;
+        }
+
+        /* Square, ink on amber, same rule and shadow as the scroll button and
+           as the panel itself. */
+        .footer-social {
+          flex-shrink: 0;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 2.3rem;
+          height: 2.3rem;
+          color: ${INK};
+          background: transparent;
+          border: 2px solid ${INK};
+          border-radius: 2px;
+          box-shadow: 4px 4px 0 ${INK};
+          transition: transform 0.14s ease, box-shadow 0.14s ease,
+            background-color 0.14s ease, color 0.14s ease;
+        }
+        /* Inverts and presses in, so the glyph is knocked out of the ink rather
+           than changing colour on the spot. */
+        .footer-social:hover {
+          background: ${INK};
+          color: ${AMBER};
+          transform: translate(2px, 2px);
+          box-shadow: 2px 2px 0 ${INK};
+        }
+        .footer-social:active { transform: translate(4px, 4px); box-shadow: 0 0 0 ${INK}; }
+        .footer-social:focus-visible { outline: 2px solid ${INK}; outline-offset: 3px; }
+
         /* Rectangular, not a pill, carrying the panel's rule and hard shadow one
            size down. */
         .footer-top {
@@ -280,7 +342,7 @@ export default function Footer() {
         @media (max-width: 860px) {
           .site-footer { padding: 1.5rem 1.1rem 1.75rem; }
           .footer-panel { padding: 1.25rem 1.15rem 1.1rem; border-width: 2px; box-shadow: 4px 4px 0 ${INK}; }
-          .footer-wordmark { margin-bottom: 1.1rem; }
+          .footer-mark { margin-bottom: 1.1rem; }
           /* Stacked, with the meta block holding the right edge so the button
              and the legal lines stay in the corner as in the reference. */
           .footer-body { flex-direction: column; align-items: stretch; gap: 1.5rem; }
@@ -297,7 +359,8 @@ export default function Footer() {
         @media (max-width: 640px) {
           .site-footer { padding: 1.25rem 1rem 1.5rem; }
           .footer-panel { padding: 1.1rem 1.1rem 1rem; }
-          .footer-wordmark { font-size: clamp(2.2rem, 13.5vw, 6rem); margin-bottom: 0.9rem; }
+          .footer-wordmark { font-size: clamp(2.2rem, 13.5vw, 6rem); }
+          .footer-mark { margin-bottom: 0.9rem; }
           .footer-body { gap: 1.35rem; }
           .footer-cols { column-gap: 1rem; }
           .footer-cols li { margin-bottom: 0.55rem; }
@@ -332,6 +395,10 @@ export default function Footer() {
         @media (prefers-reduced-motion: reduce) {
           .footer-top { transition: none; }
           .footer-top:hover, .footer-top:active { transform: none; box-shadow: 4px 4px 0 ${INK}; }
+          /* The press comes off, the colour inversion stays: that one is the
+             hover state being legible, not decoration. */
+          .footer-social { transition: background-color 0.14s ease, color 0.14s ease; }
+          .footer-social:hover, .footer-social:active { transform: none; box-shadow: 4px 4px 0 ${INK}; }
         }
       `}</style>
     </footer>

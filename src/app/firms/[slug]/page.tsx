@@ -262,6 +262,14 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
                 <h1 className="display-black firm-profile-name">
                   {firm.name}
                 </h1>
+                {/* Stated plainly, directly under the name, because the reader
+                    who needs it arrived here searching the old one and is
+                    working out whether this is the same firm. */}
+                {firm.formerName && (
+                  <p className="grotesk-regular firm-profile-former">
+                    Formerly {firm.formerName}
+                  </p>
+                )}
                 <div className="firm-profile-meta">
                   <span>{firm.tier}</span>
                   {firm.foundedYear && (
