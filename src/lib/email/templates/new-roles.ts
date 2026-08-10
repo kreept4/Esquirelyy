@@ -50,6 +50,10 @@ const CONTOUR =
  * exactly this set — not NEW_ROLES_HREF, which would carry every slug in the
  * cumulative drop, including roles this email never mentions.
  */
+/* Greenberg Traurig London belongs here once their 2029 training contract
+   applications actually open (1 September 2026 per their own post) — not
+   before. A reminder is set for a few days ahead of that date. Until then
+   this list is exactly what's live on the board. */
 const ROLES = [
   {
     employer: 'Ovie Obobolo & Co',
@@ -57,31 +61,28 @@ const ROLES = [
     slug: 'ovie-obobolo-associate',
     line: 'Lagos (Yaba), one to two years post-call. Apply with a CV and application letter to hello@ovieobobolo.com. Closes 16 August 2026.',
   },
-  {
-    employer: 'Greenberg Traurig London',
-    title: 'Training Contract (2029 Intake)',
-    slug: 'gt-london-training-contract-2029',
-    line: 'London, training contract applications for the 2029 intake. Full details and the application form are on the firm’s graduate recruitment page at gtlaw.com.',
-  },
 ]
 
 export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: string }) {
   const first = (name || '').trim().split(/\s+/)[0]
   const employers = ROLES.map(r => r.employer)
+  const plural = ROLES.length > 1
   /* Names the firms rather than grading them. "Worth a look" was our opinion
      arriving before the reader had the facts to form their own. */
   const greeting = first
-    ? `${first}, ${employers.join(' and ')} are hiring.`
-    : `${employers.join(' and ')} are hiring.`
-  const subject = `${ROLES.length} new roles: ${employers.join(' and ')}`
+    ? `${first}, ${employers.join(' and ')} ${plural ? 'are' : 'is'} hiring.`
+    : `${employers.join(' and ')} ${plural ? 'are' : 'is'} hiring.`
+  const subject = `${ROLES.length} new role${plural ? 's' : ''}: ${employers.join(' and ')}`
   const link = `${siteUrl}/jobs?roles=${ROLES.map(r => r.slug).join(',')}`
+  const sourceLine = plural
+    ? 'Both were read off the firms’ own notices, so the closing dates and the application routes above are the ones they published rather than an aggregator’s guess.'
+    : 'Read off the firm’s own notice, so the closing date and the application route above are the ones it published rather than an aggregator’s guess.'
 
   const text = [
     greeting,
     '',
     ...ROLES.flatMap(r => [`${r.employer}: ${r.title}`, r.line, '']),
-    'Both were read off the firms’ own notices, so the closing dates and the',
-    'application routes above are the ones they published.',
+    sourceLine,
     '',
     `See them here: ${link}`,
     '',
@@ -147,9 +148,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
             ).join('')}
 
             <p style="margin:14px 0 20px 0;font-size:15px;line-height:1.7;color:${INK};">
-              Both were read off the firms&rsquo; own notices, so the closing dates and the
-              application routes above are the ones they published rather than an aggregator&rsquo;s
-              guess.
+              ${sourceLine}
             </p>
 
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 24px 0;">

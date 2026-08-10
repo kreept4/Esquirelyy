@@ -19,20 +19,23 @@
 
 export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
-   *  correct when the drop itself changes: Greenberg Traurig London joined
-   *  after the first four, so somebody who read the old note has not seen
-   *  this one. */
-  id: 'roles-2026-08-10d',
+   *  correct when the drop itself changes: Ovie Obobolo & Co joined after the
+   *  first three, so somebody who read the old note has not seen this one.
+   *
+   *  Greenberg Traurig London is deliberately NOT here yet. Their own post
+   *  says applications open 1 September 2026 — nothing to apply to today —
+   *  so it has no place on a live drop. Add it back (see the reminder set for
+   *  a few days out) once that date arrives. */
+  id: 'roles-2026-08-10c',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-08-10T17:00:00.000Z',
+  at: '2026-08-10T15:00:00.000Z',
   slugs: [
     'babalakin-senior-associate-energy',
     'zyph-legal-legal-associate',
     'pentagon-partners-associate-grc',
     'ovie-obobolo-associate',
-    'gt-london-training-contract-2029',
   ],
-  employers: ['Babalakin & Co', 'Zyph Legal', 'Pentagon Partners', 'Ovie Obobolo & Co', 'Greenberg Traurig London'],
+  employers: ['Babalakin & Co', 'Zyph Legal', 'Pentagon Partners', 'Ovie Obobolo & Co'],
 } as const
 
 /* THE ANNOUNCEMENT EMAIL IS NOT RETROACTIVE, and that is fine. It went out
