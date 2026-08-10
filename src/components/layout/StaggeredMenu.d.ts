@@ -24,6 +24,7 @@ export interface StaggeredMenuProps {
   colors?: string[]
   items?: StaggeredMenuItem[]
   socialItems?: StaggeredMenuSocialItem[]
+  socialsTitle?: string
   displaySocials?: boolean
   displayItemNumbering?: boolean
   className?: string

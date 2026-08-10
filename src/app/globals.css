@@ -620,6 +620,31 @@ select.filter-pill {
   font-size: 0.66rem;
   padding: 5px 8px;
 }
+/* A membership, not a ranking. Inverted rather than merely tinted, so it cannot
+   be mistaken for a fourth directory sitting quietly beside the other three. */
+.rank-badge-member {
+  background: #241F16;
+  color: #FFF8E5;
+}
+/* A person's ranking, not the firm's. Outlined and unfilled, so it reads as a
+   reference to a directory rather than as a badge the firm holds. */
+.rank-badge-person {
+  background: transparent;
+  color: #241F16;
+  border-style: dashed;
+}
+
+/* The Leading / Established / Boutique key, under the directory filters. Sits
+   on the ink page header, so it inherits that ground's text colour rather than
+   setting its own — a hardcoded ink here was invisible against it. */
+.firm-standing-note {
+  max-width: 62ch;
+  margin-top: 0.9rem;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  opacity: 0.75;
+}
+.firm-standing-note strong { font-weight: 700; opacity: 1; }
 
 /* The profile panel. A ruled block rather than another card, so it reads as
    part of the page's own account of the firm and not as a third-party ad. */
@@ -2363,6 +2388,105 @@ select.filter-pill {
 @media (prefers-reduced-motion: reduce) {
   .notif { transition: opacity 0.2s ease; }
   .notif-hidden { transform: none; }
+}
+
+/* -------------------------------------------------------------------------
+   SIGN IN / JOIN ESQUIRELY
+   The two auth actions, in the header beside the Menu toggle.
+
+   Positioned exactly like .notif and on the same line, because they take the
+   same slot: the bell is for signed-in visitors and these are for signed-out
+   ones, so the two are never on screen together.
+   ------------------------------------------------------------------------- */
+.auth-cta {
+  position: fixed;
+  top: 1.5rem;
+  right: 8.5rem;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+}
+/* Covers three cases with one rule: the header retracting on scroll, the menu
+   panel opening over it, and the moment before the auth check comes back. */
+.auth-cta-hidden {
+  transform: translateY(-160%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The quieter of the two. Colour is set inline, per ground, like the wordmark. */
+.auth-cta-signin {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  opacity: 0.85;
+  transition: opacity 0.18s ease;
+}
+.auth-cta-signin:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+.auth-cta-signin:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+
+.auth-cta-join {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.4rem;
+  padding: 0 1.15rem;
+  background: var(--amber);
+  color: var(--on-amber);
+  border: 2px solid var(--on-amber);
+  border-radius: 999px;
+  box-shadow: 3px 3px 0 var(--on-amber);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.18s ease;
+}
+/* Presses into its own shadow. Same gesture as the auth form's primary button,
+   so the two read as the same control at either end of the same journey. */
+.auth-cta-join:hover {
+  background: #FFD25A;
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--on-amber);
+}
+.auth-cta-join:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--on-amber); }
+.auth-cta-join:focus-visible { outline: 2px solid var(--on-amber); outline-offset: 3px; }
+
+@media (max-width: 640px) {
+  /* Same inset as the bell, and for the same reason: clear of the toggle.
+     Everything below this line is buying horizontal space — the wordmark, two
+     controls and the toggle share about 390px, and the pair has to end before
+     the wordmark begins. */
+  .auth-cta { top: 1.15rem; right: 6.75rem; gap: 0.6rem; }
+  /* "Join" alone from here down. */
+  .auth-cta-word { display: none; }
+  .auth-cta-signin { font-size: 0.62rem; letter-spacing: 0.06em; }
+  .auth-cta-join {
+    height: 2.1rem;
+    padding: 0 0.8rem;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    box-shadow: 2px 2px 0 var(--on-amber);
+  }
+  .auth-cta-join:hover { box-shadow: 1px 1px 0 var(--on-amber); }
+}
+
+/* Below this the line genuinely cannot hold both plus the wordmark. Sign in is
+   the one that goes: a returning visitor knows to look for it and the Join pill
+   lands on a page that links to it, so nothing is unreachable. */
+@media (max-width: 360px) {
+  .auth-cta-signin { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-cta { transition: opacity 0.2s ease; }
+  .auth-cta-hidden { transform: none; }
+  .auth-cta-join:hover, .auth-cta-join:active { transform: none; }
 }
 
 /* The welcome note, opened from the panel. */

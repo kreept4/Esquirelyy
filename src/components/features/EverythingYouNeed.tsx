@@ -285,7 +285,7 @@ function Preview({ kind }: { kind: string }) {
      * look thin rather than broad. */
     const rows = [
       ['Associate, Corporate & Commercial', 'Aluko & Oyebode', 'Lagos', 'Verified'],
-      ['Associate, Capital Markets', 'G. Elias & Co', 'Lagos', 'Rolling'],
+      ['Associate, Capital Markets', 'G Elias & Co', 'Lagos', 'Rolling'],
       ['Associate, Dispute Resolution', 'Kenna Partners', 'Lagos', 'Rolling'],
     ]
     return (
@@ -376,9 +376,11 @@ function Preview({ kind }: { kind: string }) {
      * what the directory actually records for each firm, so the preview is not
      * quietly contradicting the page it links to. */
     const rows = [
-      ['Templars', 'Tier 1', 'Energy · Corporate · Disputes'],
-      ['Banwo & Ighodalo', 'Tier 1', 'Capital markets · Banking'],
-      ['Detail Solicitors', 'Tier 1', 'Corporate · IP · Tax'],
+      ['Templars', 'Leading', 'Energy · Corporate · Disputes'],
+      ['Banwo & Ighodalo', 'Leading', 'Capital markets · Banking'],
+      // Established, not Leading: Chambers bands it 3 and no directory puts it
+      // top, which is exactly the re-banding this preview has to keep matching.
+      ['Detail Solicitors', 'Established', 'Corporate · IP · Tax'],
     ]
     return (
       <Panel>

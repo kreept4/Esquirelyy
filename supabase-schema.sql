@@ -345,7 +345,7 @@ INSERT INTO firms (slug, name, tier, type, city, verified, practice_areas) VALUE
   ('aelex', 'AELEX', 'tier_1', 'law_firm', 'Lagos', true, ARRAY['Dispute Resolution', 'Corporate', 'Energy', 'Shipping']),
   ('olajide-oyewole', 'Olajide Oyewole LLP', 'tier_1', 'law_firm', 'Lagos', true, ARRAY['Banking', 'Finance', 'Corporate', 'Tax']),
   ('streamsowers-kohn', 'Streamsowers & Köhn', 'tier_1', 'law_firm', 'Lagos', true, ARRAY['Dispute Resolution', 'Arbitration', 'Corporate']),
-  ('g-elias', 'G. Elias & Co', 'tier_1', 'law_firm', 'Lagos', true, ARRAY['Corporate', 'Finance', 'Telecoms', 'Real Estate']),
+  ('g-elias', 'G Elias & Co', 'tier_1', 'law_firm', 'Lagos', true, ARRAY['Corporate', 'Finance', 'Telecoms', 'Real Estate']),
   ('banwo-ighodalo', 'Banwo & Ighodalo', 'tier_1', 'law_firm', 'Lagos', true, ARRAY['Capital Markets', 'Corporate', 'Debt Finance', 'Projects']),
   ('olaniwun-ajayi', 'Olaniwun Ajayi LP', 'tier_1', 'law_firm', 'Lagos', true, ARRAY['Corporate', 'Energy', 'Finance', 'Tax']),
   ('stl-attorneys', 'STL Attorneys', 'tier_2', 'law_firm', 'Abuja', true, ARRAY['Public Law', 'Corporate', 'Energy']),

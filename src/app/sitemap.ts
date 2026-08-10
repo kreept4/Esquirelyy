@@ -31,10 +31,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
      * the same test the profile's robots directive applies, so this list cannot
      * drift away from what the pages do.
      *
-     * The two bands keep different priorities because they are genuinely worth
-     * different amounts, not as a hedge. A Tier 1 profile answers a firm-name
+     * The two keep different priorities because they are genuinely worth
+     * different amounts, not as a hedge. An open profile answers a firm-name
      * search with the full record; a gated one answers the same search with
-     * most of it. */
+     * most of it. The split is isPubliclyReadable, which is a list of the most
+     * searched firms and deliberately not the standing band. */
     { path: '/firms', priority: 0.9, changeFrequency: 'weekly' },
     ...ALL_FIRMS.filter(isIndexable).map(f => ({
       path: `/firms/${f.slug}`,

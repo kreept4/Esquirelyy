@@ -188,11 +188,13 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
   const firm = ALL_FIRMS.find(f => f.slug === slug)
   if (!firm) return notFound()
 
-  /* Tier 1 profiles are open to everyone, including crawlers, and the rest ask
-   * for an account. See isPubliclyReadable for why the line is drawn there.
+  /* The twenty two most-searched profiles are open to everyone, including
+   * crawlers, and the rest ask for an account. That set is an explicit list and
+   * is deliberately NOT the firm's standing band — see isPubliclyReadable for
+   * why those two questions came apart.
    *
    * The session is still only read for a gated firm. It no longer buys static
-   * rendering (see the note above generateMetadata), but it does mean a Tier 1
+   * rendering (see the note above generateMetadata), but it does mean an open
    * page serves without waiting on an auth round trip, which is the part of
    * that saving actually worth keeping. */
   let locked = false

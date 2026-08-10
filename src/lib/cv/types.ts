@@ -18,16 +18,18 @@
  *   bullets                  Conducted legal research across 2 active matters...
  */
 
+/* Sizes below are FONT_SIZE in ./template.ts, which caps every run of text on
+   the page at 9.5pt. Hierarchy is carried by weight, case and italic, not size. */
 export type CVEntry = {
-  /** Bold, 10.5pt, flush left. The institution, employer or role. */
+  /** Bold, flush left. The institution, employer or role. */
   title: string
-  /** Bold, 10.5pt, hard right. A location or a date range. */
+  /** Bold, hard right. A location or a date range. */
   titleRight?: string
-  /** Italic, 10pt, flush left. The qualification, or "Employer | Location". */
+  /** Italic, flush left. The qualification, or "Employer | Location". */
   subtitle?: string
-  /** Italic, 10pt, hard right. Usually the date range when the bold line holds a place. */
+  /** Italic, hard right. Usually the date range when the bold line holds a place. */
   subtitleRight?: string
-  /** Regular, 10pt. A single trailing line, such as a call to bar or a thesis title. */
+  /** Regular. A single trailing line, such as a call to bar or a thesis title. */
   detail?: string
   bullets?: string[]
 }

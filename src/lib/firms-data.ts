@@ -1,4 +1,24 @@
-export type FirmTier = 'Tier 1' | 'Tier 2' | 'Boutique' | 'International'
+/**
+ * Esquirely's own banding of a firm's standing.
+ *
+ * NOT "Tier 1 / Tier 2" any more, and the rename is the point. Those words are
+ * what Chambers, IFLR1000 and Legal 500 use for their bands, so putting our own
+ * "Tier 1" on a card three centimetres from a real Legal 500 Tier 1 badge read
+ * as a fourth directory agreeing with the other three. It was not; it was us.
+ * "Leading" and "Established" are plainly editorial, which is what they are.
+ *
+ * `Leading` is now earned rather than assigned: it means the firm holds a top
+ * band — Chambers Band 1, IFLR1000 Tier 1 or Legal 500 EMEA Tier 1 — in at
+ * least one directory. Nine firms clear that. Twenty two used to carry the old
+ * Tier 1 label, and the thirteen that moved include four with no directory
+ * entry at all; the rule is applied without exception, so a firm ranked only
+ * through its named SAN rather than as a firm does not qualify.
+ *
+ * `Boutique` is a different axis and is left alone: it describes the kind of
+ * practice, not where it places, and a boutique can hold a band. ENR Advisory
+ * is Chambers Band 2 and still a boutique.
+ */
+export type FirmTier = 'Leading' | 'Established' | 'Boutique'
 
 export interface FirmOffice {
   city: string
@@ -89,6 +109,59 @@ export interface FirmRankings {
   emea?: RankingEntry
 }
 
+/**
+ * A trade-body membership, which is NOT a ranking and is kept out of
+ * FirmRankings for that reason.
+ *
+ * ISDA does not band anyone. Membership is a binary fact: the body admitted the
+ * firm or it did not. Forcing it into RankingEntry would mean inventing a band
+ * to satisfy the type, and it would then render under "Independent rankings"
+ * beside Chambers and Legal 500, which would tell a reader that a trade body
+ * had assessed the firm against its peers. It has not.
+ *
+ * It earns a place beside the rankings anyway because for a student choosing
+ * between firms it answers a question the guides do not: who actually does the
+ * derivatives work. Same maintenance rule as the ranking table — absent means
+ * nobody has checked, never that the firm is not a member.
+ */
+/**
+ * A directory ranking held by a named lawyer rather than by the firm.
+ *
+ * THE FIRM IS NOT THE LAWYER, which is why this is a separate type and not an
+ * entry in FirmRankings. Chambers ranks some Nigerian practices only through
+ * their principal — the firm carries no department ranking at all, but a named
+ * SAN in it is banded. Rendering that as a firm badge would tell a student
+ * something false about where they would be applying.
+ *
+ * Suppressing it entirely was the other error, and it is the one this fixes.
+ * These are among the best known practices in the country, and a profile that
+ * silently showed nothing implied the directories had passed over them. They
+ * had not. It is a real distinction, it is simply a distinction about a person,
+ * so it is said in those words and kept out of the ranking row.
+ *
+ * `band` and `year` are optional because the source table records the ranking
+ * for some individuals without one, and inventing a band to fill the type is
+ * the failure this whole file is written against.
+ */
+export interface RankedIndividual {
+  /** As the guide prints it, post-nominals included. */
+  name: string
+  source: RankingKey
+  band?: RankingBand
+  year?: number
+  /** The practice the individual is ranked in, never the firm's whole offering. */
+  area?: string
+}
+
+export interface FirmMembership {
+  /** Short form, for the badge. */
+  body: string
+  /** Full name, for the hover and the profile row. */
+  full: string
+  /** What the membership actually is. Read from the body, never inferred. */
+  note: string
+}
+
 /** The three directories, in the order they are shown. Kept here so the badge
  *  row, the filter and the profile page cannot drift apart. */
 export const RANKING_SOURCES = [
@@ -121,6 +194,10 @@ export interface Firm {
   openRoles: number
   /** Absent means nobody has checked this firm yet, not that it is unranked. */
   rankings?: FirmRankings
+  /** Absent means nobody has checked this firm yet, not that it is not a member. */
+  memberships?: FirmMembership[]
+  /** Rankings held by named lawyers where the firm itself carries none. */
+  rankedIndividuals?: RankedIndividual[]
 }
 
 const STORAGE = 'https://ixocubhkygrnildbzluz.supabase.co/storage/v1/object/public/firm-logos/'
@@ -253,7 +330,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'CLP Legal',
     shortName: 'CLP',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@clplegal.com.ng',
     website: 'https://clplegal.com.ng',
     offices: [
@@ -272,7 +349,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'ALP NG & Co',
     shortName: 'ALP',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@alp.company',
     website: 'https://alp.company',
     offices: [
@@ -326,7 +403,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'ACAS.jpg',
     name: 'ACAS-Law',
     shortName: 'ACAS',
-    tier: 'Tier 1',
+    tier: 'Leading',
     email: 'recruit@acas-law.com',
     website: 'https://acas-law.com',
     /* Three offices, not one. The Abuja address was supplied by hand: the firm's
@@ -348,7 +425,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'aelex.jpg',
     name: 'AELEX',
     shortName: 'AELEX',
-    tier: 'Tier 1',
+    tier: 'Leading',
     email: 'info@aelex.com',
     website: 'https://aelex.com',
     offices: [
@@ -367,7 +444,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'aina blankson.jpg',
     name: 'Aina Blankson LP',
     shortName: 'Aina Blankson',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@ainablankson.com',
     website: 'https://ainablankson.com',
     offices: [
@@ -384,7 +461,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'ajumogbia.jpg',
     name: 'Ajumogobia & Okeke',
     shortName: 'A&O Nigeria',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'ao@ajumogobiaokeke.com',
     website: 'https://ajumogobiaokeke.com',
     offices: [
@@ -401,7 +478,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'aluko-oyebode.jpg',
     name: 'Aluko & Oyebode',
     shortName: 'Aluko & Oyebode',
-    tier: 'Tier 1',
+    tier: 'Leading',
     email: 'careers@aluko-oyebode.com',
     website: 'https://aluko-oyebode.com',
     offices: [
@@ -419,7 +496,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'banwo-ighodalo.jpg',
     name: 'Banwo & Ighodalo',
     shortName: 'Banwo & Ighodalo',
-    tier: 'Tier 1',
+    tier: 'Leading',
     email: 'hr@banwo-ighodalo.com',
     website: 'https://banwo-ighodalo.com',
     offices: [
@@ -451,7 +528,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'bloomfield-law.ico',
     name: 'Bloomfield Law Practice',
     shortName: 'Bloomfield',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'employment@bloomfield-law.com',
     website: 'https://bloomfield-law.com',
     offices: [{ city: 'Lagos', address: '15 Agodogba Avenue, Parkview, Ikoyi, Lagos' }],
@@ -479,7 +556,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'Detail solicitors.jpg',
     name: 'Detail Solicitors',
     shortName: 'Detail',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'nysc@detailsolicitors.com',
     website: 'https://detailsolicitors.com',
     offices: [{ city: 'Lagos', address: 'DCS Place, 8 DCS Street, Off Remi Olowude Way, Lekki Phase 1, Lagos' }],
@@ -504,9 +581,11 @@ const FIRMS_UNSORTED: Firm[] = [
   {
     slug: 'g-elias',
     logoFile: 'Elias.jpeg',
-    name: 'G. Elias & Co',
-    shortName: 'G. Elias',
-    tier: 'Tier 1',
+    // No full stop after the G. The firm's own wordmark and site title are
+    // "G Elias"; "G. Elias" survives only in older press items.
+    name: 'G Elias & Co',
+    shortName: 'G Elias',
+    tier: 'Leading',
     email: 'info@gelias.com',
     website: 'https://gelias.com',
     offices: [
@@ -517,13 +596,27 @@ const FIRMS_UNSORTED: Firm[] = [
     description: 'A renowned commercial law firm with a distinguished heritage and leading practice in telecommunications and corporate law.',
     foundedYear: 1944,
     openRoles: 1,
+    /* Read on 2026-08-10 from ISDA's own member showcase, which describes the
+       firm in those words. "First" is what ISDA says and is therefore what is
+       recorded; the firm is widely believed to be the only Nigerian law firm
+       member, but ISDA publishes no Nigeria-filtered member list that could
+       confirm a negative, so that claim is not made here. If another Nigerian
+       firm is later confirmed as a member, add it — an absent entry on any
+       other firm means unchecked, exactly as it does in the ranking table. */
+    memberships: [
+      {
+        body: 'ISDA',
+        full: 'International Swaps and Derivatives Association',
+        note: 'First Nigerian law firm member',
+      },
+    ],
   },
   {
     slug: 'george-etomi',
     logoFile: 'george-etomi.jpg',
     name: 'George Etomi & Partners',
     shortName: 'George Etomi',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@geplaw.com',
     website: 'https://geplaw.com',
     offices: [
@@ -540,7 +633,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'Jackson etti.png',
     name: 'Jackson, Etti & Edu',
     shortName: 'JEE',
-    tier: 'Tier 1',
+    tier: 'Leading',
     email: 'jee@jee.africa',
     website: 'https://jee.africa',
     offices: [
@@ -559,16 +652,23 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'kenna-partners.png',
     name: 'Kenna Partners',
     shortName: 'Kenna Partners',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'careers@kennapartners.com',
     website: 'https://kennapartners.com',
     offices: [
       { city: 'Lagos', address: '8 Ogunyemi Road, Palace Way, Oniru, Lagos' },
       { city: 'Abuja', address: 'C3 Bensima House, 3rd Floor, Plot 2942, Cadastral Zone A6, Aguiyi Ironsi Street, Maitama, Abuja' },
+      { city: 'Enugu', address: '23 Umuawulu Street, Independence Layout, Enugu' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Tax', 'Banking & Finance', 'Real Estate', 'Employment'],
     description: 'A full-service commercial law firm with deep expertise in corporate transactions, tax advisory, and real estate.',
     openRoles: 1,
+    /* The firm carries no Chambers department ranking; the founder does. Recorded
+       from the same 2026-08-08 reading of Chambers Global 2026 as the ranking
+       table, and see the FIRM IS NOT THE LAWYER note beside FIRM_RANKINGS. */
+    rankedIndividuals: [
+      { name: 'Fabian Ajogwu SAN', source: 'chambers', band: 'Band 3', year: 2026, area: 'Dispute Resolution' },
+    ],
   },
   {
     slug: 'mike-igbokwe',
@@ -592,7 +692,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'olajide oyewole.jpg',
     name: 'Olajide Oyewole LLP',
     shortName: 'Olajide Oyewole',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'careers@olajide-oyewole.com',
     website: 'https://olajide-oyewole.com',
     offices: [{ city: 'Lagos', address: 'Plot 5 Block 14, Bashorun Okusanya Avenue, Lekki Peninsula Scheme 1, Lagos' }],
@@ -605,7 +705,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'olaniwun-ajayi.jpg',
     name: 'Olaniwun Ajayi LP',
     shortName: 'Olaniwun Ajayi',
-    tier: 'Tier 1',
+    tier: 'Leading',
     email: 'recruitment@olaniwunajayi.net',
     website: 'https://olaniwunajayi.net',
     offices: [
@@ -655,7 +755,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'perchstone.jpg',
     name: 'Perchstone & Graeys LP',
     shortName: 'Perchstone & Graeys',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'perchstone@perchstoneandgraeys.com',
     website: 'https://perchstoneandgraeys.com',
     offices: [
@@ -673,7 +773,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'Primera.jpg',
     name: 'Primera Africa Legal',
     shortName: 'Primera Africa',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@primeraal.com',
     website: 'https://primeraal.com',
     offices: [{ city: 'Lagos', address: '1B Utomi Aire Avenue, Off Fola Osibo, Lekki Phase 1, Lagos' }],
@@ -687,7 +787,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'punuka.png',
     name: 'Punuka Attorneys & Solicitors',
     shortName: 'Punuka',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'careers@punuka.com',
     website: 'https://punuka.com',
     offices: [
@@ -719,7 +819,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'simmons-cooper.png',
     name: 'Simmons Cooper Partners',
     shortName: 'Simmons Cooper',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'careers@scp-law.com',
     website: 'https://scp-law.com',
     offices: [
@@ -736,7 +836,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'SPA ajibade.jpg',
     name: 'SPA Ajibade & Co',
     shortName: 'SPA Ajibade',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'hr@spaajibade.com',
     website: 'https://spaajibade.com',
     offices: [
@@ -754,7 +854,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'StrenBlanPartners.png',
     name: 'Stren & Blan Partners',
     shortName: 'Stren & Blan',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'Careers@strenandblan.com',
     website: 'https://strenandblan.com',
     offices: [
@@ -771,7 +871,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'streamsowers.jpg',
     name: 'Streamsowers & Kohn',
     shortName: 'Streamsowers',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'info@streamsowers.com',
     website: 'https://streamsowers.com',
     offices: [
@@ -789,7 +889,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'TayoOyetibo.jpg',
     name: 'Tayo Oyetibo LP',
     shortName: 'Tayo Oyetibo',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'reception@tayooyetibolaw.com',
     website: 'https://tayooyetibolaw.com',
     offices: [{ city: 'Lagos', address: 'Faith House, Plot 6 Block 113, Lekki-Epe Expressway, Lekki Phase 1, Lagos' }],
@@ -803,7 +903,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: 'templars.jpg',
     name: 'Templars',
     shortName: 'Templars',
-    tier: 'Tier 1',
+    tier: 'Leading',
     email: 'careers@templars-law.com',
     website: 'https://templars-law.com',
     offices: [
@@ -817,11 +917,16 @@ const FIRMS_UNSORTED: Firm[] = [
     openRoles: 3,
   },
   {
+    /* The slug keeps the double L. It is wrong the same way the name was, but
+       it is the live URL and the sitemap entry, so correcting it would 404 every
+       link anyone has already shared. Fix it with a redirect or not at all. */
     slug: 'udo-udoma-bello-osagie',
     logoFile: 'udo-udoma.webp',
-    name: 'Udo Udoma & Bello-Osagie',
+    // "Belo-Osagie", one L. ISDA, IFLR1000 and the firm's own site all spell it
+    // that way; this record had "Bello-Osagie".
+    name: 'Udo Udoma & Belo-Osagie',
     shortName: 'UUBO',
-    tier: 'Tier 1',
+    tier: 'Leading',
     email: 'careers@uubo.org',
     website: 'https://uubo.org',
     offices: [
@@ -833,13 +938,24 @@ const FIRMS_UNSORTED: Firm[] = [
     description: "One of Nigeria's foremost law firms, offering exceptional legal services across corporate, finance, and dispute resolution practice areas.",
     foundedYear: 1996,
     openRoles: 2,
+    /* Read on 2026-08-10 from ISDA's member showcase, which lists the firm under
+       Documentation, Legal Services, and Regulation and Compliance. The same
+       page credits the firm with the netting provisions in CAMA 2020. The
+       "first Nigerian law firm member" line belongs to G Elias, not here. */
+    memberships: [
+      {
+        body: 'ISDA',
+        full: 'International Swaps and Derivatives Association',
+        note: 'Member: documentation, legal services, regulation and compliance',
+      },
+    ],
   },
   {
     slug: 'wole-olanipekun',
     logoFile: 'wole olanipekun.jpg',
     name: 'Wole Olanipekun & Co',
     shortName: 'Wole Olanipekun',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'info@woleolanipekun.com',
     website: 'https://woleolanipekun.com',
     offices: [
@@ -869,7 +985,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Alliance Law Firm',
     shortName: 'Alliance',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@alliancelf.com',
     website: 'https://alliancelawfirm.ng',
     offices: [
@@ -886,7 +1002,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'D.D. Dodo & Co',
     shortName: 'D.D. Dodo',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@dddodo.com',
     website: 'https://dddodo.com',
     // The firm names Abuja, Lagos, Kano and Jos, but publishes a street address
@@ -904,7 +1020,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Duale, Ovia & Alex-Adedipe',
     shortName: 'DOA',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'info@doa-law.com',
     website: 'https://www.doa-law.com',
     offices: [
@@ -919,7 +1035,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Giwa-Osagie & Co',
     shortName: 'Giwa-Osagie',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'giwa-osagie@giwa-osagie.com',
     website: 'https://www.giwa-osagie.com',
     offices: [
@@ -934,7 +1050,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Ikeyi Shittu & Co',
     shortName: 'Ikeyi Shittu',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@ikeyishittuco.com',
     website: 'https://isc.ng',
     offices: [
@@ -968,7 +1084,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Odujinrin & Adefulu',
     shortName: 'Odujinrin & Adefulu',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@odujinrinadefulu.com',
     website: 'https://odujinrinadefulu.com',
     offices: [
@@ -985,7 +1101,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Omaplex Law Firm',
     shortName: 'Omaplex',
-    tier: 'Tier 2',
+    tier: 'Established',
     // The firm publishes a dedicated applications address, so use it rather
     // than the general legal@ inbox: it is the one a candidate should write to.
     email: 'applications@omaplex.com.ng',
@@ -1002,7 +1118,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Paul Usoro & Co',
     shortName: 'Paul Usoro',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'info@paulusoro.com',
     website: 'https://paulusoro.com',
     offices: [
@@ -1012,6 +1128,13 @@ const FIRMS_UNSORTED: Firm[] = [
     description: 'A full service firm long identified with telecommunications and regulatory litigation, founded by Paul Usoro SAN, a past President of the Nigerian Bar Association. Established in Kaduna and headquartered in Lagos since 1992.',
     foundedYear: 1985,
     openRoles: 0,
+    /* Same shape as Kenna: Chambers ranks the founder, not the firm. NO BAND
+       HERE ON PURPOSE — the 2026-08-08 reading recorded that Paul Usoro SAN is
+       ranked as an individual without noting which band, and a band nobody read
+       off the table would be an invention. Add it when someone checks. */
+    rankedIndividuals: [
+      { name: 'Paul Usoro SAN', source: 'chambers', year: 2026 },
+    ],
   },
   {
     slug: 'pavestones',
@@ -1033,7 +1156,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Sofunde, Osakwe, Ogundipe & Belgore',
     shortName: 'SOOB',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'info@sooblaw.com',
     website: 'https://sooblaw.com',
     offices: [
@@ -1048,7 +1171,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'The New Practice',
     shortName: 'TNP',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'tnp@tnp.com.ng',
     website: 'https://tnp.com.ng',
     offices: [
@@ -1079,7 +1202,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Babalakin & Co',
     shortName: 'Babalakin',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'info@babalakinandco.com',
     website: 'https://www.babalakinandco.com',
     /* All three read from babalakinandco.com on 2026-08-08. */
@@ -1101,7 +1224,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Solola & Akpana',
     shortName: 'Solola & Akpana',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@sololaakpana.com',
     /* The .ng, not the .com. sololaakpana.com is a stub whose entire body is a
        script that sends the browser to sololaakpana.ng, so it works for a human
@@ -1134,7 +1257,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Abdulai, Taiwo & Co',
     shortName: 'Abdulai Taiwo',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'law@abdulaitaiwo.com',
     website: 'https://www.abdulaitaiwo.com',
     /* Both read from abdulaitaiwo.com/contact.html on 2026-08-08. The postal
@@ -1154,7 +1277,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Advocaat Law Practice',
     shortName: 'Advocaat',
-    tier: 'Tier 2',
+    tier: 'Established',
     /* The firm publishes info@ on its contact page. careers@ came from the
        Esquirely team's own careers list, which is why it is the one printed
        here: this field exists to be written to by a student. */
@@ -1190,7 +1313,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Kola Awodein & Co',
     shortName: 'Kola Awodein',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'ka@kolaawodeinandco.com',
     website: 'https://kolaawodeinandco.com',
     /* All three from kolaawodeinandco.com/offices.php on 2026-08-08. Each
@@ -1211,7 +1334,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'F. R. A. Williams & Co',
     shortName: 'FRA Law',
-    tier: 'Tier 2',
+    tier: 'Established',
     /* The firm publishes a dedicated recruitment address, which is better than
        the general one for a field whose entire purpose is to be written to. */
     email: 'hr@frawilliams.com',
@@ -1234,7 +1357,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Chris Ogunbanjo LP',
     shortName: 'Chris Ogunbanjo',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@chrisogunbanjo.com',
     website: 'https://chrisogunbanjo.com',
     offices: [
@@ -1273,7 +1396,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Idowu Sofola & Co',
     shortName: 'Idowu Sofola',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'contact@idowusofola.com',
     /* ⚠ Serving an EXPIRED TLS certificate as of 2026-08-08. Every browser puts
        a full-page "your connection is not private" interstitial in front of it,
@@ -1309,7 +1432,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Olisa Agbakoba Legal',
     shortName: 'OAL',
-    tier: 'Tier 1',
+    tier: 'Established',
     /* The address their live contact page publishes. It is capitalised
        Clientsupport@ there; written lowercase here because the local part is
        case insensitive in practice and a capitalised mailto looks like a typo
@@ -1346,7 +1469,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Yusuf Ali & Co',
     shortName: 'Yusuf Ali',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@yusufali.net',
     website: 'https://www.yusufali.net',
     /* All three read off yusufali.net/contact on 2026-08-08. The firm practises
@@ -1372,7 +1495,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'AO2 Law',
     shortName: 'AO2 Law',
-    tier: 'Tier 2',
+    tier: 'Established',
     /* They publish info@ and contact@ side by side, plus awka@ for that office
        alone. info@ is the one printed here; a student writing to the Awka
        office directly has the third address on the firm's contact page. */
@@ -1428,7 +1551,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Afe Babalola & Co',
     shortName: 'Afe Babalola',
-    tier: 'Tier 1',
+    tier: 'Established',
     email: 'info@afebabalola.com',
     website: 'https://afebabalola.com',
     /* All five read off afebabalola.com/contact on 2026-08-08. Each office
@@ -1455,7 +1578,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'OAKE Legal',
     shortName: 'OAKE Legal',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@oakelegal.com',
     website: 'https://oakelegal.com',
     /* Both from oakelegal.com/contact-us on 2026-08-08. */
@@ -1472,7 +1595,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'The Law Crest LLP',
     shortName: 'The Law Crest',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@thelawcrest.com',
     website: 'https://thelawcrest.com',
     /* Both from thelawcrest.com on 2026-08-08. The Lagos address is in the
@@ -1493,7 +1616,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Matrix Solicitors',
     shortName: 'Matrix',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'info@matrixsolicitors.com',
     website: 'https://matrixsolicitors.com',
     /* Both from matrixsolicitors.com/contact on 2026-08-08. The page gives the
@@ -1511,7 +1634,7 @@ const FIRMS_UNSORTED: Firm[] = [
     logoFile: null,
     name: 'Pinheiro LP',
     shortName: 'Pinheiro',
-    tier: 'Tier 2',
+    tier: 'Established',
     email: 'admin@pinheirolp.com',
     website: 'https://pinheirolp.com',
     /* All three from the footer of pinheirolp.com on 2026-08-08. */
@@ -1589,21 +1712,44 @@ const FIRMS_UNSORTED: Firm[] = [
 /**
  * Whether a signed-out reader sees the whole firm record.
  *
- * Tier 1 is the line, and `tier` is Esquirely's own size band rather than a
- * ranking, which makes it the right field for this: the question here is which
- * firms a stranger is most likely to be searching for by name, not which firms
- * are best. The twenty-two largest are the ones with the search demand worth
- * meeting, and the rest of the directory is what an account is for.
+ * ⚠ THIS DELIBERATELY NO LONGER READS `tier`, AND MUST NOT GO BACK TO IT.
+ *
+ * It used to be `tier === 'Tier 1'`, back when tier was a rough SIZE band. The
+ * question this gate asks is which firms a stranger is most likely to search
+ * for by name — that is a question about search demand, which tracks size and
+ * fame, and the old comment here said so explicitly: "not which firms are
+ * best".
+ *
+ * `tier` now answers a different question. It means directory standing, and
+ * only nine firms hold it. Leaving this pointing at the band would have taken
+ * the gate from twenty two firms to nine as a silent side effect of a labelling
+ * change, hiding the contact details of thirteen large, heavily searched firms
+ * — Afe Babalola, Wole Olanipekun, Paul Usoro and Kenna among them — because a
+ * commercial directory does not band them. That is the opposite of what the
+ * gate is for.
+ *
+ * So the list is explicit. It is the same twenty two firms that were open
+ * before the re-banding, frozen deliberately rather than derived, because the
+ * next person to change how firms are banded should have to think about this
+ * separately instead of moving it by accident.
  *
  * Everything the gate withholds is contact detail: street addresses and the
  * application address. What stays visible is the firm's shape, because a page
  * that shows nothing is not a preview, it is a wall with a headline on it.
  *
- * ⚠ THIS IS NO LONGER THE INDEXING TEST. It used to be both, and conflating the
- * two was costing forty five pages. See isIndexable below.
+ * ⚠ THIS IS NOT THE INDEXING TEST EITHER. See isIndexable below.
  */
-export function isPubliclyReadable(firm: Pick<Firm, 'tier'>): boolean {
-  return firm.tier === 'Tier 1'
+const OPEN_PROFILES = new Set([
+  'acas-law', 'aelex', 'afe-babalola', 'aluko-oyebode', 'babalakin',
+  'banwo-ighodalo', 'detail-solicitors', 'doa-law', 'g-elias',
+  'jackson-etti-edu', 'kenna-partners', 'olajide-oyewole', 'olaniwun-ajayi',
+  'olisa-agbakoba', 'paul-usoro', 'perchstone-graeys', 'sofunde-osakwe',
+  'spa-ajibade', 'streamsowers-kohn', 'templars', 'udo-udoma-bello-osagie',
+  'wole-olanipekun',
+])
+
+export function isPubliclyReadable(firm: Pick<Firm, 'slug'>): boolean {
+  return OPEN_PROFILES.has(firm.slug)
 }
 
 /**
@@ -1649,12 +1795,18 @@ export function getMonogram(name: string): string {
 }
 
 
-/** Sort key: ignore a leading initial ('G. Elias' -> 'Elias') and the '&'/'and'
- *  noise so the directory and the logo loop read in true alphabetical order. */
+/** Sort key: ignore a leading initial ('G Elias' -> 'Elias') and a leading
+ *  article so the directory and the logo loop read in true alphabetical order.
+ *
+ *  Both patterns had lost their backslashes: `/^[A-Z].s+/` reads as "a capital,
+ *  any character, then one or more literal s", which matches essentially no
+ *  firm name, and `/^(The|A)s+/i` matched "As..." rather than "A ". So neither
+ *  strip has ever run, and G Elias has been sorting under G. The full stop is
+ *  optional in the first pattern because the firm dropped it from its own name. */
 function sortKey(name: string): string {
   return name
-    .replace(/^[A-Z].s+/, '')
-    .replace(/^(The|A)s+/i, '')
+    .replace(/^[A-Z]\.?\s+/, '')
+    .replace(/^(The|A)\s+/i, '')
     .toLowerCase()
 }
 
@@ -1861,7 +2013,7 @@ export const FIRM_RANKINGS: Record<string, FirmRankings> = {
      Band 4 for Dispute Resolution, and today's reading of the same table
      agreed with it, which is the outcome you want from a re-check. */
   'babalakin':      { chambers: { band: 'Band 2', year: 2026, areas: ['Dispute Resolution'] } },
-  /* A boutique in Band 2 alongside ǼLEX, G. Elias and Udo Udoma, which is the
+  /* A boutique in Band 2 alongside ǼLEX, G Elias and Udo Udoma, which is the
      single most interesting fact about this firm and the reason its record
      says energy is the whole proposition. */
   'enr-advisory':   { chambers: { band: 'Band 2', year: 2026, areas: ['Projects & Energy'] } },

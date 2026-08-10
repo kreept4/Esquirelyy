@@ -1,4 +1,4 @@
-import { rankingsOf, type Firm } from '@/lib/firms-data'
+import { RANKING_SOURCES, rankingsOf, type Firm } from '@/lib/firms-data'
 
 /**
  * Chambers, IFLR1000 and Legal 500 EMEA badges.
@@ -31,19 +31,41 @@ export default function RankingBadges({
   firm,
   variant = 'compact',
 }: {
-  firm: Pick<Firm, 'rankings'>
+  firm: Pick<Firm, 'rankings' | 'memberships' | 'rankedIndividuals'>
   variant?: 'compact' | 'full'
 }) {
   const ranked = rankingsOf(firm)
+  /* Profile only, never the card. On a card it would sit inches from the firm
+     badges at the same size and be read as one of them, which is the exact
+     confusion it exists to avoid. The profile has room to say whose ranking it
+     is in words. */
+  const individuals = firm.rankedIndividuals ?? []
+  /* Kept separate from `ranked` all the way through, never concatenated. A
+     trade body admitting a firm and a directory banding it against its peers
+     are different claims, and the moment they share a row they read as the
+     same one. See FirmMembership. */
+  const memberships = firm.memberships ?? []
 
   // Renders nothing at all rather than an "unranked" state. Absent data here
   // means nobody has checked the firm, and a label saying otherwise would be
   // making a claim the table cannot support.
-  if (ranked.length === 0) return null
+  const hasIndividuals = variant === 'full' && individuals.length > 0
+  if (ranked.length === 0 && memberships.length === 0 && !hasIndividuals) return null
 
   if (variant === 'compact') {
     return (
-      <span className="rank-badges" aria-label={`Ranked by ${ranked.map(r => r.label).join(', ')}`}>
+      <span
+        className="rank-badges"
+        aria-label={[
+          ranked.length ? `Ranked by ${ranked.map(r => r.label).join(', ')}` : '',
+          memberships.length ? `Member of ${memberships.map(m => m.body).join(', ')}` : '',
+        ].filter(Boolean).join('. ')}
+      >
+        {memberships.map(m => (
+          <span key={m.body} className="grotesk-bold rank-badge rank-badge-member" title={`${m.full}: ${m.note}`}>
+            {m.body}
+          </span>
+        ))}
         {ranked.map(r => (
           // The title carries the guide's full name and the edition, so the
           // information the compact form drops is still one hover away.
@@ -65,6 +87,38 @@ export default function RankingBadges({
 
   return (
     <div className="rank-panel">
+      {memberships.length > 0 && (
+        <>
+          <p className="firm-profile-section-heading">Memberships</p>
+          <ul className="rank-panel-list">
+            {memberships.map(m => (
+              <li key={m.body} className="rank-panel-row">
+                <span className="grotesk-bold rank-badge rank-badge-lg rank-badge-member">{m.body}</span>
+                <span className="rank-panel-text">
+                  <span className="grotesk-bold rank-panel-band">{m.note}</span>
+                  <span className="grotesk-regular rank-panel-source">{m.full}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          {/* The counterpart to the note under the rankings, and the more
+              important of the two. A reader who has just seen Chambers and
+              Legal 500 will read anything in the same panel as another
+              scoreboard. ISDA does not score anyone: it admits firms and works
+              with them on the documentation the market runs on. That is a
+              different claim, and a better one for some readers, but only if it
+              is not mistaken for a band. */}
+          <p className="grotesk-regular rank-panel-note">
+            ISDA is a trade body, not a legal directory. It bands nobody. It admits
+            firms as members and works with them on the standard derivatives
+            documentation its markets run on, so this tells you what a firm does
+            rather than where it places.
+          </p>
+        </>
+      )}
+
+      {ranked.length === 0 ? null : (
+      <>
       <p className="firm-profile-section-heading">Independent rankings</p>
       <ul className="rank-panel-list">
         {ranked.map(r => (
@@ -97,6 +151,43 @@ export default function RankingBadges({
         interviewing a firm&rsquo;s own clients and the lawyers on the other side of its
         matters, so no firm can place itself in one.
       </p>
+      </>
+      )}
+
+      {hasIndividuals && (
+        <>
+          <p className="firm-profile-section-heading">Ranked lawyers</p>
+          <ul className="rank-panel-list">
+            {individuals.map(p => {
+              const source = RANKING_SOURCES.find(s => s.key === p.source)
+              return (
+                <li key={p.name} className="rank-panel-row">
+                  <span className="grotesk-bold rank-badge rank-badge-lg rank-badge-person">
+                    {source?.label ?? p.source}
+                  </span>
+                  <span className="rank-panel-text">
+                    <span className="grotesk-bold rank-panel-band">
+                      {p.name}{p.band ? `, ${p.band}` : ''}
+                    </span>
+                    <span className="grotesk-regular rank-panel-source">
+                      {[source?.full ?? p.source, p.year].filter(Boolean).join(', ')}
+                    </span>
+                    {p.area && <span className="grotesk-regular rank-panel-areas">{p.area}</span>}
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+          {/* The whole reason this block is allowed to exist. Without this
+              sentence it is a ranking sitting on a firm profile, which is the
+              one thing this directory has decided not to do. */}
+          <p className="grotesk-regular rank-panel-note">
+            This ranking belongs to the lawyer named, not to the firm. The guide
+            records none for the practice as a whole, which is common where a
+            litigation practice is built around a single senior advocate.
+          </p>
+        </>
+      )}
     </div>
   )
 }

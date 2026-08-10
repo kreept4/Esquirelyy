@@ -29,9 +29,10 @@ import { createServerClient } from '@supabase/ssr'
  * search engines: a student searching "Aluko & Oyebode training contract" found
  * a login page or nothing. /firms is now open at this layer, and the decision
  * about how much of a given firm a signed-out reader sees is made in the page
- * itself, by tier. Tier 1 profiles are public and indexed; the rest show the
- * firm's shape and ask the reader to sign in for the contact details. That
- * needs the firm record to answer, which is why it cannot live here.
+ * itself. Every profile is indexed; the twenty two most-searched firms are also
+ * fully public, and the rest show the firm's shape and ask the reader to sign
+ * in for the contact details. That needs the firm record to answer, which is
+ * why it cannot live here. See isPubliclyReadable.
  *
  * ⚠ Everything else — the jobs board, scholarships, the news page and the
  * tools — is still private, and still carries the same cost.

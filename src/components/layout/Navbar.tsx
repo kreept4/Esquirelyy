@@ -6,13 +6,18 @@ import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import StaggeredMenu from './StaggeredMenu'
 import NotificationBell from './NotificationBell'
+import AuthActions from './AuthActions'
 import './StaggeredMenu.css'
 
 /**
- * Site navigation. The glass bar with inline links is gone: the header is now
- * just the wordmark and a Menu toggle, and every destination lives in the
- * staggered panel. Auth links go in the panel too, so signing in stays reachable
- * without a second row of controls.
+ * Site navigation. The glass bar with inline links is gone: the header is the
+ * wordmark, the two auth actions and a Menu toggle, and every destination lives
+ * in the staggered panel.
+ *
+ * Sign in and Join are the exception to "everything lives in the panel", and
+ * deliberately so. A destination is something you go looking for; these two are
+ * what the whole site is asking you to do, and behind a closed menu they were
+ * the hardest things on the page to find. See AuthActions.
  */
 
 const NAV_ITEMS = [
@@ -32,7 +37,12 @@ export default function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
   const [user, setUser] = useState<any>(null)
+  // Distinct from `user === null`, which is also the state before the first
+  // auth read comes back. JoinButton needs to tell "signed out" from "not
+  // known yet" so it does not flash at people who are already signed in.
+  const [authReady, setAuthReady] = useState(false)
   const [hidden, setHidden] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   /**
    * Hide the header on the way down, bring it back on the way up.
@@ -100,9 +110,10 @@ export default function Navbar() {
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+    supabase.auth.getUser().then(({ data }) => { setUser(data.user); setAuthReady(true) })
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user ?? null)
+      setAuthReady(true)
     })
     return () => subscription.unsubscribe()
   }, [])
@@ -123,9 +134,14 @@ export default function Navbar() {
     return () => document.removeEventListener('click', onClick)
   }, [router])
 
+  /* Nothing for a signed-out visitor here any more: Sign in and Join are both
+     header controls now, visible without opening anything. Listing them in the
+     panel as well would ask twice and make the panel copy look like the
+     canonical one. An empty array renders no section at all, so the panel
+     simply ends after the destinations. */
   const authItems = user
     ? [{ label: 'Dashboard', link: '/dashboard' }, { label: 'Sign Out', link: '#sign-out' }]
-    : [{ label: 'Sign In', link: '/auth/login' }, { label: 'Join Esquirely', link: '/auth/signup' }]
+    : []
 
   // Declared after every hook, so the early return cannot change hook order.
   if (isAuthRoute) return null
@@ -135,14 +151,26 @@ export default function Navbar() {
       {/* Its own control beside the toggle, not an item inside the panel: a
           badge two taps deep and invisible until you go looking is not a badge.
           Renders nothing at all unless someone is signed in. */}
-      <NotificationBell hidden={hidden} user={user} color={restColor} />
+      {/* `hidden || menuOpen` for the same reason as the auth actions below.
+          The bell sits at z-index 60, above the panel, so an open menu left it
+          and its red badge floating over the cream panel — and its colour
+          follows the page behind it, so on the home page it was cream on cream
+          with a red pip attached to nothing. */}
+      <NotificationBell hidden={hidden || menuOpen} user={user} color={restColor} />
+
+      {/* Stowed while the panel is open: they would otherwise float over the
+          cream panel they are meant to be an alternative to. */}
+      <AuthActions hidden={hidden || menuOpen} user={user} ready={authReady} color={restColor} />
 
       <StaggeredMenu
         className={hidden ? 'nav-hidden' : undefined}
         position="right"
         isFixed
+        onMenuOpen={() => setMenuOpen(true)}
+        onMenuClose={() => setMenuOpen(false)}
         items={NAV_ITEMS}
         socialItems={authItems}
+        socialsTitle="Account"
         displaySocials
         displayItemNumbering
         changeMenuColorOnOpen

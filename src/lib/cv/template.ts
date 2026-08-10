@@ -16,16 +16,21 @@
  * (1pt = 2) in places, so the conversions live at the point of use rather than
  * being baked in here.
  *
- * Observed layout, for anyone changing these:
+ * Observed layout, for anyone changing these. Sizes below are the ones now in
+ * force, not the ones measured — see FONT_SIZE for why every run of text is
+ * capped at 9.5pt where the source ran 10 and 10.5.
  *
  *   ADAEZE NWACHUKWU                     16pt bold, centred
  *   +234 ... | Abuja, Nigeria | ... |        9pt regular, centred
- *   PROFESSIONAL SUMMARY                    10.5pt bold, caps, flush left
- *   Lawyer called to the Nigerian Bar...    10pt regular, justified to margin
+ *   PROFESSIONAL SUMMARY                    9.5pt bold, caps, flush left
+ *   Lawyer called to the Nigerian Bar...    9.5pt regular, justified to margin
  *   EDUCATION
- *   Nigerian Law School        Abuja, Nigeria   10.5pt bold, left + right tab
- *   Barrister-at-Law (B.L)   April - Dec 2025   10pt italic, left + right tab
- *   Called to the Nigerian Bar, July 2026       10pt regular
+ *   Nigerian Law School        Abuja, Nigeria   9.5pt bold, left + right tab
+ *   Barrister-at-Law (B.L)   April - Dec 2025   9.5pt italic, left + right tab
+ *   Called to the Nigerian Bar, July 2026       9.5pt regular
+ *   PROFESSIONAL CERTIFICATIONS
+ *   Nigerian Bar Certificate            July 2026   9.5pt bold, left + right tab
+ *   Barrister and Solicitor of the Supreme Court of Nigeria   9.5pt italic
  *   WORK EXPERIENCE
  *   Governance and Standards Advisor  Jan 2026 - Present
  *   Meridian Health Partners LLC | Connecticut, USA
@@ -49,13 +54,33 @@ export const PAGE = {
 export const CONTENT_WIDTH = PAGE.width - PAGE.marginLeft - PAGE.marginRight
 export const RIGHT_EDGE = PAGE.width - PAGE.marginRight
 
+/**
+ * 9.5pt is the ceiling for every run of text on the page.
+ *
+ * The measured source ran 10.5 for headings and entry titles and 10 for
+ * everything else. That is a comfortable size and it costs a line here and
+ * there, which on a document with a two-page ceiling is the difference between
+ * a role keeping its bullets and losing them. Dropping to 9.5 buys back roughly
+ * a line in every twenty without reaching the size where a partner squints.
+ *
+ * The hierarchy survives the flattening because it was never carried by size.
+ * Half a point is invisible; what separates a heading from a title from a body
+ * line is caps, weight and italic, and all three are untouched.
+ *
+ * `name` is exempt and deliberately so. It is the one display element on the
+ * page rather than a run of text, and shrinking it to 9.5 would leave the
+ * candidate's name the same size as their bullets. `contact` is already below
+ * the ceiling and stays where it was measured.
+ */
+export const MAX_TEXT_SIZE = 9.5
+
 export const FONT_SIZE = {
   name: 16,
   contact: 9,
-  heading: 10.5,
-  entryTitle: 10.5,
-  entrySubtitle: 10,
-  body: 10,
+  heading: MAX_TEXT_SIZE,
+  entryTitle: MAX_TEXT_SIZE,
+  entrySubtitle: MAX_TEXT_SIZE,
+  body: MAX_TEXT_SIZE,
 } as const
 
 /**
@@ -193,6 +218,149 @@ function canonicalHeading(heading: string): string {
 }
 
 /**
+ * The call to bar, as a certificate.
+ *
+ * The wording is fixed because it is not a description, it is what the
+ * certificate says. Every lawyer called in Nigeria gets the same one, so
+ * letting the model phrase it produces "Called to the Nigerian Bar", "Barrister
+ * & Solicitor, Supreme Court of Nigeria" and half a dozen other near misses
+ * across otherwise identical documents.
+ */
+const BAR_ENTRY_TITLE = 'Nigerian Bar Certificate'
+const BAR_ENTRY_SUBTITLE = 'Barrister and Solicitor of the Supreme Court of Nigeria'
+
+/** An entry that is already the call to bar, under whatever name it came back as. */
+const BAR_ENTRY_PATTERN =
+  /\b(bar certificate|called to the (nigerian )?bar|call to (the )?(nigerian )?bar|nigerian bar\b|enrol(l)?ed as a barrister)/i
+
+/** "Called to the Nigerian Bar, July 2026" / "called to the Bar in July 2026". */
+const CALL_DATE_PATTERN =
+  /call(?:ed)? to the (?:nigerian )?bar\b[^A-Za-z0-9]*(?:in|on)?\s*([A-Za-z]+\s+\d{4}|\d{4})/i
+
+const MONTHS = [
+  'january', 'february', 'march', 'april', 'may', 'june',
+  'july', 'august', 'september', 'october', 'november', 'december',
+]
+
+/**
+ * Sortable key for a date like "July 2026", "2026" or "May 2026 - Present".
+ *
+ * Only the START of a range is read, which is what a certificate line carries
+ * anyway. Anything unparseable returns -1 so it sorts to the bottom of the
+ * section rather than jumping to the top on a missing month.
+ */
+function dateKey(value: string | undefined): number {
+  if (!value) return -1
+  const m = /([A-Za-z]+)?\s*(\d{4})/.exec(value.trim())
+  if (!m) return -1
+  const year = Number(m[2])
+  const month = m[1] ? MONTHS.indexOf(m[1].toLowerCase()) : -1
+  // Undated within a year sorts above that year's dated entries rather than
+  // below all of them, which is the less wrong of the two guesses.
+  return year * 12 + (month === -1 ? 11 : month)
+}
+
+/** Every string on an entry, for scanning. */
+function entryText(entry: any): string {
+  return [entry?.title, entry?.titleRight, entry?.subtitle, entry?.subtitleRight, entry?.detail]
+    .filter(Boolean)
+    .join(' ')
+}
+
+/**
+ * Find when the candidate was called, from anywhere it is stated.
+ *
+ * Deliberately a search rather than a field. The date turns up on the Law
+ * School entry's detail line, inside the professional summary, or on a
+ * certification entry the model already wrote, depending on the run — and the
+ * whole point is that all three should agree. Returning null is a real answer:
+ * a candidate who has not been called does not get a certificate invented for
+ * them.
+ */
+function findCallDate(sections: any[]): string | null {
+  for (const section of sections) {
+    if (section?.kind === 'entries') {
+      for (const entry of section.entries ?? []) {
+        // An entry that IS the bar line carries its date on the right.
+        if (BAR_ENTRY_PATTERN.test(String(entry?.title ?? '')) && entry?.titleRight) {
+          return String(entry.titleRight).trim()
+        }
+        const found = CALL_DATE_PATTERN.exec(entryText(entry))
+        if (found) return found[1].trim()
+      }
+    }
+    if (section?.kind === 'prose') {
+      const found = CALL_DATE_PATTERN.exec(String(section.body ?? ''))
+      if (found) return found[1].trim()
+    }
+  }
+  return null
+}
+
+/**
+ * Put the call to bar in PROFESSIONAL CERTIFICATIONS, in the house wording, and
+ * order the section newest first.
+ *
+ * Enforcement rather than documentation, for the same reason HEADING_ALIASES is:
+ * the prompt asks for this and the model mostly complies, but "mostly" leaves
+ * the occasional document with the qualification a candidate spent five years
+ * earning sitting in the wrong place or worded three different ways. The date
+ * is taken from wherever the call is stated so the certificate and the Law
+ * School entry cannot disagree, which was the other half of the problem.
+ *
+ * Nothing here invents a qualification. If no call date can be found anywhere in
+ * the document, the section is left exactly as the model returned it.
+ */
+function withBarCertificate<T extends { heading: string }>(sections: T[]): T[] {
+  const callDate = findCallDate(sections)
+  if (!callDate) return sections
+
+  const barEntry = {
+    title: BAR_ENTRY_TITLE,
+    titleRight: callDate,
+    subtitle: BAR_ENTRY_SUBTITLE,
+  }
+
+  const index = sections.findIndex(s => s.heading === CERTIFICATIONS_HEADING)
+
+  if (index === -1) {
+    // The model gave the call as a line on the Law School entry and no
+    // certifications section at all. That line stays where it is — it reads
+    // correctly there — and the certificate gets its own entry as well, exactly
+    // as the reference document has it.
+    const created = { kind: 'entries', heading: CERTIFICATIONS_HEADING, entries: [barEntry] } as unknown as T
+    return [...sections, created]
+  }
+
+  const section: any = sections[index]
+  if (section.kind !== 'entries') return sections
+
+  const existing = (section.entries ?? []).findIndex((e: any) =>
+    BAR_ENTRY_PATTERN.test(String(e?.title ?? ''))
+  )
+
+  const entries =
+    existing === -1
+      ? [...(section.entries ?? []), barEntry]
+      : (section.entries ?? []).map((e: any, i: number) =>
+          i === existing
+            ? { ...e, title: BAR_ENTRY_TITLE, titleRight: e.titleRight || callDate, subtitle: BAR_ENTRY_SUBTITLE }
+            : e
+        )
+
+  // Most recent first, the pattern the rest of the document already follows.
+  // Stable within an equal date, so anything undated keeps the model's order.
+  const ordered = entries
+    .map((e: any, i: number) => ({ e, i }))
+    .sort((a: any, b: any) => dateKey(b.e.titleRight) - dateKey(a.e.titleRight) || a.i - b.i)
+    .map((x: any) => x.e)
+
+  const next = [...sections]
+  next[index] = { ...section, entries: ordered }
+  return next
+}
+
+/**
  * Canonicalise headings, fold duplicates together, then order.
  *
  * The fold matters as much as the rename. Once ADMISSIONS and CERTIFICATIONS
@@ -235,8 +403,13 @@ export function sortSections<T extends { heading: string }>(sections: T[]): T[] 
     const i = SECTION_ORDER.indexOf(h.trim().toUpperCase() as any)
     return i === -1 ? UNKNOWN_RANK : i
   }
+  // After the fold, so it sees one certifications section rather than the two
+  // a model occasionally returns, and before the sort, so a section it creates
+  // is ordered with the rest.
+  const normalised = withBarCertificate(merged)
+
   // Stable, so unrecognised headings keep the order the model produced them in.
-  return merged
+  return normalised
     .map((s, i) => ({ s, i }))
     .sort((a, b) => rank(a.s.heading) - rank(b.s.heading) || a.i - b.i)
     .map(x => x.s)

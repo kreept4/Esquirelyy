@@ -47,6 +47,7 @@ export default function CoverLetterPage() {
   const { checking, userId } = useRequireAuth()
   const [mode, setMode] = useState<Mode>('manual')
   const [cvFile, setCvFile] = useState<File | null>(null)
+  const [dragOver, setDragOver] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const [form, setForm] = useState({
     firstName: '',
@@ -66,6 +67,23 @@ export default function CoverLetterPage() {
   const [historyLoading, setHistoryLoading] = useState(false)
 
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
+
+  /* Checked here as well as on the server, so a wrong file type or an oversized
+     one is said immediately rather than after an upload and a round trip. Same
+     two rules and the same wording as cv-review. */
+  const handleFile = (f: File | null) => {
+    if (!f) return
+    if (!['.pdf', '.docx', '.txt'].some(ext => f.name.toLowerCase().endsWith(ext))) {
+      setError('Please upload a PDF, DOCX, or TXT file.')
+      return
+    }
+    if (f.size > 5 * 1024 * 1024) {
+      setError('File is too large. Maximum size is 5MB.')
+      return
+    }
+    setError('')
+    setCvFile(f)
+  }
 
   async function loadHistory() {
     if (!userId) return
@@ -255,22 +273,50 @@ export default function CoverLetterPage() {
                       value={form.cvSummary} onChange={e => set('cvSummary', e.target.value)}
                       placeholder="e.g. LL.B from Unilag, NYSC at Streamsowers, one year at a Lagos litigation firm" />
                   ) : (
-                    <div className="tool-drop" data-over={!!cvFile} onClick={() => fileRef.current?.click()} style={{ cursor: 'pointer' }}>
-                      <p className="grotesk-bold tool-drop-title">
-                        {cvFile ? cvFile.name : 'Click to upload a PDF, DOCX or TXT'}
-                      </p>
+                    /* The picker is opened by a <label for>, not by an onClick on
+                       this box. It used to be the latter, with the input nested
+                       inside the box that carried the handler, so the synthetic
+                       click on the input bubbled straight back into the handler
+                       that had just fired it. The browser suppresses the
+                       re-entrant call, and the dialog never opened — which is
+                       what "I cannot upload my CV" actually was. Same
+                       construction as cv-review, which never had the fault. */
+                    <div
+                      className="tool-drop"
+                      data-over={dragOver || !!cvFile}
+                      onDragOver={e => { e.preventDefault(); setDragOver(true) }}
+                      onDragLeave={() => setDragOver(false)}
+                      onDrop={e => {
+                        e.preventDefault()
+                        setDragOver(false)
+                        handleFile(e.dataTransfer.files[0] || null)
+                      }}
+                    >
+                      <input
+                        id="cl-cv-file"
+                        ref={fileRef}
+                        type="file"
+                        accept=".pdf,.docx,.txt"
+                        style={{ display: 'none' }}
+                        onChange={e => handleFile(e.target.files?.[0] || null)}
+                      />
                       {cvFile ? (
-                        <button type="button" className="tool-drop-swap"
-                          onClick={e => { e.stopPropagation(); setCvFile(null) }}>
-                          Remove
-                        </button>
+                        <>
+                          <p className="grotesk-bold tool-drop-title">{cvFile.name}</p>
+                          <button type="button" className="tool-drop-swap" onClick={() => setCvFile(null)}>
+                            Remove
+                          </button>
+                        </>
                       ) : (
-                        <p className="grotesk-regular tool-drop-note">
-                          The file is read for this session and not stored.
-                        </p>
+                        <label htmlFor="cl-cv-file" style={{ cursor: 'pointer', display: 'block' }}>
+                          <p className="grotesk-bold tool-drop-title">
+                            Drop your CV here, or click to upload
+                          </p>
+                          <p className="grotesk-regular tool-drop-note">
+                            PDF, DOCX or TXT, up to 5MB. Read for this session only, never stored.
+                          </p>
+                        </label>
                       )}
-                      <input ref={fileRef} type="file" accept=".pdf,.docx,.txt" style={{ display: 'none' }}
-                        onChange={e => setCvFile(e.target.files?.[0] || null)} />
                     </div>
                   )}
                 </div>
@@ -303,7 +349,9 @@ export default function CoverLetterPage() {
           </section>
         )}
 
-        {result && (
+        {result && (() => {
+          const wordCount = result.coverLetter.trim().split(/\s+/).filter(Boolean).length
+          return (
           <section className="doc-section">
             <div className="doc-section-label">
               <p className="grotesk-bold doc-section-title">Your draft</p>
@@ -320,7 +368,12 @@ export default function CoverLetterPage() {
               </div>
 
               <div className="tool-letter-head">
-                <p className="grotesk-bold tool-section-heading" style={{ marginBottom: 0 }}>Your cover letter</p>
+                {/* The count is shown, not just enforced in the prompt. Length is
+                    the one thing a reader can check at a glance, and seeing it
+                    is how anyone would notice the model drifting past the brief. */}
+                <p className="grotesk-bold tool-section-heading" style={{ marginBottom: 0 }}>
+                  Your cover letter <span className="grotesk-regular tool-label-hint">{wordCount} words</span>
+                </p>
                 <button type="button" onClick={handleCopy} className="grotesk-bold tool-copy">
                   {copied ? <><Check size={13} aria-hidden /> Copied</> : <><Copy size={13} aria-hidden /> Copy</>}
                 </button>
@@ -351,7 +404,8 @@ export default function CoverLetterPage() {
               </button>
             </div>
           </section>
-        )}
+          )
+        })()}
       </ToolShell>
 
       {showHistory && (

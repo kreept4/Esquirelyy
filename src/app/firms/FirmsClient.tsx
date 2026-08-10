@@ -26,10 +26,13 @@ import EmptyState from '@/components/ui/EmptyState'
 import RankingBadges from '@/components/ui/RankingBadges'
 import { ALL_FIRMS, firmLogo, getMonogram, rankingsOf } from '@/lib/firms-data'
 
+/* Standing, not "Tier". See FirmTier in firms-data.ts: our own banding used the
+   same words as the three directories, so the filter read as though it were
+   filtering by their rankings rather than by ours. */
 const TIER_OPTIONS = [
-  { value: '', label: 'All Tiers' },
-  { value: 'Tier 1', label: 'Tier 1' },
-  { value: 'Tier 2', label: 'Tier 2' },
+  { value: '', label: 'All firms' },
+  { value: 'Leading', label: 'Leading' },
+  { value: 'Established', label: 'Established' },
   { value: 'Boutique', label: 'Boutique' },
 ]
 /** Which directory ranked the firm. Options are the three guides plus "any",
@@ -334,7 +337,12 @@ export default function FirmsClient() {
         <PageHeader
           tone="ink"
           heading="Firms directory"
-          subcopy="Profiles of Nigerian law firms with tier rankings, practice-area breakdowns, and hiring history."
+          /* Not "tier rankings". The standing on each card is Esquirely's own
+             banding, which firms-data.ts is explicit is not a ranking — and
+             calling it one here put our label on the same footing as the
+             Chambers and Legal 500 badges sitting beside it. The independent
+             rankings are still on the page; they just are not this. */
+          subcopy="Sixty seven Nigerian law firms in full: independent directory rankings, practice areas, every office and the hiring record behind the name."
         >
 
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
@@ -355,7 +363,7 @@ export default function FirmsClient() {
               </div>
 
               {[
-                { value: tier, setter: setTier, options: TIER_OPTIONS, placeholder: 'Tier' },
+                { value: tier, setter: setTier, options: TIER_OPTIONS, placeholder: 'Standing' },
                 { value: city, setter: setCity, options: CITY_OPTIONS, placeholder: 'City' },
               ].map(({ value, setter, options, placeholder }) => (
                 <select key={placeholder} className="filter-pill" data-active={!!value} value={value} onChange={e => setter(e.target.value)}>
@@ -409,6 +417,23 @@ export default function FirmsClient() {
                   )
                 })}
               </div>
+
+              {/* What our own two labels mean, said where the filter that uses
+                  them is. They were "Tier 1" and "Tier 2" until they were
+                  renamed, and the reason for the rename is exactly the reason
+                  this line has to exist: a banding on a card is read as a
+                  ranking unless the page says whose it is and what earned it.
+                  Two sentences, next to the control, rather than a definition
+                  in the FAQ that nobody filtering will go and find. */}
+              <p className="grotesk-regular firm-standing-note">
+                <strong>Leading</strong> is earned, not assigned: a top band in at least
+                one independent directory, meaning Chambers Band 1, IFLR1000 Tier 1 or
+                Legal 500 EMEA Tier 1. <strong>Established</strong> covers every other
+                full service firm here, a good many of them ranked further down those
+                same tables. <strong>Boutique</strong> describes the kind of practice, not
+                where it places. The standing is our reading. The rankings on each profile
+                are not.
+              </p>
             </div>
         </PageHeader>
 

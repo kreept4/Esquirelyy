@@ -7,6 +7,7 @@ export const StaggeredMenu = ({
   colors = ['#B497CF', '#5227FF'],
   items = [],
   socialItems = [],
+  socialsTitle = 'Socials',
   displaySocials = true,
   displayItemNumbering = true,
   className,
@@ -458,16 +459,31 @@ export const StaggeredMenu = ({
             )}
           </ul>
           {displaySocials && socialItems && socialItems.length > 0 && (
-            <div className="sm-socials" aria-label="Social links">
-              <h3 className="sm-socials-title">Socials</h3>
+            /* LOCAL PATCH: the heading is a prop. This row carries our auth
+               links, and labelling them "Socials" described the slot rather
+               than what is in it. */
+            <div className="sm-socials" aria-label={socialsTitle}>
+              <h3 className="sm-socials-title">{socialsTitle}</h3>
               <ul className="sm-socials-list" role="list">
-                {socialItems.map((s, i) => (
-                  <li key={s.label + i} className="sm-socials-item">
-                    <a href={s.link} target="_blank" rel="noopener noreferrer" className="sm-socials-link">
-                      {s.label}
-                    </a>
-                  </li>
-                ))}
+                {socialItems.map((s, i) => {
+                  /* LOCAL PATCH: only send a new tab where one belongs.
+                     We use this row for auth links, not socials, and a hard
+                     target="_blank" was opening Sign In in a second tab —
+                     leaving the original sitting behind on the old page,
+                     signed out, with the panel still open. */
+                  const external = /^https?:/i.test(s.link);
+                  return (
+                    <li key={s.label + i} className="sm-socials-item">
+                      <a
+                        href={s.link}
+                        className="sm-socials-link"
+                        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      >
+                        {s.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}
