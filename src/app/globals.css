@@ -5264,6 +5264,24 @@ video::-webkit-media-controls { display: none !important; }
 .acct-toggle input { margin-top: 0.25rem; }
 .acct-toggle .acct-note { margin: 0.15rem 0 0 0; }
 
+/* The show-passwords checkbox. One line, label beside the box rather than a
+   heading stacked over a note, because it has nothing to explain. */
+.acct-toggle-inline {
+  grid-template-columns: auto auto;
+  justify-content: start;
+  align-items: center;
+  margin-top: 0.9rem;
+  font-size: 0.82rem;
+}
+.acct-toggle-inline input { margin-top: 0; }
+
+/* Three fields that belong to one decision, so they stay in one row on a wide
+   screen instead of leaving the third one orphaned under the first two. */
+.acct-fields-pw { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 1.1rem; }
+@media (max-width: 900px) {
+  .acct-fields-pw { grid-template-columns: minmax(0, 1fr); }
+}
+
 .acct-actions {
   display: flex;
   align-items: center;

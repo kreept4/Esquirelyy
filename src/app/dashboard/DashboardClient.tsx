@@ -60,6 +60,16 @@ export default function DashboardClient({
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [confirmText, setConfirmText] = useState('')
 
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPasswords, setShowPasswords] = useState(false)
+  /* Its own error, not the page-level one. The password card sits well below
+     the banner at the top, and a failure reported up there is a failure nobody
+     sees on a phone. */
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordDone, setPasswordDone] = useState('')
+
   async function call(body: Record<string, unknown>, label: string) {
     setBusy(label)
     setError('')
@@ -102,6 +112,64 @@ export default function DashboardClient({
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/')
+  }
+
+  async function changePassword(e: React.FormEvent) {
+    e.preventDefault()
+    setPasswordError('')
+    setPasswordDone('')
+
+    /* Checked here as well as on the server. The server is the authority on
+       every one of these, but making somebody wait for a round trip to be told
+       their two entries differ is a slow way to say something obvious. */
+    if (newPassword.length < 8) { setPasswordError('Use at least 8 characters.'); return }
+    if (newPassword !== confirmPassword) { setPasswordError('Those two passwords do not match.'); return }
+    if (newPassword === currentPassword) {
+      setPasswordError('That is the password you are already using. Choose a different one.')
+      return
+    }
+
+    setBusy('password')
+    try {
+      const res = await fetch('/api/account', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ action: 'change-password', currentPassword, newPassword }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setPasswordError(data.error || 'That did not go through. Please try again.')
+        return
+      }
+      setCurrentPassword('')
+      setNewPassword('')
+      setConfirmPassword('')
+      setPasswordDone('Password changed. Any other device you were signed in on has been signed out.')
+    } catch {
+      setPasswordError('That did not go through. Please try again.')
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  /* The way out for someone who cannot fill in the first field. It is the same
+     recovery mail /auth/forgot-password sends, landing on the same page, so
+     there is one reset flow rather than a second one that has to be kept
+     working. Offered here because the alternative for a signed-in user who has
+     forgotten their password is to sign out and hunt for the link on the login
+     page, which is a strange thing to ask of somebody already holding a valid
+     session. */
+  async function emailPasswordLink() {
+    setPasswordError('')
+    setPasswordDone('')
+    setBusy('password-link')
+    const supabase = createClient()
+    const { error: linkError } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    })
+    setBusy(null)
+    if (linkError) { setPasswordError(linkError.message); return }
+    setPasswordDone(`Link sent to ${email}. It sets a new password without needing the old one.`)
   }
 
   return (
@@ -249,6 +317,102 @@ export default function DashboardClient({
               </div>
             </>
           )}
+        </section>
+
+        {/* Password. Above Leaving and below Take a break, because it is
+            routine maintenance rather than an exit. */}
+        <section className="acct-card">
+          <h2 className="grotesk-bold acct-card-title">Password</h2>
+          <p className="grotesk-regular acct-note">
+            Worth changing every so often, and worth changing straight away if you have
+            ever typed it into anything that was not us. You cannot reuse a password this
+            account has had before.
+          </p>
+
+          <form onSubmit={changePassword}>
+            <div className="acct-fields acct-fields-pw">
+              <div>
+                <label className="grotesk-bold auth-label" htmlFor="acct-pw-current">
+                  Current password
+                </label>
+                <input
+                  id="acct-pw-current"
+                  type={showPasswords ? 'text' : 'password'}
+                  className="auth-input"
+                  value={currentPassword}
+                  onChange={e => setCurrentPassword(e.target.value)}
+                  autoComplete="current-password"
+                />
+              </div>
+              <div>
+                <label className="grotesk-bold auth-label" htmlFor="acct-pw-new">
+                  New password
+                </label>
+                <input
+                  id="acct-pw-new"
+                  type={showPasswords ? 'text' : 'password'}
+                  className="auth-input"
+                  value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                  placeholder="Min. 8 characters"
+                  autoComplete="new-password"
+                />
+              </div>
+              <div>
+                <label className="grotesk-bold auth-label" htmlFor="acct-pw-confirm">
+                  Confirm new password
+                </label>
+                <input
+                  id="acct-pw-confirm"
+                  type={showPasswords ? 'text' : 'password'}
+                  className="auth-input"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  autoComplete="new-password"
+                />
+              </div>
+            </div>
+
+            {/* One toggle for all three. Revealing them separately would mean
+                three controls to solve one problem, which is checking that what
+                was typed is what was meant. */}
+            <label className="acct-toggle acct-toggle-inline">
+              <input
+                type="checkbox"
+                checked={showPasswords}
+                onChange={e => setShowPasswords(e.target.checked)}
+              />
+              <span className="grotesk-regular">Show passwords</span>
+            </label>
+
+            {passwordError && (
+              <p className="grotesk-regular auth-error" role="alert">{passwordError}</p>
+            )}
+            {passwordDone && (
+              <p className="grotesk-regular acct-note" role="status">{passwordDone}</p>
+            )}
+
+            <div className="acct-actions">
+              <button
+                type="submit"
+                className="grotesk-bold auth-btn-primary"
+                disabled={busy === 'password' || !currentPassword || !newPassword || !confirmPassword}
+              >
+                {busy === 'password' ? 'Changing...' : 'Change password'}
+              </button>
+              <button
+                type="button"
+                className="grotesk-bold acct-ghost-btn"
+                disabled={busy === 'password-link'}
+                onClick={emailPasswordLink}
+              >
+                {busy === 'password-link' ? 'Sending...' : 'Email me a link instead'}
+              </button>
+            </div>
+            <p className="grotesk-regular acct-hint">
+              Cannot remember the current one? The link sets a new password without it.
+            </p>
+          </form>
         </section>
 
         {/* Leaving */}

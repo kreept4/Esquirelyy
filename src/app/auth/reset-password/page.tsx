@@ -107,6 +107,36 @@ function ResetPasswordInner() {
     return message
   }
 
+  /**
+   * Submit as soon as six digits are in, without waiting for the button.
+   *
+   * `autoComplete="one-time-code"` already puts the code in the keyboard's
+   * suggestion strip where the phone can read it. The tap it cannot remove is
+   * the one AFTER that: fill the field, then reach for a button. Six digits is
+   * an unambiguous end of input, so there is nothing left to wait for.
+   *
+   * Guarded on `email` and on `busy` because this stage asks for the address as
+   * well, and firing a verify with an empty address would spend the code on a
+   * request that cannot succeed.
+   */
+  function onCodeChange(next: string) {
+    const digits = next.replace(/\D/g, '').slice(0, 6)
+    setCode(digits)
+    if (digits.length === 6 && email && !busy) {
+      void verify(digits)
+    }
+  }
+
+  async function verify(token: string) {
+    setBusy(true)
+    setError('')
+    const supabase = createClient()
+    const { error } = await supabase.auth.verifyOtp({ email, token, type: 'recovery' })
+    setBusy(false)
+    if (error) { setError(error.message); return }
+    setStage('ready')
+  }
+
   async function handleVerify(e: React.FormEvent) {
     e.preventDefault()
     setBusy(true)
@@ -208,7 +238,7 @@ function ResetPasswordInner() {
                 pattern="[0-9]{6}"
                 maxLength={6}
                 value={code}
-                onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
+                onChange={e => onCodeChange(e.target.value)}
                 required
                 placeholder="000000"
                 className="auth-input auth-input-otp"

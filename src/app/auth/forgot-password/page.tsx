@@ -6,6 +6,24 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
+/**
+ * Ask for a reset link.
+ *
+ * REBUILT ON THE SHARED AUTH SHELL. This page was the last thing in /auth still
+ * written in the pre-redesign language: its own inline styles, a white card on
+ * a flat cream field with no contour behind it, a 0.5px hairline border and an
+ * ink button. Every other auth page had moved to .auth-page, which carries the
+ * contour ground, the carton card and the mint primary button, so the one page
+ * a person reaches at their most frustrated was also the one that looked like a
+ * different website. That is the worst possible page to lose someone's trust
+ * on, because "this does not look right" and "this is a phishing page" are the
+ * same thought.
+ *
+ * Nothing about the behaviour changed. resetPasswordForEmail with redirectTo
+ * pointing at /auth/reset-password is what it always did, and that pairing is
+ * load-bearing: see the header of reset-password/page.tsx for what happens when
+ * the two disagree.
+ */
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -32,190 +50,65 @@ export default function ForgotPasswordPage() {
     setLoading(false)
   }
 
+  if (sent) return (
+    <div className="auth-page">
+      <div className="auth-form-col">
+        <div className="auth-form-wrap">
+          <h1 className="auth-title" style={{ marginBottom: '0.5rem' }}>Check your inbox.</h1>
+          <p className="grotesk-regular auth-note">
+            If an account exists for <strong>{email}</strong>, a reset link is on its way. It
+            opens a page where you set a new password and confirm it. No old password needed.
+          </p>
+          {/* Said here rather than left to be discovered in the spam folder ten
+              minutes later, which is where this mail lands often enough to be
+              worth one line. */}
+          <p className="grotesk-regular auth-note">
+            Nothing after a minute or two? Check spam and promotions.
+          </p>
+          <p className="grotesk-regular auth-alt">
+            <Link href="/auth/login">Back to sign in</Link>
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: '#FAF7F2',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '2rem',
-    }}>
-      <Link href="/" style={{ textDecoration: 'none', marginBottom: '2.5rem' }}>
-        <span style={{
-          fontFamily: 'Schibsted Grotesk, sans-serif',
-          fontWeight: 700,
-          fontSize: '1.5rem',
-          color: '#1A1A1A',
-          letterSpacing: '-0.01em',
-        }}>
-          Esquirely
-        </span>
-      </Link>
+    <div className="auth-page">
+      <div className="auth-form-col">
+        <div className="auth-form-wrap">
+          <h1 className="auth-title" style={{ marginBottom: '0.5rem' }}>Reset your password.</h1>
+          <p className="grotesk-regular auth-note">
+            Enter the address on your account and we will send you a link to set a new one.
+          </p>
 
-      <div style={{
-        width: '100%',
-        maxWidth: '420px',
-        backgroundColor: '#fff',
-        border: '0.5px solid #E8E0D5',
-        padding: '2.5rem',
-      }}>
-        {sent ? (
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              width: '48px',
-              height: '48px',
-              backgroundColor: '#F0EBE3',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1.5rem',
-            }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
+          <form onSubmit={handleReset} className="auth-form">
+            <div>
+              <label className="grotesk-bold auth-label" htmlFor="forgot-email">Email</label>
+              <input
+                id="forgot-email"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                placeholder="you@example.com"
+                autoComplete="email"
+                className="auth-input"
+              />
             </div>
-            <h2 style={{
-              fontFamily: 'Schibsted Grotesk, sans-serif',
-              fontSize: '1.35rem',
-              fontWeight: 700,
-              color: '#1A1A1A',
-              marginBottom: '0.75rem',
-            }}>
-              Check your inbox
-            </h2>
-            <p style={{
-              fontFamily: 'Schibsted Grotesk, sans-serif',
-              fontSize: '0.875rem',
-              color: '#4A4A4A',
-              lineHeight: 1.7,
-              marginBottom: '2rem',
-            }}>
-              If an account exists for <strong>{email}</strong>, you will receive a password reset link shortly.
-            </p>
-            <Link href="/auth/login" style={{
-              fontFamily: 'Schibsted Grotesk, sans-serif',
-              fontSize: '0.78rem',
-              fontWeight: 600,
-              color: '#1A1A1A',
-              textDecoration: 'none',
-              letterSpacing: '0.06em',
-            }}>
-              Back to sign in
-            </Link>
-          </div>
-        ) : (
-          <>
-            <h1 style={{
-              fontFamily: 'Schibsted Grotesk, sans-serif',
-              fontSize: '1.5rem',
-              fontWeight: 700,
-              color: '#1A1A1A',
-              marginBottom: '0.4rem',
-              lineHeight: 1.2,
-            }}>
-              Reset your password
-            </h1>
-            <p style={{
-              fontFamily: 'Schibsted Grotesk, sans-serif',
-              fontSize: '0.85rem',
-              color: '#4A4A4A',
-              marginBottom: '2rem',
-              lineHeight: 1.6,
-            }}>
-              Enter the email address on your account and we will send you a reset link.
-            </p>
 
-            <form onSubmit={handleReset} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div>
-                <label style={{
-                  fontFamily: 'Schibsted Grotesk, sans-serif',
-                  fontSize: '0.72rem',
-                  fontWeight: 600,
-                  color: '#1A1A1A',
-                  letterSpacing: '0.07em',
-                  textTransform: 'uppercase',
-                  display: 'block',
-                  marginBottom: '0.5rem',
-                }}>
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                  placeholder="you@example.com"
-                  style={{
-                    width: '100%',
-                    padding: '0.7rem 0.875rem',
-                    backgroundColor: '#FAF7F2',
-                    border: '0.5px solid #E8E0D5',
-                    borderRadius: '2px',
-                    fontFamily: 'Schibsted Grotesk, sans-serif',
-                    fontSize: '0.875rem',
-                    color: '#1A1A1A',
-                    outline: 'none',
-                    boxSizing: 'border-box',
-                  }}
-                />
-              </div>
+            {error && <p className="grotesk-regular auth-error">{error}</p>}
 
-              {error && (
-                <p style={{
-                  fontFamily: 'Schibsted Grotesk, sans-serif',
-                  fontSize: '0.8rem',
-                  color: '#000000',
-                  backgroundColor: '#FDF0EB',
-                  padding: '0.6rem 0.75rem',
-                  borderRadius: '2px',
-                  border: '0.5px solid #EDCCC2',
-                }}>
-                  {error}
-                </p>
-              )}
+            <button type="submit" disabled={loading} className="grotesk-bold auth-btn-primary">
+              {loading ? 'Sending...' : 'Send reset link'}
+            </button>
+          </form>
 
-              <button
-                type="submit"
-                disabled={loading}
-                style={{
-                  width: '100%',
-                  padding: '0.8rem',
-                  backgroundColor: loading ? '#6B8CAE' : '#1A1A1A',
-                  color: '#FAF7F2',
-                  border: 'none',
-                  borderRadius: '2px',
-                  fontFamily: 'Schibsted Grotesk, sans-serif',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  transition: 'background-color 0.2s ease',
-                }}
-              >
-                {loading ? 'Sending...' : 'Send Reset Link'}
-              </button>
-            </form>
-
-            <p style={{
-              fontFamily: 'Schibsted Grotesk, sans-serif',
-              fontSize: '0.82rem',
-              color: '#4A4A4A',
-              marginTop: '1.5rem',
-              textAlign: 'center',
-            }}>
-              <Link href="/auth/login" style={{ color: '#1A1A1A', fontWeight: 600, textDecoration: 'none' }}>
-                Back to sign in
-              </Link>
-            </p>
-          </>
-        )}
+          <p className="grotesk-regular auth-alt">
+            <Link href="/auth/login">Back to sign in</Link>
+          </p>
+        </div>
       </div>
     </div>
   )
 }
-

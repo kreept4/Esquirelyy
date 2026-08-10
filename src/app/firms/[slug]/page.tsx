@@ -393,6 +393,23 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
                     </Link>
                     . It takes a minute and the whole directory opens up, not just this firm.
                   </p>
+                  {/* The third door, and the one that was missing.
+                      This gate offered "create an account" and "sign in" and
+                      nothing else, so somebody who HAD an account but could not
+                      remember the password had two options in front of them and
+                      neither one worked. The realistic next move was to sign up
+                      again with a second address, which is how an account gets
+                      quietly duplicated and a tracker gets abandoned. The reset
+                      link was already built and reachable from the login page;
+                      it just was not offered at the moment people actually hit
+                      the wall. */}
+                  <p className="grotesk-regular apply-card-note" style={{ marginTop: '0.35rem' }}>
+                    Cannot remember your password?{' '}
+                    <Link href="/auth/forgot-password" className="apply-card-mail">
+                      Reset it here
+                    </Link>
+                    . We will email you a link to set a new one.
+                  </p>
                 </>
               ) : (
               <>
