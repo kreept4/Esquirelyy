@@ -34,5 +34,30 @@ alter table public.password_history enable row level security;
 
 -- Deliberately no policies. See the note above.
 
+-- THE GRANT IS NOT OPTIONAL ON THIS PROJECT. Supabase normally grants the
+-- built-in roles table privileges by default, and on most projects the two
+-- statements above would be the whole migration. This one has had those
+-- defaults revoked (see 2026-08-05-grant-service-role.sql for the episode that
+-- established that), so a new table is unreachable by every role including
+-- service_role until it is granted explicitly. Without this, RLS is not what
+-- refuses the API route: a plain 42501 permission error is, and the password
+-- change fails on the history read before RLS is ever consulted.
+--
+-- SELECT, INSERT and DELETE, and deliberately not UPDATE. A hash is written
+-- once and either read or dropped when it falls past the depth limit. Nothing
+-- in the code path edits a row in place, so the privilege to do it is not
+-- given.
+grant select, insert, delete on public.password_history to service_role;
+
+-- Nothing is granted to anon or authenticated, on purpose. Those are the roles
+-- a browser holds, and this table is not for them.
+
+-- Verify. Expect true, true, true, then false.
+-- select
+--   has_table_privilege('service_role', 'public.password_history', 'SELECT') as svc_select,
+--   has_table_privilege('service_role', 'public.password_history', 'INSERT') as svc_insert,
+--   has_table_privilege('service_role', 'public.password_history', 'DELETE') as svc_delete,
+--   has_table_privilege('authenticated', 'public.password_history', 'SELECT') as user_select;
+
 -- Deleting the account takes the history with it, via the cascade above. That
 -- is the same promise the deletion flow already makes about everything else.
