@@ -27,32 +27,49 @@ const MUTED = '#8A8378'
 const CONTOUR =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23241F16' stroke-opacity='0.28' stroke-width='1.5'%3E%3Cpath d='M0 20c26-14 54 14 80 0s54-14 80 0'/%3E%3Cpath d='M0 47c26-11 54 11 80 0s54-11 80 0'/%3E%3Cpath d='M0 74c26-16 54 16 80 0s54-16 80 0'/%3E%3Cpath d='M0 101c26-9 54 9 80 0s54-9 80 0'/%3E%3Cpath d='M0 128c26-15 54 15 80 0s54-15 80 0'/%3E%3C/g%3E%3C/svg%3E\")"
 
-/** One entry per role. Kept beside the template because it is copy, not data:
- *  the board holds the listing, this holds the sentence that sells it. */
+/**
+ * One entry per role.
+ *
+ * FACTS, IN THE ORDER SOMEBODY DECIDES BY: where, what level, what work, how to
+ * apply, when it closes. An earlier version of these lines editorialised
+ * instead, on the theory that a description should sell the role. It said a
+ * seat meant "running matters rather than supporting them", which is a
+ * flourish, and it took the space where the reader was looking for a location
+ * and a deadline.
+ *
+ * The test for anything on this list: could a reader act on it without opening
+ * the board. A sentence that only makes sense once you already know the role is
+ * not doing any work in an email.
+ */
 const ROLES = [
   {
     employer: 'Babalakin & Co',
     title: 'Senior Associate, Energy & Extractive Industries',
-    line: 'Lagos. A senior seat running energy and oil and gas matters rather than supporting them.',
+    line: 'Lagos, senior level. Energy, oil and gas, and extractive industries work. Applications go through the firm’s recruitment portal, and there is no closing date on it yet.',
   },
   {
     employer: 'Zyph Legal',
     title: 'Legal Associate',
-    line: 'Fully remote, full-time, and written for lawyers who have just been called. Closes 20 August.',
+    line: 'Fully remote, full time, open to lawyers newly called to the Bar. Technology, corporate and commercial work. Apply by email with a CV and a short cover note. Closes 20 August.',
   },
 ]
 
 export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: string }) {
   const first = (name || '').trim().split(/\s+/)[0]
-  const greeting = first ? `${first}, two worth a look.` : 'Two worth a look.'
+  /* Names the firms rather than grading them. "Two worth a look" was our
+     opinion arriving before the reader had the facts to form their own. */
+  const greeting = first
+    ? `${first}, ${NEW_ROLES.employers.join(' and ')} are hiring.`
+    : `${NEW_ROLES.employers.join(' and ')} are hiring.`
   const subject = `${NEW_ROLES_COUNT} new roles: ${NEW_ROLES.employers.join(' and ')}`
   const link = `${siteUrl}${NEW_ROLES_HREF}`
 
   const text = [
     greeting,
     '',
-    ...ROLES.flatMap(r => [`${r.employer} — ${r.title}`, r.line, '']),
-    'Both checked against the employer’s own notice before they went up.',
+    ...ROLES.flatMap(r => [`${r.employer}: ${r.title}`, r.line, '']),
+    'Both were read off the firms’ own notices, so the closing dates and the',
+    'application routes above are the ones they published.',
     '',
     `See them here: ${link}`,
     '',
@@ -118,8 +135,9 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
             ).join('')}
 
             <p style="margin:14px 0 20px 0;font-size:15px;line-height:1.7;color:${INK};">
-              Both were checked against the employer&rsquo;s own notice before they went up, which is
-              the only reason a board is worth reading.
+              Both were read off the firms&rsquo; own notices, so the closing dates and the
+              application routes above are the ones they published rather than an aggregator&rsquo;s
+              guess.
             </p>
 
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 24px 0;">
