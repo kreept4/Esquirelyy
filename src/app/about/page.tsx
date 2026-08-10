@@ -156,13 +156,17 @@ export default function AboutPage() {
               ))}
             </div>
 
-            {/* "We are still expanding" was a statement about us. This is an
-                invitation, which is the same fact pointed at the reader and the
-                only version that can produce anything. */}
+            {/* Two rewrites, and the second is the one that matters.
+                "We are still expanding" was a statement about us, so it became
+                an invitation. The invitation was then an argument about who we
+                would rather hear from, which is our preference described to
+                somebody who only wanted to know what to send. It is now three
+                instructions and an address. */}
             <p className="grotesk-bold about-note-title">Join us</p>
             <p className="grotesk-regular about-note">
-              We are hiring, and we would rather hear from a lawyer who has used this than from
-              someone who has read about it. Tell us what you would fix first.{' '}
+              We are hiring. Send a CV, tell us what you would want to own here, and name the
+              first thing you would change about Esquirely. The last one is what we read
+              closest.{' '}
               <a href="mailto:careers@esquirely.com.ng" className="about-note-mail">
                 careers@esquirely.com.ng
               </a>
