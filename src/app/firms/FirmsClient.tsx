@@ -321,6 +321,8 @@ export default function FirmsClient() {
         const hit =
           f.name.toLowerCase().includes(q) ||
           (f.formerName?.toLowerCase().includes(q) ?? false) ||
+          // Searching "Raji Chambers" has to find Musibau Adetunbi & Co.
+          (f.alsoKnownAs?.toLowerCase().includes(q) ?? false) ||
           f.practiceAreas.some((p: string) => p.toLowerCase().includes(q))
         if (!hit) return false
       }

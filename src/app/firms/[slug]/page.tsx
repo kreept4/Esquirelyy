@@ -270,6 +270,13 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
                     Formerly {firm.formerName}
                   </p>
                 )}
+                {/* "Also known as", not "Formerly". A firm still trading under
+                    both names has not rebranded away from either. */}
+                {firm.alsoKnownAs && (
+                  <p className="grotesk-regular firm-profile-former">
+                    Also known as {firm.alsoKnownAs}
+                  </p>
+                )}
                 <div className="firm-profile-meta">
                   <span>{firm.tier}</span>
                   {firm.foundedYear && (

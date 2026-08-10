@@ -194,6 +194,17 @@ export interface Firm {
    * the profile otherwise raises, which is whether this is the same firm.
    */
   formerName?: string
+  /**
+   * A name the firm ALSO trades under today, which is a different fact from
+   * formerName and must not be folded into it.
+   *
+   * Musibau Adetunbi & Co is Raji Chambers: the domain, the email and half the
+   * search results use it, and both names are current. Rendering that as
+   * "Formerly Raji Chambers" would tell a reader the firm had rebranded away
+   * from a name it is still using, which is worse than saying nothing. Both
+   * fields are searchable, because either name has to find the firm.
+   */
+  alsoKnownAs?: string
   tier: FirmTier
   email: string
   website: string
@@ -227,6 +238,14 @@ const NO_LOCAL_LOGO = new Set(['bloomfield-law'])
  *  Without this they would fall through to the monogram tile despite having a
  *  perfectly good mark sitting in /public/firm-logos. */
 const LOCAL_ONLY_LOGO = new Set([
+  /* Musibau Adetunbi & Co. Taken from rajichambers.ng, and RECOLOURED rather
+     than used as supplied: the firm publishes the lockup in white for a dark
+     header, and measured against the file it is three quarters white artwork,
+     so on our cream card the wordmark simply was not there. The near-white
+     pixels are mapped to ink and the gold monogram is left alone, which is the
+     same treatment The Law Crest and Matrix Solicitors get below for the same
+     reason. No bucket original, so logoFile stays null. */
+  'musibau-adetunbi',
   'platinum-taylor-hill',
   'tope-adebayo',
   // Added 2026-08-05 with the twelve new firms. Art pulled straight from each
@@ -698,6 +717,69 @@ const FIRMS_UNSORTED: Firm[] = [
     rankedIndividuals: [
       { name: 'Fabian Ajogwu SAN', source: 'chambers', band: 'Band 3', year: 2026, area: 'Dispute Resolution' },
     ],
+  },
+  {
+    /* Read on 2026-08-10 from rajichambers.ng, the firm's own site.
+       TWO NAMES, ONE FIRM, and the site uses both. "Musibau Adetunbi & Co" is
+       the practice; "Raji Chambers" is what it trades under and what its domain
+       and its email are built on, so somebody searching either has to land
+       here. The practice name leads because that is what an offer letter says. */
+    slug: 'musibau-adetunbi',
+    logoFile: null,
+    name: 'Musibau Adetunbi & Co',
+    shortName: 'Musibau Adetunbi',
+    alsoKnownAs: 'Raji Chambers',
+    tier: 'Established',
+    email: 'info@rajichambers.ng',
+    website: 'https://rajichambers.ng',
+    offices: [
+      { city: 'Ibadan', address: '38 Ladoke Akintola Avenue, New Bodija, Ibadan, Oyo State' },
+      { city: 'Abuja', address: '8 Benue Crescent, Area 1, Garki, Abuja' },
+    ],
+    /* Trimmed from the thirteen the site lists to the ones the directory has a
+       vocabulary for. A profile claiming every practice area on the site would
+       be a menu rather than a description, and this list is what the firm is
+       actually known for. */
+    practiceAreas: ['Dispute Resolution', 'Corporate & Commercial', 'Arbitration', 'Public Law & Regulatory', 'Energy & Natural Resources'],
+    description:
+      'A full service practice led by Musibau Adetunbi SAN, headquartered in Ibadan with an Abuja office. Litigation and dispute resolution are the centre of it, alongside corporate, constitutional and regulatory work. One of the few firms in this directory whose head office is neither in Lagos nor Abuja, which matters if you are in Oyo and had assumed the serious work was all on the island.',
+    openRoles: 0,
+  },
+  {
+    /* Read on 2026-08-10. The firm has no site of its own, so the record is
+       assembled from the Abuja and Ibadan office listings and contemporary
+       press, and every field here is one those sources agree on.
+
+       ⚠ THE NAME IS "OLUJINMI & AKEREDOLU", in that order, and Olujinmi has an
+       'n' in it. It is written "Olujimi" and reversed often enough, including
+       by people who know the firm, that the misspelling is worth naming here so
+       nobody helpfully corrects this back. */
+    slug: 'olujinmi-akeredolu',
+    logoFile: null,
+    name: 'Olujinmi & Akeredolu',
+    shortName: 'Olujinmi & Akeredolu',
+    tier: 'Established',
+    /* No public application address found. Left empty rather than filled with a
+       general enquiries line: the email field on a profile is read as "write
+       here about a job", and sending a student's application to a switchboard
+       is worse than telling them plainly there is no published route. */
+    email: '',
+    website: '',
+    offices: [
+      { city: 'Ibadan', address: '1 Azeez Aina Layout, Olusanya Hospital Junction, Ring Road, Dugbe, Ibadan, Oyo State' },
+      { city: 'Abuja', address: '5th Floor, NICON Plaza, Plot 242 Muhammadu Buhari Way, Central Business District, Abuja' },
+    ],
+    practiceAreas: ['Dispute Resolution', 'Arbitration', 'Corporate & Commercial', 'Public Law & Regulatory'],
+    /* Chief Akin Olujinmi SAN is named because a former Attorney General of the
+       Federation founding the firm is the single most useful fact about it.
+       Rotimi Akeredolu SAN is named as a co-founder and nothing more: he died
+       in December 2023, and a profile implying he still practises would be
+       wrong about a real person in a way a student could repeat in an
+       interview. */
+    description:
+      'A litigation and arbitration practice founded in 1986 by Chief Akin Olujinmi SAN, a former Attorney General of the Federation, and the late Rotimi Akeredolu SAN. Around forty lawyers across Ibadan and Abuja, with contentious work at the centre of the practice. Another of the handful of firms here built outside Lagos.',
+    foundedYear: 1986,
+    openRoles: 0,
   },
   {
     slug: 'mike-igbokwe',
