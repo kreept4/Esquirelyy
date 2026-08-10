@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { ALL_FIRMS, rankingsOf } from '@/lib/firms-data'
+import OgMark from '@/components/seo/OgMark'
 
 /**
  * The per-firm share card, and the highest-value one on the site.
@@ -55,25 +56,9 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-          <div
-            style={{
-              /* Round and set large, tracking icon.svg and the site card. See
-                 the note beside the same tile in src/app/opengraph-image.tsx:
-                 the mark is drawn in three places and they move together. */
-              width: 44,
-              height: 44,
-              borderRadius: 999,
-              backgroundColor: '#FBBF24',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 36,
-              fontWeight: 700,
-              color: '#191510',
-            }}
-          >
-            E
-          </div>
+          {/* The same drawing as the favicon and the site card, not a capital
+              E set in whatever face the renderer resolves. See OgMark. */}
+          <OgMark size={44} />
           <div style={{ fontSize: 25, fontWeight: 600, color: '#FAF6F0' }}>Esquirely</div>
           <div style={{ fontSize: 25, color: '#5C5445' }}>/</div>
           <div style={{ fontSize: 25, color: '#B5AB98' }}>Firms directory</div>
