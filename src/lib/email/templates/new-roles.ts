@@ -1,5 +1,3 @@
-import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF } from '@/lib/new-roles'
-
 /**
  * The new roles announcement.
  *
@@ -40,29 +38,43 @@ const CONTOUR =
  * The test for anything on this list: could a reader act on it without opening
  * the board. A sentence that only makes sense once you already know the role is
  * not doing any work in an email.
+ *
+ * The roles THIS email announces — not the cumulative "still unread" set in
+ * lib/new-roles.ts, which keeps growing until someone reads the site
+ * notification. Sending an email for every single addition to that list
+ * would be a new message in every inbox each time one firm posts one role;
+ * this list is written by hand, one send at a time, for whichever roles are
+ * actually being announced today.
+ *
+ * `slug` on each entry is what builds the button's link below, filtered to
+ * exactly this set — not NEW_ROLES_HREF, which would carry every slug in the
+ * cumulative drop, including roles this email never mentions.
  */
 const ROLES = [
   {
-    employer: 'Babalakin & Co',
-    title: 'Senior Associate, Energy & Extractive Industries',
-    line: 'Lagos, senior level. Energy, oil and gas, and extractive industries work. Applications go through the firm’s recruitment portal, and there is no closing date on it yet.',
+    employer: 'Ovie Obobolo & Co',
+    title: 'Associate',
+    slug: 'ovie-obobolo-associate',
+    line: 'Lagos (Yaba), one to two years post-call. Apply with a CV and application letter to hello@ovieobobolo.com. Closes 16 August 2026.',
   },
   {
-    employer: 'Zyph Legal',
-    title: 'Legal Associate',
-    line: 'Fully remote, full time, open to lawyers newly called to the Bar. Technology, corporate and commercial work. Apply by email with a CV and a short cover note. Closes 20 August.',
+    employer: 'Greenberg Traurig London',
+    title: 'Training Contract (2029 Intake)',
+    slug: 'gt-london-training-contract-2029',
+    line: 'London, training contract applications for the 2029 intake. Full details and the application form are on the firm’s graduate recruitment page at gtlaw.com.',
   },
 ]
 
 export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: string }) {
   const first = (name || '').trim().split(/\s+/)[0]
-  /* Names the firms rather than grading them. "Two worth a look" was our
-     opinion arriving before the reader had the facts to form their own. */
+  const employers = ROLES.map(r => r.employer)
+  /* Names the firms rather than grading them. "Worth a look" was our opinion
+     arriving before the reader had the facts to form their own. */
   const greeting = first
-    ? `${first}, ${NEW_ROLES.employers.join(' and ')} are hiring.`
-    : `${NEW_ROLES.employers.join(' and ')} are hiring.`
-  const subject = `${NEW_ROLES_COUNT} new roles: ${NEW_ROLES.employers.join(' and ')}`
-  const link = `${siteUrl}${NEW_ROLES_HREF}`
+    ? `${first}, ${employers.join(' and ')} are hiring.`
+    : `${employers.join(' and ')} are hiring.`
+  const subject = `${ROLES.length} new roles: ${employers.join(' and ')}`
+  const link = `${siteUrl}/jobs?roles=${ROLES.map(r => r.slug).join(',')}`
 
   const text = [
     greeting,
