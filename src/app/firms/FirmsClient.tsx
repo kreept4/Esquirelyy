@@ -355,7 +355,13 @@ export default function FirmsClient() {
              calling it one here put our label on the same footing as the
              Chambers and Legal 500 badges sitting beside it. The independent
              rankings are still on the page; they just are not this. */
-          subcopy="Sixty seven Nigerian law firms in full: independent directory rankings, practice areas, every office and the hiring record behind the name."
+          /* COUNTED, NOT TYPED. This read "Sixty seven" and was wrong within a
+             day: two firms went in, one came back out, and the headline claim
+             on the page went stale while nobody was looking at it. Every other
+             statement of this number on the site is derived from ALL_FIRMS, and
+             this was the one exception. A number a reader can check by scrolling
+             is the worst possible place to hand-maintain a figure. */
+          subcopy={`${ALL_FIRMS.length} Nigerian law firms in full: independent directory rankings, practice areas, every office and the hiring record behind the name.`}
         >
 
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>

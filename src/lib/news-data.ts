@@ -97,7 +97,7 @@ const ITEMS: NewsItem[] = [
     date: NEW_ROLES.at.slice(0, 10),
     title: `${NEW_ROLES_COUNT} new roles on the board`,
     summary:
-      'Babalakin & Co are hiring a senior associate into their energy and extractive industries group, and Zyph Legal want a fully remote associate written for lawyers who have just been called. Both checked against the employer’s own notice.',
+      'Babalakin & Co want a senior associate for energy and extractive industries. Zyph Legal are hiring a fully remote associate, open to lawyers just called. Pentagon Partners are taking associates into governance, risk and compliance, from one to ten years post call. All three checked against the employer’s own notice.',
     href: NEW_ROLES_HREF,
     cta: 'Show me the new roles',
     /* Empty alt, like the rankings slide. The illustration is decoration beside

@@ -745,42 +745,25 @@ const FIRMS_UNSORTED: Firm[] = [
       'A full service practice led by Musibau Adetunbi SAN, headquartered in Ibadan with an Abuja office. Litigation and dispute resolution are the centre of it, alongside corporate, constitutional and regulatory work. One of the few firms in this directory whose head office is neither in Lagos nor Abuja, which matters if you are in Oyo and had assumed the serious work was all on the island.',
     openRoles: 0,
   },
-  {
-    /* Read on 2026-08-10. The firm has no site of its own, so the record is
-       assembled from the Abuja and Ibadan office listings and contemporary
-       press, and every field here is one those sources agree on.
-
-       ⚠ THE NAME IS "OLUJINMI & AKEREDOLU", in that order, and Olujinmi has an
-       'n' in it. It is written "Olujimi" and reversed often enough, including
-       by people who know the firm, that the misspelling is worth naming here so
-       nobody helpfully corrects this back. */
-    slug: 'olujinmi-akeredolu',
-    logoFile: null,
-    name: 'Olujinmi & Akeredolu',
-    shortName: 'Olujinmi & Akeredolu',
-    tier: 'Established',
-    /* No public application address found. Left empty rather than filled with a
-       general enquiries line: the email field on a profile is read as "write
-       here about a job", and sending a student's application to a switchboard
-       is worse than telling them plainly there is no published route. */
-    email: '',
-    website: '',
-    offices: [
-      { city: 'Ibadan', address: '1 Azeez Aina Layout, Olusanya Hospital Junction, Ring Road, Dugbe, Ibadan, Oyo State' },
-      { city: 'Abuja', address: '5th Floor, NICON Plaza, Plot 242 Muhammadu Buhari Way, Central Business District, Abuja' },
-    ],
-    practiceAreas: ['Dispute Resolution', 'Arbitration', 'Corporate & Commercial', 'Public Law & Regulatory'],
-    /* Chief Akin Olujinmi SAN is named because a former Attorney General of the
-       Federation founding the firm is the single most useful fact about it.
-       Rotimi Akeredolu SAN is named as a co-founder and nothing more: he died
-       in December 2023, and a profile implying he still practises would be
-       wrong about a real person in a way a student could repeat in an
-       interview. */
-    description:
-      'A litigation and arbitration practice founded in 1986 by Chief Akin Olujinmi SAN, a former Attorney General of the Federation, and the late Rotimi Akeredolu SAN. Around forty lawyers across Ibadan and Abuja, with contentious work at the centre of the practice. Another of the handful of firms here built outside Lagos.',
-    foundedYear: 1986,
-    openRoles: 0,
-  },
+  /* OLUJINMI & AKEREDOLU WAS HERE AND WAS PULLED, on 2026-08-10, the same day
+     it was added. Recorded rather than silently deleted, so the next person who
+     hears the firm mentioned does not spend an afternoon re-researching it and
+     re-adding it in the same shape.
+   *
+   * The facts are solid: founded 1986 by Chief Akin Olujinmi SAN, a former
+   * Attorney General of the Federation, with the late Rotimi Akeredolu SAN,
+   * around forty lawyers, offices at 1 Azeez Aina Layout, Ring Road, Dugbe,
+   * Ibadan and on the 5th floor of NICON Plaza, Plot 242 Muhammadu Buhari Way,
+   * Central Business District, Abuja.
+   *
+   * What is missing is the part this directory exists to provide. No website,
+   * no published application address, no mark. It was the only record in
+   * sixty-nine with all three absent, which is the measurable version of "there
+   * is not enough here": a profile carrying a name, two addresses and no way to
+   * act on either is a dead end wearing the furniture of an entry, and a
+   * student who opens it learns nothing they could not have got from a search.
+   *
+   * Put it back the moment there is a careers address to put on it. */
   {
     slug: 'mike-igbokwe',
     logoFile: 'mike-igbokwe.jpg',

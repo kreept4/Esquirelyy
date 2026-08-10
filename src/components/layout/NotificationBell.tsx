@@ -311,12 +311,16 @@ export default function NotificationBell({
 
               <div className="notif-modal-body">
                 <p className="grotesk-regular">
-                  {NEW_ROLES.employers.join(' and ')} are both hiring, and both openings are
-                  checked against the employer&rsquo;s own notice.
+                  {/* Built from the list rather than written out, so adding a
+                      role to lib/new-roles.ts cannot leave this sentence
+                      naming two firms while the button opens three. */}
+                  {NEW_ROLES.employers.slice(0, -1).join(', ')} and{' '}
+                  {NEW_ROLES.employers[NEW_ROLES.employers.length - 1]} are hiring, and every
+                  opening is checked against the employer&rsquo;s own notice.
                 </p>
                 <p className="grotesk-regular">
-                  One is a senior energy seat in Lagos. The other is fully remote and written for
-                  lawyers who have just been called, which is rarer than it should be.
+                  A senior energy seat in Lagos, a fully remote associate open to lawyers just
+                  called, and governance and compliance work open from one to ten years post call.
                 </p>
               </div>
 

@@ -18,13 +18,26 @@
  */
 
 export const NEW_ROLES = {
-  /** Changing this makes the notification unread again for everybody. */
-  id: 'roles-2026-08-10',
+  /** Changing this makes the notification unread again for everybody, which is
+   *  correct when the drop itself changes: Pentagon Partners joined after the
+   *  first two, so somebody who read the old note has not seen this one. */
+  id: 'roles-2026-08-10b',
   /** ISO. Sorts the notification and dates the carousel slide. */
   at: '2026-08-10T12:00:00.000Z',
-  slugs: ['babalakin-senior-associate-energy', 'zyph-legal-legal-associate'],
-  employers: ['Babalakin & Co', 'Zyph Legal'],
+  slugs: [
+    'babalakin-senior-associate-energy',
+    'zyph-legal-legal-associate',
+    'pentagon-partners-associate-grc',
+  ],
+  employers: ['Babalakin & Co', 'Zyph Legal', 'Pentagon Partners'],
 } as const
+
+/* THE ANNOUNCEMENT EMAIL IS NOT RETROACTIVE, and that is fine. It went out
+   naming two roles, and its button carries those two slugs in the URL it was
+   sent with, so a recipient clicking it still sees exactly what they were
+   promised. The site moves on to three; the email stays a record of what was
+   true when it was sent. Editing this constant does not and cannot rewrite a
+   message already in somebody's inbox. */
 
 export const NEW_ROLES_COUNT = NEW_ROLES.slugs.length
 
