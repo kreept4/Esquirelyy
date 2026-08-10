@@ -99,9 +99,14 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
       <header className="jobs-header">
         <div className="shell">
           <h1 className="display-black jobs-title">Scholarships</h1>
+          {/* "which rules out most of what the general scholarship lists carry"
+              was a swipe at the competition doing the work a fact should do.
+              The fact is that law is eligible for every one of these, and that
+              is the whole reason to read this page rather than a longer list
+              somewhere else. Stated, not argued. */}
           <p className="grotesk-regular jobs-sub">
-            Funding for Nigerian law students and lawyers, at home and abroad. Every one here is open
-            to law, which rules out most of what the general scholarship lists carry.
+            Funding for Nigerian law students and lawyers, at home and abroad. Law is eligible for
+            every one of these, with the deadline each body actually publishes.
           </p>
 
           {/* Status is a segmented control rather than a dropdown, for three

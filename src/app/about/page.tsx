@@ -116,21 +116,26 @@ export default function AboutPage() {
         <header className="doc-masthead">
           <div className="shell doc-masthead-inner">
             <h1 className="display-black doc-title">About us.</h1>
+            {/* Two rhetorical moves came out of this.
+                "Nigerian by audience, not by border" was a slogan closing a
+                paragraph that had already made the point by listing four
+                countries. And "The hard part was never X, it is Y" is the
+                setup-and-reversal every landing page in the world opens with;
+                the claim underneath it is strong enough to state directly. What
+                is left is what the site does and how it is checked. */}
             <p className="grotesk-regular doc-lede">
               Esquirely is where Nigerian lawyers and law students find what is genuinely open to
               them. Associate and trainee roles at the firms in our directory, graduate programmes
-              across West Africa, legal internships at institutions like the World Bank and the
-              ECOWAS Commission, and postgraduate scholarships in the UK, the Netherlands and
-              Canada. Nigerian by audience, not by border.
+              across West Africa, legal internships at the World Bank and the ECOWAS Commission,
+              and postgraduate scholarships in the UK, the Netherlands and Canada.
             </p>
             <p className="grotesk-regular doc-lede">
-              The hard part was never finding opportunities. It is working out which ones are real.
-              Most scholarships advertised as open to Africans fund subjects no lawyer can study.
-              Most boards still list roles that closed weeks ago. So we check every entry against
-              the organisation&rsquo;s own page, record the deadline they actually publish, and say
-              plainly when something is unpaid, restricted by nationality, or needs a letter from
-              your faculty before you are eligible. When a thing does not survive that check, it
-              does not go up.
+              Finding opportunities is easy. Telling which are real is not. Most scholarships
+              advertised as open to Africans fund subjects no lawyer can study, and most boards
+              still carry roles that closed weeks ago. So we check every entry against the
+              organisation&rsquo;s own page, record the deadline they publish, and say plainly when
+              something is unpaid, restricted by nationality, or needs a letter from your faculty.
+              What does not survive that check does not go up.
             </p>
             <p className="grotesk-bold doc-signoff">Stick with us, we are just getting started.</p>
 
@@ -175,9 +180,8 @@ export default function AboutPage() {
             <p className="grotesk-bold about-note-title">Join us</p>
             <p className="grotesk-regular about-note">
               We are opening up the team. These are volunteer positions, on something Nigerian
-              law students are using right now. Tell us what you do and how you think you can
-              contribute. Be as expressive as you like, and be critical: if something here is
-              wrong or badly built, that is the part we will reply to first.{' '}
+              law students are using right now. Tell us what you do, what you would want to build
+              here, and take as much space as you need.{' '}
               <a href={TEAM_CALL_MAILTO} className="about-note-mail">
                 careers@esquirely.com.ng
               </a>

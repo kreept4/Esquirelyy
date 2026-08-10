@@ -38,16 +38,19 @@ export const TEAM_CALL = {
  * The reader can delete every line of it, which is the difference between a
  * prompt and a form.
  */
+/* THIS IS AN APPLICATION, NOT A FEEDBACK FORM.
+   An earlier version asked what the writer would criticise or throw out. That
+   is the firms directory's job, it has its own address for it, and asking here
+   turned a job application into a critique with a job attached. Somebody
+   writing in wants to join; the questions should be about them. */
 const BODY = [
   'Hello Bolu and Ipinu,',
   '',
   'What I do:',
   '',
-  'How I think I can contribute to Esquirely:',
+  'What I would want to build at Esquirely:',
   '',
-  'What I would criticise, change or throw out:',
-  '',
-  '(Write as much as you like. The third one is not a formality.)',
+  'Anything else worth knowing:',
   '',
 ].join('\n')
 

@@ -386,12 +386,7 @@ export default function NotificationBell({
                 </p>
                 <p className="grotesk-regular">
                   Lawyers, students, writers, designers and engineers are all useful here. Tell us
-                  what you do and how you think you can contribute.
-                </p>
-                <p className="grotesk-regular">
-                  Be as expressive as you like, and be critical. If something here is wrong, thin
-                  or badly built, we would rather read that than a compliment. It is the part we
-                  will reply to first.
+                  what you do and what you would want to build. Take as much space as you need.
                 </p>
               </div>
 
