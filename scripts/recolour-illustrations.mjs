@@ -59,6 +59,10 @@ const TARGETS = [
   { file: 'public/illustrations/404-illustration.svg', maps: [SKIN] },
   { file: 'public/illustrations/ambassador.svg', maps: [SKIN, PALETTE] },
   { file: 'public/illustrations/writing-letter.svg', maps: [SKIN, PALETTE] },
+  /* The listings carousel slide. Ships in the same rafiki ramp as
+     writing-letter, so both maps already cover every colour in it and nothing
+     new had to be added to run it through. */
+  { file: 'public/illustrations/new-entries.svg', maps: [SKIN, PALETTE] },
 ]
 
 for (const { file, maps } of TARGETS) {

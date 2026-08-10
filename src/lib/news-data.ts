@@ -87,9 +87,11 @@ const ITEMS: NewsItem[] = [
        also read, so a slide promising two roles and a board filtering to three
        is not a state this can reach.
 
-       No media. The other slides carry an illustration; this one is a dated
-       announcement that will be replaced by the next drop, and commissioning
-       art per batch of listings is not a habit worth starting. */
+       The artwork is reusable on purpose. It shows entries being added rather
+       than anything about these two firms, so the next drop inherits it by
+       changing lib/new-roles.ts and nothing else. A slide illustrated with
+       something specific to Babalakin or Zyph would have to be redrawn or
+       dropped the moment the roles changed. */
     slug: 'new-roles-2026-08-10',
     kind: 'update',
     date: NEW_ROLES.at.slice(0, 10),
@@ -98,6 +100,10 @@ const ITEMS: NewsItem[] = [
       'Babalakin & Co are hiring a senior associate into their energy and extractive industries group, and Zyph Legal want a fully remote associate written for lawyers who have just been called. Both checked against the employer’s own notice.',
     href: NEW_ROLES_HREF,
     cta: 'Show me the new roles',
+    /* Empty alt, like the rankings slide. The illustration is decoration beside
+       a headline that already says everything it depicts, so describing it to a
+       screen reader would only repeat the sentence next to it. */
+    media: { type: 'image', src: '/illustrations/new-entries.svg', alt: '' },
   },
   {
     slug: 'firm-rankings',
