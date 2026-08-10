@@ -334,7 +334,8 @@ export default function NotificationBell({
                 </p>
                 <p className="grotesk-regular">
                   A senior energy seat in Lagos, a fully remote associate open to lawyers just
-                  called, and governance and compliance work open from one to ten years post call.
+                  called, governance and compliance work open from one to ten years post call, and
+                  an associate seat in Yaba for one to two years post-call.
                 </p>
               </div>
 

@@ -19,17 +19,18 @@
 
 export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
-   *  correct when the drop itself changes: Pentagon Partners joined after the
-   *  first two, so somebody who read the old note has not seen this one. */
-  id: 'roles-2026-08-10b',
+   *  correct when the drop itself changes: Ovie Obobolo & Co joined after the
+   *  first three, so somebody who read the old note has not seen this one. */
+  id: 'roles-2026-08-10c',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-08-10T12:00:00.000Z',
+  at: '2026-08-10T15:00:00.000Z',
   slugs: [
     'babalakin-senior-associate-energy',
     'zyph-legal-legal-associate',
     'pentagon-partners-associate-grc',
+    'ovie-obobolo-associate',
   ],
-  employers: ['Babalakin & Co', 'Zyph Legal', 'Pentagon Partners'],
+  employers: ['Babalakin & Co', 'Zyph Legal', 'Pentagon Partners', 'Ovie Obobolo & Co'],
 } as const
 
 /* THE ANNOUNCEMENT EMAIL IS NOT RETROACTIVE, and that is fine. It went out

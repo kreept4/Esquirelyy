@@ -92,12 +92,12 @@ const ITEMS: NewsItem[] = [
        changing lib/new-roles.ts and nothing else. A slide illustrated with
        something specific to Babalakin or Zyph would have to be redrawn or
        dropped the moment the roles changed. */
-    slug: 'new-roles-2026-08-10',
+    slug: 'new-roles-2026-08-10c',
     kind: 'update',
     date: NEW_ROLES.at.slice(0, 10),
     title: `${NEW_ROLES_COUNT} new roles on the board`,
     summary:
-      'Babalakin & Co want a senior associate for energy and extractive industries. Zyph Legal are hiring a fully remote associate, open to lawyers just called. Pentagon Partners are taking associates into governance, risk and compliance, from one to ten years post call. All three checked against the employer’s own notice.',
+      'Babalakin & Co want a senior associate for energy and extractive industries. Zyph Legal are hiring a fully remote associate, open to lawyers just called. Pentagon Partners are taking associates into governance, risk and compliance, from one to ten years post call. Ovie Obobolo & Co want an associate with one to two years post-call, in Yaba. All four checked against the employer’s own notice.',
     href: NEW_ROLES_HREF,
     cta: 'Show me the new roles',
     /* Empty alt, like the rankings slide. The illustration is decoration beside
