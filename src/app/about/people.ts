@@ -32,4 +32,9 @@ export const AMBASSADORS: Person[] = [
   { name: 'ADEPOYIGI MOFEYINTOLUWA, ESQ.', role: 'Honorary ambassador', linkedin: '' },
   { name: 'ENIKUOMEHIN FADERERA, ESQ.', role: 'Honorary ambassador', linkedin: '' },
   { name: 'FOWOWE ADETOMIWA, ESQ.', role: 'Honorary ambassador', linkedin: '' },
+  /* No ", ESQ." on this one, and that is not an oversight. Every other name
+     here carries it because we know those people are called; nobody has said so
+     about this one, and post-nominals are a factual claim about a real person's
+     qualification rather than a house style. Add it the moment it is confirmed. */
+  { name: 'OLUWATENIOLA OLUWATUNMISE', role: 'Honorary ambassador', linkedin: '' },
 ]

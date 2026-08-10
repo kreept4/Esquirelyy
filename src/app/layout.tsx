@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import SmallScreenNotice from '@/components/layout/SmallScreenNotice'
+import ReferralCapture from '@/components/features/ReferralCapture'
 import JsonLd from '@/components/seo/JsonLd'
 import { SITE_URL } from '@/lib/site-url'
 
@@ -124,6 +125,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <SmallScreenNotice />
+        <ReferralCapture />
       </body>
     </html>
   )

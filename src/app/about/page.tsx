@@ -156,7 +156,17 @@ export default function AboutPage() {
               ))}
             </div>
 
-            <p className="grotesk-regular about-note">We are still expanding.</p>
+            {/* "We are still expanding" was a statement about us. This is an
+                invitation, which is the same fact pointed at the reader and the
+                only version that can produce anything. */}
+            <p className="grotesk-bold about-note-title">Join us</p>
+            <p className="grotesk-regular about-note">
+              We are hiring, and we would rather hear from a lawyer who has used this than from
+              someone who has read about it. Tell us what you would fix first.{' '}
+              <a href="mailto:careers@esquirely.com.ng" className="about-note-mail">
+                careers@esquirely.com.ng
+              </a>
+            </p>
           </section>
 
           <section className="about-section">

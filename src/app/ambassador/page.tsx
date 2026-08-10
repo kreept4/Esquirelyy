@@ -38,14 +38,21 @@ export const metadata = {
  * for exactly that.
  */
 
-/* Commitment and time used to lead this strip: one semester, roughly three
- * hours a month. Both are gone. Putting a duration and an hourly figure at the
- * top of an unpaid ask reads as terms of engagement, and this is a favour, not
- * an arrangement. What stays is the part someone genuinely needs before they
- * decide: that there is no money in it, and what they get instead. */
+/* Three columns, not two, and the third is the change.
+ *
+ * This strip used to say "Paid: No" beside "You leave with: A signed
+ * reference", and stopped there. That is honest and it is also the whole offer
+ * read as a dead end: no money, one letter, nothing further. The route past it
+ * existed and was never written down, so nobody could factor it into deciding.
+ *
+ * "Paid: No" stays exactly where it is. Leading with the thing a reader would
+ * otherwise spend the whole page waiting to discover is what makes the rest
+ * credible, and burying it under a partnership line would be the oldest trick
+ * on a recruitment page. */
 const TERMS = [
   { k: 'Paid', v: 'No' },
   { k: 'You leave with', v: 'A signed reference' },
+  { k: 'If you go further', v: 'A partnership' },
 ]
 
 const COMMITMENT = [
@@ -69,7 +76,30 @@ const COMMITMENT = [
   },
 ]
 
+/* Partnership leads, and the reference follows it.
+ *
+ * The reference used to open this list, and as the best thing on offer it set
+ * the ceiling of the whole programme at one letter. It is still worth having
+ * and it is no longer the top of the ladder.
+ *
+ * WHAT THE PARTNERSHIP ENTRY DELIBERATELY DOES NOT SAY: a figure, a percentage,
+ * a title or a duration. Those are terms, they differ per person and per
+ * campus, and a page cannot agree them in advance. Publishing a number nobody
+ * has committed to would be worse than publishing nothing, because the first
+ * conversation would then start by walking it back. What is promised here is
+ * that the conversation is real and the terms get agreed with you.
+ */
 const RETURNS = [
+  {
+    title: 'An invite link that is yours',
+    body:
+      'If you would like to represent us, you are given your own link. Everyone who joins Esquirely through it is counted to you, and we publish where that stands so nobody has to take our word for how their term went. Share it wherever it fits: a slide, a group chat, a single firm profile that answers the question somebody just asked you.',
+  },
+  {
+    title: 'A partnership, if you earn one',
+    body:
+      'The ambassadors bringing the most people through their link stop being ambassadors. We back the society, the initiative or the person driving it, and the terms get agreed with you rather than handed down. If you are building an audience of Nigerian law students, we would rather partner with you than compete for their attention.',
+  },
   {
     title: 'A signed reference',
     body:
@@ -111,9 +141,20 @@ export default function AmbassadorPage() {
             <h1 className="display-black amb-title">
               Run Esquirely<br />where the students are.
             </h1>
+            {/* The old lede explained our problem and left the reader to work
+                out their own part from it. It was true and it was an argument
+                about us. This one names the job, the cost and the return in
+                that order, so somebody can decide before they scroll. */}
+            {/* The old lede explained our problem and left the reader to work
+                out their own part from it. It was true and it was an argument
+                about us. This one names the job, the cost and the return in
+                that order, so somebody can decide before they scroll. */}
             <p className="grotesk-regular amb-lede">
-              We can build the board, the tools and the directory. What we cannot do from an office
-              in Abuja is stand in front of your year and tell them it exists. That part is yours.
+              One person carries this to a faculty. If you would like to represent us on your
+              campus, that is an hour a term in front of your year, the openings worth passing on,
+              and a straight answer when we get something wrong. You get an invite link that is
+              yours, a signed reference at the end of it, and a partnership if what you build
+              deserves one.
             </p>
 
             <dl className="amb-terms">
@@ -196,9 +237,10 @@ export default function AmbassadorPage() {
             <div className="amb-apply-copy">
               <p className="display-black amb-apply-heading">Put your campus on the map.</p>
               <p className="grotesk-regular amb-apply-body">
-                Tell us your campus and year, and the one thing you would change about Esquirely.
-                That is the whole application. We read every one as it arrives and take a small
-                number at a time, so you get a person rather than a mailing list.
+                Email us your campus and year, and the one thing you would change about Esquirely.
+                That is the whole application. Your invite link comes back in the reply. We read
+                every one as it arrives and take a small number at a time, so you get a person
+                rather than a mailing list.
               </p>
               <div className="amb-apply-actions">
                 <a

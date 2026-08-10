@@ -620,11 +620,14 @@ export default function TrackerPage() {
               <p className="display-black trk-empty-head">
                 A tracker you have to fill in by hand is a worse spreadsheet than a spreadsheet.
               </p>
+              {/* Was four lines describing the mechanism twice. It listed what
+                  gets written down, then said the same thing again as a
+                  promise, and the reader had to hold all of it to reach a point
+                  they had already taken. Two sentences: what it does, and what
+                  that means for you. */}
               <p className="grotesk-regular trk-empty-body">
-                So this one fills itself. Bookmark a role on the board and it arrives here as a
-                shortlist; every Apply button and every speculative letter you send from Esquirely
-                writes the firm, the role and the closing date in as you go, and tells you it has.
-                You never have to remember to come back.
+                So this one fills itself. Save a role or apply through Esquirely and it lands
+                here with the firm, the position and the closing date already in place.
               </p>
               <div className="trk-empty-actions">
                 <Link href="/jobs" className="grotesk-bold trk-empty-cta">

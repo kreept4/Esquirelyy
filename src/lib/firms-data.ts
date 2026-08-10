@@ -2147,6 +2147,16 @@ export function logoForEmployer(employer?: string | null): string | null {
  *  so their marks live in /public/employer-logos. Drop a file in that folder
  *  and add the key here; the key is the normalised employer name. */
 const EMPLOYER_LOGOS: Record<string, string> = {
+  /* A law firm, and still here rather than in ALL_FIRMS. The directory is a
+     researched list with offices, practice areas and directory standing behind
+     every entry; Zyph is on the board because it is hiring, and inventing a
+     profile for it to satisfy the logo lookup would put an unresearched firm in
+     a directory whose whole value is that everything in it was checked.
+     Taken from the firm's own site, trimmed to its ink and served on
+     transparency like every other mark here. */
+  zyphlegal: '/employer-logos/zyph-legal.png',
+  zyph: '/employer-logos/zyph-legal.png',
+
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',
   mtnnigeria: '/employer-logos/mtn.png',

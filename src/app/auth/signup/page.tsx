@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { readReferral } from '@/lib/referral'
 import { Eye, EyeOff } from 'lucide-react'
 
 /* Matches the Supabase project's Auth > Email OTP expiry, set to 600s there.
@@ -35,12 +36,23 @@ export default function SignupPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    /* Read at submit rather than held in state. The code was stored when this
+       person first arrived, possibly days ago on another page, and reading it
+       here means the signup form never has to know it exists. */
+    const referral = readReferral()
     const supabase = createClient()
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { full_name: fullName },
+        /* `referred_by` rides in on the signup metadata rather than being
+           written afterwards, because the profile row is created by a database
+           trigger the instant the auth user exists. A second write from the
+           browser would race that trigger, and would also be a write the
+           account holder could forge into somebody else's total. Passed here it
+           is set once, by the trigger, at creation. Absent when nobody sent
+           them, which is the normal case. */
+        data: { full_name: fullName, ...(referral ? { referred_by: referral } : {}) },
         emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     })

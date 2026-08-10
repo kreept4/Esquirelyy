@@ -2126,10 +2126,27 @@ select.filter-pill {
 .about-card-amb .about-li { color: #241F16; }
 
 /* Short note under the team. */
+/* "Join us", over the invitation that replaced "We are still expanding". Full
+   ink against the muted line under it, so the ask reads as a heading rather
+   than as another footnote about the team. */
+.about-note-title {
+  margin-top: 1.75rem;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
 .about-note {
-  margin-top: 1.5rem;
+  margin-top: 0.4rem;
   font-size: 0.86rem;
+  line-height: 1.65;
+  max-width: 46ch;
   color: var(--ink-muted);
+}
+.about-note-mail {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .about-link { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; }
