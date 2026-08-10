@@ -1,4 +1,5 @@
 import { ALL_SCHOLARSHIPS } from './scholarships-data'
+import { NEW_ROLES, NEW_ROLES_COUNT } from './new-roles'
 
 /**
  * Notifications, derived rather than stored.
@@ -32,7 +33,19 @@ export const SEEN_KEY = 'esquirely:notifications-seen'
 export const WELCOME_KEY = 'esquirely:welcomed-at'
 export const PREFS_KEY = 'esquirely:prefs'
 
-export type NotificationKind = 'role' | 'deadline' | 'tracker' | 'welcome'
+/**
+ * 'drop' is an announcement about a batch of new listings, and it is a
+ * different thing from 'role'.
+ *
+ * A 'role' is one opening matched against the filters somebody set, and it
+ * links straight to that listing. A 'drop' is us saying "these went up
+ * together", it is the same for everyone, and tapping it opens a note with the
+ * board behind a button rather than navigating away on the first touch. The
+ * distinction matters because the two are counted, sorted and dismissed
+ * differently, and folding them together would mean an announcement quietly
+ * disappearing under the roles it was announcing.
+ */
+export type NotificationKind = 'role' | 'deadline' | 'tracker' | 'welcome' | 'drop'
 
 export interface Notification {
   id: string
@@ -117,7 +130,10 @@ export function markSeen() {
  */
 export const READ_KEY = 'esquirely:notifications-read'
 
-export const ACK_KINDS: ReadonlySet<NotificationKind> = new Set<NotificationKind>(['welcome'])
+/* 'drop' joins 'welcome' for exactly the reason above: its content is behind a
+   second click, so clearing it when the panel opens would mark as read the one
+   notification the reader has demonstrably not read yet. */
+export const ACK_KINDS: ReadonlySet<NotificationKind> = new Set<NotificationKind>(['welcome', 'drop'])
 
 export function readReadIds(): Set<string> {
   if (typeof window === 'undefined') return new Set()
@@ -199,6 +215,18 @@ export function buildFeed(
     detail: 'A note from Bolu & Ipinu',
     at: welcomedAt,
   })
+  /* 0b. The current drop. Above the individual role rows on purpose: those are
+         filtered to each reader's own preferences and may not include either of
+         these, so the announcement has to stand on its own rather than depend
+         on the roles beneath it having survived the filter. */
+  out.push({
+    id: NEW_ROLES.id,
+    kind: 'drop',
+    title: `${NEW_ROLES_COUNT} new roles on the board`,
+    detail: NEW_ROLES.employers.join(' · '),
+    at: NEW_ROLES.at,
+  })
+
   const today = now.toISOString().slice(0, 10)
 
   // 1. Roles matching the filters they actually set. With no prefs the match is

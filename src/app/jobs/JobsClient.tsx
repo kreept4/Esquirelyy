@@ -143,9 +143,30 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
    */
   const LOCATION_OPTIONS = stateOptions('All locations')
 
+  /**
+   * `?roles=slug,slug` pins the board to a named set of listings.
+   *
+   * This is what the "Show me the new roles" button opens, from the
+   * notification, the carousel slide and the announcement email. It is a
+   * different kind of filter from the selects: those narrow the board by a
+   * property and stack with each other, this one names its results outright and
+   * overrides everything else, because a reader who followed "show me the two
+   * new roles" should not land on a board still carrying a location filter they
+   * set last week.
+   *
+   * Held in state rather than read from `params` on every render so the Clear
+   * button can drop it. Once cleared it does not come back, which is the whole
+   * point: the pinned view is a starting position, not a mode to be trapped in.
+   */
+  const [pinned, setPinned] = useState<string[]>(() => {
+    const raw = params.get('roles')
+    return raw ? raw.split(',').map(s => s.trim()).filter(Boolean) : []
+  })
+
   const filtered = useMemo(
     () =>
       jobs.filter(l => {
+        if (pinned.length) return pinned.includes(l.slug)
         if (onlySaved && !isSaved(l.employer, l.title)) return false
         const q = search.toLowerCase()
         if (q && !l.title?.toLowerCase().includes(q) && !l.employer?.toLowerCase().includes(q)) return false
@@ -155,11 +176,11 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
         if (!matchesState(l.location, location)) return false
         return true
       }),
-    [jobs, search, sector, type, level, location, onlySaved, isSaved]
+    [jobs, search, sector, type, level, location, onlySaved, isSaved, pinned]
   )
 
   const activeCount = [sector, type, level, location].filter(Boolean).length
-  const clearAll = () => { setSector(''); setType(''); setLevel(''); setLocation('') }
+  const clearAll = () => { setSector(''); setType(''); setLevel(''); setLocation(''); setPinned([]) }
 
   return (
     <main className="jobs-page">
@@ -171,6 +192,23 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
             Roles across law firms, banks, energy companies, fintechs and regulators, for every
             stage from call to the Bar to partner.
           </p>
+
+          {/* A pinned board has to say so.
+              Without this line the reader sees two listings under a heading
+              that says "Jobs" and concludes the board is nearly empty, which is
+              the opposite of the impression the announcement was trying to
+              make. It also carries the only way out, since none of the selects
+              below can clear a filter they did not set. */}
+          {pinned.length > 0 && (
+            <div className="jobs-pinned" role="status">
+              <span className="grotesk-bold">
+                Showing {filtered.length} {filtered.length === 1 ? 'role' : 'roles'} we have just added.
+              </span>
+              <button type="button" className="grotesk-bold jobs-pinned-clear" onClick={() => setPinned([])}>
+                Show the whole board
+              </button>
+            </div>
+          )}
 
           <div className="jobs-controls">
             <div className="jobs-search">

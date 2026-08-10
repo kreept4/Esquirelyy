@@ -17,6 +17,7 @@ import {
   unreadCount,
   type Notification,
 } from '@/lib/notifications'
+import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF } from '@/lib/new-roles'
 
 /**
  * Notification bell, beside the Menu toggle rather than inside the menu.
@@ -35,6 +36,10 @@ const KIND_DOT: Record<Notification['kind'], string> = {
   deadline: '#EF4444',
   tracker: '#8B5CF6',
   welcome: '#FBBF24',
+  /* Amber, like the welcome note, because both are announcements that open a
+     note rather than navigating. The teal of a single role would say "this is
+     one more listing", which is the one thing it is not. */
+  drop: '#FBBF24',
 }
 
 function NotifRow({ n, unread }: { n: Notification; unread: boolean }) {
@@ -65,6 +70,7 @@ export default function NotificationBell({
   const [seen, setSeen] = useState(0)
   const [readIds, setReadIds] = useState<Set<string>>(() => new Set())
   const [showWelcome, setShowWelcome] = useState(false)
+  const [showDrop, setShowDrop] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const checkedWelcomeParam = useRef(false)
 
@@ -129,6 +135,16 @@ export default function NotificationBell({
   function openNote() {
     setOpen(false)
     setShowWelcome(true)
+  }
+
+  /* The drop note. Marked read on OPEN rather than on dismiss, unlike the
+     welcome: its whole content is two lines and a button, all of it visible the
+     instant the dialog appears, so opening it genuinely is reading it. The
+     welcome is a letter, and closing it is the only honest signal there. */
+  function openDrop() {
+    setOpen(false)
+    setShowDrop(true)
+    setReadIds(markRead(NEW_ROLES.id))
   }
 
   function closeWelcome() {
@@ -249,7 +265,9 @@ export default function NotificationBell({
                         type="button"
                         className="notif-item notif-item-btn"
                         data-unread={isNew || undefined}
-                        onClick={openNote}
+                        /* Two hrefless kinds now, so the click has to ask which
+                           note it is opening rather than assuming the welcome. */
+                        onClick={() => (n.kind === 'drop' ? openDrop() : openNote())}
                       >
                         <NotifRow n={n} unread={isNew} />
                       </button>
@@ -259,6 +277,58 @@ export default function NotificationBell({
               })}
             </ul>
           )}
+        </div>
+      )}
+
+      {/* The roles drop. Same dialog furniture as the welcome note, and a
+          deliberately short one: the reader tapped a line that said two roles
+          are up, so the only thing left to do is get them to the roles. The
+          button carries the filtered board rather than the whole of /jobs,
+          because "show me the new roles" and "show me forty listings, two of
+          which are new" are different promises. */}
+      {showDrop && (
+        <div className="notif-modal-scrim" onClick={() => setShowDrop(false)}>
+          <div
+            className="notif-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="New roles on the board"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="notif-modal-close"
+              onClick={() => setShowDrop(false)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+
+            <div className="notif-modal-inner">
+              <p className="display-black notif-modal-title">
+                {NEW_ROLES_COUNT} new roles on the board.
+              </p>
+
+              <div className="notif-modal-body">
+                <p className="grotesk-regular">
+                  {NEW_ROLES.employers.join(' and ')} are both hiring, and both openings are
+                  checked against the employer&rsquo;s own notice.
+                </p>
+                <p className="grotesk-regular">
+                  One is a senior energy seat in Lagos. The other is fully remote and written for
+                  lawyers who have just been called, which is rarer than it should be.
+                </p>
+              </div>
+
+              <Link
+                href={NEW_ROLES_HREF}
+                className="grotesk-bold notif-modal-cta"
+                onClick={() => setShowDrop(false)}
+              >
+                Show me the new roles
+              </Link>
+            </div>
+          </div>
         </div>
       )}
 

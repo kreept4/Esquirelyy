@@ -968,6 +968,33 @@ select.filter-pill {
   margin-top: 1rem;
 }
 
+/* The "just added" banner, shown only when the board is pinned to a named set.
+   Amber on the ink header, because it is the one line up there that is
+   temporary and needs to read as a state rather than as furniture. */
+.jobs-pinned {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  margin-top: 1.1rem;
+  padding: 0.7rem 0.95rem;
+  background: rgba(251, 191, 36, 0.14);
+  border-left: 3px solid #FBBF24;
+  font-size: 0.84rem;
+  color: var(--cream);
+}
+.jobs-pinned-clear {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: #FBBF24;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.jobs-pinned-clear:hover { text-decoration-thickness: 2px; }
+
 .jobs-controls {
   display: flex;
   gap: 0.6rem;
@@ -2563,6 +2590,33 @@ select.filter-pill {
 }
 .notif-modal-inner {
   padding: 1.75rem;
+}
+
+/* The one action in the roles drop. Ink on amber rather than the mint used
+   elsewhere: this dialog is already an amber field, and a mint button on it
+   would be the only place on the site those two sit directly on each other. */
+.notif-modal-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.4rem;
+  padding: 0.8rem 1.5rem;
+  background: #241F16;
+  color: #FBBF24;
+  border: 2px solid #241F16;
+  border-radius: 2px;
+  box-shadow: 4px 4px 0 rgba(36, 31, 22, 0.35);
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+.notif-modal-cta:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 rgba(36, 31, 22, 0.35); }
+.notif-modal-cta:active { transform: translate(4px, 4px); box-shadow: 0 0 0 rgba(36, 31, 22, 0.35); }
+@media (prefers-reduced-motion: reduce) {
+  .notif-modal-cta { transition: none; }
+  .notif-modal-cta:hover, .notif-modal-cta:active { transform: none; }
 }
 .notif-modal-close {
   position: absolute;

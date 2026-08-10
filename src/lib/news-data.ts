@@ -14,6 +14,7 @@
  */
 
 import { ALL_FIRMS } from '@/lib/firms-data'
+import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF } from './new-roles'
 
 export type NewsKind = 'update' | 'tip' | 'news'
 
@@ -80,6 +81,24 @@ export const KIND_LABEL: Record<NewsKind, string> = {
  * decides a palette and nothing has to be re-baked after a reorder.
  */
 const ITEMS: NewsItem[] = [
+  {
+    /* The current drop. Slugs, count and employers all come from
+       lib/new-roles.ts, which the notification bell and the announcement email
+       also read, so a slide promising two roles and a board filtering to three
+       is not a state this can reach.
+
+       No media. The other slides carry an illustration; this one is a dated
+       announcement that will be replaced by the next drop, and commissioning
+       art per batch of listings is not a habit worth starting. */
+    slug: 'new-roles-2026-08-10',
+    kind: 'update',
+    date: NEW_ROLES.at.slice(0, 10),
+    title: `${NEW_ROLES_COUNT} new roles on the board`,
+    summary:
+      'Babalakin & Co are hiring a senior associate into their energy and extractive industries group, and Zyph Legal want a fully remote associate written for lawyers who have just been called. Both checked against the employer’s own notice.',
+    href: NEW_ROLES_HREF,
+    cta: 'Show me the new roles',
+  },
   {
     slug: 'firm-rankings',
     kind: 'update',

@@ -1,0 +1,185 @@
+import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF } from '@/lib/new-roles'
+
+/**
+ * The new roles announcement.
+ *
+ * Same tables and the same constraints as welcome.ts, for the same reasons:
+ * Outlook renders through Word, Gmail strips style blocks, remote images are
+ * blocked by default. Read that file's header before changing anything
+ * structural.
+ *
+ * THE ROLES ARE LISTED, NOT SUMMARISED. A message that says "new roles are up,
+ * come and look" asks the reader to spend a click finding out whether it is
+ * relevant to them, and most will not. Naming the firm, the seat and the one
+ * fact that decides it, in two lines each, means somebody knows before they
+ * tap whether this is for them. The click that follows is then worth something.
+ *
+ * THE BUTTON GOES TO THE FILTERED BOARD, the same URL the notification and the
+ * carousel use. Sending this to /jobs would be a small betrayal of the subject
+ * line: the reader was told about two roles and would arrive at twenty.
+ */
+
+const INK = '#241F16'
+const AMBER = '#FBBF24'
+const CREAM = '#FAF7F2'
+const MUTED = '#8A8378'
+
+const CONTOUR =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23241F16' stroke-opacity='0.28' stroke-width='1.5'%3E%3Cpath d='M0 20c26-14 54 14 80 0s54-14 80 0'/%3E%3Cpath d='M0 47c26-11 54 11 80 0s54-11 80 0'/%3E%3Cpath d='M0 74c26-16 54 16 80 0s54-16 80 0'/%3E%3Cpath d='M0 101c26-9 54 9 80 0s54-9 80 0'/%3E%3Cpath d='M0 128c26-15 54 15 80 0s54-15 80 0'/%3E%3C/g%3E%3C/svg%3E\")"
+
+/** One entry per role. Kept beside the template because it is copy, not data:
+ *  the board holds the listing, this holds the sentence that sells it. */
+const ROLES = [
+  {
+    employer: 'Babalakin & Co',
+    title: 'Senior Associate, Energy & Extractive Industries',
+    line: 'Lagos. A senior seat running energy and oil and gas matters rather than supporting them.',
+  },
+  {
+    employer: 'Zyph Legal',
+    title: 'Legal Associate',
+    line: 'Fully remote, full-time, and written for lawyers who have just been called. Closes 20 August.',
+  },
+]
+
+export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: string }) {
+  const first = (name || '').trim().split(/\s+/)[0]
+  const greeting = first ? `${first}, two worth a look.` : 'Two worth a look.'
+  const subject = `${NEW_ROLES_COUNT} new roles: ${NEW_ROLES.employers.join(' and ')}`
+  const link = `${siteUrl}${NEW_ROLES_HREF}`
+
+  const text = [
+    greeting,
+    '',
+    ...ROLES.flatMap(r => [`${r.employer} — ${r.title}`, r.line, '']),
+    'Both checked against the employer’s own notice before they went up.',
+    '',
+    `See them here: ${link}`,
+    '',
+    'from Bolu & Ipinu',
+    'Co-founders, Esquirely',
+    '',
+    `Esquirely. ${siteUrl}`,
+  ].join('\n')
+
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${subject}</title>
+</head>
+<body style="margin:0;padding:0;background-color:${CREAM};">
+<div style="display:none;font-size:1px;color:${CREAM};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+  ${ROLES.map(r => r.employer).join(' and ')} are hiring.
+</div>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${CREAM}" style="border-collapse:collapse;background-color:${CREAM};background-image:${CONTOUR};background-repeat:repeat;">
+  <tr>
+    <td style="padding:10px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${INK}" style="border-collapse:collapse;background-color:${INK};">
+        <tr>
+          <td style="padding:0 5px 5px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${AMBER}" style="border-collapse:collapse;background-color:${AMBER};border:2px solid ${INK};">
+              <tr>
+                <td align="center" bgcolor="${AMBER}" style="background-color:${AMBER};padding:30px 18px;">
+                  <p style="margin:0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:52px;line-height:0.9;font-weight:900;letter-spacing:-2.4px;color:${INK};">ESQUIRELY</p>
+                  <p style="margin:10px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.4;letter-spacing:1.6px;text-transform:uppercase;color:${INK};">Nigeria&rsquo;s legal career platform</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:${CREAM};">
+  <tr>
+    <td align="center" style="padding:8px 14px 28px 14px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;width:560px;max-width:100%;">
+
+        <tr>
+          <td style="padding:0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;">
+            <p style="margin:0 0 18px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:-0.6px;color:${INK};">${greeting}</p>
+
+            ${ROLES.map(
+              r => `
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 14px 0;">
+              <tr>
+                <td style="padding:14px 16px;background-color:#FFF8E5;border:2px solid ${INK};">
+                  <p style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${MUTED};">${r.employer}</p>
+                  <p style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:${INK};">${r.title}</p>
+                  <p style="margin:0;font-size:14px;line-height:1.6;color:${INK};">${r.line}</p>
+                </td>
+              </tr>
+            </table>`
+            ).join('')}
+
+            <p style="margin:14px 0 20px 0;font-size:15px;line-height:1.7;color:${INK};">
+              Both were checked against the employer&rsquo;s own notice before they went up, which is
+              the only reason a board is worth reading.
+            </p>
+
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 24px 0;">
+              <tr>
+                <td bgcolor="${INK}" style="background-color:${INK};">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                    <tr>
+                      <td style="padding:0 3px 3px 0;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#14B8A6" style="border-collapse:collapse;background-color:#14B8A6;border:2px solid ${INK};">
+                          <tr>
+                            <td align="center" bgcolor="#14B8A6" style="background-color:#14B8A6;padding:14px 28px;">
+                              <a href="${link}" style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FFFFFF;text-decoration:none;">Show me the new roles</a>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 4px 0;">
+              <tr>
+                <td style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;font-weight:700;color:${INK};">
+                  from Bolu &amp; Ipinu
+                  <span style="display:block;font-size:11px;line-height:1.6;letter-spacing:1px;text-transform:uppercase;font-weight:400;color:${MUTED};padding-top:3px;">Co-founders, Esquirely</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+              <tr>
+                <td style="padding:16px 0 0 0;border-top:2px solid ${INK};font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.7;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:${INK};">
+                  <a href="${siteUrl}/jobs" style="color:${INK};text-decoration:none;">Jobs board</a> &nbsp;&middot;&nbsp;
+                  <a href="${siteUrl}/scholarships" style="color:${INK};text-decoration:none;">Scholarships</a> &nbsp;&middot;&nbsp;
+                  <a href="${siteUrl}/firms" style="color:${INK};text-decoration:none;">Firms</a> &nbsp;&middot;&nbsp;
+                  <a href="${siteUrl}/tracker" style="color:${INK};text-decoration:none;">Tracker</a>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:12px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.6;color:${MUTED};">
+                  You are getting this because you made an Esquirely account. Turn new-role emails
+                  off any time under Your account.
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>`
+
+  return { subject, text, html }
+}
