@@ -2230,6 +2230,15 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   pentagonpartnerslp: '/employer-logos/pentagon-partners.png',
   pentagon: '/employer-logos/pentagon-partners.png',
 
+  /* Ovie Obobolo & Co, same reasoning as Zyph and Pentagon above. No firm site
+     to pull a native asset from, so the mark is cropped straight out of the
+     firm's own recruitment flier: the emblem and wordmark only, tagline
+     excluded, background keyed to transparent off the flier's near-white
+     paper rather than a hard threshold, so the crest's own antialiasing
+     survives. */
+  ovieoboboloandco: '/employer-logos/ovie-obobolo.png',
+  ovieobobolo: '/employer-logos/ovie-obobolo.png',
+
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',
   mtnnigeria: '/employer-logos/mtn.png',
