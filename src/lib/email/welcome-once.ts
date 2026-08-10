@@ -1,6 +1,7 @@
 import type { User } from '@supabase/supabase-js'
 import { sendEmail, emailConfigured } from './send'
 import { welcomeEmail } from './templates/welcome'
+import { SITE_URL } from '@/lib/site-url'
 
 /**
  * Send the welcome message to a user, at most once, ever.
@@ -121,7 +122,7 @@ async function stampWelcomed(userId: string, existing: Record<string, unknown>) 
  * thing that makes that true.
  */
 function siteUrl() {
-  return process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://esquirely.com.ng'
+  return SITE_URL
 }
 
 export async function sendWelcomeOnce(user: User): Promise<WelcomeOutcome> {

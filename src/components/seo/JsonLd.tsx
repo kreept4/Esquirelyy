@@ -35,8 +35,8 @@ export default function JsonLd({ data }: { data: Record<string, unknown> | Recor
  *  Schema wants absolute URLs. A relative `/firms/templars` is silently useless
  *  to a consumer that has no page context, which is exactly the case for a
  *  crawler holding the JSON on its own. */
-export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://esquirely.com.ng'
+export { SITE_URL } from '@/lib/site-url'
+import { SITE_URL } from '@/lib/site-url'
 
 /**
  * A complete Open Graph block for a page, including the share image.

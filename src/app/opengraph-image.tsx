@@ -1,30 +1,26 @@
 import { ImageResponse } from 'next/og'
-import OgMark from '@/components/seo/OgMark'
+import OgMark, { MARK_AMBER } from '@/components/seo/OgMark'
 
 /**
- * The site's share card: the mark, and nothing else.
+ * The site's share card: the logo, and nothing else.
  *
- * WHAT THIS REPLACED, AND WHY. This card used to carry the headline, an amber
- * rule, a sentence about the firm count and the domain. It read as a page
- * rather than as a brand, and a link preview is not a page. It is a thumbnail
- * roughly 300px wide in a WhatsApp thread, sitting directly above the title and
- * description the platform already renders from the page's own metadata. Every
- * word set inside the image was therefore either duplicating that text or
- * shrinking below the size anyone reads it at.
+ * WHAT THIS REPLACED, TWICE. First a headline, an amber rule, a sentence about
+ * the firm count and the domain, all set on a dark ground. That read as a page
+ * rather than as a brand, and a link preview is not a page: it is a thumbnail
+ * about 300px wide, sitting directly above the title and description the
+ * platform already renders from the page's own metadata, so every word inside
+ * the image was either duplicating that text or shrinking below the size anyone
+ * reads it at. Then the mark on the same dark ground with the wordmark beneath
+ * it, which was closer but still two objects and a colour the logo does not
+ * have.
  *
- * So the image does the one job the metadata cannot: it says whose link this is
- * at a glance, in the colour the brand is recognised by.
+ * NOW IT IS THE LOGO, FULL BLEED. Amber to every edge, the letter centred, no
+ * ink field, no wordmark, no domain. A card with one object on it survives
+ * being shown at a third of its size, which is the only size that matters here.
  *
- * DRAWN AS RECTS, IN THE FAVICON'S OWN GEOMETRY. The previous version set a
- * capital E as text inside the circle and relied on the renderer's default
- * face, which is not the drawn E in icon.svg and did not match it. The mark now
- * comes from OgMark, which both share cards render. See that file.
- *
- * NO WEBFONT IS FETCHED, and now nothing depends on a font at all. The old note
- * here argued a plain default face was an acceptable cost against a build time
- * dependency on a third party host. That trade no longer has to be made: the
- * wordmark is the only text left, and it is small enough that the default face
- * carries it.
+ * The card is 1200x630 and the logo is square, so the amber is what fills the
+ * difference rather than a second colour doing it. That is why the mark is
+ * drawn `bare`: the ground IS the logo's ground, extended.
  */
 
 export const alt = 'Esquirely'
@@ -39,29 +35,16 @@ export default async function Image() {
           width: '100%',
           height: '100%',
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#191510',
+          backgroundColor: MARK_AMBER,
         }}
       >
-        <OgMark size={300} />
-
-        {/* The name, and only the name. A logo card with no word on it makes a
-            reader work out whose link it is from the shape alone, and the
-            wordmark is part of the mark rather than copy about the product. */}
-        <div
-          style={{
-            display: 'flex',
-            marginTop: 56,
-            fontSize: 64,
-            fontWeight: 700,
-            color: '#FAF6F0',
-            letterSpacing: -1.5,
-          }}
-        >
-          Esquirely
-        </div>
+        {/* Sized off the SHORT edge, not the long one. At 630 tall, 420 leaves a
+            margin roughly equal to the logo's own internal one, so the card
+            reads as the mark with its breathing room rather than as a mark
+            cropped by the canvas. */}
+        <OgMark size={420} bare />
       </div>
     ),
     size

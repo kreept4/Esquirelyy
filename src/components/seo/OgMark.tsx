@@ -1,33 +1,46 @@
 /**
  * The Esquirely mark, for share cards.
  *
- * ONE DRAWING, NOT THREE. The mark used to be redrawn in every file that needed
- * it: icon.svg drew four rectangles, and both share cards set a capital E as
- * text inside a circle and let the renderer pick the face. The favicon and the
- * share card of the same link sit inches apart in a chat client, so the two
- * were visibly different letters in the one place a mismatch cannot be missed.
+ * ONE DRAWING, NOT THREE. icon.svg, the site share card and the firm share
+ * cards all need this mark, and each of them used to draw its own: the favicon
+ * as rectangles, the cards as a capital E set in whatever face the renderer
+ * happened to resolve. The favicon and the share card of the same link sit
+ * inches apart in a chat client, so those were visibly different letters in the
+ * one place a mismatch cannot be missed.
  *
- * The geometry below is icon.svg's, on its own 32 unit grid, so the two files
- * can be compared line by line. icon.svg stays hand-written rather than
- * generated from this: it is served as a static asset by the browser, not
- * rendered by Satori, and a favicon that depends on a React component to exist
- * is a favicon that can fail to exist.
+ * The geometry is the supplied logo's, measured off the file by scanning its
+ * ink mask rather than redrawn by eye. Note the three arms are three different
+ * lengths, 43, 34 and 46 on a 100 grid; that asymmetry is in the source and is
+ * the first thing an eyeballed copy would flatten.
  *
- * Rectangles rather than text also removes the last font dependency from the
- * cards. See the note in src/app/opengraph-image.tsx.
+ * icon.svg carries the same numbers and stays hand-written rather than being
+ * generated from this. It is served as a static asset by the browser, not
+ * rendered by Satori, and a favicon that depends on a React component in order
+ * to exist is a favicon that can fail to exist. Change one, change the other.
+ *
+ * Rectangles rather than text also mean the cards need no font at all.
  */
 
-/** Bars of the E on icon.svg's 32 unit grid. Keep in step with that file. */
+/** The supplied file's own colours, sampled from it. Close to, but not the
+ *  same as, --amber and --on-amber in globals.css. The logo is the reference. */
+export const MARK_AMBER = '#FCB712'
+export const MARK_INK = '#1D1910'
+
+/** Bars of the E on a 100 unit grid, as measured. Keep in step with icon.svg. */
 const BARS = [
-  { x: 7, y: 6, w: 4, h: 20 },
-  { x: 7, y: 6, w: 18, h: 4 },
-  { x: 7, y: 14, w: 13, h: 4 },
-  { x: 7, y: 22, w: 18, h: 4 },
+  { x: 28, y: 21, w: 12, h: 59 },
+  { x: 28, y: 21, w: 43, h: 11 },
+  { x: 28, y: 44, w: 34, h: 12 },
+  { x: 28, y: 68, w: 46, h: 12 },
 ]
 
-const GRID = 32
+const GRID = 100
 
-export default function OgMark({ size }: { size: number }) {
+/**
+ * `size` is the side of the square tile. `bare` draws the letter alone, with no
+ * amber behind it, for use where the amber is already the ground.
+ */
+export default function OgMark({ size, bare = false }: { size: number; bare?: boolean }) {
   const u = (n: number) => (n * size) / GRID
 
   return (
@@ -37,8 +50,7 @@ export default function OgMark({ size }: { size: number }) {
         display: 'flex',
         width: size,
         height: size,
-        borderRadius: 999,
-        backgroundColor: '#FBBF24',
+        ...(bare ? {} : { backgroundColor: MARK_AMBER }),
       }}
     >
       {BARS.map((b, i) => (
@@ -50,10 +62,7 @@ export default function OgMark({ size }: { size: number }) {
             top: u(b.y),
             width: u(b.w),
             height: u(b.h),
-            // Rounds away at tile sizes and is visible at card size, which is
-            // what icon.svg's rx="1" does too.
-            borderRadius: u(1),
-            backgroundColor: '#241F16',
+            backgroundColor: MARK_INK,
           }}
         />
       ))}

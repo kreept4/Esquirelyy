@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { SITE_URL } from '@/lib/site-url'
 
 /**
  * robots.txt.
@@ -22,7 +23,7 @@ import type { MetadataRoute } from 'next'
  * of this file.
  */
 export default function robots(): MetadataRoute.Robots {
-  const site = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://esquirely.com.ng'
+  const site = SITE_URL
 
   return {
     rules: [

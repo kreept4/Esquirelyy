@@ -3,6 +3,7 @@ import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import SmallScreenNotice from '@/components/layout/SmallScreenNotice'
 import JsonLd from '@/components/seo/JsonLd'
+import { SITE_URL } from '@/lib/site-url'
 
 /**
  * The live host, and the base every relative metadata URL is resolved against.
@@ -17,7 +18,7 @@ import JsonLd from '@/components/seo/JsonLd'
  * NEXT_PUBLIC_SITE_URL wins where it is set. Production leaves it unset or sets
  * it to the same value.
  */
-const SITE = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://esquirely.com.ng'
+const SITE = SITE_URL
 
 /**
  * ⚠ THERE IS NO `alternates.canonical` HERE, AND IT MUST NOT COME BACK.

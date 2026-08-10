@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { ALL_FIRMS, isIndexable, isPubliclyReadable } from '@/lib/firms-data'
+import { SITE_URL } from '@/lib/site-url'
 
 /**
  * sitemap.xml.
@@ -18,7 +19,7 @@ import { ALL_FIRMS, isIndexable, isPubliclyReadable } from '@/lib/firms-data'
  * app/ would silently publish the next private page somebody adds.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const site = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') || 'https://esquirely.com.ng'
+  const site = SITE_URL
   const now = new Date()
 
   const pages: { path: string; priority: number; changeFrequency: 'weekly' | 'monthly' | 'yearly' }[] = [
