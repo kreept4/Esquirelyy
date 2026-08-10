@@ -172,7 +172,17 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
         if (q && !l.title?.toLowerCase().includes(q) && !l.employer?.toLowerCase().includes(q)) return false
         if (sector && l.sector !== sector) return false
         if (type && l.type !== type) return false
-        if (level && l.level !== level) return false
+        /* `l.level &&` so a listing with NO level passes every level filter.
+           Some roles genuinely span the range: Pentagon Partners advertise one
+           seat open from one to ten years post call, and the column holds a
+           single value, so any choice made there hides the role from two thirds
+           of the people it is for. Marking it 'mid' is the worst of the three,
+           since exact matching then excludes juniors AND seniors.
+           An empty level is therefore read as "open to all levels" rather than
+           as missing data. buildFeed in lib/notifications.ts has always worked
+           this way; the board simply never learned it, so the same listing
+           behaved differently in the bell and on the page. */
+        if (level && l.level && l.level !== level) return false
         if (!matchesState(l.location, location)) return false
         return true
       }),

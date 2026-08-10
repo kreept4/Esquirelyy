@@ -2157,6 +2157,14 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   zyphlegal: '/employer-logos/zyph-legal.png',
   zyph: '/employer-logos/zyph-legal.png',
 
+  /* Pentagon Partners LP, the official lockup from their own site, trimmed and
+     served on transparency. Same reasoning as Zyph for why it is here and not
+     in ALL_FIRMS: on the board because they are hiring, not in the directory
+     because nobody has researched them. */
+  pentagonpartners: '/employer-logos/pentagon-partners.png',
+  pentagonpartnerslp: '/employer-logos/pentagon-partners.png',
+  pentagon: '/employer-logos/pentagon-partners.png',
+
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',
   mtnnigeria: '/employer-logos/mtn.png',
