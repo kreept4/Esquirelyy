@@ -101,7 +101,27 @@ function EmployerMark({ employer }: { employer: string }) {
   )
 }
 
-export default function JobsClient({ jobs }: { jobs: any[] }) {
+/**
+ * @param jobs        What this reader is allowed to see. Already filtered on the
+ *                    server for a signed-out visitor, so this component never
+ *                    holds a listing it must not render. Do not filter on
+ *                    `gated` in here.
+ * @param gated       No session. Changes what the page SAYS, never what it has.
+ * @param totalCount  How many listings are on the board in total, so the count
+ *                    line can be honest about what is being withheld. A gated
+ *                    reader seeing "6 roles open" would reasonably conclude the
+ *                    board is nearly empty, which is a worse impression than
+ *                    the truth.
+ */
+export default function JobsClient({
+  jobs,
+  gated = false,
+  totalCount,
+}: {
+  jobs: any[]
+  gated?: boolean
+  totalCount?: number
+}) {
   /**
    * Filters start from the URL.
    *
@@ -338,6 +358,25 @@ export default function JobsClient({ jobs }: { jobs: any[] }) {
               </div>
             </div>
           </details>
+
+          {/* The board is smaller than it looks, and it has to say so.
+              Without this a signed-out reader counts six roles under a heading
+              that says "Jobs" and leaves thinking that is the whole board. It
+              sits above the count rather than replacing it so the number they
+              can see stays the number they can act on. */}
+          {gated && typeof totalCount === 'number' && totalCount > jobs.length && (
+            <div className="jobs-pinned" role="status">
+              <span className="grotesk-bold">
+                Showing the {jobs.length} roles you can read without an account.
+              </span>{' '}
+              <span className="grotesk-regular">
+                There are {totalCount} on the board.{' '}
+                <Link href="/auth/signup?redirect=%2Fjobs">Create a free account</Link> to see
+                the rest, or{' '}
+                <Link href="/auth/login?redirect=%2Fjobs">sign in</Link>.
+              </span>
+            </div>
+          )}
 
           <p className="grotesk-regular jobs-count">
             {filtered.length} {filtered.length === 1 ? 'role' : 'roles'}

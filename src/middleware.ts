@@ -34,8 +34,16 @@ import { createServerClient } from '@supabase/ssr'
  * in for the contact details. That needs the firm record to answer, which is
  * why it cannot live here. See isPubliclyReadable.
  *
- * ⚠ Everything else — the jobs board, scholarships, the news page and the
- * tools — is still private, and still carries the same cost.
+ * And the jobs board, for the same reason and by the same mechanism. A named
+ * handful of listings is readable by a stranger; the rest still ask for an
+ * account. "Most of the board is private but these six are not" is not a
+ * question a path can answer, so /jobs and /jobs/[slug] are open HERE and the
+ * decision is made in the pages, reading lib/open-jobs.ts. A listing outside
+ * that set still redirects a signed-out reader to the login page, which is
+ * exactly what this file used to do for all of them.
+ *
+ * ⚠ Everything else — scholarships, the news page and the tools — is still
+ * private, and still carries the same cost.
  */
 const PUBLIC_PATHS = [
   '/auth',
@@ -47,6 +55,7 @@ const PUBLIC_PATHS = [
   '/ambassador',
   '/advertise',
   '/firms',
+  '/jobs',
 ]
 
 function isPublic(pathname: string) {

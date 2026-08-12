@@ -1,12 +1,58 @@
+import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import TrackOnApply from '@/components/features/TrackOnApply'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
 import { logoForEmployer, ballBgForEmployer } from '@/lib/firms-data'
+import { createClient as createSessionClient } from '@/lib/supabase/server'
+import { isOpenJob } from '@/lib/open-jobs'
 
 export const revalidate = 0
+
+/** Cookie-less, for the listing row itself. The `jobs` table is readable by
+ *  anon, and keeping this separate from the session client means an open
+ *  listing renders without waiting on an auth round trip. */
+function db() {
+  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
+}
+
+/**
+ * Per-role metadata, which this page never had.
+ *
+ * Every listing shared the site-wide title, so each one went out announcing
+ * itself as "Esquirely | Nigeria's Legal Career Platform". That was survivable
+ * while the whole board was gated and none of these pages could be indexed. Now
+ * that some can be, a search result for a role has to name the role and the
+ * employer, and a link pasted into a group chat has to preview as the job.
+ *
+ * A CLOSED LISTING IS NOINDEXED RATHER THAN LEFT TO THE REDIRECT. A signed-out
+ * crawler is bounced to the login page before it reads a line of this, so in
+ * practice the directive is never seen. It is here for the case that is easy to
+ * forget: a slug added to lib/open-jobs.ts later makes this page crawlable, and
+ * the rule that decides it should already be written down in the page rather
+ * than discovered to be missing.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const { data: job } = await db().from('jobs').select('title, employer, location, role_desc, about').eq('slug', slug).single()
+  if (!job) return { title: 'Role not found' }
+
+  const where = job.location ? ` in ${job.location}` : ''
+  const summary = (job.role_desc || job.about || '').trim()
+
+  return {
+    title: `${job.title} at ${job.employer}`,
+    description: (summary || `${job.title}${where}. Applications through Esquirely.`).slice(0, 300),
+    alternates: { canonical: `/jobs/${slug}` },
+    ...(isOpenJob(slug) ? {} : { robots: { index: false, follow: true } }),
+  }
+}
 
 /**
  * A single role.
@@ -76,8 +122,25 @@ function longDate(d: string) {
 // `params` is a Promise in Next 16 — see the note on the firm detail page.
 export default async function JobDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-  const { data: job } = await supabase.from('jobs').select('*').eq('slug', slug).single()
+
+  /* The gate, which used to be a line in middleware.ts and cannot be any more.
+   * /jobs is public at that layer now, so "this particular listing is not" is
+   * decided here. See lib/open-jobs.ts for which are open and why the list only
+   * ever grows.
+   *
+   * A REDIRECT, NOT A PARTIAL PAGE. The gated firm profile withholds two fields
+   * and renders the rest, because a firm's tier and practice areas are worth
+   * reading on their own. A listing is not like that: the deadline and the
+   * application route ARE the page, and a version of this with those removed is
+   * a teaser. So a closed listing does exactly what the middleware did before,
+   * down to carrying the path back in `redirect` so the reader lands on the
+   * role rather than on the board. */
+  if (!isOpenJob(slug)) {
+    const { data: { user } } = await createSessionClient().auth.getUser()
+    if (!user) redirect(`/auth/login?redirect=/jobs/${slug}`)
+  }
+
+  const { data: job } = await db().from('jobs').select('*').eq('slug', slug).single()
   if (!job) return notFound()
 
   const applyHref =

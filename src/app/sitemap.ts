@@ -1,15 +1,53 @@
 import type { MetadataRoute } from 'next'
+import { createClient } from '@supabase/supabase-js'
 import { ALL_FIRMS, isIndexable, isPubliclyReadable } from '@/lib/firms-data'
+import { openJobs } from '@/lib/open-jobs'
 import { SITE_URL } from '@/lib/site-url'
+
+/* An hour. The open set changes when somebody edits lib/open-jobs.ts, which is
+   a deploy, so this is really about the listings being deleted underneath it. */
+export const revalidate = 3600
+
+/**
+ * The open listings, read from the database rather than from the slug list.
+ *
+ * lib/open-jobs.ts names slugs; only the table knows whether the row is still
+ * there. Publishing a name whose listing has since been deleted puts a 404 in
+ * the sitemap, which is the specific thing this file's header says it exists to
+ * avoid, so `openJobs` is fed real rows and can only return what exists.
+ *
+ * On any failure this returns nothing and the rest of the sitemap still ships.
+ * A sitemap briefly missing six URLs is recoverable; one that fails to render
+ * takes the firm profiles down with it.
+ */
+async function openJobPaths(): Promise<string[]> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) return []
+  try {
+    const { data, error } = await createClient(url, key).from('jobs').select('slug')
+    if (error || !data) return []
+    return openJobs(data).map(j => `/jobs/${j.slug}`)
+  } catch {
+    return []
+  }
+}
 
 /**
  * sitemap.xml.
  *
  * Only the pages a signed-out crawler can actually read. That is the whole
- * design rule here, and it is why this file is short: middleware.ts gates
- * everything except an allowlist, so a sitemap listing /jobs or /firms would be
- * a list of redirects to the login page. Submitting that to Search Console
- * reports them as errors and teaches Google that this host wastes its time.
+ * design rule here: middleware.ts gates everything except an allowlist, so a
+ * sitemap listing a gated path would be a list of redirects to the login page.
+ * Submitting that to Search Console reports them as errors and teaches Google
+ * that this host wastes its time.
+ *
+ * ⚠ "PUBLIC" IS NO LONGER THE SAME QUESTION AS "IN PUBLIC_PATHS". /firms and
+ * /jobs are both open in middleware.ts while individual pages under them still
+ * decide for themselves, so listing a whole section here on the strength of its
+ * prefix would publish exactly the redirects this file exists to keep out. Both
+ * sections are therefore expanded through the same predicate the pages use:
+ * isIndexable for firms, isOpenJob for listings.
  *
  * The auth routes are public in the middleware sense but are deliberately NOT
  * here. Nobody should arrive at a password reset form from a search result.
@@ -18,9 +56,10 @@ import { SITE_URL } from '@/lib/site-url'
  * being public is a decision made in middleware.ts, and deriving this from
  * app/ would silently publish the next private page somebody adds.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const site = SITE_URL
   const now = new Date()
+  const jobPaths = await openJobPaths()
 
   const pages: { path: string; priority: number; changeFrequency: 'weekly' | 'monthly' | 'yearly' }[] = [
     { path: '/', priority: 1, changeFrequency: 'weekly' },
@@ -43,6 +82,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: isPubliclyReadable(f) ? 0.8 : 0.7,
       changeFrequency: 'monthly' as const,
     })),
+    /* The board and the listings a stranger can actually read. Weekly on the
+       board because its contents turn over; the listings themselves never
+       change once posted, so the only event worth recrawling for is the page
+       disappearing. Priority sits below an open firm profile deliberately: a
+       profile is evergreen and a role expires, and a search result pointing at
+       a closed vacancy is worth less than one pointing at a firm. */
+    { path: '/jobs', priority: 0.8, changeFrequency: 'weekly' },
+    ...jobPaths.map(path => ({ path, priority: 0.6, changeFrequency: 'monthly' as const })),
     { path: '/about', priority: 0.7, changeFrequency: 'monthly' },
     { path: '/advertise', priority: 0.7, changeFrequency: 'monthly' },
     { path: '/ambassador', priority: 0.6, changeFrequency: 'monthly' },
