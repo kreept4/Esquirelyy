@@ -228,10 +228,24 @@ export function logoUrl(file?: string | null): string | null {
   return STORAGE + file.replace(/ /g, '%20')
 }
 
-/** Firms whose bucket file could not be converted to a transparent PNG, so they
- *  still serve the original. Only bloomfield-law, which is a .ico that the
- *  image pipeline cannot read; it needs re-sourcing as PNG or SVG. */
-const NO_LOCAL_LOGO = new Set(['bloomfield-law'])
+/* THE NO_LOCAL_LOGO ESCAPE HATCH IS GONE, and it should not come back.
+ *
+ * It held one firm, bloomfield-law, whose bucket file was a .ico the image
+ * pipeline could not read, so that entry fell through to serving the original
+ * straight from storage. A .ico is a favicon: three frames, the largest 32x32.
+ * The board, the ball pit and the directory card all draw a firm mark at 40 to
+ * 150px, so Bloomfield rendered as a blurred smear everywhere it appeared,
+ * while every other firm on the page was sharp.
+ *
+ * The note said it "needs re-sourcing as PNG or SVG", which is what happened on
+ * 2026-08-12: the official colour lockup is an Illustrator SVG on the firm's
+ * own site, rasterised at 600dpi to /firm-logos/bloomfield-law.png. See the
+ * entry in LOCAL_ONLY_LOGO below.
+ *
+ * The lesson is the one worth keeping. A branch that says "serve this one
+ * badly" has no failure signal: the page renders, the build passes, and nothing
+ * reports that one firm in sixty seven looks broken. Re-source the art instead.
+ */
 
 /** Firms whose art was pulled straight from their own site and never existed in
  *  the Supabase bucket, so `logoFile` is null but a local PNG does exist.
@@ -248,6 +262,17 @@ const LOCAL_ONLY_LOGO = new Set([
   'musibau-adetunbi',
   'platinum-taylor-hill',
   'tope-adebayo',
+  /* Bloomfield LP, corrected 2026-08-12. Two things were wrong at once, which
+     is why it survived: the bucket held a favicon, and the local PNG sitting
+     beside it was the REVERSED lockup the firm publishes for its dark site
+     header. On our cream card that file is white wordmark on transparency, so
+     the name was simply not there and the only visible ink was the four
+     coloured arrows in the corner — a card that looks like a design decision
+     rather than a missing asset, which is why nobody caught it.
+     Replaced with logo-colour.svg from the firm's own theme directory,
+     rasterised at 600dpi and trimmed. Same treatment as musibau-adetunbi and
+     the other reversed-artwork cases above. */
+  'bloomfield-law',
   // Added 2026-08-05 with the twelve new firms. Art pulled straight from each
   // firm's own site by scripts/fetch-new-firm-logos.mjs, so there is no bucket
   // file and logoFile stays null.
@@ -349,7 +374,6 @@ const LOCAL_ONLY_LOGO = new Set([
 export function firmLogo(firm: Pick<Firm, 'slug' | 'logoFile'>): string | null {
   if (LOCAL_ONLY_LOGO.has(firm.slug)) return `/firm-logos/${firm.slug}.png`
   if (!firm.logoFile) return null
-  if (NO_LOCAL_LOGO.has(firm.slug)) return logoUrl(firm.logoFile)
   return `/firm-logos/${firm.slug}.png`
 }
 
@@ -554,9 +578,16 @@ const FIRMS_UNSORTED: Firm[] = [
   },
   {
     slug: 'bloomfield-law',
-    logoFile: 'bloomfield-law.ico',
+    /* Null, and the mark comes from LOCAL_ONLY_LOGO. The bucket holds a .ico
+       and nothing else for this firm, so pointing at it would only restore the
+       favicon this entry was serving before 2026-08-12. */
+    logoFile: null,
     name: 'Bloomfield Law Practice',
     shortName: 'Bloomfield',
+    /* The firm brands itself Bloomfield LP, which is what the lockup on their
+       site reads and what anyone here will have seen. The full practice name
+       stays above because that is what it is registered and ranked under. */
+    alsoKnownAs: 'Bloomfield LP',
     tier: 'Established',
     email: 'employment@bloomfield-law.com',
     website: 'https://bloomfield-law.com',
