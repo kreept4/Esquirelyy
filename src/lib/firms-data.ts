@@ -2261,6 +2261,20 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   pentagonpartnerslp: '/employer-logos/pentagon-partners.png',
   pentagon: '/employer-logos/pentagon-partners.png',
 
+  /* Ovie Obobolo & Co. Same reasoning again for why it is here rather than in
+     ALL_FIRMS: on the board because they are hiring, not in the directory
+     because nobody has researched them. Until this entry existed the board and
+     the ball pit both fell back to initials for them.
+     THE MONOGRAM ONLY, not the full lockup, for the reason the World Bank note
+     below gives: a mark gets about 37px of height on the board, and this firm's
+     lockup is a monogram over a wordmark over a tagline, which is mush at that
+     size. Cut from their recruitment flier rather than from the 137x84 file on
+     their own site, which is too small for the wordmark to survive. See
+     scripts/extract-ovie-logo.mjs. */
+  ovieoboboloandco: '/employer-logos/ovie-obobolo.png',
+  ovieobobolo: '/employer-logos/ovie-obobolo.png',
+  ovieoboboloandcompany: '/employer-logos/ovie-obobolo.png',
+
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',
   mtnnigeria: '/employer-logos/mtn.png',

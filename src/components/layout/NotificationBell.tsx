@@ -18,7 +18,7 @@ import {
   type Notification,
 } from '@/lib/notifications'
 import { TEAM_CALL, TEAM_CALL_MAILTO } from '@/lib/team-call'
-import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF } from '@/lib/new-roles'
+import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF, employerSentence, roleSummary } from '@/lib/new-roles'
 
 /**
  * Notification bell, beside the Menu toggle rather than inside the menu.
@@ -325,17 +325,14 @@ export default function NotificationBell({
 
               <div className="notif-modal-body">
                 <p className="grotesk-regular">
-                  {/* Built from the list rather than written out, so adding a
-                      role to lib/new-roles.ts cannot leave this sentence
-                      naming two firms while the button opens three. */}
-                  {NEW_ROLES.employers.slice(0, -1).join(', ')} and{' '}
-                  {NEW_ROLES.employers[NEW_ROLES.employers.length - 1]} are hiring, and every
-                  opening is checked against the employer&rsquo;s own notice.
+                  {/* Both sentences are built from lib/new-roles.ts. The second
+                      one used to be written out by hand, which is how it came to
+                      describe three seats while four roles were on the board.
+                      Adding a role there now brings its own clause with it. */}
+                  {employerSentence()} are hiring, and every opening is checked against the
+                  employer&rsquo;s own notice.
                 </p>
-                <p className="grotesk-regular">
-                  A senior energy seat in Lagos, a fully remote associate open to lawyers just
-                  called, and governance and compliance work open from one to ten years post call.
-                </p>
+                <p className="grotesk-regular">{roleSummary()}.</p>
               </div>
 
               <Link

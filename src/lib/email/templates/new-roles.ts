@@ -1,4 +1,4 @@
-import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF } from '@/lib/new-roles'
+import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF, ROLE_ENTRIES } from '@/lib/new-roles'
 
 /**
  * The new roles announcement.
@@ -41,7 +41,15 @@ const CONTOUR =
  * the board. A sentence that only makes sense once you already know the role is
  * not doing any work in an email.
  */
-const ROLES = [
+/* ⚠ THE ROLE LINES MOVED TO lib/new-roles.ts. This file held its own array of
+ * two while that file named three slugs and NotificationBell described three
+ * seats: three lists and three different answers, so the subject line would
+ * have counted one number while the body listed another. The entries now live
+ * beside the slug each one describes and every surface reads them from there.
+ * The wording is unchanged; only its home moved. */
+const ROLES = ROLE_ENTRIES
+
+const _RETIRED_ROLES = [
   {
     employer: 'Babalakin & Co',
     title: 'Senior Associate, Energy & Extractive Industries',
@@ -201,3 +209,4 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
 
   return { subject, text, html }
 }
+
