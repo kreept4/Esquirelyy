@@ -42,3 +42,5 @@ scripts/fixtures/
 # Agent notifier fallback log. Local record of what the agents would have sent;
 # never a commit, since it holds run output rather than source.
 .notify-log.ndjson
+
+.tmp-*
