@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { KIND_LABEL, type NewsItem } from '@/lib/news-data'
+import { logoForEmployer } from '@/lib/firms-data'
 
 /**
  * Headline carousel, sitting in the dark run between the logo ticker and the
@@ -216,11 +217,28 @@ export default function NewsCarousel({ items }: { items: NewsItem[] }) {
                              side panel is dropped so the marks land straight on
                              the slide's colour. */
                           <span className="news-splashes">
-                            {item.media.slugs.map((slug, n) => (
-                              <span key={slug} className="news-splash" data-n={n % 6}>
-                                <img src={`/firm-logos/${slug}.png`} alt="" loading="lazy" />
-                              </span>
-                            ))}
+                            {/* Resolved rather than assembled. This was
+                                `/firm-logos/${slug}.png` inline, which is right
+                                for a directory firm and silently wrong for
+                                anybody else: an employer on the board but not in
+                                the directory keeps its mark in
+                                /public/employer-logos, so the inline path
+                                produced a 404 and a broken-image splash with no
+                                error anywhere. logoForEmployer already knows
+                                both locations — it is what the job board and the
+                                ball pit resolve marks with — and it matches a
+                                firm's slug as readily as its name, so every
+                                slug already on these slides resolves unchanged.
+                                A slug that resolves to nothing now renders
+                                nothing, rather than an empty frame. */}
+                            {item.media.slugs.map((slug, n) => {
+                              const src = logoForEmployer(slug)
+                              return src ? (
+                                <span key={slug} className="news-splash" data-n={n % 6}>
+                                  <img src={src} alt="" loading="lazy" />
+                                </span>
+                              ) : null
+                            })}
                           </span>
                         ) : item.media.type === 'photo' ? (
                           /* A photograph fills the panel edge to edge. Putting

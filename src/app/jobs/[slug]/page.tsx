@@ -5,9 +5,10 @@ import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
-import { logoForEmployer, ballBgForEmployer } from '@/lib/firms-data'
+import { logoForEmployer, ballBgForEmployer, ALL_FIRMS } from '@/lib/firms-data'
 import { createClient as createSessionClient } from '@/lib/supabase/server'
 import { isOpenJob } from '@/lib/open-jobs'
+import JsonLd, { breadcrumb, jobPostingSchema } from '@/components/seo/JsonLd'
 
 export const revalidate = 0
 
@@ -135,24 +136,79 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
    * a teaser. So a closed listing does exactly what the middleware did before,
    * down to carrying the path back in `redirect` so the reader lands on the
    * role rather than on the board. */
-  if (!isOpenJob(slug)) {
-    const { data: { user } } = await createSessionClient().auth.getUser()
-    if (!user) redirect(`/auth/login?redirect=/jobs/${slug}`)
-  }
+  /* Read on every request now, not only on a gated listing. The apply route is
+     account-only even on the seven public ones (see below), so the page needs
+     to know who is asking whatever the slug is. */
+  const { data: { user } } = await createSessionClient().auth.getUser()
+
+  if (!isOpenJob(slug) && !user) redirect(`/auth/login?redirect=/jobs/${slug}`)
 
   const { data: job } = await db().from('jobs').select('*').eq('slug', slug).single()
   if (!job) return notFound()
 
-  const applyHref =
-    job.apply_url || (job.apply_email ? `mailto:${job.apply_email}?subject=Application: ${job.title}` : null)
+  /**
+   * TWO DIFFERENT THINGS ARE GATED HERE, AND ONLY ONE OF THEM IS THE PAGE.
+   *
+   * Whether you may READ this listing is `isOpenJob`, decided above: the seven
+   * newest are readable by anyone, including a crawler, and the rest redirect.
+   *
+   * Whether you may APPLY is this, and it is account-only on every listing. A
+   * signed-out reader — and Googlebot — gets the role, the firm, the location,
+   * the requirements and the closing date, which is everything needed to decide
+   * whether the job is worth wanting. What they do not get is the way in: the
+   * employer's URL, the application mailbox, and the tracker hook that comes
+   * with pressing Apply.
+   *
+   * That split is the whole shape of the product. Indexing the description is
+   * what brings somebody here; the application route is what the account is
+   * for. Publishing both would make the account pointless, and publishing
+   * neither would make the page invisible.
+   *
+   * ⚠ `applyHref` GOES NULL RATHER THAN BEING HIDDEN IN THE MARKUP. It is read
+   * in three places — the Apply button, the "full posting" link inside the
+   * requirements note, and the mailbox line under the button — and hiding it
+   * with CSS or rendering it behind a wrapper would leave the employer's
+   * address sitting in the HTML for anyone who pressed View Source, which is
+   * not a gate. Nulling it at the source means there is nothing to find.
+   */
+  const canApply = !!user
+  const applyHref = !canApply
+    ? null
+    : job.apply_url || (job.apply_email ? `mailto:${job.apply_email}?subject=Application: ${job.title}` : null)
+  /** Where a signed-out reader is sent instead, landing back on this role. */
+  const applyGateHref = `/auth/login?redirect=/jobs/${slug}`
   const logo = logoForEmployer(job.employer)
   const brand = ballBgForEmployer(job.employer)
   const requirements = toList(job.requirements)
 
   const closes = job.is_rolling ? 'Rolling applications' : job.deadline ? longDate(job.deadline) : 'Open'
 
+  /* The employer's own site, when they are in the directory, so the schema's
+     hiringOrganization resolves to a real entity instead of a bare name.
+     Matched on the normalised name the same way logoForEmployer does. */
+  const employerSite =
+    ALL_FIRMS.find(f => {
+      const n = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '')
+      return n(f.name) === n(job.employer) || n(f.shortName) === n(job.employer)
+    })?.website ?? null
+
   return (
     <div>
+      {/* JobPosting ONLY on a listing a stranger can read. See the warning on
+          jobPostingSchema: marking up a page that redirects to the login screen
+          is a structured data violation, and Google penalises it at the site
+          level rather than the page level. The breadcrumb is safe either way and
+          is emitted for both. */}
+      <JsonLd
+        data={[
+          ...(isOpenJob(slug) ? [jobPostingSchema(job, employerSite)] : []),
+          breadcrumb([
+            { name: 'Esquirely', path: '/' },
+            { name: 'Jobs', path: '/jobs' },
+            { name: job.title, path: `/jobs/${slug}` },
+          ]),
+        ]}
+      />
       <main className="jobs-page">
         <header className="jobs-header job-detail-header">
           <div className="shell">
@@ -219,12 +275,20 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                 <h2 className="grotesk-bold job-section-heading">In their words</h2>
                 <blockquote className="job-extract">
                   <p className="grotesk-regular job-prose">{job.about}</p>
+                  {/* ⚠ READS `applyHref`, NOT `job.apply_url`. This citation
+                      linked the raw column and was the one place the gate
+                      leaked: the apply card and the requirements note both went
+                      null for a signed-out reader while this quietly rendered
+                      the employer's careers URL into the HTML anyway, so the
+                      gate was one View Source away from nothing. Exactly the
+                      failure the warning on `applyHref` describes — there is no
+                      second copy of the route to forget now. */}
                   <cite className="grotesk-regular job-extract-cite">
                     {job.employer}
-                    {job.apply_url && (
+                    {applyHref && job.apply_url && (
                       <>
                         {' · '}
-                        <a href={job.apply_url} target="_blank" rel="noopener noreferrer">
+                        <a href={applyHref} target="_blank" rel="noopener noreferrer">
                           read the full posting
                         </a>
                       </>
@@ -252,8 +316,16 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                     <a href={applyHref} target="_blank" rel="noopener noreferrer" className="job-note-link">
                       the full posting
                     </a>
-                  ) : (
+                  ) : canApply ? (
                     'the full posting'
+                  ) : (
+                    /* Signed out, so applyHref is null and the employer's link is
+                       not in this page at all. Still tell them to read the
+                       original — the advice is the same either way — and point at
+                       the one place that can give it to them. */
+                    <Link href={applyGateHref} className="job-note-link">
+                      the full posting
+                    </Link>
                   )}{' '}
                   before applying.
                 </p>
@@ -288,7 +360,23 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
             <div className="apply-card">
               <p className="grotesk-bold apply-card-title">Apply for this role</p>
 
-              {applyHref ? (
+              {!canApply ? (
+                /* The gate, stated plainly. It says what is behind it and what
+                   it costs, because "Sign in to continue" on a button somebody
+                   has already decided to press reads as a toll rather than as a
+                   reason. Free and takes a minute are both true and are the two
+                   facts that decide whether they bother. */
+                <>
+                  <Link href={applyGateHref} className="grotesk-bold apply-card-cta">
+                    Sign in to apply
+                  </Link>
+                  <p className="grotesk-regular apply-card-note">
+                    The application route for this role — the employer&rsquo;s link or address — is
+                    for members. An account is free, takes a minute, and also gets you the tracker
+                    and the rest of the board.
+                  </p>
+                </>
+              ) : applyHref ? (
                 <TrackOnApply
                   href={applyHref}
                   kind={job.apply_url ? 'external' : 'email'}
@@ -308,7 +396,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
               )}
 
               <p className="grotesk-regular apply-card-note">
-                {job.apply_email && (
+                {canApply && job.apply_email && (
                   <>
                     Send your CV to{' '}
                     <a href={`mailto:${job.apply_email}`} className="apply-card-mail">

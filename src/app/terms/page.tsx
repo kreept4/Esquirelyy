@@ -1,4 +1,4 @@
-import { openGraph } from '@/components/seo/JsonLd'
+import JsonLd, { breadcrumb, openGraph, webPageSchema } from '@/components/seo/JsonLd'
 import Link from 'next/link'
 import LegalPage, { Clause } from '@/components/layout/LegalPage'
 
@@ -31,6 +31,21 @@ export const metadata = {
  */
 export default function TermsPage() {
   return (
+    <>
+      <JsonLd
+        data={[
+          webPageSchema({
+            path: '/terms',
+            name: 'Esquirely Terms of Use',
+            description:
+              'The terms on which Esquirely is provided. Esquirely is a signposting service that indexes third-party legal vacancies and is not a recruitment agency or a party to any application. The AI career tools give suggestions rather than advice, a generated CV belongs to the user, listing a role is free for employers, the campus ambassador programme is a volunteer position, and liability is limited as far as Nigerian law allows.',
+          }),
+          breadcrumb([
+            { name: 'Esquirely', path: '/' },
+            { name: 'Terms of use', path: '/terms' },
+          ]),
+        ]}
+      />
     <LegalPage
       title="Terms of use"
       updated="7 August 2026"
@@ -149,9 +164,46 @@ export default function TermsPage() {
           accurate information. Do not use the site to harass anyone, post misleading vacancies, or
           try to break it. We may suspend an account that does.
         </p>
+        <p>
+          When you set a new password we check it against the last few you have used on the account
+          and refuse a repeat. We keep one-way hashes to do that, never the passwords themselves.
+        </p>
       </Clause>
 
-      <Clause n={7} heading="Availability">
+      {/* Both of these were live on the site with nothing in these terms about
+          them: /advertise has been taking role submissions from employers, and
+          /ambassador has been signing students up to a scheme with a reference
+          at the end of it. Terms that describe a narrower service than the one
+          being run are the ones that fail when they are needed. */}
+      <Clause n={7} heading="Posting a role, if you are an employer">
+        <p>
+          Listing is free and needs no account. Send us the role and we check that it is real and
+          open before it goes up, then write it into the board in our own words so it reads like
+          everything else there. We do not rewrite your requirements.
+        </p>
+        <p>
+          By sending us a role you confirm you are entitled to advertise it and that what you have
+          told us is accurate. Tell us when it is filled or withdrawn and it comes down the same day.
+          We may decline or remove any listing, and we do not promise a number of applicants, a
+          quality of applicant, or that anyone will apply at all.
+        </p>
+      </Clause>
+
+      <Clause n={8} heading="The campus ambassador programme">
+        <p>
+          Ambassadors run sessions for their year and get a signed reference for doing it.{' '}
+          <strong>It is a volunteer position and it is not paid</strong>, which the{' '}
+          <Link href="/ambassador">programme page</Link> says before it asks anything of you.
+        </p>
+        <p>
+          Being an ambassador does not make you our employee, our agent or our partner, and it does
+          not entitle you to speak for Esquirely. Invite links carry a code so we can tell who
+          introduced whom; the count is recorded when someone creates an account. Either of us can
+          end the arrangement at any time, and a reference already given stands.
+        </p>
+      </Clause>
+
+      <Clause n={9} heading="Availability">
         <p>
           We provide Esquirely as it is and as it is available. We do not promise it will be
           uninterrupted, error free, or permanently available, and we may change or discontinue
@@ -159,7 +211,7 @@ export default function TermsPage() {
         </p>
       </Clause>
 
-      <Clause n={8} heading="Limits on our liability">
+      <Clause n={10} heading="Limits on our liability">
         <p>
           <strong>Nothing in these terms limits liability that cannot lawfully be limited.</strong>{' '}
           That includes death or personal injury caused by our negligence, fraud or fraudulent
@@ -204,7 +256,7 @@ export default function TermsPage() {
         </p>
       </Clause>
 
-      <Clause n={9} heading="Links to other sites">
+      <Clause n={11} heading="Links to other sites">
         <p>
           Applying takes you to an employer&rsquo;s own site or applicant tracking system. We do not
           control those, we are not responsible for them, and their terms and privacy notices apply
@@ -212,14 +264,14 @@ export default function TermsPage() {
         </p>
       </Clause>
 
-      <Clause n={10} heading="Privacy">
+      <Clause n={12} heading="Privacy">
         <p>
           How we handle personal data is set out in our <a href="/privacy">privacy notice</a>, which
           forms part of these terms.
         </p>
       </Clause>
 
-      <Clause n={11} heading="Changes to these terms">
+      <Clause n={13} heading="Changes to these terms">
         <p>
           We may update these terms. The date at the top shows when they last changed, and continuing
           to use the site after a change means you accept it. Material changes will be flagged to
@@ -227,7 +279,7 @@ export default function TermsPage() {
         </p>
       </Clause>
 
-      <Clause n={12} heading="Governing law">
+      <Clause n={14} heading="Governing law">
         <p>
           These terms are governed by the laws of the Federal Republic of Nigeria, and the Nigerian
           courts have jurisdiction over any dispute. Nothing here removes a right you have under
@@ -235,12 +287,13 @@ export default function TermsPage() {
         </p>
       </Clause>
 
-      <Clause n={13} heading="Contact">
+      <Clause n={15} heading="Contact">
         <p>
           Questions, complaints and takedown requests:{' '}
           <a href="mailto:legal@esquirely.com.ng">legal@esquirely.com.ng</a>.
         </p>
       </Clause>
     </LegalPage>
+    </>
   )
 }

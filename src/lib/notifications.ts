@@ -1,5 +1,5 @@
 import { ALL_SCHOLARSHIPS } from './scholarships-data'
-import { NEW_ROLES, NEW_ROLES_COUNT } from './new-roles'
+import { NEW_ROLES, roleCountLabel } from './new-roles'
 import { TEAM_CALL } from './team-call'
 
 /**
@@ -173,6 +173,104 @@ export function markUnread(id: string): Set<string> {
   return next
 }
 
+/**
+ * DISMISSAL, WHICH IS A THIRD THING AGAIN, AND THE ONLY ONE THAT HAD TO BE
+ * BUILT RATHER THAN DERIVED.
+ *
+ * "Seen" means the panel was open. "Read" means an ack-kind note was opened.
+ * Neither removes a row, because until now nothing could: every notification in
+ * this feed is computed from a job row, a scholarship deadline or a tracker
+ * entry that still exists, so a row deleted from React state is back the moment
+ * `buildFeed` runs again — which is on the next mount, i.e. the next page
+ * navigation. A delete button that undoes itself when you click a link is worse
+ * than no delete button.
+ *
+ * So dismissal is the one piece of notification state that has to be WRITTEN
+ * rather than inferred, and it is written as a set of ids that `buildFeed`
+ * filters out at the end.
+ *
+ * ⚠ THIS SET IS NOT ALLOWED TO GROW WITHOUT LIMIT. Tracker notifications are
+ * keyed `tracker-${id}-${status}`, so a single application moving through five
+ * stages mints five distinct ids, and a member who dismisses each one would
+ * accumulate ids forever in a store with a hard 5MB ceiling shared with
+ * everything else this app keeps on-device. DISMISS_CAP is the bound: the set is
+ * trimmed to the most recently dismissed ids, oldest first, which is why this is
+ * stored as an ORDERED ARRAY and not as a set. Losing the oldest entry means a
+ * notification somebody dismissed months ago could reappear; that is the correct
+ * thing to lose, and it is a great deal better than a quota exception on an
+ * unrelated write.
+ *
+ * PER-DEVICE, like every other marker here, for the reason the file header
+ * gives: the alternative is a profile write on every dismissal.
+ */
+export const DISMISSED_KEY = 'esquirely:notifications-dismissed'
+
+/** How many dismissed ids are kept. See the warning above. */
+const DISMISS_CAP = 300
+
+/** Oldest first, so the trim in `dismiss` drops the stalest. */
+function readDismissedList(): string[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const raw = JSON.parse(localStorage.getItem(DISMISSED_KEY) || '[]')
+    return Array.isArray(raw) ? raw.filter((x): x is string => typeof x === 'string') : []
+  } catch {
+    return []
+  }
+}
+
+export function readDismissedIds(): Set<string> {
+  return new Set(readDismissedList())
+}
+
+function writeDismissed(list: string[]): Set<string> {
+  const capped = list.slice(-DISMISS_CAP)
+  try {
+    localStorage.setItem(DISMISSED_KEY, JSON.stringify(capped))
+  } catch {
+    // Private browsing, or the quota is full. The row reappears on the next
+    // load, which is visibly wrong but not broken, and is the mildest available
+    // failure: the alternative is throwing inside a click handler.
+  }
+  return new Set(capped)
+}
+
+/** Dismiss one notification. Returns the new set for the caller's state. */
+export function dismiss(id: string): Set<string> {
+  const list = readDismissedList()
+  // Re-adding an id that is already held would let a repeatedly-dismissed row
+  // push everything else out of a capped list on its own.
+  if (list.includes(id)) return new Set(list)
+  return writeDismissed([...list, id])
+}
+
+/**
+ * Dismiss every notification currently in the feed.
+ *
+ * TAKES THE FEED RATHER THAN CLEARING A FLAG, and that is the whole design. A
+ * "cleared at" timestamp would be smaller, and it would also silently swallow
+ * anything created before it that arrives later — a job row backdated by an
+ * import, say. Naming the ids means clearing the panel clears exactly what was
+ * on screen when the button was pressed, and a notification that appears a
+ * second later is not retroactively deleted by a click that could not have been
+ * about it.
+ */
+export function dismissAll(feed: Notification[]): Set<string> {
+  const list = readDismissedList()
+  const held = new Set(list)
+  return writeDismissed([...list, ...feed.map(n => n.id).filter(id => !held.has(id))])
+}
+
+/** Put everything back. Undoes both individual deletes and a clear-all. */
+export function restoreDismissed(): Set<string> {
+  try {
+    localStorage.removeItem(DISMISSED_KEY)
+  } catch {
+    // Nothing was stored to begin with.
+  }
+  return new Set()
+}
+
 /** The single definition of unread, used by both the badge and the row styling
  *  so the two can never disagree about what is still waiting. */
 export function isUnread(n: Notification, seen: number, readIds: Set<string>) {
@@ -201,7 +299,12 @@ export function buildFeed(
   applications: any[],
   prefs: Prefs,
   welcomedAt: string,
-  now = new Date()
+  now = new Date(),
+  /* Dismissed ids, filtered out at the very end. Passed in rather than read from
+     storage here so this stays a pure function and remains testable and
+     server-safe — the same reason `jobs` and `applications` are arguments.
+     Defaulted so every existing caller keeps working untouched. */
+  dismissed: Set<string> = new Set()
 ): Notification[] {
   const out: Notification[] = []
 
@@ -223,8 +326,8 @@ export function buildFeed(
   out.push({
     id: NEW_ROLES.id,
     kind: 'drop',
-    title: `${NEW_ROLES_COUNT} new roles on the board`,
-    detail: NEW_ROLES.employers.join(' · '),
+    title: `${roleCountLabel()} on the board`,
+    detail: NEW_ROLES.employersShort.join(' · '),
     at: NEW_ROLES.at,
   })
 
@@ -296,6 +399,12 @@ export function buildFeed(
 
   return out
     .filter(n => n.at && !Number.isNaN(Date.parse(n.at)))
+    /* Dismissal is applied BEFORE the slice, not after. Filtering the final
+       twenty would mean deleting a row shrank the list to nineteen instead of
+       pulling the twenty-first up into it, so a member who cleared a few
+       notifications would slowly end up with a shorter panel than everybody
+       else and no way to tell why. */
+    .filter(n => !dismissed.has(n.id))
     .sort((a, b) => Date.parse(b.at) - Date.parse(a.at))
     .slice(0, 20)
 }

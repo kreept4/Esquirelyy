@@ -273,6 +273,15 @@ const LOCAL_ONLY_LOGO = new Set([
      rasterised at 600dpi and trimmed. Same treatment as musibau-adetunbi and
      the other reversed-artwork cases above. */
   'bloomfield-law',
+  /* Olajide Oyewole LLP, corrected 2026-08-14, and it is the bloomfield-law
+     failure again almost exactly. The bucket held a 152x152 crop of the counter
+     of the DLA Piper "C" — a fragment of the logo, in a blue-violet the firm
+     does not use — which rendered as a plausible abstract mark rather than as a
+     broken asset, so nothing ever reported it. Replaced with the DLA Piper
+     Africa navy lockup from the firm's own site, rasterised at 600dpi and
+     trimmed. See scripts/fetch-dla-piper-logo.mjs, including why it is that
+     lockup and not the "OLAJIDE OYEWOLE LLP" wordmark beside it. */
+  'olajide-oyewole',
   // Added 2026-08-05 with the twelve new firms. Art pulled straight from each
   // firm's own site by scripts/fetch-new-firm-logos.mjs, so there is no bucket
   // file and logoFile stays null.
@@ -814,16 +823,53 @@ const FIRMS_UNSORTED: Firm[] = [
   },
   {
     slug: 'olajide-oyewole',
-    logoFile: 'olajide oyewole.jpg',
+    /* null, and the slug is in LOCAL_ONLY_LOGO instead. The bucket file this
+       used to name ('olajide oyewole.jpg') is not the source any more: the mark
+       now comes straight from the firm's own site via
+       scripts/fetch-dla-piper-logo.mjs. See that file for what was wrong with
+       the old crop. */
+    logoFile: null,
     name: 'Olajide Oyewole LLP',
     shortName: 'Olajide Oyewole',
+    /* Both names are current, which is why this is alsoKnownAs and not
+       formerName. The firm did not rebrand away from Olajide Oyewole: it is the
+       DLA Piper Africa member firm in Nigeria, it signs its own vacancies
+       "Olajide Oyewole LLP", and its website, its careers address and half of
+       its search results are under the DLA Piper Africa name. The Legal 500
+       lists it as "DLA Piper Africa, Nigeria" while Chambers lists it as
+       "Olajide Oyewole LLP" — see FIRM_RANKINGS below, where that split is
+       already noted. A student who has only ever heard one of the two names has
+       to be able to find the firm. */
+    alsoKnownAs: 'DLA Piper Africa, Nigeria',
     tier: 'Established',
-    email: 'careers@olajide-oyewole.com',
-    website: 'https://olajide-oyewole.com',
-    offices: [{ city: 'Lagos', address: 'Plot 5 Block 14, Bashorun Okusanya Avenue, Lekki Peninsula Scheme 1, Lagos' }],
-    practiceAreas: ['Banking & Finance', 'Tax', 'Corporate & Commercial', 'Capital Markets', 'Real Estate'],
-    description: 'A full-service commercial law firm known for innovative legal solutions in banking, finance, and tax advisory.',
-    openRoles: 2,
+    /* The address on the firm's own vacancies, not a guess at a pattern.
+       'careers@olajide-oyewole.com' was the old value and it is undeliverable:
+       that domain does not resolve at all (curl gets no response, not a 404). */
+    email: 'careers@oo.dlapiperafrica.com',
+    /* Was 'https://olajide-oyewole.com', which does not resolve. The firm's site
+       is a country section of the DLA Piper Africa domain. */
+    website: 'https://www.dlapiperafrica.com/en/nigeria',
+    /* Both offices, read off the firm's own location pages rather than inferred.
+       Lagos gained its postcode and Abuja was simply missing — the firm has had
+       an Asokoro office throughout, and a directory whose whole value is that
+       the addresses are real cannot show one of two. */
+    offices: [
+      { city: 'Lagos', address: 'Plot 5 Block 14, Bashorun Okusanya Avenue, Lekki Peninsula Scheme 1, Lagos 101007' },
+      { city: 'Abuja', address: 'Plot 1454 (No. 40), T.Y. Danjuma Street, Asokoro, Abuja' },
+    ],
+    /* Dispute Resolution added. It is not padding: the firm is EMEA Tier 2 for
+       dispute resolution (see FIRM_RANKINGS) and the Abuja vacancy on the board
+       is an associate seat in that practice group. */
+    practiceAreas: ['Banking & Finance', 'Tax', 'Corporate & Commercial', 'Capital Markets', 'Real Estate', 'Dispute Resolution'],
+    description:
+      'The DLA Piper Africa member firm in Nigeria, and one of sub-Saharan Africa’s largest commercial practices, with over forty lawyers across offices in Lagos and Abuja. Full-service commercial work spanning banking and finance, tax, corporate and commercial, capital markets, real estate and dispute resolution.',
+    /* Grew out of the corporate practice Chief Olajide Oyewole founded, per the
+       firm's own account of itself. */
+    foundedYear: 1965,
+    /* One: the Abuja dispute resolution associate seat. This was 2, which
+       matched nothing on the board — the badge on the directory card is written
+       by hand and had simply been left behind. */
+    openRoles: 1,
   },
   {
     slug: 'olaniwun-ajayi',
@@ -2274,6 +2320,25 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   ovieoboboloandco: '/employer-logos/ovie-obobolo.png',
   ovieobobolo: '/employer-logos/ovie-obobolo.png',
   ovieoboboloandcompany: '/employer-logos/ovie-obobolo.png',
+
+  /* Kehinde Babatola Olofinmoyo LP, who brand themselves KBO. Same reasoning as
+     Zyph, Pentagon and Ovie Obobolo for why they are here rather than in
+     ALL_FIRMS: on the board because they are hiring, not in the directory
+     because nobody has researched them.
+     THE MONOGRAM ONLY, cut from their recruitment flier — see
+     scripts/extract-kbo-logo.mjs for the measurements and for why the wordmark
+     and tagline tiers are left out. Without this entry the initials fallback
+     would render "KO", because the helper drops "Babatola" as a short word, and
+     the firm does not call itself that. */
+  kehindebabatolaolofinmoyolp: '/employer-logos/kbo-legal.png',
+  kehindebabatolaolofinmoyo: '/employer-logos/kbo-legal.png',
+  kbolegalpractitioners: '/employer-logos/kbo-legal.png',
+  kbo: '/employer-logos/kbo-legal.png',
+  /* The asset's own basename, so this employer can be named by a slug and not
+     only by a firm name. The news carousel's `logos` media identifies marks by
+     slug — every other one it names is a directory firm, whose slug resolves
+     through ALL_FIRMS, and this is the first that is not. */
+  kbolegal: '/employer-logos/kbo-legal.png',
 
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',

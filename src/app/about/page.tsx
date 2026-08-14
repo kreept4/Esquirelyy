@@ -1,4 +1,4 @@
-import { openGraph } from '@/components/seo/JsonLd'
+import JsonLd, { breadcrumb, openGraph, webPageSchema } from '@/components/seo/JsonLd'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { TEAM, AMBASSADORS, type Person } from './people'
@@ -112,6 +112,25 @@ function PersonCard({ person, className = '' }: { person: Person; className?: st
 export default function AboutPage() {
   return (
     <>
+      {/* AboutPage, not the bare WebPage the other two get. "What is Esquirely
+          and who runs it" is a question an answer engine gets asked directly,
+          and the typed schema is what tells it this page is the site's own
+          answer rather than a third party writing about the site. */}
+      <JsonLd
+        data={[
+          webPageSchema({
+            path: '/about',
+            name: 'About Esquirely',
+            description:
+              'Esquirely is a careers platform for Nigerian lawyers and law students, indexing legal vacancies, scholarships and law firm information in one place. Built by two co-founders with a creative designer and a group of honorary campus ambassadors.',
+            type: 'AboutPage',
+          }),
+          breadcrumb([
+            { name: 'Esquirely', path: '/' },
+            { name: 'About us', path: '/about' },
+          ]),
+        ]}
+      />
       <main className="page-main doc-page">
         <header className="doc-masthead">
           <div className="shell doc-masthead-inner">

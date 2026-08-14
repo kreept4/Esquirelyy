@@ -2384,20 +2384,113 @@ select.filter-pill {
   line-height: 1.65;
   color: var(--ink-muted);
 }
+.notif-empty-line { margin: 0 0 0.6rem 0; }
+
+/* Undo, after a clear-all. Set as a link rather than a second solid button:
+   the panel has one primary action at a time, and on an empty panel that is
+   getting the notifications back, not emphasising how they went. */
+.notif-undo-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 0.8rem;
+  color: #241F16;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.notif-undo-btn:hover { color: #B91C1C; }
+
+/* Pinned to the bottom of the scrolling panel, mirroring .notif-panel-head at
+   the top. With twenty rows in the list the control that empties them cannot be
+   twenty rows down. */
+.notif-panel-foot {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.6rem 1rem 0.7rem;
+  background: #FFF8E5;
+  border-top: 1.5px solid rgba(36, 31, 22, 0.18);
+}
+.notif-clear-btn {
+  border: 1.5px solid rgba(36, 31, 22, 0.28);
+  background: none;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: #241F16;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.notif-clear-btn:hover { background: #241F16; border-color: #241F16; color: #FFF8E5; }
+.notif-clear-btn:focus-visible { outline: 2px solid #241F16; outline-offset: 2px; }
 
 .notif-list { list-style: none; margin: 0; padding: 0; }
+
+/* The row is the li, and it holds two things side by side: the notification
+   itself and its delete. They are siblings because the notification is already
+   a Link or a button and a button cannot legally nest inside either — see
+   DismissButton in NotificationBell.tsx.
+   The separating rule moved here from .notif-item at the same time. Left on the
+   item it stopped short of the delete column, so every row ended in a 2.2rem
+   gap in its own underline. */
+.notif-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid rgba(36, 31, 22, 0.1);
+}
+.notif-list li:last-child { border-bottom: none; }
+
 .notif-item {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: start;
   gap: 0.6rem;
-  padding: 0.85rem 1rem;
-  border-bottom: 1px solid rgba(36, 31, 22, 0.1);
+  padding: 0.85rem 0.5rem 0.85rem 1rem;
   text-decoration: none;
   transition: background-color 0.15s ease;
+  /* Takes the row's width less the delete column, and is allowed to shrink:
+     without min-width the grid's own content sets a floor and a long employer
+     name pushes the delete button off the panel's right edge. */
+  flex: 1 1 auto;
+  min-width: 0;
 }
 .notif-item:hover { background: rgba(36, 31, 22, 0.05); }
-.notif-list li:last-child .notif-item { border-bottom: none; }
+
+/* Delete. Always present rather than revealed on hover, because hover does not
+   exist on the phones most of this audience reads on. Quiet until the row is
+   hovered or the button takes focus. */
+.notif-item-dismiss {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0.95rem 0.7rem 0 0.35rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: rgba(36, 31, 22, 0.3);
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+.notif-row:hover .notif-item-dismiss { color: rgba(36, 31, 22, 0.55); }
+.notif-item-dismiss:hover { color: #B91C1C; background: rgba(185, 28, 28, 0.08); }
+/* Focus has to be visible without hover: this is the only way to reach the
+   control from the keyboard, and at 30% opacity it is otherwise invisible when
+   tabbed to. */
+.notif-item-dismiss:focus-visible {
+  color: #B91C1C;
+  outline: 2px solid #241F16;
+  outline-offset: -2px;
+}
+
+/* The unread wash is painted on the item, so on its own it stops at the delete
+   column and leaves a pale notch at the end of every unread row. Extending it
+   to the whole row needs :has(), which is why this is a separate rule rather
+   than a change to the one below: where :has() is unsupported the row simply
+   keeps the old, slightly short wash instead of losing it. */
+.notif-row:has(.notif-item[data-unread]) { background: rgba(251, 191, 36, 0.12); }
+.notif-row:has(.notif-item[data-unread]):hover { background: rgba(251, 191, 36, 0.2); }
 
 .notif-dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; margin-top: 0.42rem; flex-shrink: 0; }
 .notif-item-main { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
@@ -2438,6 +2531,37 @@ select.filter-pill {
     right: calc(1rem - var(--notif-inset));
     width: calc(100vw - 2rem);
   }
+
+  /* TOUCH TARGETS. The delete is the smallest control on the site and it is the
+     one most often pressed on a phone, where there is no hover to enlarge it
+     and no cursor to aim it. At its desktop size it is roughly 30px square,
+     which clears the WCAG 2.2 minimum of 24 and misses the 44 that Apple and
+     Google both publish — and missing it on a DESTRUCTIVE control is the wrong
+     way round, because the cost of a mis-tap here is a notification gone rather
+     than a page you can navigate back from.
+     Widened rather than made taller: the row is already tall enough, so this
+     buys the hit area from horizontal padding and leaves the list's rhythm
+     alone. */
+  .notif-item-dismiss {
+    padding: 0.9rem 0.85rem 0.9rem 0.5rem;
+    /* Undoes the desktop top-alignment. On a row whose detail wraps to two
+       lines the button would otherwise sit level with the title and away from
+       the thumb's natural resting point. */
+    align-items: center;
+  }
+  .notif-item-dismiss svg { width: 15px; height: 15px; }
+
+  /* Slightly tighter on the left so the widened delete column does not eat the
+     title. */
+  .notif-item { padding: 0.85rem 0.35rem 0.85rem 0.85rem; }
+
+  /* The clear-all is a real button on a phone, not a small outlined chip. The
+     footer keeps it within thumb reach at the bottom of the panel, which is
+     where it already sits. */
+  .notif-panel-foot { padding: 0.7rem 0.85rem 0.85rem; }
+  .notif-clear-btn { padding: 0.55rem 1.1rem; font-size: 0.76rem; }
+
+  .notif-undo-btn { padding: 0.3rem 0; font-size: 0.85rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

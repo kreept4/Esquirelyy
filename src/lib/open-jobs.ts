@@ -16,45 +16,63 @@
  * the app would report it. A named list changes only when somebody edits this
  * file.
  *
- * ⚠ THIS LIST GROWS. IT MUST NOT SHRINK.
+ * ⚠ THE WINDOW IS THE SEVEN MOST RECENTLY ADDED LISTINGS. Everything else on
+ * the board asks for an account.
  *
- * Removing a slug from here un-publishes a URL that is by then sitting in
- * Google's and Bing's indexes, in the sitemap, and in whatever links people
- * have shared. The searcher who clicks it lands on a login page, which is worse
- * for us than never having ranked at all. If a role genuinely has to come down,
- * delete the listing so the page 404s honestly — a 404 is a clean signal and a
- * gate is not.
+ * This file used to say the opposite — "THIS LIST GROWS, IT MUST NOT SHRINK" —
+ * on the reasoning that removing a slug un-publishes a URL already sitting in
+ * Google's index and hands the searcher who clicks it a login page. That
+ * reasoning is still correct and it is the reason the rule below exists. The
+ * decision it was serving is what changed: the board is a members' product, and
+ * the seven newest roles are the shop window rather than the shop.
  *
- * That is also why this is deliberately NOT derived from NEW_ROLES.slugs even
- * though the two hold the same five today. The drop is an announcement and is
- * meant to be replaced wholesale next time; this is a publishing commitment and
- * is meant to accumulate. Wiring one to the other would mean the next drop
- * quietly revoked the last one's SEO.
+ * SO THE ONE RULE THAT SURVIVES IS ABOUT WHAT A REMOVED URL DOES NEXT. A slug
+ * taken out of this set must not start answering a crawler with a redirect to
+ * /auth/login, because that is the pattern that teaches a search engine to stop
+ * trusting a host. When a listing rolls out of the seven it stops being
+ * indexable — jobs/[slug]/page.tsx sets robots noindex for anything not in this
+ * set — so it leaves the index by the front door instead of turning into a
+ * redirect. Check that behaviour before changing this list, not after.
+ *
+ * Nothing has been un-published to get here. Of the thirteen slugs removed on
+ * 14 August, twelve had never been public at all, and the thirteenth is the
+ * World Bank internship whose row is deleted, so its URL was already gone.
+ *
+ * ⚠ WHAT A CRAWLER SEES ON THESE SEVEN IS THE DESCRIPTION, NOT THE WAY IN.
+ * The role, the firm, the location and the requirements are readable by anyone.
+ * The apply route — the URL or the address the application actually goes to —
+ * is behind the account. See the note on `canApply` below.
+ *
+ * This is deliberately NOT derived from NEW_ROLES.slugs, even though the drop's
+ * two roles are the top two of the seven today. The drop is an announcement and
+ * is meant to be replaced wholesale next time; this is a publishing window and
+ * turns over on its own schedule. Wiring one to the other would mean announcing
+ * two roles silently un-published the five under them.
  */
 
+/**
+ * The seven, newest first, as `created_at` orders them on the board.
+ *
+ * KEPT IN THAT ORDER ON PURPOSE, even though a Set does not care. This list is
+ * a window over a sorted board, so the next role added goes on the top and the
+ * bottom one comes off. Written in any other order that operation stops being
+ * obvious and the window quietly stops being the newest seven.
+ *
+ * Verified against the board on 14 August 2026: these are exactly the seven
+ * most recent rows by `created_at`, and there are twenty rows in total, so
+ * thirteen listings ask for an account.
+ */
 const OPEN_JOB_SLUGS = new Set<string>([
-  /* Opened 2026-08-12: the five most recent roles on the board at that date.
-     The four from 10 August, plus Abe & Asotie from the 8th, which had never
-     been announced and is the one genuine public-interest entry point here. */
+  // 14 August — the current drop.
+  'kbo-junior-associate-yaba',
+  'olajide-oyewole-associate-dispute-resolution-abuja',
+  // 10 August.
   'ovie-obobolo-associate',
   'pentagon-partners-associate-grc',
-  'zyph-legal-legal-associate',
   'babalakin-senior-associate-energy',
+  'zyph-legal-legal-associate',
+  // 8 August.
   'abe-asotie-lawyer-legal-aid',
-  /* Opened 2026-08-12 for a different reason from the five above, and it is
-     worth writing down because it is not an SEO decision.
-
-     The deadline reminder went to all 69 members that morning. Its main button
-     goes straight to the World Bank's own requisition, so the application does
-     not depend on us. But the message also links here for the full eligibility
-     list, and a member opening that on a phone they are not signed in on would
-     have been handed a login page on the day the thing closed. You do not send
-     somebody a link and then ask them to prove who they are to read it.
-
-     The role closes today, so this earns nothing in search. It stays on the
-     list anyway: the rule above is that this set does not shrink, and 69 people
-     hold the URL. */
-  'world-bank-pioneers-legal-internship-2026',
 ])
 
 /** Whether a signed-out reader may read this listing in full. */

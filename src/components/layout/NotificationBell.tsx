@@ -5,20 +5,31 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import {
   buildFeed,
+  dismiss,
+  dismissAll,
   isUnread,
   markRead,
   markSeen,
   markUnread,
+  readDismissedIds,
   readPrefs,
   readReadIds,
   readSeen,
   readWelcomedAt,
+  restoreDismissed,
   timeAgo,
   unreadCount,
   type Notification,
 } from '@/lib/notifications'
 import { TEAM_CALL, TEAM_CALL_MAILTO } from '@/lib/team-call'
-import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF, employerSentence, roleSummary } from '@/lib/new-roles'
+import {
+  NEW_ROLES,
+  NEW_ROLES_HREF,
+  checkedSentence,
+  hiringSentence,
+  roleCountLabel,
+  seatsSentence,
+} from '@/lib/new-roles'
 
 /**
  * Notification bell, beside the Menu toggle rather than inside the menu.
@@ -63,6 +74,47 @@ function NotifRow({ n, unread }: { n: Notification; unread: boolean }) {
   )
 }
 
+/**
+ * The per-row delete.
+ *
+ * A SIBLING OF THE ROW, NOT A CHILD OF IT. Every row is either a Link or a
+ * button, and a button inside either one is invalid HTML that browsers resolve
+ * by unnesting it — so the delete would have ended up outside the row it
+ * belonged to, and clicking it would also have followed the link. The two sit
+ * side by side in the same grid cell instead, which is why `.notif-row` exists
+ * in the CSS.
+ *
+ * IT IS NOT HIDDEN UNTIL HOVER. That is the usual treatment and it puts the
+ * control out of reach of every touch device, which is most of this audience.
+ * It is always rendered and simply quiet: low contrast until the row is hovered
+ * or the button itself is focused.
+ *
+ * The label names the notification rather than saying "Delete", because a
+ * screen reader user tabbing a list of twelve rows would otherwise hear
+ * "Delete" twelve times with nothing to tell them apart.
+ */
+function DismissButton({ n, onDismiss }: { n: Notification; onDismiss: (id: string) => void }) {
+  return (
+    <button
+      type="button"
+      className="notif-item-dismiss"
+      aria-label={`Delete notification: ${n.title}`}
+      title="Delete"
+      onClick={e => {
+        /* The row beneath is a link on most kinds. Without both of these a
+           delete navigates to the thing it just deleted. */
+        e.preventDefault()
+        e.stopPropagation()
+        onDismiss(n.id)
+      }}
+    >
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
+        <path d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </button>
+  )
+}
+
 export default function NotificationBell({
   hidden,
   user,
@@ -74,6 +126,16 @@ export default function NotificationBell({
   const [feed, setFeed] = useState<Notification[]>([])
   const [seen, setSeen] = useState(0)
   const [readIds, setReadIds] = useState<Set<string>>(() => new Set())
+  /* Initialised empty rather than from storage, and hydrated in the effect
+     below with everything else. Reading localStorage in a useState initialiser
+     runs during render, which on the server is a crash and on the client is a
+     hydration mismatch the moment the stored value differs from the empty
+     default — which is exactly when it matters. */
+  const [dismissedIds, setDismissedIds] = useState<Set<string>>(() => new Set())
+  /* Set when a clear-all happens, cleared when the panel closes. It is what
+     turns the empty state into an offer to undo, which is the safety net that
+     makes a one-tap "Clear all" reasonable to ship without a confirm dialog. */
+  const [justCleared, setJustCleared] = useState(0)
   const [showWelcome, setShowWelcome] = useState(false)
   const [showDrop, setShowDrop] = useState(false)
   const [showTeam, setShowTeam] = useState(false)
@@ -122,14 +184,63 @@ export default function NotificationBell({
        Supabase user object and is stable no matter where they sign in.
        `readWelcomedAt()` only covers the case a signed-in user's `created_at`
        is unavailable for some reason. */
-    setFeed(buildFeed(jobs || [], apps || [], readPrefs(), user.created_at || readWelcomedAt()))
+    /* Dismissed ids are read here, at build time, rather than being applied to
+       the rendered list. Filtering at render would leave the deleted rows in
+       `feed`, and `feed` is what "Clear all" and the unread count are computed
+       from — so a cleared panel would still have reported unread notifications
+       behind it. */
+    setFeed(
+      buildFeed(
+        jobs || [],
+        apps || [],
+        readPrefs(),
+        user.created_at || readWelcomedAt(),
+        new Date(),
+        readDismissedIds()
+      )
+    )
   }, [user])
 
   useEffect(() => {
     setSeen(readSeen())
     setReadIds(readReadIds())
+    setDismissedIds(readDismissedIds())
     load()
   }, [load])
+
+  /**
+   * Delete one.
+   *
+   * The row goes from `feed` immediately as well as being written to storage.
+   * `load()` would also produce the right list, but it is a network round trip,
+   * and a delete that takes 300ms to visibly happen reads as a broken button and
+   * gets pressed again.
+   */
+  function dismissOne(id: string) {
+    setDismissedIds(dismiss(id))
+    setFeed(f => f.filter(n => n.id !== id))
+    // A fresh delete is a different action from the clear-all that may have
+    // preceded it, so the undo offer for that clear is no longer accurate.
+    setJustCleared(0)
+  }
+
+  function clearAll() {
+    setDismissedIds(dismissAll(feed))
+    setJustCleared(feed.length)
+    setFeed([])
+  }
+
+  function undoClear() {
+    setDismissedIds(restoreDismissed())
+    setJustCleared(0)
+    /* Rebuilt from source rather than restored from a copy held in state. The
+       feed is derived, so re-running the build is both simpler and more correct
+       than keeping a snapshot around: anything that landed while the panel was
+       empty comes back too. Note this also restores individually deleted rows —
+       restoreDismissed clears the whole store, and there is no per-action
+       history here. The button says so. */
+    load()
+  }
 
   /* Listing the note is not reading it — that is the whole reason the welcome
      is tracked by id rather than by the panel-open timestamp. Opening it
@@ -187,6 +298,17 @@ export default function NotificationBell({
       document.removeEventListener('mousedown', onDown)
       document.removeEventListener('keydown', onKey)
     }
+  }, [open])
+
+  /* The undo offer is scoped to the panel session that created it. Closing the
+     bell and reopening it should show the ordinary empty state, not an Undo
+     button for a clear-all from an hour ago that the reader has long since
+     stopped thinking about. Keyed on `open` rather than done inside a close
+     handler because there are four ways to close this panel — the toggle, an
+     outside click, Escape, and following a link — and only this catches all of
+     them. */
+  useEffect(() => {
+    if (!open) setJustCleared(0)
   }, [open])
 
   const unread = unreadCount(feed, seen, readIds)
@@ -253,16 +375,34 @@ export default function NotificationBell({
           </div>
 
           {feed.length === 0 ? (
-            <p className="grotesk-regular notif-empty">
-              New roles matching your filters, scholarship deadlines and tracker changes will show
-              up here.
-            </p>
+            /* Two different empty states, because they mean opposite things. An
+               untouched panel is telling somebody what will arrive here; a
+               cleared one is confirming that something left, and owes them a way
+               back. Running the first copy after a clear-all would read as
+               though the deletion had failed. */
+            justCleared > 0 ? (
+              <div className="notif-empty">
+                <p className="grotesk-regular notif-empty-line">
+                  Cleared {justCleared} notification{justCleared === 1 ? '' : 's'}.
+                </p>
+                <button type="button" className="grotesk-bold notif-undo-btn" onClick={undoClear}>
+                  Undo
+                </button>
+              </div>
+            ) : (
+              <p className="grotesk-regular notif-empty">
+                New roles matching your filters, scholarship deadlines and tracker changes will show
+                up here.
+              </p>
+            )
           ) : (
             <ul className="notif-list">
               {feed.map(n => {
                 const isNew = isUnread(n, seen, readIds)
                 return (
-                  <li key={n.id}>
+                  /* The row and its delete are siblings inside this li, not
+                     nested. See DismissButton for why they cannot be nested. */
+                  <li key={n.id} className="notif-row">
                     {n.href ? (
                       <Link
                         href={n.href}
@@ -286,10 +426,33 @@ export default function NotificationBell({
                         <NotifRow n={n} unread={isNew} />
                       </button>
                     )}
+                    <DismissButton n={n} onDismiss={dismissOne} />
                   </li>
                 )
               })}
             </ul>
+          )}
+
+          {/* The clear-all, at the base of the panel and pinned there.
+              Sticky rather than scrolling away with the list, for the same
+              reason the header is sticky: with twenty notifications the control
+              that empties them should not be twenty rows down.
+              Rendered only when there is something to clear — a disabled button
+              on an empty panel is a control that exists to tell you it does
+              nothing. There is no confirm step, deliberately: the empty state
+              above offers Undo, which is a better answer than a dialog because
+              it costs nothing when the press was intended. */}
+          {feed.length > 0 && (
+            <div className="notif-panel-foot">
+              <button
+                type="button"
+                className="grotesk-bold notif-clear-btn"
+                onClick={clearAll}
+                aria-label={`Clear all ${feed.length} notifications`}
+              >
+                Clear all
+              </button>
+            </div>
           )}
         </div>
       )}
@@ -320,19 +483,23 @@ export default function NotificationBell({
 
             <div className="notif-modal-inner">
               <p className="display-black notif-modal-title">
-                {NEW_ROLES_COUNT} new roles on the board.
+                {roleCountLabel()} on the board.
               </p>
 
               <div className="notif-modal-body">
-                <p className="grotesk-regular">
-                  {/* Both sentences are built from lib/new-roles.ts. The second
-                      one used to be written out by hand, which is how it came to
-                      describe three seats while four roles were on the board.
-                      Adding a role there now brings its own clause with it. */}
-                  {employerSentence()} are hiring, and every opening is checked against the
-                  employer&rsquo;s own notice.
-                </p>
-                <p className="grotesk-regular">{roleSummary()}.</p>
+                {/* Every sentence here is a complete string built in
+                    lib/new-roles.ts, and none of it is assembled out of JSX
+                    fragments and ternaries any more. Two reasons. The copy was
+                    wrong — the seats line was a verbless fragment and the
+                    provenance line used a singular possessive for two firms —
+                    and it was wrong in a way that could not be read off the
+                    page, because half the sentence was spread across three
+                    lines of markup with conditional whitespace between them.
+                    Sentences that have to be grammatical should be written
+                    somewhere you can read them as sentences. */}
+                <p className="grotesk-regular">{hiringSentence()}</p>
+                <p className="grotesk-regular">{seatsSentence()}</p>
+                <p className="grotesk-regular">{checkedSentence()}</p>
               </div>
 
               <Link

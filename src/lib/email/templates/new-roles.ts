@@ -1,4 +1,13 @@
-import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF, ROLE_ENTRIES } from '@/lib/new-roles'
+import {
+  NEW_ROLES,
+  NEW_ROLES_HREF,
+  ROLE_ENTRIES,
+  dropSubject,
+  dropVerb,
+  noticePhrase,
+  roleCountLabel,
+  roleSummary,
+} from '@/lib/new-roles'
 
 /**
  * The new roles announcement.
@@ -49,35 +58,39 @@ const CONTOUR =
  * The wording is unchanged; only its home moved. */
 const ROLES = ROLE_ENTRIES
 
-const _RETIRED_ROLES = [
-  {
-    employer: 'Babalakin & Co',
-    title: 'Senior Associate, Energy & Extractive Industries',
-    line: 'Lagos, senior level. Energy, oil and gas, and extractive industries work. Applications go through the firm’s recruitment portal, and there is no closing date on it yet.',
-  },
-  {
-    employer: 'Zyph Legal',
-    title: 'Legal Associate',
-    line: 'Fully remote, full time, open to lawyers newly called to the Bar. Technology, corporate and commercial work. Apply by email with a CV and a short cover note. Closes 20 August.',
-  },
-]
+/* Shared with the notification modal rather than defined twice — the singular
+   possessive ("the employer's own notice", describing two employers) was in
+   both places, and fixing it in one would have left the other wrong. */
+const NOTICE_OWNER = noticePhrase()
+
+/* _RETIRED_ROLES lived here: a copy of the two roles from the drop before last,
+   kept "for reference" after the entries moved to lib/new-roles.ts. It was dead
+   the day it was written — nothing read it — and by the time it was deleted it
+   described roles that had been off the board for a week. A stale copy of an
+   announcement sitting in the file that writes announcements is a trap for
+   whoever edits this next. Git has the history. */
 
 export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: string }) {
   const first = (name || '').trim().split(/\s+/)[0]
+  /* THE SHORT FIRM NAMES, not the full ones. The headline is set at 26px and
+     the subject line is cut off around 70 characters in most clients, and
+     "Olajide Oyewole LLP (DLA Piper Africa)" spends 19 of those on a
+     parenthetical. The network name is not lost — it is on the role card below,
+     where there is room for it and where somebody reading the actual role will
+     see it. */
+  const firms = NEW_ROLES.employersShort.join(' and ')
   /* Names the firms rather than grading them. "Two worth a look" was our
      opinion arriving before the reader had the facts to form their own. */
-  const greeting = first
-    ? `${first}, ${NEW_ROLES.employers.join(' and ')} are hiring.`
-    : `${NEW_ROLES.employers.join(' and ')} are hiring.`
-  const subject = `${NEW_ROLES_COUNT} new roles: ${NEW_ROLES.employers.join(' and ')}`
+  const greeting = first ? `${first}, ${firms} are hiring.` : `${firms} are hiring.`
+  const subject = `${roleCountLabel()}: ${firms}`
   const link = `${siteUrl}${NEW_ROLES_HREF}`
 
   const text = [
     greeting,
     '',
     ...ROLES.flatMap(r => [`${r.employer}: ${r.title}`, r.line, '']),
-    'Both were read off the firms’ own notices, so the closing dates and the',
-    'application routes above are the ones they published.',
+    `${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER}, so the closing dates and`,
+    'the application routes above are the ones they published.',
     '',
     `See them here: ${link}`,
     '',
@@ -96,7 +109,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
 </head>
 <body style="margin:0;padding:0;background-color:${CREAM};">
 <div style="display:none;font-size:1px;color:${CREAM};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-  ${ROLES.map(r => r.employer).join(' and ')} are hiring.
+  ${roleSummary()}.
 </div>
 
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${CREAM}" style="border-collapse:collapse;background-color:${CREAM};background-image:${CONTOUR};background-repeat:repeat;">
@@ -143,9 +156,9 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
             ).join('')}
 
             <p style="margin:14px 0 20px 0;font-size:15px;line-height:1.7;color:${INK};">
-              Both were read off the firms&rsquo; own notices, so the closing dates and the
-              application routes above are the ones they published rather than an aggregator&rsquo;s
-              guess.
+              ${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER.replace(/’/g, '&rsquo;')}, so the
+              closing dates and the application routes above are the ones they published rather
+              than an aggregator&rsquo;s guess.
             </p>
 
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 24px 0;">

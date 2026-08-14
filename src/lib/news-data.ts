@@ -14,7 +14,7 @@
  */
 
 import { ALL_FIRMS } from '@/lib/firms-data'
-import { NEW_ROLES, NEW_ROLES_COUNT, NEW_ROLES_HREF } from './new-roles'
+import { NEW_ROLES, NEW_ROLES_HREF, carouselSummary, roleCountLabel } from './new-roles'
 
 export type NewsKind = 'update' | 'tip' | 'news'
 
@@ -87,23 +87,37 @@ const ITEMS: NewsItem[] = [
        also read, so a slide promising two roles and a board filtering to three
        is not a state this can reach.
 
-       The artwork is reusable on purpose. It shows entries being added rather
-       than anything about these two firms, so the next drop inherits it by
-       changing lib/new-roles.ts and nothing else. A slide illustrated with
-       something specific to Babalakin or Zyph would have to be redrawn or
-       dropped the moment the roles changed. */
-    slug: 'new-roles-2026-08-10',
+       THE SUMMARY IS NOW DERIVED RATHER THAN TYPED, and that is the whole point
+       of this rewrite. The sentence that used to sit here named Babalakin, Zyph
+       and Pentagon — three firms — while the title counted four, because Ovie
+       Obobolo joined the drop and nobody came back to this string. It is the
+       exact drift lib/new-roles.ts was created to end, surviving in the one
+       place that had not been wired up to it. Each role now contributes its own
+       clause and the count cannot disagree with the list.
+
+       THE ARTWORK IS A SPLASH, NOT AN ILLUSTRATION. It was
+       /illustrations/new-entries.svg, a generic drawing of entries being added,
+       chosen so the next drop could inherit it untouched. That reusability was
+       real and it is being given up deliberately: a mark a Nigerian lawyer
+       recognises does more work on a homepage than a stock drawing of a list,
+       and the splash treatment is the language the rest of the carousel already
+       speaks. The cost is that a drop without Olajide Oyewole in it has to
+       change this line, which is a fair trade for a slide that says something. */
+    slug: 'new-roles-2026-08-14',
     kind: 'update',
     date: NEW_ROLES.at.slice(0, 10),
-    title: `${NEW_ROLES_COUNT} new roles on the board`,
-    summary:
-      'Babalakin & Co want a senior associate for energy and extractive industries. Zyph Legal are hiring a fully remote associate, open to lawyers just called. Pentagon Partners are taking associates into governance, risk and compliance, from one to ten years post call. All three checked against the employer’s own notice.',
+    title: `${roleCountLabel()} on the board`,
+    summary: `${carouselSummary()} Both checked against the employer’s own notice.`,
     href: NEW_ROLES_HREF,
     cta: 'Show me the new roles',
-    /* Empty alt, like the rankings slide. The illustration is decoration beside
-       a headline that already says everything it depicts, so describing it to a
-       screen reader would only repeat the sentence next to it. */
-    media: { type: 'image', src: '/illustrations/new-entries.svg', alt: '' },
+    /* Both marks, as paint splashes — the DLA Piper Africa lockup and KBO's
+       monogram — rendered by exactly the same path as the two slides below that
+       carry firm marks, so they get the same white blob plate, the same size and
+       the same rotation variants with no special casing.
+       'kbo-legal' is not a directory firm, so it resolves through EMPLOYER_LOGOS
+       rather than ALL_FIRMS. See the note in NewsCarousel about why that lookup
+       moved out of the JSX. */
+    media: { type: 'logos', slugs: ['olajide-oyewole', 'kbo-legal'] },
   },
   {
     slug: 'firm-rankings',

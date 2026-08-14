@@ -1,4 +1,4 @@
-import { openGraph } from '@/components/seo/JsonLd'
+import JsonLd, { breadcrumb, openGraph, webPageSchema } from '@/components/seo/JsonLd'
 import Link from 'next/link'
 import LegalPage, { Clause } from '@/components/layout/LegalPage'
 
@@ -71,15 +71,65 @@ export const metadata = {
  *     page takes instead is the one that is actually true: we do not keep your
  *     file, we keep what the tools produce from it.
  *
+ * 14 AUGUST 2026 PASS. Three things had been shipped since the last audit and
+ * none of them were in this notice. All three are now in clause 1, and it is
+ * worth naming what they were, because the pattern is the same each time: a
+ * feature lands, it writes something, and the notice is the file nobody
+ * remembers is downstream of it.
+ *
+ *   - `password_history`. A table of scrypt hashes of passwords previously set
+ *     on an account, added 10 August, read once when somebody sets a new
+ *     password to refuse a reuse. It is NOT an authentication store — Supabase
+ *     owns the live credential — but it is unquestionably personal data derived
+ *     from a secret, and a notice that lists what we hold cannot leave out a
+ *     table of password hashes. See lib/password-history.ts. Note it is also
+ *     absent from USER_DATA_TABLES in lib/account.ts, so clause 6 says plainly
+ *     that it goes with the account rather than implying a button sweeps it.
+ *   - `profiles.referred_by` and the `esq_ref` browser key, both from the
+ *     ambassador programme on 10 August. The key holds a campaign code for 90
+ *     days and never leaves the browser until an account is created; the column
+ *     records which ambassador's link brought somebody in, is written once at
+ *     signup and never updated. Neither is a tracker in the sense clause 1
+ *     disclaims — there is no third party and no cross-site anything — but
+ *     "storage in your own browser that never reaches us" was a complete list
+ *     and had stopped being one.
+ *   - `esquirely:notifications-dismissed`, added today with the delete and
+ *     clear-all controls on the notification panel. Same character as the two
+ *     read markers beside it.
+ *
+ * Also corrected: the storage clause said clearing your browser data loses "the
+ * read markers and your saved list", which is now short by the referral code.
+ *
  * If any of that changes, this page has to change with it. A notice that
  * describes a system you no longer run is worse than no notice, because it is
  * evidence you were told what you were doing and said otherwise.
  */
 export default function PrivacyPage() {
   return (
+    <>
+      {/* "Does Esquirely sell my data" and "what does Esquirely do with my CV"
+          are questions an answer engine will be asked, and the answers are on
+          this page. The schema is what tells it this document is authoritative
+          about this site rather than one more page that mentions it. The
+          description states the two facts most likely to be asked for, because
+          that is the string a retrieval system quotes. */}
+      <JsonLd
+        data={[
+          webPageSchema({
+            path: '/privacy',
+            name: 'Esquirely Privacy Policy',
+            description:
+              'How Esquirely handles personal data under the Nigeria Data Protection Act 2023. Uploaded CV files are never stored; four processors (Supabase, Anthropic, Vercel, Brevo); no analytics, advertising or third-party tracking; data is never sold or passed to employers; accounts can be deleted self-serve with a 30 day grace period.',
+          }),
+          breadcrumb([
+            { name: 'Esquirely', path: '/' },
+            { name: 'Privacy', path: '/privacy' },
+          ]),
+        ]}
+      />
     <LegalPage
       title="Privacy"
-      updated="9 August 2026"
+      updated="14 August 2026"
       intro="What we collect, why we collect it, who else sees it, and what you can make us do about it. Written to be read, not to be survived."
       summary={{
         heading: 'Headnote',
@@ -87,6 +137,7 @@ export default function PrivacyPage() {
           'We collect your email, your account profile, and whatever you put in the tracker.',
           'Your CV file is never stored. What the tools write from it is: the review, and any CV you generate.',
           'Four processors: Supabase, Anthropic, Vercel and Brevo.',
+          'No analytics, no advertising, no third-party trackers, and so no cookie banner.',
           'We do not sell your data or pass it to employers.',
           'You can delete your account yourself from the account page. It runs 30 days later, and signing in cancels it.',
         ],
@@ -110,6 +161,13 @@ export default function PrivacyPage() {
             us. There is no other way to sign in at present.
           </li>
           <li>
+            <strong>Hashes of passwords you have previously used on your account.</strong> When you
+            change your password we check the new one against the last few you have set, so that you
+            cannot silently reuse one. To do that we keep a one-way hash of each, never the password
+            itself, and nothing reads them to let anyone in. This is separate from the credential you
+            actually sign in with, which is held by our authentication provider and not by us.
+          </li>
+          <li>
             <strong>Your profile.</strong> Your name, career stage, preferred location, and the
             practice areas you are interested in. All optional, and you can edit or clear any of them
             on your account page.
@@ -122,6 +180,13 @@ export default function PrivacyPage() {
           <li>
             <strong>Application tracker entries.</strong> The roles you choose to record, the stage
             you have reached with each, and anything you log about a rejection.
+          </li>
+          <li>
+            <strong>Which campus ambassador invited you, if one did.</strong> Ambassadors are given a
+            link with their own code on it. If you arrive on one, that code is recorded against your
+            account when you sign up, so we can tell an ambassador how many people they brought in.
+            It is a code for a person we agreed something with, not a profile of you, it is written
+            once and never changed afterwards, and it is not used to target anything at you.
           </li>
           <li>
             <strong>Text you submit to the career tools.</strong> Your CV, draft cover letter inputs,
@@ -153,14 +218,18 @@ export default function PrivacyPage() {
             when you sign out; and a small amount of storage in your own browser that never reaches
             us. <code>esquirely:prefs</code> holds your answers to the questions on the home page
             if you answer them without an account, and{' '}
-            <code>esquirely:notifications-seen</code>, <code>esquirely:notifications-read</code> and{' '}
-            <code>esquirely:welcomed-at</code>, which only record which notifications you have
-            already looked at so the same ones stop being flagged as new. One more,{' '}
-            <code>esquirely.saved.v1</code>, holds the roles and firms you have saved. Saved items
-            live in your browser and are not copied to our database, which is the trade: they cost
-            us nothing and tell us nothing, and they do not follow you to another device. Clearing
-            your browser data removes all of these, and what you lose is the read markers and your
-            saved list.
+            <code>esquirely:notifications-seen</code>, <code>esquirely:notifications-read</code>,{' '}
+            <code>esquirely:notifications-dismissed</code> and <code>esquirely:welcomed-at</code>,
+            which only record which notifications you have already looked at, or deleted, so the
+            same ones stop coming back. One more, <code>esquirely.saved.v1</code>, holds the roles
+            and firms you have saved. Saved items live in your browser and are not copied to our
+            database, which is the trade: they cost us nothing and tell us nothing, and they do not
+            follow you to another device. There is also <code>esq_ref</code>, which holds a campus
+            ambassador&rsquo;s code for 90 days if you arrived on one of their links, so that they
+            still get credit if you come back and sign up a week later. It holds a code, not
+            anything about you, and it stays in your browser until the moment you create an account.
+            Clearing your browser data removes all of these, and what you lose is the read markers,
+            your saved list, and any ambassador credit not yet claimed.
           </li>
           <li>
             <strong>Technical logs.</strong> Standard server and security logs kept by our hosting
@@ -265,6 +334,10 @@ export default function PrivacyPage() {
         <ul>
           <li>Account, profile and tracker data: for as long as your account exists.</li>
           <li>
+            Password history hashes: for as long as your account exists, and only the last few. They
+            go when the account goes.
+          </li>
+          <li>
             Uploaded CV files: not retained at all, as set out in clause 2. Only the file name
             survives the request.
           </li>
@@ -348,5 +421,6 @@ export default function PrivacyPage() {
         </p>
       </Clause>
     </LegalPage>
+    </>
   )
 }

@@ -1,10 +1,50 @@
+import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Footer from '@/components/layout/Footer'
 import JobsClient from './JobsClient'
 import { createClient as createSessionClient } from '@/lib/supabase/server'
 import { openJobs } from '@/lib/open-jobs'
+import JsonLd, { breadcrumb, jobListSchema, openGraph } from '@/components/seo/JsonLd'
 export const revalidate = 0
+
+/**
+ * ⚠ THIS PAGE HAD NO METADATA AT ALL, and it was the most expensive omission on
+ * the site.
+ *
+ * Every other public route declares a title, a description and a canonical.
+ * This one declared nothing, so it inherited the root layout's defaults and
+ * served the generic site title — "Esquirely | Nigeria's Legal Career Platform"
+ * — as the name of the jobs board. Compare /firms, which announces itself as
+ * "Nigerian Law Firms Directory: 68 Firms, Offices and Practice Areas". One of
+ * those two pages can rank for what it is about and the other cannot, and the
+ * difference is this block rather than anything about the content.
+ *
+ * THE MISSING CANONICAL WAS THE WORSE HALF. The filtered board is reached as
+ * /jobs?roles=slug-a,slug-b — the URL the announcement email, the notification
+ * bell and the carousel slide ALL point at, which means it is the variant most
+ * likely to be linked and crawled. With no canonical, that is a separate page
+ * to a search engine: link equity splits between it and /jobs, and the version
+ * that gets indexed is a board filtered to two roles that will be closed in
+ * three months. Pointing every query-string variant at /jobs consolidates them
+ * and is the honest answer, because they are all the same board.
+ *
+ * A LONG DESCRIPTION, DELIBERATELY. This is the field an AI answer engine
+ * quotes when asked what the page is, and "legal jobs in Nigeria" is not an
+ * answer. Naming the levels, the cities and what a listing actually carries is.
+ */
+export const metadata: Metadata = {
+  title: 'Legal Jobs in Nigeria: Law Firm Vacancies, NYSC and Internships',
+  description:
+    'Open roles for Nigerian lawyers and law students, checked against each employer’s own notice. Associate and senior associate seats, post-NYSC and post-call openings, internships and graduate programmes across Lagos, Abuja and Port Harcourt, each with the practice area, the closing date and how to apply.',
+  alternates: { canonical: '/jobs' },
+  openGraph: openGraph({
+    path: '/jobs',
+    title: 'Legal Jobs in Nigeria | Esquirely',
+    description:
+      'Open roles for Nigerian lawyers and law students, checked against each employer’s own notice.',
+  }),
+}
 
 /**
  * The board.
@@ -37,8 +77,26 @@ export default async function JobsPage() {
   const all = jobs || []
   const visible = user ? all : openJobs(all)
 
+  /* ALWAYS THE OPEN SET, never `visible`, and the distinction matters because
+     this page is rendered per-request. `visible` is the whole board for a
+     signed-in reader, so keying the schema off it would publish the gated
+     listings' titles and URLs into the JSON-LD of whichever render a crawler
+     happened to catch with a session — and every one of those URLs answers a
+     stranger with a redirect to /auth/login. The list a machine is told about
+     has to be the list a machine can actually read. */
+  const crawlable = openJobs(all)
+
   return (
     <div>
+      <JsonLd
+        data={[
+          jobListSchema(crawlable),
+          breadcrumb([
+            { name: 'Esquirely', path: '/' },
+            { name: 'Jobs', path: '/jobs' },
+          ]),
+        ]}
+      />
       {/* JobsClient reads useSearchParams to seed its filters from the URL, and
           Next requires that to sit inside a Suspense boundary. */}
       <Suspense fallback={null}>
