@@ -67,7 +67,16 @@ export default async function JobsPage() {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   if (!url || !key) return <div style={{padding:'2rem'}}>Config error: missing env vars</div>
   const supabase = createClient(url, key)
-  const { data: jobs } = await supabase.from('jobs').select('*').order('created_at', { ascending: false })
+  /* ⚠ `is_active` MUST BE FILTERED HERE. It is how a listing comes off the
+     board without its row being deleted — see the long note in
+     scripts/2026-08-15-agent-schema.sql. Adding the column hid nothing on its
+     own; this clause is what makes closing a role mean anything, and a query
+     that forgets it shows closed roles as open. */
+  const { data: jobs } = await supabase
+    .from('jobs')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
 
   /* Two clients on purpose. The one above is cookie-less and reads the public
      `jobs` rows; this one carries the session cookie and answers one question.

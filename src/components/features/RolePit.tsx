@@ -342,7 +342,12 @@ export default function RolePit({ listings }: { listings: any[] }) {
         <div className="role-pit-layout">
         <div ref={wrapRef} className="role-pit" onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}>
           {roles.map((l, i) => {
-            const url = logoForEmployer(l.employer)
+            /* The curated mark first, then whatever the agent found on the day
+               it added the listing, then the initials. Same precedence as the
+               board's EmployerMark, and for the same reason: only the files in
+               public/employer-logos have been through normalise-logos.mjs, so a
+               Clearbit PNG is a stand-in until somebody draws one properly. */
+            const url = logoForEmployer(l.employer) || (l as any).logo_url || null
             const fill = SECTOR_FILL[l.sector] || SECTOR_FILL.other
             // Marks drawn on a solid brand field get a ball to match, so the
             // field dissolves into the ball rather than reading as a box on it.

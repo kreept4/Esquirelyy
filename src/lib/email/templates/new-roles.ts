@@ -4,6 +4,7 @@ import {
   ROLE_ENTRIES,
   dropSubject,
   dropVerb,
+  employerSentenceShort,
   noticePhrase,
   roleCountLabel,
   roleSummary,
@@ -78,10 +79,20 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
      parenthetical. The network name is not lost — it is on the role card below,
      where there is room for it and where somebody reading the actual role will
      see it. */
-  const firms = NEW_ROLES.employersShort.join(' and ')
+  const firms = employerSentenceShort()
   /* Names the firms rather than grading them. "Two worth a look" was our
      opinion arriving before the reader had the facts to form their own. */
-  const greeting = first ? `${first}, ${firms} are hiring.` : `${firms} are hiring.`
+  /* ⚠ AN EM DASH AFTER THE NAME, NOT A COMMA, AND IT IS NOT A STYLE CHOICE.
+     This headline was `${first}, ${firms} are hiring.`, which for a drop of two
+     renders "Tobi, KBO and Olajide Oyewole are hiring." — three names separated
+     by a comma and an "and", which is a list. The reader's own name becomes the
+     first employer in it. Every other template here opens `${first}, …` quite
+     safely because what follows is a clause ("Tobi, this one closes today."); it
+     is only here that the clause is itself a list of proper nouns, so it is only
+     here that the comma has two readings. A dash cannot be read as a list
+     separator, so the name stays a vocative however many firms the next drop
+     names. Do not put the comma back. */
+  const greeting = first ? `${first} — ${firms} are hiring.` : `${firms} are hiring.`
   const subject = `${roleCountLabel()}: ${firms}`
   const link = `${siteUrl}${NEW_ROLES_HREF}`
 
@@ -140,7 +151,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
 
         <tr>
           <td style="padding:0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;">
-            <p style="margin:0 0 18px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:-0.6px;color:${INK};">${greeting}</p>
+            <p style="margin:0 0 18px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:-0.6px;color:${INK};">${greeting.replace(/—/g, '&mdash;')}</p>
 
             ${ROLES.map(
               r => `

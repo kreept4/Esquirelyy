@@ -173,7 +173,10 @@ export default function NotificationBell({
     // the query as well as by RLS, so a policy change cannot leak someone
     // else's applications into this panel.
     const [{ data: jobs }, { data: apps }] = await Promise.all([
-      supabase.from('jobs').select('*').order('created_at', { ascending: false }).limit(40),
+      /* Closed listings never become notifications. Telling somebody about a
+         role that is already off the board is the one notification guaranteed
+         to waste their time. */
+      supabase.from('jobs').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(40),
       supabase.from('applications').select('*').eq('user_id', user.id).order('updated_at', { ascending: false }).limit(20),
     ])
 

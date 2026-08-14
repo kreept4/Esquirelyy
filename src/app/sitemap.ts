@@ -25,7 +25,14 @@ async function openJobPaths(): Promise<string[]> {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   if (!url || !key) return []
   try {
-    const { data, error } = await createClient(url, key).from('jobs').select('slug')
+    /* Closed listings leave the sitemap, because their pages 404 — see the
+       is_active check in jobs/[slug]/page.tsx. A sitemap that keeps advertising
+       a URL that 404s is the exact pattern lib/open-jobs.ts warns about: it
+       teaches a crawler to stop trusting the host. */
+    const { data, error } = await createClient(url, key)
+      .from('jobs')
+      .select('slug')
+      .eq('is_active', true)
     if (error || !data) return []
     return openJobs(data).map(j => `/jobs/${j.slug}`)
   } catch {

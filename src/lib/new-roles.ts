@@ -145,6 +145,22 @@ export function employerSentence(): string {
 }
 
 /**
+ * The same sentence, with the short firm names. "A, B, C and D".
+ *
+ * For the places where the full name's parenthetical network would not fit — an
+ * email headline set at 26px, a subject line cut off at 70 characters. The
+ * announcement email built this inline as `employersShort.join(' and ')`, which
+ * is right for a drop of two and produces "A and B and C" for a drop of three,
+ * i.e. the exact off-by-one the function above exists to prevent. It was the
+ * same bug in the same file, avoided in one place and rewritten in the other.
+ */
+export function employerSentenceShort(): string {
+  const names = [...NEW_ROLES.employersShort]
+  if (names.length <= 1) return names[0] ?? ''
+  return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
+}
+
+/**
  * The roles as one clause list, for the bell.
  *
  * Oxford-comma-free and deliberately not ending in a full stop, so the caller

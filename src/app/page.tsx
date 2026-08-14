@@ -42,7 +42,13 @@ export const INK_BLACK = '#000000'
 
 export default async function HomePage() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-  const { data: jobs } = await supabase.from('jobs').select('*').order('created_at', { ascending: false })
+  /* Closed listings never reach the ball pit. Same clause as the board — see
+     the note there, and the migration that added the column. */
+  const { data: jobs } = await supabase
+    .from('jobs')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
   const listings = jobs || []
   // 'Open right now' must mean it. Anything past its deadline is excluded;
   // rolling roles and roles with no stated deadline stay.

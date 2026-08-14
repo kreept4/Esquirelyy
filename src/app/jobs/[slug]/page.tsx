@@ -41,7 +41,15 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const { data: job } = await db().from('jobs').select('title, employer, location, role_desc, about').eq('slug', slug).single()
+  /* Matches the page's own filter below. If the page 404s, its metadata must
+     not describe a live role — a share card for a listing that no longer
+     exists is worse than no card at all. */
+  const { data: job } = await db()
+    .from('jobs')
+    .select('title, employer, location, role_desc, about')
+    .eq('slug', slug)
+    .eq('is_active', true)
+    .single()
   if (!job) return { title: 'Role not found' }
 
   const where = job.location ? ` in ${job.location}` : ''
@@ -143,7 +151,18 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
 
   if (!isOpenJob(slug) && !user) redirect(`/auth/login?redirect=/jobs/${slug}`)
 
-  const { data: job } = await db().from('jobs').select('*').eq('slug', slug).single()
+  /**
+   * ⚠ A CLOSED LISTING 404s, AND THAT IS THE HOUSE POSITION RATHER THAN A
+   * SHORTCUT. lib/open-jobs.ts settles this in as many words: "If a role
+   * genuinely has to come down, delete the listing so the page 404s honestly —
+   * a 404 is a clean signal and a gate is not." Delisting is the same event as
+   * deleting from a reader's point of view; the difference is only that the row
+   * survives so the decision can be undone and audited.
+   *
+   * The sitemap drops closed slugs for the same reason, so nothing keeps
+   * advertising a URL that answers 404.
+   */
+  const { data: job } = await db().from('jobs').select('*').eq('slug', slug).eq('is_active', true).single()
   if (!job) return notFound()
 
   /**

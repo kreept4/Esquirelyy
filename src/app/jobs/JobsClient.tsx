@@ -83,8 +83,21 @@ function initials(name: string) {
 /** Employer mark, sized to the row. No plate: on a white board a dark-on-white
  *  logo simply sits on the page. Only marks drawn on a solid brand field get a
  *  tile, and it matches that field so no edge shows. */
-function EmployerMark({ employer }: { employer: string }) {
-  const url = logoForEmployer(employer)
+/**
+ * @param logoUrl The listing's own `logo_url`, used ONLY when we have no
+ *   curated mark for this employer. The agent sets it from Clearbit when it
+ *   adds a listing for an employer nobody has drawn a logo for yet — see the
+ *   column's note in scripts/2026-08-15-agent-schema.sql.
+ *
+ *   ⚠ THE CURATED MARK WINS, and the order matters rather than being a
+ *   preference. Files in public/employer-logos have been through
+ *   normalise-logos.mjs and share a cap height with every other mark on the
+ *   board; a raw Clearbit PNG has not and does not. Taking the curated one
+ *   first means dropping a proper file in later upgrades every listing for that
+ *   employer with nothing to clean up here.
+ */
+function EmployerMark({ employer, logoUrl }: { employer: string; logoUrl?: string | null }) {
+  const url = logoForEmployer(employer) || logoUrl || null
   const brand = ballBgForEmployer(employer)
 
   if (!url) {
@@ -478,7 +491,7 @@ export default function JobsClient({
 
             {filtered.map(job => (
               <div key={job.id} className="job-row" data-closing={!!job.is_closing_soon}>
-                <EmployerMark employer={job.employer} />
+                <EmployerMark employer={job.employer} logoUrl={(job as any).logo_url} />
 
                 <span className="job-role">
                   {/* Schibsted, not Hanken. The two-family rule is display vs
