@@ -70,10 +70,53 @@ const MODEL = 'claude-opus-5'
  * appended and NO new user message; the API sees the trailing server_tool_use
  * block and picks up where it stopped.
  */
-const MAX_RESUMES = 6
+/**
+ * ⚠ THIS NUMBER COST $47 ON THE FIRST DAY. Read the whole note before raising it.
+ *
+ * Resuming a paused turn means re-sending the ENTIRE conversation, and by the
+ * time the server-tool loop pauses, that conversation contains every page
+ * web_fetch has pulled in, in full. Each resume therefore re-bills everything
+ * accumulated so far. It is quadratic, it is silent, and it does not look
+ * expensive when you write it.
+ *
+ * Measured on 15 August 2026, from the account's own usage export: four sweeps,
+ * 64 web searches, and 9,513,634 input tokens with zero cache reads —
+ * approximately 2.4 MILLION input tokens per sweep, or about $12 each at Opus
+ * rates. The searches themselves were $0.64 of it. Essentially all of the cost
+ * was re-sending fetched pages.
+ *
+ * Three things now hold it down, and all three matter:
+ *
+ *   max_content_tokens on web_fetch, so one enormous page cannot dominate the
+ *   context. This is the single biggest lever — it is the absence of this that
+ *   turned "read some careers pages" into millions of tokens.
+ *
+ *   cache_control on the system prompt, so the stable prefix is billed at 0.1x
+ *   on every resume instead of full price. The usage export showed
+ *   cache_read = 0, meaning every resend paid full freight.
+ *
+ *   Two resumes instead of six. A sweep that has not finished after three
+ *   passes is wandering, and the marginal find is not worth the marginal
+ *   re-send.
+ */
+const MAX_RESUMES = 2
+
+/**
+ * How much of any one fetched page may enter the context.
+ *
+ * A Nigerian job board's listing page runs to tens of thousands of tokens of
+ * navigation, related-jobs rails and footer. The part that decides whether a
+ * role belongs on the board is a few hundred words. Capping this costs almost
+ * no signal and removes almost all of the bill.
+ */
+const MAX_PAGE_TOKENS = 6_000
+
+/** Hard ceiling per sweep. Nothing about a legal-jobs search justifies more. */
+const INPUT_TOKEN_CEILING = 400_000
 
 async function runResearch(system: string, prompt: string, maxSearches: number): Promise<string> {
   const messages: Anthropic.MessageParam[] = [{ role: 'user', content: prompt }]
+  let inputTokensSoFar = 0
 
   for (let resume = 0; resume <= MAX_RESUMES; resume++) {
     const stream = anthropic.messages.stream(
@@ -83,7 +126,11 @@ async function runResearch(system: string, prompt: string, maxSearches: number):
            structured answer about each; a tight ceiling truncates the JSON and
            the whole run is wasted at the parse. */
         max_tokens: 32_000,
-        system,
+        /* Cached, so a resume re-reads the stable prefix at a tenth of the
+           price rather than paying for it again. The system prompt is the same
+           bytes on every call by construction — nothing interpolated, no
+           timestamp — which is exactly what makes it cacheable. */
+        system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }] as any,
         messages,
         thinking: { type: 'adaptive' },
         output_config: { effort: 'high' },
@@ -99,7 +146,11 @@ async function runResearch(system: string, prompt: string, maxSearches: number):
           {
             type: 'web_fetch_20260209',
             name: 'web_fetch',
-            max_uses: maxSearches * 2,
+            max_uses: maxSearches,
+            /* See MAX_PAGE_TOKENS. Without this a single bloated careers page
+               can put six figures of navigation markup into a context that then
+               gets re-sent on every resume. */
+            max_content_tokens: MAX_PAGE_TOKENS,
           },
         ] as any,
       },
@@ -108,7 +159,24 @@ async function runResearch(system: string, prompt: string, maxSearches: number):
 
     const message = await stream.finalMessage()
 
+    /* Counted across resumes, because that is where the money went. Cache
+       reads are billed at a tenth, so they are counted at a tenth. */
+    const u: any = message.usage ?? {}
+    inputTokensSoFar +=
+      (u.input_tokens ?? 0) +
+      (u.cache_creation_input_tokens ?? 0) +
+      Math.round((u.cache_read_input_tokens ?? 0) / 10)
+
     if (message.stop_reason === 'pause_turn') {
+      /* ⚠ THE STOP THAT WAS MISSING. Without a ceiling here, a run that keeps
+         pausing keeps re-sending a context that only grows, and nothing in the
+         loop notices. Better a truncated sweep than a four-figure month. */
+      if (inputTokensSoFar > INPUT_TOKEN_CEILING) {
+        throw new Error(
+          `research stopped at the token ceiling (${inputTokensSoFar.toLocaleString()} input tokens). ` +
+            `The sweep was still paused; nothing was lost but nothing was found.`
+        )
+      }
       messages.push({ role: 'assistant', content: message.content as any })
       continue
     }
@@ -120,10 +188,14 @@ async function runResearch(system: string, prompt: string, maxSearches: number):
       throw new Error('the research answer was cut off before it finished')
     }
 
+    console.log(`[agent] research finished — ~${inputTokensSoFar.toLocaleString()} billable input tokens`)
     return message.content.map(b => (b.type === 'text' ? b.text : '')).join('\n')
   }
 
-  throw new Error(`research did not finish after ${MAX_RESUMES} resumes`)
+  throw new Error(
+    `research did not finish after ${MAX_RESUMES} resumes ` +
+      `(~${inputTokensSoFar.toLocaleString()} input tokens spent)`
+  )
 }
 
 /**
@@ -269,12 +341,13 @@ Reply with exactly this shape:
 }
 `.trim()
 
-  /* Sixteen searches, up from twelve when the Africa-programme category was
-     added. That category is searched by firm name and rotates, so it needs a
-     few of its own rather than competing with the Nigerian sweep for the same
-     budget — the effect of leaving it at twelve would have been the new
-     category quietly starving the old one. */
-  const raw = await runResearch(SYSTEM, prompt, 16)
+  /* Ten. It was sixteen, and sixteen was chosen when a search looked like it
+     cost $0.01 — which it does. What it actually costs is the pages the search
+     leads the model to fetch, and those get re-sent on every resume; the
+     15 August usage export put a sweep at roughly $12, of which $0.16 was
+     searching. Cutting the fetch budget with it is the point, not the search
+     count itself. Raise this only alongside the caps in runResearch. */
+  const raw = await runResearch(SYSTEM, prompt, 10)
   const parsed = parseJSON<JobResearchResult>(raw)
 
   return {
