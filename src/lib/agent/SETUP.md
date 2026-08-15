@@ -1,5 +1,36 @@
 # The opportunities agent — setup
 
+> ## ⚠ THE AGENT IS CURRENTLY DISCONNECTED
+>
+> Turned off on 15 August 2026 after the first day of sweeps cost about $47.
+> Four runs, 9,513,634 input tokens, zero cache reads — the paused-turn resume
+> loop was re-sending every fetched page on every resume. See the note on
+> `MAX_RESUMES` in `research.ts` for what went wrong and what now holds it down.
+>
+> Two things are switched off, and **both** must be switched back on:
+>
+> 1. **The Telegram webhook is deleted.** No command reaches the app. Re-register
+>    with the `setWebhook` call in step 5 below.
+> 2. **The cron is removed from `vercel.json`.** Nothing runs on a schedule.
+>    Re-add:
+>    ```json
+>    "crons": [{ "path": "/api/agent/sweep", "schedule": "30 6 * * *" }]
+>    ```
+>
+> ⚠ **BEFORE RECONNECTING EITHER**, do these three, in this order:
+>
+> - **Set a monthly spend limit** in the Anthropic Console. It is the only
+>   control that does not depend on this code being correct.
+> - **Give the agent its own API key.** It currently shares one with the CV
+>   tools, and the usage export groups by key — with a separate key the question
+>   "which system spent this" is answered in seconds rather than argued about.
+> - **Run ONE sweep and read the usage export before running a second.** A fixed
+>   sweep should show roughly 100k input tokens and 10 web searches. If it shows
+>   a million, stop.
+>
+> The cost fixes are in, and they are **estimates that have never been measured**.
+> Treat the first run as a test, not as the agent working.
+
 Finds legal roles, internships and scholarships for Nigerian law students and
 lawyers, proposes them in Telegram, and changes nothing until you tap Approve.
 
