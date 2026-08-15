@@ -1,4 +1,4 @@
-import { requireUser } from '@/lib/api-auth'
+import { requireUserWithQuota } from '@/lib/ai-quota'
 import { NextRequest, NextResponse } from 'next/server'
 import { extractText as extractPdfText, getDocumentProxy } from 'unpdf'
 import mammoth from 'mammoth'
@@ -49,7 +49,7 @@ function getPersona(targetRole: string) {
 }
 
 export async function POST(req: NextRequest) {
-  const { error: unauthorized } = await requireUser()
+  const { error: unauthorized } = await requireUserWithQuota('interview-prep')
   if (unauthorized) return unauthorized
 
   try {

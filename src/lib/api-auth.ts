@@ -24,8 +24,15 @@ import { createClient } from '@/lib/supabase/server'
  * ⚠ THIS IS AUTHENTICATION, NOT A RATE LIMIT. It means an attacker needs an
  * account, which turns an anonymous script into one that has to sign up, and
  * makes the abuse attributable to a row you can disable. It does NOT stop a
- * signed-in user looping the expensive routes. A per-user quota on the AI
- * endpoints is the next piece of this and is not in here.
+ * signed-in user looping the expensive routes.
+ *
+ * THE QUOTA THIS PARAGRAPH USED TO ASK FOR NOW EXISTS, in lib/ai-quota.ts, and
+ * the five Claude routes call `requireUserWithQuota` rather than this function
+ * directly. It took a $47 night on a different endpoint to get written.
+ *
+ * ⚠ SO IF YOU ARE ADDING A ROUTE THAT CALLS CLAUDE, IMPORT THAT ONE, NOT THIS
+ * ONE. This is still correct for everything else — /api/account, the CV
+ * exporter, anything that costs us nothing per call.
  */
 export async function requireUser(): Promise<
   { user: { id: string; email?: string }; error: null } | { user: null; error: NextResponse }

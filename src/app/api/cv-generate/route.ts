@@ -1,4 +1,4 @@
-import { requireUser } from '@/lib/api-auth'
+import { requireUserWithQuota } from '@/lib/ai-quota'
 import { NextRequest, NextResponse } from 'next/server'
 import { askClaude, parseJSON, friendlyError, AIFormatError } from '@/lib/ai'
 import { readUpload } from '@/lib/cv/extract'
@@ -154,7 +154,7 @@ function clean(cv: any) {
 }
 
 export async function POST(req: NextRequest) {
-  const { error: unauthorized } = await requireUser()
+  const { error: unauthorized } = await requireUserWithQuota('cv-generate')
   if (unauthorized) return unauthorized
 
   try {

@@ -27,10 +27,21 @@ import Anthropic from '@anthropic-ai/sdk'
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
-  // Two retries is the SDK default; the extra attempt is cheap next to making
-  // someone upload their CV again, and these calls are already slow enough that
-  // nobody notices one more round trip.
-  maxRetries: 4,
+  /**
+   * ⚠ THIS WAS 4, AND IT MULTIPLIED WITH STREAM_ATTEMPTS BELOW.
+   *
+   * The original note said "the extra attempt is cheap next to making someone
+   * upload their CV again", and for a connection that never opened that is
+   * true — a request refused before it starts costs nothing. The mistake was
+   * that this number does not stand alone. Four SDK retries inside three stream
+   * attempts is up to twelve billed attempts for one click, on a route asking
+   * for 16,000 Opus tokens.
+   *
+   * The expensive case is not the request that fails to connect. It is the one
+   * that streams half an answer and then dies: those tokens are billed, and the
+   * retry starts again from nothing. Two is enough to ride out a blip.
+   */
+  maxRetries: 2,
 })
 
 /**
@@ -83,7 +94,18 @@ function isTransient(err: any): boolean {
   return /terminated|socket|econnreset|etimedout|epipe|network|fetch failed/.test(msg + ' ' + cause)
 }
 
-const STREAM_ATTEMPTS = 3
+/**
+ * ⚠ EVERY ATTEMPT AFTER THE FIRST IS PAID FOR TWICE.
+ *
+ * A stream that dies halfway has already produced tokens, and those tokens are
+ * billed whether or not anything usable came back. Restarting means paying for
+ * the whole answer again — there is no resume. So this number is not "how hard
+ * do we try", it is "how many times will we pay for the same CV review".
+ *
+ * Two, with maxRetries: 2 on the client, is a worst case of four billed
+ * attempts. It was three with maxRetries: 4, which is twelve.
+ */
+const STREAM_ATTEMPTS = 2
 
 export async function askClaude({ system, prompt, maxTokens, model }: AskOptions): Promise<string> {
   let lastErr: any

@@ -1,4 +1,4 @@
-import { requireUser } from '@/lib/api-auth'
+import { requireUserWithQuota } from '@/lib/ai-quota'
 import { NextRequest, NextResponse } from 'next/server'
 import { askClaude, parseJSON, friendlyError } from '@/lib/ai'
 import { HOUSE_STYLE } from '@/lib/house-style'
@@ -24,7 +24,7 @@ function getPersona(targetRole: string) {
 }
 
 export async function POST(req: NextRequest) {
-  const { error: unauthorized } = await requireUser()
+  const { error: unauthorized } = await requireUserWithQuota('interview-feedback')
   if (unauthorized) return unauthorized
 
   try {
