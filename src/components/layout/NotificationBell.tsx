@@ -22,6 +22,9 @@ import {
   type Notification,
 } from '@/lib/notifications'
 import { TEAM_CALL, TEAM_CALL_MAILTO } from '@/lib/team-call'
+/* Same adapter the board uses, so an opportunity is the same shape in the bell
+   as it is on /jobs and the two cannot describe it differently. */
+import { toBoardRow } from '@/lib/opportunities'
 import {
   NEW_ROLES,
   NEW_ROLES_HREF,
@@ -172,12 +175,17 @@ export default function NotificationBell({
     // One round trip for each source. The tracker read is scoped to the user by
     // the query as well as by RLS, so a policy change cannot leak someone
     // else's applications into this panel.
-    const [{ data: jobs }, { data: apps }] = await Promise.all([
+    const [{ data: jobs }, { data: apps }, { data: opps }] = await Promise.all([
       /* Closed listings never become notifications. Telling somebody about a
          role that is already off the board is the one notification guaranteed
          to waste their time. */
       supabase.from('jobs').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(40),
       supabase.from('applications').select('*').eq('user_id', user.id).order('updated_at', { ascending: false }).limit(20),
+      /* Published opportunities. The RLS policy on this table admits only
+         status = 'published' to the anon and authenticated roles, so the gate
+         is the database's rather than a filter somebody has to remember to add
+         here. See scripts/2026-08-17-opportunities-phase0-fix.sql. */
+      supabase.from('opportunities').select('*').eq('status', 'published').order('deadline', { ascending: true }),
     ])
 
     /* Dated to when the ACCOUNT was created, not when this browser first saw
@@ -199,7 +207,8 @@ export default function NotificationBell({
         readPrefs(),
         user.created_at || readWelcomedAt(),
         new Date(),
-        readDismissedIds()
+        readDismissedIds(),
+        (opps || []).map(toBoardRow)
       )
     )
   }, [user])

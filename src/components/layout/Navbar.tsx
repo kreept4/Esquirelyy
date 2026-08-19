@@ -22,16 +22,14 @@ import './StaggeredMenu.css'
 
 const NAV_ITEMS = [
   { label: 'Jobs', ariaLabel: 'Browse legal jobs', link: '/jobs' },
-  /* ⚠ AN ANCHOR, NOT A ROUTE, and the distinction is the ship plan's pre-flight
-     rule five: opportunities fold into the existing jobs and internships page
-     rather than becoming a new top level destination. /opportunities does not
-     exist and deliberately does not.
-     It is a separate entry rather than a rename of Jobs above because the two
-     answer different questions — "what is hiring" and "what can I do this
-     month" — and somebody looking for an internship programme does not think of
-     it as a job. Both land on the same board; this one lands on the featured
-     block within it. */
-  { label: 'Opportunities', ariaLabel: 'Browse internships and other opportunities', link: '/jobs#opportunities' },
+  /* ⚠ THERE IS DELIBERATELY NO "OPPORTUNITIES" ENTRY, AND ONE WAS TRIED.
+     It pointed at /jobs#opportunities, one line under Jobs, and both landed on
+     the same board. Two adjacent entries going to one page is not a choice a
+     reader can make; it is a question about what the difference is, asked every
+     time the menu is opened. The board already is the opportunities page, which
+     is what pre-flight rule five in the ship plan says in as many words.
+     The #opportunities anchor still exists and is still used, by the carousel
+     slide and the featured block itself. It simply is not a navigation item. */
   { label: 'Firms', ariaLabel: 'Browse the firms directory', link: '/firms' },
   { label: 'Scholarships', ariaLabel: 'Browse scholarships', link: '/scholarships' },
   { label: 'Tracker', ariaLabel: 'Open your application tracker', link: '/tracker' },

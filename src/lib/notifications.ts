@@ -304,7 +304,22 @@ export function buildFeed(
      storage here so this stays a pure function and remains testable and
      server-safe — the same reason `jobs` and `applications` are arguments.
      Defaulted so every existing caller keeps working untouched. */
-  dismissed: Set<string> = new Set()
+  dismissed: Set<string> = new Set(),
+  /**
+   * Published opportunities, adapted to board rows by lib/opportunities.ts.
+   *
+   * ⚠ A SEPARATE ARGUMENT RATHER THAN PART OF `jobs`, even though the board
+   * merges the two. The board merges them because a reader searching for an
+   * internship should find one whatever table it came from. The bell is the
+   * opposite case: `jobs` here drives the role rows, which are filtered against
+   * each reader's saved preferences, and an opportunity has no level and no
+   * sector to filter on. Folded into `jobs` it would be silently dropped for
+   * anybody who had set a preference, which is most people who have used the
+   * quiz. Kept apart, it is announced to everyone.
+   *
+   * Defaulted to empty so every existing caller keeps working untouched.
+   */
+  opportunities: any[] = []
 ): Notification[] {
   const out: Notification[] = []
 
@@ -380,6 +395,42 @@ export function buildFeed(
       href: '/scholarships',
       // Dated to the moment it entered the window, so it surfaces once and then
       // ages out of unread rather than re-alerting every time the panel opens.
+      at: new Date(d.getTime() - DEADLINE_WINDOW_DAYS * 86_400_000).toISOString(),
+    })
+  }
+
+  /**
+   * 2b. Opportunities closing inside the window.
+   *
+   * ⚠ kind 'deadline', NOT 'role', and the difference is what the reader is
+   * being told. A role row says "here is something you might want"; this says
+   * "this shuts on a date". LBVIP is three ordered steps, two of them off the
+   * platform, and somebody who reads it the evening before cannot complete it.
+   * The red dot that comes with 'deadline' is the honest signal, and it needs
+   * no new rendering: the bell already knows this kind.
+   *
+   * NOT FILTERED BY PREFERENCES, unlike the role rows above. There is nothing
+   * sensible to filter on. LBVIP has no level, because it is open to students,
+   * graduates and new wigs at once, and any band we invented would hide it from
+   * two of the three groups the firm named.
+   *
+   * Dated the same way a scholarship deadline is, to the moment it entered the
+   * window, so it surfaces once and then ages out of unread rather than
+   * re-alerting every time the panel is opened.
+   */
+  for (const o of opportunities) {
+    if (!o?.deadline || !o?.slug) continue
+    const d = new Date(o.deadline)
+    if (Number.isNaN(d.getTime())) continue
+    const days = Math.ceil((d.getTime() - now.getTime()) / 86_400_000)
+    if (days < 0 || days > DEADLINE_WINDOW_DAYS) continue
+    out.push({
+      id: `opportunity-${o.slug}`,
+      kind: 'deadline',
+      title: o.title,
+      detail:
+        days === 0 ? 'Closes today' : days === 1 ? 'Closes tomorrow' : `Closes in ${days} days`,
+      href: `/jobs/${o.slug}`,
       at: new Date(d.getTime() - DEADLINE_WINDOW_DAYS * 86_400_000).toISOString(),
     })
   }
