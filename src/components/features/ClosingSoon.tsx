@@ -31,6 +31,16 @@ import { OPPORTUNITY_TYPE_LABELS, daysUntil } from '@/lib/opportunities'
  *  board. ECOWAS at twelve days is the current edge case and belongs in. */
 const WINDOW_DAYS = 14
 
+/** Mirrors TYPE_LABELS in JobsClient. Kept here rather than imported because
+ *  that file is the board and this is a card; the two happen to agree today and
+ *  are not the same decision. */
+const JOB_TYPE_LABELS: Record<string, string> = {
+  job: 'Full-time',
+  internship: 'Internship',
+  clerkship: 'Clerkship',
+  fellowship: 'Fellowship',
+}
+
 type Row = {
   id: string
   slug: string
@@ -39,6 +49,8 @@ type Row = {
   deadline?: string | null
   is_rolling?: boolean
   logo_url?: string | null
+  location?: string | null
+  practice_areas?: string[] | null
   is_opportunity?: boolean
   opportunity_type?: string
   type?: string
@@ -60,6 +72,21 @@ export function closingSoon<T extends Row>(rows: T[]): T[] {
       return d !== null && d >= 0 && d <= WINDOW_DAYS
     })
     .sort((a, b) => new Date(a.deadline!).getTime() - new Date(b.deadline!).getTime())
+}
+
+/**
+ * The middle line of a job card, standing in for an opportunity's eligibility.
+ *
+ * Practice areas first, because that is what a reader is choosing on, then
+ * where it is. Capped at two areas: three is a list rather than a label, and
+ * the card is 19rem wide.
+ */
+function summarise(r: Row): string {
+  const areas = (r.practice_areas || []).slice(0, 2).join(' and ')
+  const where = r.location || ''
+  if (areas && where) return `${areas}. ${where}.`
+  if (areas) return `${areas}.`
+  return where ? `${where}.` : ''
 }
 
 /** Initials, for an employer with no mark anywhere. Same filtering as the
@@ -139,12 +166,17 @@ export default function ClosingSoon({ rows }: { rows: Row[] }) {
           {items.map(r => {
             const days = daysUntil(r.deadline)
             const steps = r.application_steps?.length ?? 0
-            /* An opportunity prints its precise kind; a job prints nothing here,
-               because the board row beneath already says Full-time and repeating
-               it in a card this small is noise. */
+/* ⚠ A JOB PRINTS ITS KIND TOO, and the first version deliberately did not.
+               The reasoning then was that the board row underneath already says
+               Full-time, so repeating it here is noise. That was wrong on two
+               counts. The card is a standalone object that somebody may act on
+               without ever scrolling to the row, so "what is this" should not
+               depend on reading something else. And an empty chip row on one
+               card beside a filled one is exactly the unevenness this section
+               was reported for. */
             const kind = r.is_opportunity
               ? OPPORTUNITY_TYPE_LABELS[r.opportunity_type || ''] || 'Opportunity'
-              : null
+              : JOB_TYPE_LABELS[r.type || ''] || null
             return (
               <li key={r.id}>
                 <Link href={`/jobs/${r.slug}`} className="feat-opp-link">
@@ -156,9 +188,20 @@ export default function ClosingSoon({ rows }: { rows: Row[] }) {
                     </div>
                   </div>
 
-                  {r.eligibility && (
-                    <p className="grotesk-regular feat-opp-elig">{r.eligibility}</p>
-                  )}
+                  {/* ⚠ EVERY CARD GETS A LINE HERE, and that is what lets the
+                      cards be the same height without one of them looking
+                      hollow. An opportunity has an eligibility sentence; a job
+                      had nothing at all, so its card was a title, a gap and a
+                      deadline. Two fixes were tried before this one: stretching
+                      the cards made the job a tall empty box, and letting them
+                      size to content made the row ragged. Both were treating a
+                      content problem as a layout problem.
+                      A job's practice areas and location are what somebody
+                      deciding whether to open it actually wants, and they are
+                      already on the row. */}
+                  <p className="grotesk-regular feat-opp-elig">
+                    {r.eligibility || summarise(r)}
+                  </p>
 
                   <div className="feat-opp-foot">
                     {kind && <span className="feat-opp-kind">{kind}</span>}

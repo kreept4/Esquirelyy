@@ -7147,15 +7147,15 @@ video::-webkit-media-controls { display: none !important; }
   list-style: none; margin: 0; padding: 0;
   display: grid; gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
-  /* ⚠ start, NOT the grid default of stretch. These cards carry very unequal
-     amounts: an opportunity has an eligibility line, a kind chip and a step
-     count, while a job has none of the three. Stretched to a common height, the
-     job card became a tall hollow box with its title at the top, its deadline
-     at the bottom and nothing in between, which reads as content that failed to
-     load rather than as a card with less to say.
-     Each card is its own height now. A ragged lower edge is the honest look for
-     rows that genuinely differ. */
-  align-items: start;
+  /* ⚠ EVEN HEIGHTS, which is the grid default, and getting here took three
+     goes. Stretched, a job card was a tall hollow box, because it had no middle
+     line where an opportunity has its eligibility. Setting `align-items: start`
+     fixed the void and made the row ragged instead. Both were treating a
+     content problem as a layout one.
+     ClosingSoon now gives every card a middle line, so the heights are close on
+     their own and stretching them costs nothing. Do not reintroduce `start`
+     without first checking whether some card kind has been left with an empty
+     slot again. */
 }
 
 .feat-opp-link {
