@@ -7147,6 +7147,15 @@ video::-webkit-media-controls { display: none !important; }
   list-style: none; margin: 0; padding: 0;
   display: grid; gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+  /* ⚠ start, NOT the grid default of stretch. These cards carry very unequal
+     amounts: an opportunity has an eligibility line, a kind chip and a step
+     count, while a job has none of the three. Stretched to a common height, the
+     job card became a tall hollow box with its title at the top, its deadline
+     at the bottom and nothing in between, which reads as content that failed to
+     load rather than as a card with less to say.
+     Each card is its own height now. A ragged lower edge is the honest look for
+     rows that genuinely differ. */
+  align-items: start;
 }
 
 .feat-opp-link {
@@ -7282,3 +7291,22 @@ video::-webkit-media-controls { display: none !important; }
    Only the things genuinely particular to a board row belong here. */
 .job-days-left { margin-left: 0.5rem; }
 
+
+/* Initials tile, for a closing-soon card whose employer has no mark anywhere.
+   Sized to sit level with a LogoFrame beside it, so a mixed row of cards keeps
+   one baseline rather than one card standing shorter than the rest. */
+.feat-opp-mark {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 8px;
+}
+.feat-opp-mark-fallback {
+  background: #FFF8E5;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
