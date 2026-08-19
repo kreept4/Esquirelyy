@@ -1,5 +1,5 @@
 /**
- * What is closing this week, as one email.
+ * What is closing in the next few days, as one email.
  *
  * Same tables and the same constraints as welcome.ts and wbg-deadline.ts, for
  * the same reasons: Outlook renders through Word, Gmail strips style blocks,
@@ -76,11 +76,18 @@ export function closingSoonEmail({
   siteUrl,
   items,
   now = new Date(),
+  daysAhead = 7,
 }: {
   name?: string
   siteUrl: string
   items: ClosingItem[]
   now?: Date
+  /**
+   * How many days ahead the caller selected on. Passed in rather than repeated
+   * here, so the sentence in the greeting and the filter that chose the items
+   * cannot say different numbers. The send scripts own the window.
+   */
+  daysAhead?: number
 }) {
   const first = (name || '').trim().split(/\s+/)[0]
   const soonest = items[0]
@@ -89,14 +96,48 @@ export function closingSoonEmail({
   /* Named, not counted. "Two things closing" is the shape of every marketing
      email anybody has ever ignored; which employer and when is what decides
      whether this gets opened. */
+  /**
+   * ⚠ NEVER "THIS WEEK". THE PHRASE CANNOT BE MADE TRUE.
+   *
+   * This said "2 things close this week", sent on Wednesday 19 August, with
+   * LBVIP closing on Sunday the 23rd. Whether that Sunday falls in this week or
+   * the next one depends entirely on whether the reader's week starts on Monday
+   * or on Sunday, and both are ordinary in Nigeria. So the sentence was not
+   * merely arguable, it was a different claim for different readers, which the
+   * site's copy standard rules out in as many words.
+   *
+   * "Within a week" is the fix, and the distinction it turns on is calendar
+   * week against ROLLING DURATION. "This week" names a block with edges, and
+   * the edges move depending on the reader. "Within a week" measures forward
+   * from now and has no edges to disagree about: Sunday the 23rd is within a
+   * week of Wednesday the 19th on anybody's calendar.
+   *
+   * It is also what a person would say. The first attempt at this read "in the
+   * next 7 days", which is accurate, unambiguous and sounds like a form. The
+   * copy standard asks for natural and humanised, and a sentence can be all
+   * three at once.
+   *
+   * ⚠ AND THE FIRST FIX FOR THIS WAS WRONG TOO, which is the reason for the
+   * length of this note. The previous round had the same sentence covering an
+   * item twelve days out; that was narrowed from a fourteen day window to seven
+   * so "this week" would be true. It made the sentence truer without making it
+   * unambiguous, and the ambiguity was the real fault. The window stays at
+   * seven because seven days is the right thing to interrupt somebody about;
+   * the wording changes because weeks are not what is being measured.
+   */
+  /* Falls back to counting days if the window is ever changed off seven, so
+     the sentence cannot quietly start claiming a week for a fortnight. */
+  const horizon = daysAhead === 7 ? 'within a week' : `in the next ${daysAhead} days`
+
   const subject =
     items.length === 1
       ? `Closes ${when}: ${items[0].employer}`
-      : `Closes ${when}: ${soonest.employer}, and ${items.length - 1} more this week`
+      : `Closes ${when}: ${soonest.employer}, and ${items.length - 1} more ${horizon}`
 
+  const count = items.length === 1 ? 'one closing date' : `${items.length} closing dates`
   const greeting = first
-    ? `${first}, ${items.length === 1 ? 'one thing closes' : `${items.length} things close`} this week.`
-    : `${items.length === 1 ? 'One thing closes' : `${items.length} things close`} this week.`
+    ? `${first}, there ${items.length === 1 ? 'is' : 'are'} ${count} ${horizon}.`
+    : `There ${items.length === 1 ? 'is' : 'are'} ${count} ${horizon}.`
 
   const link = (it: ClosingItem) => `${siteUrl}/jobs/${it.slug}`
 

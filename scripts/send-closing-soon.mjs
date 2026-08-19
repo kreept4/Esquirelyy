@@ -219,7 +219,7 @@ let sent = 0
 
 for (const u of recipients) {
   const name = byId.get(u.id)?.full_name || ''
-  const { subject, text, html } = closingSoonEmail({ name, siteUrl: SITE_URL, items: CLOSING_ITEMS })
+  const { subject, text, html } = closingSoonEmail({ name, siteUrl: SITE_URL, items: CLOSING_ITEMS, daysAhead: WINDOW_DAYS })
 
   const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',

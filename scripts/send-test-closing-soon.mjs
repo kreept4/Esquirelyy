@@ -147,7 +147,7 @@ if (!items.length) {
 console.log('items   :')
 for (const it of items) console.log(`  ${String(daysTo(it.deadline)).padStart(2)}d  ${it.employer}: ${it.title}`)
 
-const { subject, html, text } = closingSoonEmail({ name, siteUrl, items })
+const { subject, html, text } = closingSoonEmail({ name, siteUrl, items, daysAhead: WINDOW_DAYS })
 
 console.log('sender  :', `${env.BREVO_SENDER_NAME} <${env.BREVO_SENDER_EMAIL}>`)
 console.log('to      :', to)
