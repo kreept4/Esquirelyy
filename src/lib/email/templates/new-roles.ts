@@ -82,17 +82,22 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
   const firms = employerSentenceShort()
   /* Names the firms rather than grading them. "Two worth a look" was our
      opinion arriving before the reader had the facts to form their own. */
-  /* ⚠ AN EM DASH AFTER THE NAME, NOT A COMMA, AND IT IS NOT A STYLE CHOICE.
+  /* ⚠ THE VOCATIVE GOES LAST, AND IT IS NOT A STYLE CHOICE.
      This headline was `${first}, ${firms} are hiring.`, which for a drop of two
-     renders "Tobi, KBO and Olajide Oyewole are hiring." — three names separated
-     by a comma and an "and", which is a list. The reader's own name becomes the
+     renders "Tobi, KBO and Olajide Oyewole are hiring": three names separated by
+     a comma and an "and", which is a list, and the reader's own name is the
      first employer in it. Every other template here opens `${first}, …` quite
      safely because what follows is a clause ("Tobi, this one closes today."); it
      is only here that the clause is itself a list of proper nouns, so it is only
-     here that the comma has two readings. A dash cannot be read as a list
-     separator, so the name stays a vocative however many firms the next drop
-     names. Do not put the comma back. */
-  const greeting = first ? `${first} — ${firms} are hiring.` : `${firms} are hiring.`
+     here that the comma has two readings.
+
+     That was solved with an em dash after the name. The copy standard for the
+     site does not allow em dashes, so the fix is now structural rather than
+     typographic: the name moves to the end, where nothing follows it to be
+     mistaken for a continuation of a list. This holds however many firms the
+     next drop names, which the comma version did not.
+     Do not move the name back to the front. */
+  const greeting = first ? `${firms} are hiring, ${first}.` : `${firms} are hiring.`
   const subject = `${roleCountLabel()}: ${firms}`
   const link = `${siteUrl}${NEW_ROLES_HREF}`
 

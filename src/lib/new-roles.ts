@@ -59,7 +59,7 @@ export const ROLE_ENTRIES = [
     employerShort: 'Olajide Oyewole LLP',
     title: 'Associate, Dispute Resolution',
     line: 'Abuja, at three to five years post-qualification experience. Commercial litigation, arbitration, mediation, employment disputes and debt recovery. Apply by email to careers@oo.dlapiperafrica.com. Closes 13 November.',
-    short: 'an Abuja dispute resolution seat at three to five years PQE',
+    short: 'an Abuja dispute resolution seat at three to five years post-call',
     /* Two sentences, not one with the network in an appositive. It read
        "Olajide Oyewole LLP, the DLA Piper Africa firm in Nigeria, want a
        dispute resolution associate" — and a singular appositive ("firm")
@@ -68,7 +68,7 @@ export const ROLE_ENTRIES = [
        ("Zyph Legal are hiring", "Babalakin & Co want"), so the fix is to move
        the network out to its own clause rather than to switch number midway. */
     blurb:
-      'Olajide Oyewole LLP, the DLA Piper Africa member firm in Nigeria, are hiring a dispute resolution associate in Abuja at three to five years PQE. It closes on 13 November.',
+      'Olajide Oyewole LLP, the DLA Piper Africa member firm in Nigeria, are hiring a dispute resolution associate in Abuja at three to five years post-call. It closes on 13 November.',
   },
   {
     slug: 'kbo-junior-associate-yaba',

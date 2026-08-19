@@ -14,7 +14,6 @@
  */
 
 import { ALL_FIRMS } from '@/lib/firms-data'
-import { NEW_ROLES, NEW_ROLES_HREF, carouselSummary, roleCountLabel } from './new-roles'
 
 export type NewsKind = 'update' | 'tip' | 'news'
 
@@ -82,70 +81,36 @@ export const KIND_LABEL: Record<NewsKind, string> = {
  */
 const ITEMS: NewsItem[] = [
   {
-    /* The current drop. Slugs, count and employers all come from
-       lib/new-roles.ts, which the notification bell and the announcement email
-       also read, so a slide promising two roles and a board filtering to three
-       is not a state this can reach.
-
-       THE SUMMARY IS NOW DERIVED RATHER THAN TYPED, and that is the whole point
-       of this rewrite. The sentence that used to sit here named Babalakin, Zyph
-       and Pentagon — three firms — while the title counted four, because Ovie
-       Obobolo joined the drop and nobody came back to this string. It is the
-       exact drift lib/new-roles.ts was created to end, surviving in the one
-       place that had not been wired up to it. Each role now contributes its own
-       clause and the count cannot disagree with the list.
-
-       THE ARTWORK IS A SPLASH, NOT AN ILLUSTRATION. It was
-       /illustrations/new-entries.svg, a generic drawing of entries being added,
-       chosen so the next drop could inherit it untouched. That reusability was
-       real and it is being given up deliberately: a mark a Nigerian lawyer
-       recognises does more work on a homepage than a stock drawing of a list,
-       and the splash treatment is the language the rest of the carousel already
-       speaks. The cost is that a drop without Olajide Oyewole in it has to
-       change this line, which is a fair trade for a slide that says something. */
-    slug: 'new-roles-2026-08-14',
+    /**
+     * LBVIP 5.0, and the only slide here with a hard expiry.
+     *
+     * ⚠ THIS SLIDE HAS TO COME OUT ON 24 AUGUST 2026. Every other entry stays
+     * true indefinitely: a ranking, a directory, a tip about writing early. This
+     * one names a programme that shuts on the 23rd, and a carousel still
+     * advertising it on the 24th is worse than one that never carried it,
+     * because the reader who taps it finds a form that has closed.
+     * `getNewsItems()` sorts and does not expire, deliberately, so there is no
+     * mechanism to lean on here. It is a diary note, and it is written in the
+     * one place somebody editing this file will read.
+     *
+     * THE DEADLINE IS IN THE SUMMARY RATHER THAN LEFT TO THE CARD. The carousel
+     * does not render a countdown, so a slide about a closing programme that
+     * does not say when it closes is asking the reader to tap to find out.
+     *
+     * The link goes to the opportunity on Esquirely, not to the firm's Google
+     * Form, for the same reason the announcement email does: the three steps
+     * and the eligibility are read on the platform first, and the form is one
+     * more tap from there.
+     */
+    slug: 'lbvip-5-2026',
     kind: 'update',
-    date: NEW_ROLES.at.slice(0, 10),
-    title: `${roleCountLabel()} on the board`,
-    summary: `${carouselSummary()} Both checked against the employer’s own notice.`,
-    href: NEW_ROLES_HREF,
-    cta: 'Show me the new roles',
-    /* Both marks, as paint splashes — the DLA Piper Africa lockup and KBO's
-       monogram — rendered by exactly the same path as the two slides below that
-       carry firm marks, so they get the same white blob plate, the same size and
-       the same rotation variants with no special casing.
-       'kbo-legal' is not a directory firm, so it resolves through EMPLOYER_LOGOS
-       rather than ALL_FIRMS. See the note in NewsCarousel about why that lookup
-       moved out of the JSX. */
-    media: { type: 'logos', slugs: ['olajide-oyewole', 'kbo-legal'] },
-  },
-  {
-    slug: 'firm-rankings',
-    kind: 'update',
-    date: '2026-08-08',
-    /* Counted off the table, like the directory total below it, because this
-       number moves every time someone reads another guide page.
-
-       THE CLAIM IS DELIBERATELY NOT "WE RANK FIRMS". We do not, and a careers
-       site that appeared to would be worth less, not more: the whole reason a
-       band means anything is that the guides research it by interviewing a
-       firm's clients and its opponents, so nobody — including us — can place
-       themselves in one. The slide says whose rankings these are twice, in the
-       title and again in the last line, because that is the sentence a student
-       needs to weigh the badge and it is the one a skimmed slide would drop. */
-    /* Counted off ALL_FIRMS, not off Object.keys(FIRM_RANKINGS).
-       Those two numbers are the same today and are not guaranteed to be. The
-       rankings table is keyed by slug and, by its own design, a slug in it that
-       matches no firm is ignored rather than throwing, so a single typo would
-       silently inflate this headline while the badge it promises appears
-       nowhere. Counting the firms that actually resolve a ranking means the
-       number can only ever describe badges a reader can go and find. */
-    title: `Independent rankings on ${ALL_FIRMS.filter(f => f.rankings).length} firms`,
+    date: '2026-08-17',
+    title: 'LBVIP 5.0 is open to students, graduates and new wigs',
     summary:
-      'Chambers, IFLR1000 and The Legal 500 EMEA, 2026 editions, read and put on the profiles: the band, the edition, and the practice areas it was earned in. We do not rank firms ourselves, and no firm can pay its way into any of the three.',
-    href: '/firms',
-    cta: 'See who is ranked',
-    media: { type: 'image', src: '/illustrations/rankings.png', alt: '' }
+      'Lekan Bamidele & Co are running the fifth edition of their virtual internship. Applying takes a two minute video on a set topic, a public post tagging the firm, and their form. It closes on 23 August 2026.',
+    href: '/jobs/lbvip-5-0-lekan-bamidele-virtual-internship-programme',
+    cta: 'See the three steps',
+    media: { type: 'logos', slugs: ['lekan-bamidele'] },
   },
   {
     slug: 'nba-president-elect-2026',
@@ -192,9 +157,11 @@ const ITEMS: NewsItem[] = [
        every time someone edits a different file, so hardcoding it guarantees it
        is wrong again within a week. */
     title: `${ALL_FIRMS.length} firms in the directory`,
-    /* The rankings sentence that used to close this summary has moved to the
-       slide of its own above. Two cards in one rotation making the same
-       announcement is how a carousel starts reading as filler. */
+    /* The rankings sentence that used to close this summary moved to a slide of
+       its own, and that slide has since been pulled from the rotation. The
+       sentence is deliberately NOT folded back in here: this card is about what
+       a profile carries, and rankings are a separate claim that earns its own
+       card or none at all. */
     summary:
       'Every profile carries the practice areas, the real office addresses and the address to write to. So you can write to a firm directly instead of waiting for it to advertise.',
     href: '/firms',

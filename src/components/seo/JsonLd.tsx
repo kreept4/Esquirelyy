@@ -250,7 +250,11 @@ export function jobListSchema(jobs: { slug: string; title: string; employer: str
       '@type': 'ListItem',
       position: i + 1,
       url: `${SITE_URL}/jobs/${j.slug}`,
-      name: `${j.title} — ${j.employer}`,
+      /* "at", not an em dash. This string is read back by search engines and
+         answer engines as the name of the listing, so it is copy even though no
+         page renders it, and the copy standard applies. "Associate at Templars"
+         is also simply how a role is said aloud. */
+      name: `${j.title} at ${j.employer}`,
     })),
   }
 }

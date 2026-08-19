@@ -73,6 +73,19 @@ const OPEN_JOB_SLUGS = new Set<string>([
   'zyph-legal-legal-associate',
   // 8 August.
   'abe-asotie-lawyer-legal-aid',
+
+  /* 17 August, and the first opportunity rather than a job.
+     ⚠ OPEN DELIBERATELY, AND IT HAS TO BE. The announcement email sent to
+     members links here rather than straight to the firm's Google Form, so that
+     the full details and the three steps are read on the platform first. A slug
+     outside this set redirects a signed-out reader to /auth/login, which would
+     turn that email into a login wall days before the deadline, and it
+     goes to ninety people, some of whom will open it on a device they have
+     never signed in on.
+     It is also the one listing here that is genuinely a public announcement:
+     the firm published it on Instagram to anyone who cared to look, so gating
+     it would be withholding something that is not ours to withhold. */
+  'lbvip-5-0-lekan-bamidele-virtual-internship-programme',
 ])
 
 /** Whether a signed-out reader may read this listing in full. */

@@ -226,8 +226,14 @@ body {
     display: inline-block;
   }
 
+  /* ⚠ --ink-muted, NOT --ink. Filling to #1A1A1A on hover was a jump from a
+     transparent button straight to near-black, which read as a hard flash
+     against the cream rather than as a state change. #4A4A4A is a grey the eye
+     accepts as "this is now active" without the snap, and cream on it is about
+     8.4:1, so nothing is traded for it. The border stays ink, so the button's
+     outline does not move; only the fill softens. */
   .btn-outline:hover {
-    background: var(--ink);
+    background: var(--ink-muted);
     color: var(--cream);
   }
 
@@ -515,10 +521,67 @@ select.filter-pill {
    two blocks share has to be one number. */
 .firms-grid-wrap { padding: 0 2rem 2rem; }
 
+/* DIRECTORY PAGINATION
+   The count and the Load more button that cap the grid. Both are centred under
+   it and neither is a filter, so they sit outside .card-grid rather than as a
+   final cell in it: a button inside a grid of cards inherits the card's height
+   rules and ends up as tall as a firm. */
+.firms-count {
+  margin: 1.75rem auto 0;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.01em;
+}
+
+.firms-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.875rem;
+}
+
+/* Flex column so the remaining count can sit under the label inside the same
+   button. Two lines rather than one because "Load 12 more, 57 remaining" on a
+   single line is wider than a phone at this letter-spacing and wraps into an
+   unbalanced pill. */
+.firms-more {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  line-height: 1.25;
+}
+
+/* Lowercase and unspaced, against the uppercase tracked label above it. The
+   count is the supporting fact, and setting it in the same treatment as the
+   label would give a secondary number the weight of the action. */
+.firms-more-rest {
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  opacity: 0.65;
+}
+
+/* The focus ring matters more here than on most buttons, because Load more is
+   the one control on this page that a keyboard reader will press repeatedly.
+   :focus-visible rather than :focus, so a mouse click does not leave a ring
+   sitting on the button afterwards. */
+.firms-more:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
 @media (max-width: 640px) {
   .firms-tip-wrap { padding: 1.5rem 1.25rem 1rem; }
   .firms-tip { font-size: 0.84rem; }
   .firms-grid-wrap { padding: 0 1.25rem 1.5rem; }
+
+  /* Full width on a phone. A centred pill at the foot of a long scroll is a
+     small target reached with a thumb at the bottom of the screen, which is
+     the worst combination of the two. */
+  .firms-more { width: 100%; padding-left: 1rem; padding-right: 1rem; }
+  .firms-more-wrap { margin-top: 0.75rem; }
 }
 
 /* FIRM DIRECTORY CARD
@@ -5636,18 +5699,29 @@ video::-webkit-media-controls { display: none !important; }
 }
 .jobs-empty-steps a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
 
+/* ⚠ MINT, NOT INK. This is the one action offered to a reader who filtered to
+   internships and found none, so it is the page's primary call at that moment
+   and should look like every other primary call on the site. In ink it read as
+   a disabled or secondary control sitting under an apology, which is the
+   opposite of what an empty state is for: the whole point is to give somewhere
+   to go. Same object as .apply-card-cta and .amb-apply-cta. */
 .jobs-empty-cta {
   display: inline-flex;
   margin-top: 1.75rem;
   padding: 0.8rem 1.6rem;
-  background: var(--ink);
-  color: var(--cream);
+  background: var(--mint);
+  color: #FFFFFF;
   font-size: 0.82rem;
   border-radius: 999px;
   text-decoration: none;
-  transition: transform 0.18s ease;
+  transition: transform 0.18s ease, background-color 0.18s ease;
 }
-.jobs-empty-cta:hover { transform: translateY(-2px); }
+.jobs-empty-cta:hover { transform: translateY(-2px); background: var(--mint-deep); }
+.jobs-empty-cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .jobs-empty-cta:hover { transform: none; }
+}
 
 /* ============================================================
    TRACKER
@@ -6908,3 +6982,303 @@ video::-webkit-media-controls { display: none !important; }
 @media (prefers-reduced-motion: reduce) {
   .ssn-leaving { animation: none; }
 }
+
+/* ============================================================
+   OPPORTUNITY DETAIL
+   The multi-step application flow. Sits on the jobs detail route, so it keeps
+   that page's ink-on-cream vocabulary rather than inventing a third.
+   ============================================================ */
+/* ⚠ padding-top CLEARS THE FIXED HEADER, and 5rem is not a round number picked
+   by eye — it is what .page-main uses, and the header is the same height on
+   every route. This was 2rem and the back link rendered underneath the navbar,
+   which is the failure mode of styling an inner page in isolation: the job
+   detail route gets away with no top padding only because it opens with its own
+   ink header block, and this page does not. */
+.opp-page {
+  background: var(--cream);
+  min-height: 100vh;
+  padding: 5rem 0 4rem;
+}
+
+.opp-back {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.85rem; color: var(--ink-muted);
+  margin-bottom: 1.5rem;
+}
+.opp-back:hover { color: var(--ink); }
+
+.opp-card { max-width: 46rem; }
+
+.opp-head { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.5rem; }
+.opp-head-text { flex: 1; min-width: 0; }
+.opp-org { font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 0.2rem; }
+.opp-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  line-height: 1.1; letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+.opp-meta { display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 0.84rem; color: var(--ink-muted); }
+.opp-kind {
+  background: var(--ink); color: var(--cream);
+  padding: 0.15rem 0.55rem; border-radius: 999px;
+  font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase;
+}
+
+/* The deadline is its own object, not a line of prose. A closing date buried
+   in a paragraph is how somebody misses a week. */
+.opp-deadline {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 0.9rem;
+  border: 1.5px solid var(--ink);
+  background: #FFF8E5;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 2rem;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.opp-deadline-label { font-size: 0.78rem; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.opp-deadline-date { font-size: 1rem; }
+/* Urgency is earned by the date, not asserted by the copy: the attribute is
+   set from days remaining, so nothing has to be edited as the date nears. */
+.opp-deadline-left {
+  margin-left: auto;
+  font-size: 0.8rem; padding: 0.15rem 0.6rem; border-radius: 999px;
+  border: 1px solid var(--ink-muted); color: var(--ink-muted);
+}
+/* The urgent treatment for this lives with the other two further down, so all
+   three surfaces are defined together and cannot drift apart. */
+
+.opp-block { margin-bottom: 2rem; }
+.opp-h2 {
+  font-size: 1.05rem; margin-bottom: 0.7rem;
+  display: flex; align-items: baseline; gap: 0.6rem;
+}
+.opp-h2-count {
+  font-size: 0.72rem; font-weight: 400; color: var(--ink-muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.opp-body { font-size: 0.95rem; line-height: 1.6; color: var(--ink); }
+
+/* Steps. Numbered because the order is load-bearing: step two cannot be done
+   before step one, and a bulleted list would not say so. */
+.opp-steps { list-style: none; margin: 0; padding: 0; }
+.opp-step { display: flex; gap: 0.9rem; padding-bottom: 1.4rem; position: relative; }
+.opp-step:not(:last-child)::before {
+  content: ''; position: absolute;
+  left: 0.94rem; top: 2.1rem; bottom: 0.4rem;
+  width: 1.5px; background: var(--ink); opacity: 0.18;
+}
+.opp-step-num {
+  flex: none;
+  width: 1.9rem; height: 1.9rem; border-radius: 50%;
+  border: 1.5px solid var(--ink); background: var(--cream);
+  display: grid; place-items: center;
+  font-size: 0.82rem;
+  position: relative; z-index: 1;
+}
+.opp-step-body { flex: 1; min-width: 0; padding-top: 0.15rem; }
+.opp-step-title { font-size: 0.95rem; margin-bottom: 0.3rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.opp-step-detail { font-size: 0.9rem; line-height: 1.6; color: var(--ink-muted); }
+.opp-step-off {
+  font-size: 0.66rem; font-weight: 400;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  border: 1px solid var(--ink-muted); color: var(--ink-muted);
+  padding: 0.1rem 0.45rem; border-radius: 999px;
+}
+
+.opp-handles-note { font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 0.7rem; }
+.opp-handles { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.opp-handle {
+  display: flex; align-items: baseline; gap: 0.4rem;
+  border: 1px solid var(--ink); padding: 0.3rem 0.7rem; border-radius: 999px;
+  font-size: 0.85rem;
+}
+.opp-handle-platform { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); }
+
+.opp-apply { border-top: 1.5px solid var(--ink); padding-top: 1.5rem; margin-top: 2.5rem; }
+/* ⚠ THE BUTTON IS .apply-card-cta NOW, THE SAME MINT PILL THE JOB PAGES USE,
+   and this rule only sizes it. It was .btn-primary, which is ink, so the one
+   page asking the same question as a job listing ("how do I apply to this?")
+   answered it with a black button while every other page answered in green.
+   The note on .apply-card already says the two pages asking the same question
+   should answer with the same object; this page was the exception and should
+   not have been. Width is capped so it does not stretch the 46rem column. */
+.opp-apply-btn { width: auto; min-width: 16rem; margin-bottom: 0.8rem; }
+
+/* Handles are links now, so they need a hover and a focus ring. The chip shape
+   is .opp-handle above; this adds only the affordance. */
+.opp-handle-link { text-decoration: none; transition: background 0.14s ease, color 0.14s ease; }
+.opp-handle-link:hover { background: var(--ink-muted); color: var(--cream); }
+.opp-handle-link:hover .opp-handle-platform { color: rgba(250, 247, 242, 0.72); }
+.opp-handle-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.opp-apply-note { font-size: 0.84rem; line-height: 1.6; color: var(--ink-muted); max-width: 40ch; }
+
+@media (max-width: 640px) {
+  .opp-deadline { padding: 0.8rem 0.9rem; }
+  .opp-deadline-left { margin-left: 0; }
+  .opp-apply-btn { width: 100%; text-align: center; }
+}
+
+/* ============================================================
+   FEATURED OPPORTUNITIES
+   The block above the board. Anchor target for the Opportunities menu entry.
+   ============================================================ */
+.feat-opps { padding: 1.75rem 0 0.25rem; scroll-margin-top: 5rem; }
+.feat-opps-head { margin-bottom: 0.75rem; }
+
+/* An eyebrow. Small, tracked and ink-muted, so the block announces itself
+   without competing with the board's own header directly above it. */
+.feat-opps-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.feat-opps-count {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  opacity: 0.75;
+}
+
+.feat-opps-list {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+}
+
+.feat-opp-link {
+  display: flex; flex-direction: column; gap: 0.7rem; height: 100%;
+  border: 1.5px solid var(--ink);
+  background: #FFF8E5;
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 1rem;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+.feat-opp-link:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.feat-opp-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.feat-opp-top { display: flex; gap: 0.7rem; align-items: flex-start; }
+.feat-opp-heads { flex: 1; min-width: 0; }
+.feat-opp-org { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 0.15rem; }
+.feat-opp-name { font-size: 0.98rem; line-height: 1.3; }
+.feat-opp-elig { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.5; }
+
+.feat-opp-foot {
+  margin-top: auto; padding-top: 0.5rem;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem;
+}
+.feat-opp-kind {
+  background: var(--ink); color: var(--cream);
+  padding: 0.12rem 0.5rem; border-radius: 999px;
+  font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.feat-opp-steps { font-size: 0.75rem; color: var(--ink-muted); }
+/* Geometry is the shared chip rule below; only placement is particular here. */
+.feat-opp-days { margin-left: auto; }
+/* ⚠ NO SOLID RED FILL. This was #B3261E with white type, which at chip size is
+   a block of pure saturated colour on a page built from cream, ink, amber and
+   mint. It read as a browser alert pasted onto the design, and it was a fourth
+   red: the tracker already says overdue in #A3341F.
+   The replacement is a tint, a hairline and the stopwatch mark, so urgency is
+   carried by a drawing rather than by area of colour. #7E2415 on the tint is
+   about 8:1, so it is quieter and more legible at once, not a trade. */
+/* Urgent is now a colour and a weight, with no container. #7E2415 on cream is
+   about 8:1, so it carries on its own. */
+.feat-opp-days[data-urgent='true'],
+.job-days-left[data-urgent='true'],
+.opp-deadline[data-urgent='true'] .opp-deadline-left {
+  color: #7E2415;
+  font-weight: 600;
+}
+
+/* ⚠ SIZED IN px, NOT em, AND DELIBERATELY LARGER THAN THE TYPE.
+   At 0.9em against a 0.68rem label this rendered about 10px, and a stopwatch at
+   10px is a dot: the face, the hand and the crown all collapse into one another
+   and the mark reads as a smudge rather than as anything. The drawing is built
+   for 16px and upwards, so it is given 16px regardless of the label beside it.
+   An icon that cannot be recognised is worse than no icon, because it still
+   takes the space and still asks to be read. */
+.urgency-mark {
+  width: 16px;
+  height: 16px;
+  margin-right: 0.35rem;
+  vertical-align: -0.28em;
+  flex: none;
+}
+
+/* ⚠ THESE CHIPS WERE CRAMPED, AND WORST ON A PHONE. They carried 0.1rem of
+   vertical padding with a 16px mark inside them, so the icon pressed against
+   the border top and bottom and the text sat tight against the pill ends.
+   inline-flex with a real gap and a min-height gives the mark room and lets the
+   label centre against it rather than sitting on a guessed baseline.
+   The line-height is pinned so the chip does not inherit the 1.6 body value and
+   grow a third taller than it looks. */
+/**
+ * ⚠ NO PILL. This was a bordered, tinted lozenge and it is now just the mark and
+ * the words.
+ *
+ * The pill was the source of its own problems rather than a victim of them. A
+ * fixed shape around variable text has to be sized for the longest string it
+ * will ever hold, and it never is; it sat inside three different flex rows and
+ * got shrunk below its content in all of them, so "6 days left" broke out of the
+ * rounded edge. Every fix for that was another rule propping up a container that
+ * was not carrying any information: the urgency is in the red and in the
+ * stopwatch, not in the outline around them.
+ *
+ * Text that flows also wraps, which a nowrap pill could not, so nothing has to
+ * be truncated on a narrow phone.
+ */
+.feat-opp-days,
+.job-days-left,
+.opp-deadline-left {
+  /* ⚠ inline-flex + nowrap + flex:none, AND ALL THREE ARE DOING SOMETHING.
+     Plain `inline` let the line break between the stopwatch and the words, so
+     the mark sat on one line with "6 days left" under it, which looked like two
+     unrelated things rather than one label. nowrap keeps them together;
+     inline-flex lets the mark centre against the type instead of sitting on the
+     baseline; and flex:none stops the parent row compressing the whole thing
+     below its content width, which is what broke the pill this replaced.
+     The label can still move to its own line as a unit, because it is inline
+     inside a wrapping row. It just cannot break in the middle. */
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  flex: none;
+  color: var(--ink-muted);
+  font-size: 0.74rem;
+  font-weight: 400;
+  line-height: 1.35;
+  background: none;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+@media (max-width: 640px) {
+  /* On a phone the row these sit in already wraps, so the chip can afford to be
+     a touch larger rather than a touch smaller. Shrinking it here was the
+     instinct and it is the wrong one: this is the element a reader is scanning
+     for on the smallest screen. */
+  /* The pill is gone, so there is no box to enlarge here any more. Only the
+     mark grows, because it is the thing being scanned for on the smallest
+     screen and the type around it is already at its floor. */
+  .urgency-mark { width: 17px; height: 17px; }
+}
+
+@media (max-width: 640px) {
+  .feat-opps { padding-top: 1.75rem; }
+  .feat-opps-list { grid-template-columns: 1fr; }
+}
+
+/* ⚠ THE GEOMETRY FOR THIS LIVES IN THE SHARED CHIP RULE ABOVE. It used to be
+   redeclared here with display:inline-block and 0.1rem of padding, and because
+   this sits later in the file it won: the shared rule set inline-flex and real
+   padding, this quietly put it back, and the result was a 33px tall chip with a
+   17px stopwatch pushing out of a pill sized for text alone. The other two
+   surfaces looked right and this one did not, from one duplicated declaration.
+   Only the things genuinely particular to a board row belong here. */
+.job-days-left { margin-left: 0.5rem; }
+

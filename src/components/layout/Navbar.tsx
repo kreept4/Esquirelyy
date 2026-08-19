@@ -22,6 +22,16 @@ import './StaggeredMenu.css'
 
 const NAV_ITEMS = [
   { label: 'Jobs', ariaLabel: 'Browse legal jobs', link: '/jobs' },
+  /* ⚠ AN ANCHOR, NOT A ROUTE, and the distinction is the ship plan's pre-flight
+     rule five: opportunities fold into the existing jobs and internships page
+     rather than becoming a new top level destination. /opportunities does not
+     exist and deliberately does not.
+     It is a separate entry rather than a rename of Jobs above because the two
+     answer different questions — "what is hiring" and "what can I do this
+     month" — and somebody looking for an internship programme does not think of
+     it as a job. Both land on the same board; this one lands on the featured
+     block within it. */
+  { label: 'Opportunities', ariaLabel: 'Browse internships and other opportunities', link: '/jobs#opportunities' },
   { label: 'Firms', ariaLabel: 'Browse the firms directory', link: '/firms' },
   { label: 'Scholarships', ariaLabel: 'Browse scholarships', link: '/scholarships' },
   { label: 'Tracker', ariaLabel: 'Open your application tracker', link: '/tracker' },
@@ -162,6 +172,14 @@ export default function Navbar() {
           cream panel they are meant to be an alternative to. */}
       <AuthActions hidden={hidden || menuOpen} user={user} ready={authReady} color={restColor} />
 
+      {/* ⚠ displayItemNumbering IS PASSED false EXPLICITLY, AND IT HAS TO BE.
+          StaggeredMenu defaults it to true, so simply not passing the prop
+          leaves the numbering ON. Deleting it from the list is not the same as
+          turning it off, and that is the trap this closes.
+          Why off: the panel lettered every entry 01, 02, 03, and against eleven
+          items that is a column of numbers carrying no information. Numbered
+          markers should encode a real sequence, and a nav list is not one.
+          LBVIP's application steps keep theirs precisely because they are. */}
       <StaggeredMenu
         className={hidden ? 'nav-hidden' : undefined}
         position="right"
@@ -172,7 +190,7 @@ export default function Navbar() {
         socialItems={authItems}
         socialsTitle="Account"
         displaySocials
-        displayItemNumbering
+        displayItemNumbering={false}
         changeMenuColorOnOpen
         menuButtonColor={restColor}
         openMenuButtonColor="#1A1A1A"

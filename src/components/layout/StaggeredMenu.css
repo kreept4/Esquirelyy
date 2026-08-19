@@ -122,24 +122,72 @@
   object-fit: contain;
 }
 
+/* The mint pill.
+   Same object as the footer's scroll-to-top — mint ground, white type, a hard
+   ink border and an offset shadow it presses into — with one deliberate
+   difference: that one is a 2px rounded rectangle and this is a full pill.
+
+   ⚠ THE COLOUR IS PINNED HERE RATHER THAN INHERITED, and that is the whole
+   reason this rule is more than three lines. StaggeredMenu.jsx tweens the
+   button's `color` on open and close via animateColor(), writing an inline
+   style that beats any stylesheet. That was correct when the toggle was bare
+   text on the header; on a mint ground it would swap the label to the header's
+   dark ink mid-animation and leave white-on-mint reading as ink-on-mint for a
+   third of a second. `color` is therefore taken off the button and put on the
+   label span below, which GSAP does not touch. */
+/* ⚠ THE GEOMETRY IS COPIED FROM .auth-cta-join DELIBERATELY, and that is what
+   fixes the progression rather than the hue.
+   Join and Menu sat next to each other at different heights, different padding
+   and different type sizes, so they read as two unrelated controls that happened
+   to both be pills, and the eye had no order to follow. Matching the height,
+   the padding, the border weight, the shadow offset and the type spec makes them
+   a SET; the only thing that differs is colour, which is then free to carry the
+   meaning: amber is the thing we want pressed, mint is the way around the site.
+   Values are pinned to .auth-cta-join (2.4rem tall, 0.68rem/0.1em type, 2px
+   border, 3px shadow). If that button is restyled, restyle this with it. */
 .sm-toggle {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  background: transparent;
-  border: none;
+  justify-content: center;
+  height: 2.4rem;
+  padding: 0 1.15rem;
+  /* The deeper mint, not the flat one. Against amber at the same weight the
+     brighter #14B8A6 vibrated and competed for the eye; mint-deep sits back a
+     step without becoming a grey. It is also already the hover state of every
+     mint CTA on the site, so it is not a new colour being introduced here. */
+  background: #10A192;
+  border: 2px solid #1A1A1A;
+  border-radius: 999px;
   cursor: pointer;
-  color: #e9e9ef;
-  font-weight: 500;
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   line-height: 1;
   overflow: visible;
+  box-shadow: 3px 3px 0 #1A1A1A;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
 }
 
+.sm-toggle:hover { background: #14B8A6; }
+
+/* Presses into its own shadow, the same gesture as .footer-top. */
+.sm-toggle:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 #1A1A1A; }
+.sm-toggle:active { transform: translate(3px, 3px); box-shadow: 0 0 0 #1A1A1A; }
+
+/* Carries the colour, because GSAP owns the button's own `color`. */
+.sm-toggle .sm-toggle-textWrap { color: #FFFFFF; }
+
 .sm-toggle:focus-visible {
-  outline: 2px solid #ffffffaa;
-  outline-offset: 4px;
-  border-radius: 4px;
+  outline: 2px solid #1A1A1A;
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sm-toggle { transition: none; }
+  .sm-toggle:hover, .sm-toggle:active { transform: none; box-shadow: 3px 3px 0 #1A1A1A; }
 }
 
 .sm-line:last-of-type {
@@ -373,8 +421,18 @@
   font-weight: 600;
   /* Fluid, and smaller than the flat 3.5rem it was. The root scale already
      runs 15px to 24px, so a fixed 3.5rem meant 84px items on a large monitor
-     and a list that had to scroll on a phone. */
-  font-size: clamp(2rem, 6.2vw, 3rem);
+     and a list that had to scroll on a phone.
+     ⚠ THE vh TERM IS WHAT KEEPS THE LAST ITEM ON SCREEN. This sized on width
+     alone, which is the wrong axis for a vertical list: a phone is narrow AND
+     short, so 6.2vw kept the type large on exactly the viewport with the least
+     room for it. At ten items that just fit; the eleventh, Opportunities, tipped
+     it and FAQ was sliced through the middle. The panel does scroll, but a
+     heading cut mid-glyph reads as broken rather than as scrollable, and the
+     item most likely to be cut is the last one, which nobody scrolls to find
+     because they cannot see it is there.
+     min() takes whichever axis is tighter, so a short window shrinks the type
+     and a tall narrow one does not. */
+  font-size: clamp(1.5rem, min(6.2vw, 4.6vh), 3rem);
   cursor: pointer;
   line-height: 1;
   letter-spacing: -2px;

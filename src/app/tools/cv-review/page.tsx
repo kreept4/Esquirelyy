@@ -71,9 +71,9 @@ const CAREER_STAGES = [
   { value: '', label: 'Select your stage' },
   { value: 'student', label: 'Law Student' },
   { value: 'nysc', label: 'Entry-level' },
-  { value: 'junior', label: 'Junior (0-3 yrs PQE)' },
-  { value: 'mid', label: 'Mid-level (3-6 yrs PQE)' },
-  { value: 'senior', label: 'Senior (6+ yrs PQE)' },
+  { value: 'junior', label: 'Junior (0-3 years post-call)' },
+  { value: 'mid', label: 'Mid-level (3-6 years post-call)' },
+  { value: 'senior', label: 'Senior (6+ years post-call)' },
 ]
 
 /**

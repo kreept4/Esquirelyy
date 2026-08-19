@@ -49,7 +49,11 @@ const INK = '#241F16'
  * three hand-built arrays used to end.
  */
 const FOOTER_LINKS = [
-  { href: '/jobs', label: 'Jobs board' },
+  /* "Jobs", matching the menu panel and the breadcrumb. The footer called it
+     "Jobs board" and nothing else on the site did, so the same destination had
+     two names depending on where you were standing. One name per destination is
+     how somebody learns their way around. */
+  { href: '/jobs', label: 'Jobs' },
   { href: '/scholarships', label: 'Scholarships' },
   { href: '/firms', label: 'Firms directory' },
   { href: '/tracker', label: 'Tracker' },

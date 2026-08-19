@@ -15,9 +15,9 @@ const CAREER_STAGES = [
   { value: '', label: 'Not saying' },
   { value: 'student', label: 'Law student' },
   { value: 'nysc', label: 'Entry-level' },
-  { value: 'junior', label: 'Junior (0-3 yrs PQE)' },
-  { value: 'mid', label: 'Mid-level (3-6 yrs PQE)' },
-  { value: 'senior', label: 'Senior (6+ yrs PQE)' },
+  { value: 'junior', label: 'Junior (0-3 years post-call)' },
+  { value: 'mid', label: 'Mid-level (3-6 years post-call)' },
+  { value: 'senior', label: 'Senior (6+ years post-call)' },
 ]
 
 const NOTIFICATION_LABELS: { key: keyof NotificationPreferences; label: string; note: string }[] = [

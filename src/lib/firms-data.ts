@@ -2340,6 +2340,30 @@ const EMPLOYER_LOGOS: Record<string, string> = {
      through ALL_FIRMS, and this is the first that is not. */
   kbolegal: '/employer-logos/kbo-legal.png',
 
+  /* B.F.A & Co. Legal, on the board for their Intellectual Property Lawyer
+     role. Same reasoning as Zyph, Pentagon, Ovie Obobolo and KBO for why they
+     sit here rather than in ALL_FIRMS: hiring, not researched.
+
+     THE FULL LOCKUP, unlike Ovie and KBO above, and the difference is the shape
+     rather than a change of mind. Both of those are stacked marks whose
+     wordmark tier falls under 4px at board size. This one is horizontal —
+     monogram, rule, wordmark — so it loses width rather than legibility when it
+     scales. See scripts/extract-bfa-logo.mjs, which also records every place a
+     larger source was looked for and did not exist.
+
+     THE FIRM PUNCTUATES ITSELF INCONSISTENTLY, which is why there are five keys
+     for one employer. Their own site says "B.F.A & Co. Legal" in the wordmark
+     and "B.F.A and Co. Legal" in the page titles, LinkedIn says "BFA & Co
+     Legal", and the job listing says "B.F.A. & Co Legal". norm() flattens all
+     of those to the same two strings, but only because the ampersand and the
+     stops are stripped; a listing that arrives spelling out "and" needs the
+     spelled-out key to be present too. */
+  bfaandcolegal: '/employer-logos/bfa-legal.png',
+  bfaandco: '/employer-logos/bfa-legal.png',
+  bfaandcompanylegal: '/employer-logos/bfa-legal.png',
+  bfalegal: '/employer-logos/bfa-legal.png',
+  bfa: '/employer-logos/bfa-legal.png',
+
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',
   mtnnigeria: '/employer-logos/mtn.png',

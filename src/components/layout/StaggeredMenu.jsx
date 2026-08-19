@@ -47,11 +47,14 @@ export const StaggeredMenu = ({
     const ctx = gsap.context(() => {
       const panel = panelRef.current;
       const preContainer = preLayersRef.current;
-      const plusH = plusHRef.current;
-      const plusV = plusVRef.current;
-      const icon = iconRef.current;
       const textInner = textInnerRef.current;
-      if (!panel || !plusH || !plusV || !icon || !textInner) return;
+      /* ⚠ THE PLUS ICON IS GONE AND THIS GUARD HAD TO SHRINK WITH IT. It read
+         `!panel || !plusH || !plusV || !icon || !textInner`, so with the icon
+         removed from the markup the whole effect returned early and the panel
+         never got its opening offset — the menu opened as a static block with
+         no animation at all, and nothing threw to say why. A guard that lists
+         elements it no longer needs fails silently in exactly this way. */
+      if (!panel || !textInner) return;
 
       let preLayers = [];
       if (preContainer) {
@@ -64,9 +67,6 @@ export const StaggeredMenu = ({
       if (preContainer) {
         gsap.set(preContainer, { xPercent: 0, opacity: 1 });
       }
-      gsap.set(plusH, { transformOrigin: '50% 50%', rotate: 0 });
-      gsap.set(plusV, { transformOrigin: '50% 50%', rotate: 90 });
-      gsap.set(icon, { rotate: 0, transformOrigin: '50% 50%' });
       gsap.set(textInner, { yPercent: 0 });
       if (toggleBtnRef.current) gsap.set(toggleBtnRef.current, { color: menuButtonColor });
     });
@@ -423,19 +423,13 @@ export const StaggeredMenu = ({
               ))}
             </span>
           </span>
-          {/* The wrapper exists so hover has somewhere to live.
-              GSAP owns the transform on .sm-icon (it spins to 225deg on open
-              and back to 0 on close) and writes it inline, so any CSS rotation
-              on that same element would simply be overwritten on the next
-              tween. Rotating the parent instead lets the two compose: the
-              hover spin rides on top of whatever state the toggle is in, and
-              works identically for the open "Close" state. */}
-          <span className="sm-icon-spin">
-            <span ref={iconRef} className="sm-icon" aria-hidden="true">
-              <span ref={plusHRef} className="sm-icon-line" />
-              <span ref={plusVRef} className="sm-icon-line sm-icon-line-v" />
-            </span>
-          </span>
+          {/* The rotating plus that used to sit here is gone. The button is the
+              affordance now: a mint pill against the ink header reads as a
+              control on its own, and the plus was doing the work of saying so
+              at 14px. The Menu/Close label still swaps, which is the part that
+              actually told a reader what pressing it would do.
+              animateIcon() survives and no-ops on its own null check, so the
+              open and close paths did not have to learn about this. */}
         </button>
       </header>
 

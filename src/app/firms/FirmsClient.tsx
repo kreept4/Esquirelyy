@@ -17,7 +17,7 @@
  * about the route.
  */
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import PageHeader from '@/components/layout/PageHeader'
@@ -269,6 +269,25 @@ const VIEW_META: Record<View, { label: string; Icon: () => React.JSX.Element }> 
   list: { label: 'List', Icon: ViewListIcon },
 }
 
+/**
+ * How many cards are drawn before the reader has to ask for more.
+ *
+ * ⚠ THE PROBLEM THIS SOLVES IS A PHONE ONE, and the number is chosen for the
+ * phone even though the desktop grid is what makes it look arbitrary. Below
+ * 640px `activeView` is forced to 'detailed' — see PHONE_QUERY — which is the
+ * tallest of the three cards, so sixty nine firms was somewhere around twenty
+ * thousand pixels of continuous scroll with no landmark in it. Nothing on the
+ * page told the reader how far in they were or how much was left, and the
+ * filters that would have cut it down had already scrolled off the top.
+ *
+ * Twelve rather than fifteen because it divides by two, three and four, so the
+ * last row is full at every breakpoint the grid has. Fifteen leaves a single
+ * orphaned card on the four-column layout, and a ragged final row directly
+ * above a "Load more" button reads as the grid having failed to load rather
+ * than as a deliberate stopping point.
+ */
+const PAGE_SIZE = 12
+
 export default function FirmsClient() {
   const [search, setSearch] = useState('')
   const [tier, setTier] = useState('')
@@ -334,6 +353,54 @@ export default function FirmsClient() {
       return true
     })
   }, [search, tier, city, practiceArea, ranked])
+
+  /**
+   * How much of `filtered` is currently drawn.
+   *
+   * PAGE_SIZE on the server and on the first client frame, which is what keeps
+   * this out of the hydration trap the `view` preference above fell into: both
+   * renders agree because neither consults storage or a viewport to decide.
+   */
+  const [visible, setVisible] = useState(PAGE_SIZE)
+
+  /* Back to the first page whenever the result set changes underneath.
+     Without this, searching "tax" while forty eight cards are open shows all of
+     the matches at once, and then clearing the search leaves the reader forty
+     eight cards deep in a list they never expanded. The reset is on the filter
+     inputs rather than on `filtered.length`, because two different filters can
+     return the same number of firms and that is still a new list. */
+  useEffect(() => { setVisible(PAGE_SIZE) }, [search, tier, city, practiceArea, ranked])
+
+  const gridRef = useRef<HTMLDivElement>(null)
+  /* Set on the click, read after the extra cards have rendered. */
+  const focusFromRef = useRef<number | null>(null)
+
+  /**
+   * Send focus to the first newly revealed card.
+   *
+   * ⚠ THIS IS NOT A NICETY, it is the difference between the button working and
+   * the button stranding people. "Load more" removes itself once the list is
+   * exhausted, so a keyboard reader who presses it on the last page loses focus
+   * to the document body and is returned to the top of the page — past the
+   * header, the filters and every card they had already read. Even on an
+   * earlier page, leaving focus on the button means the twelve firms that just
+   * appeared are behind the reader rather than in front of them.
+   *
+   * The first new card is the honest destination: it is exactly what the button
+   * promised, and a screen reader announces the firm's name on arrival, which
+   * confirms the action did something. `preventScroll` because the browser has
+   * already got the scroll position right and jumping it would undo that.
+   */
+  useEffect(() => {
+    const from = focusFromRef.current
+    if (from === null) return
+    focusFromRef.current = null
+    const cards = gridRef.current?.querySelectorAll<HTMLAnchorElement>(':scope > a')
+    cards?.[from]?.focus({ preventScroll: true })
+  }, [visible])
+
+  const shown = useMemo(() => filtered.slice(0, visible), [filtered, visible])
+  const remaining = filtered.length - shown.length
 
   const hasFilters = tier || city || practiceArea || ranked
 
@@ -502,8 +569,8 @@ export default function FirmsClient() {
               body="Try a broader practice area, or clear a filter to see the full directory."
             />
           ) : (
-            <div className="card-grid" data-view={activeView}>
-              {filtered.map(firm => (
+            <div className="card-grid" data-view={activeView} ref={gridRef}>
+              {shown.map(firm => (
                 <Link key={firm.slug} href={`/firms/${firm.slug}`}>
 
                   {/* Name first, tier as a quiet line beneath it.
@@ -555,6 +622,56 @@ export default function FirmsClient() {
                   </div>
                 </Link>
               ))}
+            </div>
+          )}
+
+          {/* WHERE THE READER IS, SAID IN WORDS, and it stays on the page after
+              the button has gone. A count that disappears at the moment the
+              list is complete answers "is there more?" everywhere except the
+              one place the question is settled.
+
+              aria-live, so the count is spoken after Load more rather than only
+              discovered by someone who happens to tab back to it. It sits
+              before the button in the DOM for the same reason it sits above it
+              on screen: the reader should be told what they have before being
+              offered more of it. */}
+          {filtered.length > PAGE_SIZE && (
+            <p className="grotesk-regular firms-count" aria-live="polite">
+              Showing {shown.length} of {filtered.length}
+              {hasFilters || search ? ' matching firms' : ' firms'}.
+            </p>
+          )}
+
+          {/* A button, not numbered pages.
+              Nothing else in the app numbers its pages, and numbers would need
+              the scroll position resetting to the top of the grid on every
+              change, which on a phone means the reader loses their place each
+              time. Load more appends, so the place is kept by definition.
+
+              THE REMAINING COUNT IS IN THE LABEL rather than a bare "Load
+              more", because the useful question is not whether there is more,
+              it is whether it is worth carrying on. "Load 12 more" against 57
+              left is a different decision from the same button against 3. */}
+          {remaining > 0 && (
+            <div className="firms-more-wrap">
+              <button
+                type="button"
+                className="btn-outline firms-more"
+                onClick={() => {
+                  focusFromRef.current = shown.length
+                  setVisible(v => v + PAGE_SIZE)
+                }}
+              >
+                Load {Math.min(PAGE_SIZE, remaining)} more
+                {/* Only while the two numbers differ. On the last page the
+                    button already reads "Load 11 more" and there are eleven
+                    left, so a second line saying "11 remaining" states the same
+                    figure twice and reads as a rendering fault rather than as
+                    reassurance. */}
+                {remaining > PAGE_SIZE && (
+                  <span className="firms-more-rest">{remaining} remaining</span>
+                )}
+              </button>
             </div>
           )}
         </div>

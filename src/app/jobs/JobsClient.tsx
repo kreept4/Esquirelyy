@@ -1,6 +1,9 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { daysUntil } from '@/lib/opportunities'
+import { practiceOptionsFor } from '@/lib/practice-areas'
+import FeaturedOpportunities from '@/components/features/FeaturedOpportunities'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Search, X, Bookmark, ChevronRight } from 'lucide-react'
@@ -63,6 +66,55 @@ const LEVEL_OPTIONS = [
   { value: 'mid', label: 'Mid-level' },
   { value: 'senior', label: 'Senior' },
 ]
+
+/**
+ * Whether a listing answers what somebody typed.
+ *
+ * ⚠ THIS WAS `title.includes(q) || employer.includes(q)` AND IT FAILED ON THE
+ * MOST LIKELY SEARCH ON THE SITE. A law student looking for an internship types
+ * "internships". The LBVIP listing is titled "…Virtual Internship Programme",
+ * which contains "internship" and does NOT contain "internships", so the plural
+ * returned nothing while the singular worked. Nobody would have reported that as
+ * a bug; they would have concluded the board had no internships.
+ *
+ * Two changes fix it, and both are about matching what a reader means rather
+ * than what they typed.
+ *
+ * A NAIVE SINGULAR. If the query ends in "s", the stem is tried as well. This is
+ * not a stemmer and does not need to be: it costs one line and covers plurals,
+ * which is the whole of the observed problem. "Internships", "roles", "firms"
+ * and "scholarships" all behave.
+ *
+ * A WIDER HAYSTACK. Type was not searchable at all, so the word for the category
+ * matched only if it happened to appear in a title. `opportunity_type` is
+ * included too, which is what makes "internship" find a row whose precise kind
+ * is virtual_internship. Practice areas and location come along because someone
+ * typing "intellectual property" or "Abuja" into a search box plainly means them
+ * to be searched, and the selects beside it are a way to narrow rather than the
+ * only way to ask.
+ */
+function matchesQuery(job: any, rawQuery: string): boolean {
+  const q = rawQuery.trim().toLowerCase()
+  if (!q) return true
+
+  const haystack = [
+    job.title,
+    job.employer,
+    TYPE_LABELS[job.type] || job.type,
+    job.opportunity_type,
+    job.location,
+    ...(Array.isArray(job.practice_areas) ? job.practice_areas : []),
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+    /* So "virtual_internship" is matched by "internship" rather than only by
+       someone who happens to type the underscore. */
+    .replace(/[_-]+/g, ' ')
+
+  if (haystack.includes(q)) return true
+  return q.endsWith('s') && q.length > 3 ? haystack.includes(q.slice(0, -1)) : false
+}
 
 function deadlineLabel(job: any) {
   if (job.is_rolling) return 'Rolling'
@@ -155,6 +207,10 @@ export default function JobsClient({
   const [type, setType] = useState(initial('type'))
   const [level, setLevel] = useState(initial('level'))
   const [location, setLocation] = useState(initial('location'))
+  /* Seeded from ?practice=, which is what the home page questionnaire pushes.
+     A quiz answer that did not arrive as a filter would be three taps thrown
+     away, which is the bug the URL seeding above exists to prevent. */
+  const [practice, setPractice] = useState(initial('practice'))
   /* Saved roles are tracker rows now, not a Set that dies on navigation.
      `onlySaved` is the view that makes the bookmark worth pressing on this
      page: without somewhere to see them, a shortlist is invisible until you
@@ -201,8 +257,7 @@ export default function JobsClient({
       jobs.filter(l => {
         if (pinned.length) return pinned.includes(l.slug)
         if (onlySaved && !isSaved(l.employer, l.title)) return false
-        const q = search.toLowerCase()
-        if (q && !l.title?.toLowerCase().includes(q) && !l.employer?.toLowerCase().includes(q)) return false
+        if (!matchesQuery(l, search)) return false
         if (sector && l.sector !== sector) return false
         if (type && l.type !== type) return false
         /* `l.level &&` so a listing with NO level passes every level filter.
@@ -216,14 +271,21 @@ export default function JobsClient({
            this way; the board simply never learned it, so the same listing
            behaved differently in the bell and on the page. */
         if (level && l.level && l.level !== level) return false
+        /* Untagged listings pass, on the same reasoning as the level filter
+           above: an empty `practice_areas` is missing data rather than a claim
+           that the role belongs to no area, and hiding those would quietly
+           shrink the board every time somebody picked an area. */
+        if (practice && Array.isArray(l.practice_areas) && l.practice_areas.length
+            && !l.practice_areas.includes(practice)) return false
         if (!matchesState(l.location, location)) return false
         return true
       }),
-    [jobs, search, sector, type, level, location, onlySaved, isSaved, pinned]
+    [jobs, search, sector, type, level, location, practice, onlySaved, isSaved, pinned]
   )
 
-  const activeCount = [sector, type, level, location].filter(Boolean).length
-  const clearAll = () => { setSector(''); setType(''); setLevel(''); setLocation(''); setPinned([]) }
+  const practiceOptions = useMemo(() => practiceOptionsFor(jobs, practice), [jobs, practice])
+  const activeCount = [sector, type, level, location, practice].filter(Boolean).length
+  const clearAll = () => { setSector(''); setType(''); setLevel(''); setLocation(''); setPractice(''); setPinned([]) }
 
   return (
     <main className="jobs-page">
@@ -277,6 +339,21 @@ export default function JobsClient({
             <select className="jobs-select" data-active={!!location} value={location} onChange={e => setLocation(e.target.value)} aria-label="Location">
               {LOCATION_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
+
+            {/* ⚠ THE OPTIONS ARE DERIVED FROM THE BOARD, not from a fixed list,
+                and hidden entirely when nothing is tagged. Same reasoning as the
+                ranking filter in FirmsClient: a select whose every option
+                returns an empty board reads as a broken control rather than as
+                an unpopulated one. An area nobody is hiring in simply is not
+                offered until somebody is.
+                This is the filter the home page questionnaire writes to, so the
+                strings on both sides come from lib/practice-areas.ts. */}
+            {practiceOptions.length > 0 && (
+              <select className="jobs-select" data-active={!!practice} value={practice} onChange={e => setPractice(e.target.value)} aria-label="Area of law">
+                <option value="">All areas of law</option>
+                {practiceOptions.map(a => <option key={a} value={a}>{a}</option>)}
+              </select>
+            )}
 
             {activeCount > 0 && (
               <button className="jobs-clear" onClick={clearAll}>
@@ -421,6 +498,13 @@ export default function JobsClient({
         </div>
       </header>
 
+      {/* Under the header, not above it. `jobs` already carries the adapted
+          opportunity rows, so this needs no prop of its own and cannot show
+          something the board is not also holding. Filtering here rather than on
+          the server keeps the gating decision in one place: whatever reached
+          this component is what this reader is allowed to see. */}
+      <FeaturedOpportunities opportunities={jobs.filter((j: any) => j.is_opportunity)} />
+
       <div className="shell jobs-board-wrap">
         {filtered.length === 0 ? (
           /* An empty internship filter is not a failed search, it is the normal
@@ -518,6 +602,28 @@ export default function JobsClient({
                   <span className="grotesk-regular job-cell">{job.location}</span>
                   <span className="grotesk-regular job-cell">{TYPE_LABELS[job.type] || job.type}</span>
                   <span className="grotesk-regular job-cell job-deadline">{deadlineLabel(job)}</span>
+                  {/* ⚠ DERIVED FROM THE DATE, NOT FROM is_closing_soon. That
+                      column is a stored boolean, so it is only true until the
+                      day somebody forgets to update it, and a board that says
+                      a role is closing soon three weeks after it shut is worse
+                      than one that says nothing. Zyph Legal is the case in
+                      point: its deadline was already correct at 20 August and
+                      is_closing_soon was still false.
+                      Same component and same threshold as the opportunity card
+                      and the featured block, so urgency looks identical
+                      wherever it appears. */}
+                  {(() => {
+                    const d = daysUntil(job.deadline)
+                    if (job.is_rolling || d === null || d < 0 || d > 14) return null
+                    return (
+                      <span className="job-days-left" data-urgent={d <= 7}>
+                        {d <= 7 && (
+                          <img src="/icons/stopwatch.svg" alt="" className="urgency-mark" width={14} height={14} />
+                        )}
+                        {d === 0 ? 'Closes today' : d === 1 ? '1 day left' : `${d} days left`}
+                      </span>
+                    )
+                  })()}
                 </span>
 
                 <span className="job-actions">

@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { QUIZ_PRACTICE_AREAS } from '@/lib/practice-areas'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 
 /**
- * Three-question preference quiz, inlined on the home page.
+ * Four-question preference quiz, inlined on the home page.
  *
- * Mirrors auth/onboarding's shape (career stage / goal / city) so an answer
+ * Mirrors auth/onboarding’s shape (career stage / goal / city) so an answer
  * given here is the same answer given there. Signed-in visitors get it written
  * to their profile; everyone else gets it in localStorage, which onboarding can
  * pick up later rather than asking twice.
@@ -45,7 +46,28 @@ const GOALS = goalsFor('')
 
 const CITIES = ['Lagos', 'Abuja', 'Port Harcourt', 'Ibadan', 'Anywhere']
 
-type Answers = { stage: string; goal: string; city: string }
+/**
+ * The area of law question.
+ *
+ * ⚠ "NOT SURE YET" IS FIRST, AND IT IS THE HONEST DEFAULT. The people this quiz
+ * is mostly for are law students, and a law student who has not yet done their
+ * electives has no answer to this. Putting the six areas first and leaving them
+ * to hunt for an escape implies they ought to know, and pushes them into picking
+ * one at random, which then filters the board down for a reason they did not
+ * intend. First position and plain wording make declining the question the easy
+ * move rather than the awkward one.
+ *
+ * The values come from lib/practice-areas.ts, which is also what the board's
+ * filter reads. They are data, not labels: the string written into ?practice=
+ * has to match `practice_areas` on a listing exactly, so the two sides cannot
+ * be allowed to drift.
+ */
+const AREAS = [
+  { value: '', label: 'Not sure yet' },
+  ...QUIZ_PRACTICE_AREAS.map(a => ({ value: a, label: a })),
+]
+
+type Answers = { stage: string; goal: string; city: string; area: string }
 
 const QUESTIONS: {
   key: keyof Answers
@@ -59,13 +81,19 @@ const QUESTIONS: {
     question: 'Where do you want to work?',
     options: CITIES.map((c) => ({ value: c, label: c })),
   },
+  /* Last, deliberately. Stage and goal change what the other questions mean and
+     where the answer sends you; this one only narrows the result, so it is the
+     cheapest to abandon halfway. Asking it earlier would put the hardest
+     question in front of somebody who has not yet been told what they are
+     filling in. */
+  { key: 'area', question: 'Which area of law?', options: AREAS },
 ]
 
 export default function QuickQuestions() {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [direction, setDirection] = useState<'forward' | 'back'>('forward')
-  const [answers, setAnswers] = useState<Answers>({ stage: '', goal: '', city: '' })
+  const [answers, setAnswers] = useState<Answers>({ stage: '', goal: '', city: '', area: '' })
   const [saving, setSaving] = useState(false)
 
   const stageGoals = goalsFor(answers.stage)
@@ -121,6 +149,11 @@ export default function QuickQuestions() {
     const params = new URLSearchParams()
     if (level) params.set('level', level)
     if (next.city && next.city !== 'Anywhere') params.set('location', next.city)
+    /* "Not sure yet" is an empty value, so it writes no filter rather than
+       narrowing the board to an area nobody chose. Answering the question and
+       declining it are different things, and only one of them should change
+       what the reader lands on. */
+    if (next.area) params.set('practice', next.area)
     // The internship destination already carries ?type=internship, so level and
     // location have to merge into it rather than start a second query string.
     const href = goal?.href || '/jobs'

@@ -9,6 +9,14 @@ import { logoForEmployer, ballBgForEmployer, ALL_FIRMS } from '@/lib/firms-data'
 import { createClient as createSessionClient } from '@/lib/supabase/server'
 import { isOpenJob } from '@/lib/open-jobs'
 import JsonLd, { breadcrumb, jobPostingSchema } from '@/components/seo/JsonLd'
+import OpportunityCard from '@/components/features/OpportunityCard'
+import {
+  fetchOpportunities,
+  opportunitySlug,
+  hasClosed,
+  daysUntil,
+  type Opportunity,
+} from '@/lib/opportunities'
 
 export const revalidate = 0
 
@@ -88,7 +96,12 @@ const TYPE_LABELS: Record<string, string> = {
   clerkship: 'Clerkship',
   fellowship: 'Fellowship',
 }
-/** No PQE ranges here. They were our banding rather than the employer's, and a
+/** ⚠ NOT "PQE". Post-qualification experience is an England and Wales term and
+ *  it is not what Nigerian lawyers say: the year count here runs from being
+ *  called to the Bar, so it is post-call experience. The two are not synonyms
+ *  dressed differently, they name different events, and using the English one
+ *  on a Nigerian legal careers site reads as copied from a London job board.
+ *  No ranges here either. They were our banding rather than the employer's, and a
  *  candidate who reads "3 to 6 years" as a rule self-selects out of a job the
  *  firm might well have wanted them for. Where a posting states a real minimum
  *  it appears under Eligibility, in the employer's own terms. */
@@ -163,7 +176,26 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
    * advertising a URL that answers 404.
    */
   const { data: job } = await db().from('jobs').select('*').eq('slug', slug).eq('is_active', true).single()
-  if (!job) return notFound()
+
+  /* ⚠ AN OPPORTUNITY IS TRIED BEFORE 404ing, and it reuses this route rather
+     than adding /opportunities/[slug]. Pre-flight rule five in the ship plan is
+     explicit that opportunities fold into the existing jobs and internships
+     surface instead of becoming a new one, and the board already lists them —
+     see the note in jobs/page.tsx — so a card here linking to a route that did
+     not exist would 404 every opportunity on the board.
+     Only reached when the slug is not a job, so this costs the common path
+     nothing: a job that exists never issues the second query. */
+  if (!job) {
+    const opportunity = (await fetchOpportunities()).find(o => opportunitySlug(o) === slug)
+    if (!opportunity || hasClosed(opportunity.deadline)) return notFound()
+    return (
+      <OpportunityPage
+        opportunity={opportunity}
+        slug={slug}
+        canApply={!!user}
+      />
+    )
+  }
 
   /**
    * TWO DIFFERENT THINGS ARE GATED HERE, AND ONLY ONE OF THEM IS THE PAGE.
@@ -201,6 +233,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
   const requirements = toList(job.requirements)
 
   const closes = job.is_rolling ? 'Rolling applications' : job.deadline ? longDate(job.deadline) : 'Open'
+  const daysLeft = daysUntil(job.deadline)
 
   /* The employer's own site, when they are in the directory, so the schema's
      hiringOrganization resolves to a real entity instead of a bare name.
@@ -260,7 +293,25 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
               </div>
               <div>
                 <dt className="grotesk-regular">Closes</dt>
-                <dd className="grotesk-bold">{closes}</dd>
+                <dd className="grotesk-bold">
+                  {closes}
+                  {/* ⚠ THE COUNTDOWN IS THE ONE COMPONENT CARRIED OVER FROM THE
+                      OPPORTUNITY PAGE, and the numbering deliberately is not.
+                      Numbered markers only earn their place when the content is
+                      genuinely a sequence: LBVIP's three application steps are,
+                      because step two cannot start before step one. A job's
+                      requirements are criteria that all hold at once in no
+                      order, so numbering them would be decoration wearing the
+                      clothes of structure.
+                      A date needs arithmetic the reader would otherwise do
+                      themselves, which is exactly what a component should
+                      absorb. Derived, so it cannot go stale. */}
+                  {daysLeft !== null && daysLeft >= 0 && !job.is_rolling && (
+                    <span className="job-days-left" data-urgent={daysLeft <= 7}>
+                      {daysLeft === 0 ? 'Today' : daysLeft === 1 ? '1 day left' : `${daysLeft} days left`}
+                    </span>
+                  )}
+                </dd>
               </div>
             </dl>
           </div>
@@ -390,9 +441,13 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                     Sign in to apply
                   </Link>
                   <p className="grotesk-regular apply-card-note">
-                    The application route for this role — the employer&rsquo;s link or address — is
-                    for members. An account is free, takes a minute, and also gets you the tracker
-                    and the rest of the board.
+                    {/* No em dashes, per the copy standard. This read "The
+                        application route for this role — the employer's link or
+                        address — is for members", where the dashes were doing
+                        the work of an apposition. Naming the thing directly is
+                        shorter and needs no punctuation to hold it together. */}
+                    The employer&rsquo;s link or address is for members. An account is free, takes
+                    a minute, and also gets you the tracker and the rest of the board.
                   </p>
                 </>
               ) : applyHref ? (
@@ -432,6 +487,60 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
               </p>
             </div>
           </aside>
+        </div>
+      </main>
+      <Footer />
+    </div>
+  )
+}
+
+/**
+ * An opportunity rendered on the jobs detail route.
+ *
+ * Kept as its own component rather than threaded through the job markup above,
+ * because almost none of that markup applies: an opportunity has no salary
+ * band, no employer careers site, no requirements list, and its apply route is
+ * a multi-step flow rather than a button. Sharing the shell would have meant a
+ * dozen conditionals inside a page that is already long, and every one of them
+ * would be a place for a job to start rendering an opportunity's field or the
+ * reverse.
+ *
+ * What IS shared is the thing that matters: the route, so a card on the board
+ * links to /jobs/{slug} whichever kind of row it came from, and the gate, since
+ * `canApply` is decided by the same rule for both.
+ */
+function OpportunityPage({
+  opportunity,
+  slug,
+  canApply,
+}: {
+  opportunity: Opportunity
+  slug: string
+  canApply: boolean
+}) {
+  return (
+    <div>
+      <JsonLd
+        data={[
+          breadcrumb([
+            { name: 'Esquirely', path: '/' },
+            { name: 'Jobs', path: '/jobs' },
+            { name: opportunity.title, path: `/jobs/${slug}` },
+          ]),
+        ]}
+      />
+      <main className="opp-page">
+        <div className="shell">
+          <Link href="/jobs" className="grotesk-regular opp-back">
+            <ArrowLeft size={15} /> All roles and opportunities
+          </Link>
+          <OpportunityCard
+            opportunity={opportunity}
+            /* Null rather than hidden, so the firm's form URL is not sitting in
+               the HTML for a signed-out reader to find in View Source. */
+            applyHref={canApply ? opportunity.link : null}
+            applyGateHref={`/auth/login?redirect=/jobs/${slug}`}
+          />
         </div>
       </main>
       <Footer />

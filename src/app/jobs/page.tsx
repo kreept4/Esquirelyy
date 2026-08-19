@@ -5,6 +5,7 @@ import Footer from '@/components/layout/Footer'
 import JobsClient from './JobsClient'
 import { createClient as createSessionClient } from '@/lib/supabase/server'
 import { openJobs } from '@/lib/open-jobs'
+import { fetchOpportunities, toBoardRow, hasClosed } from '@/lib/opportunities'
 import JsonLd, { breadcrumb, jobListSchema, openGraph } from '@/components/seo/JsonLd'
 export const revalidate = 0
 
@@ -83,7 +84,26 @@ export default async function JobsPage() {
      Merging them would mean every board fetch waited on an auth round trip. */
   const { data: { user } } = await createSessionClient().auth.getUser()
 
-  const all = jobs || []
+  /* ⚠ OPPORTUNITIES JOIN THE BOARD ITSELF, not a section beside it.
+     The ship plan called for a Featured Opportunities block, and a block alone
+     would have meant the board's search box and type filter — which read `jobs`
+     — never finding LBVIP. Somebody typing "internship" would have got every
+     internship except the one closing on 23 August. toBoardRow() adapts each
+     opportunity into the row shape the board already renders, so the existing
+     filter catches it with no special case; see lib/opportunities.ts for why
+     the type is flattened to 'internship' on the way through.
+     Closed opportunities drop out here rather than being rendered as expired:
+     unlike a job, an opportunity with a passed deadline has nothing left to
+     offer a reader, and its external form usually stops accepting entries. */
+  const opportunities = (await fetchOpportunities())
+    .filter(o => !hasClosed(o.deadline))
+    .map(toBoardRow)
+
+  /* Newest first, matching the board's own order, so an opportunity is not
+     pinned above older listings purely for being a different kind of row. */
+  const all = [...(jobs || []), ...opportunities].sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  )
   const visible = user ? all : openJobs(all)
 
   /* ALWAYS THE OPEN SET, never `visible`, and the distinction matters because
@@ -108,6 +128,14 @@ export default async function JobsPage() {
       />
       {/* JobsClient reads useSearchParams to seed its filters from the URL, and
           Next requires that to sit inside a Suspense boundary. */}
+      {/* ⚠ THE FEATURED BLOCK IS RENDERED INSIDE JobsClient, NOT HERE, and this
+          note is the reason it moved. It sat at this level, above <JobsClient>,
+          which opens with its own full-bleed ink header. So the first thing on
+          /jobs was a cream block of opportunity cards and the board's headline
+          was pushed halfway down the page, under something that looked like it
+          belonged to a different route. JobsClient already receives the
+          opportunities as rows, so it can draw the block itself directly under
+          its header where it belongs, and needs no extra prop to do it. */}
       <Suspense fallback={null}>
         <JobsClient jobs={visible} gated={!user} totalCount={all.length} />
       </Suspense>
