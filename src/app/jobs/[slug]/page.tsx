@@ -58,7 +58,44 @@ export async function generateMetadata({
     .eq('slug', slug)
     .eq('is_active', true)
     .single()
-  if (!job) return { title: 'Role not found' }
+  /* ⚠ AN OPPORTUNITY IS TRIED BEFORE GIVING UP, and this was missed the first
+     time round with real consequences. The page body already fell through to
+     fetchOpportunities() and rendered LBVIP correctly, but this function did
+     not, so it returned "Role not found" and the listing went out titled that:
+     in the browser tab, in the share card of every link pasted into a group
+     chat, and in the search result. The page looked perfect and its name was
+     wrong, which is exactly the kind of fault that survives a visual check.
+     Caught on the preview deployment before the announcement went to eighty
+     five people. The rule this leaves behind: a route with two data sources
+     needs BOTH of them in generateMetadata, not just the one the body happens
+     to try first. */
+  if (!job) {
+    const opportunity = (await fetchOpportunities()).find(o => opportunitySlug(o) === slug)
+    if (!opportunity || hasClosed(opportunity.deadline)) return { title: 'Not found' }
+
+    const closes = opportunity.deadline
+      ? new Date(opportunity.deadline).toLocaleDateString('en-NG', {
+          day: 'numeric', month: 'long', year: 'numeric',
+        })
+      : null
+
+    return {
+      title: `${opportunity.title} at ${opportunity.organization}`,
+      /* Eligibility leads, because it is the fact that decides whether the
+         reader keeps reading, and the closing date follows it. Both are more
+         use in a search result than the opening line of the description. */
+      description: [
+        opportunity.eligibility ? `Open to ${opportunity.eligibility.replace(/\.$/, '')}.` : '',
+        opportunity.description || '',
+        closes ? `Applications close ${closes}.` : '',
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .slice(0, 300),
+      alternates: { canonical: `/jobs/${slug}` },
+      ...(isOpenJob(slug) ? {} : { robots: { index: false, follow: true } }),
+    }
+  }
 
   const where = job.location ? ` in ${job.location}` : ''
   const summary = (job.role_desc || job.about || '').trim()
