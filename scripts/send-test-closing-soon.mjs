@@ -2,7 +2,7 @@
  * Send the LBVIP announcement to one address, on demand.
  *
  * Sibling of send-test-welcome.mjs, and it exists for a reason that only became
- * obvious the first time somebody tried to test a broadcast: send-lbvip.mjs
+ * obvious the first time somebody tried to test a broadcast: send-closing-soon.mjs
  * takes its recipients from the accounts table, so `--only you@example.com`
  * silently sends to nobody unless that address is already a confirmed member
  * with new-role emails switched on. That is correct for the broadcast — it must
@@ -19,12 +19,12 @@
  * Boluwatife. That is not a cosmetic difference: the entire point of a test send
  * is to see what a member will see, and a greeting assembled by hand is the one
  * line on the page that the real broadcast does not assemble that way.
- * send-lbvip.mjs reads `profiles.full_name`, so this reads
+ * send-closing-soon.mjs reads `profiles.full_name`, so this reads
  * `profiles.full_name`, and a mismatch between the two is now impossible rather
  * than merely unlikely. An address with no profile gets the no-name greeting,
  * which is exactly what the broadcast would do with it.
  *
- * Usage:  node scripts/send-test-lbvip.mjs you@example.com
+ * Usage:  node scripts/send-test-closing-soon.mjs you@example.com
  */
 
 import { readFileSync } from 'node:fs'
@@ -37,7 +37,7 @@ import { createClient } from '@supabase/supabase-js'
 
 const to = process.argv[2]
 if (!to) {
-  console.error('usage: node scripts/send-test-lbvip.mjs you@example.com')
+  console.error('usage: node scripts/send-test-closing-soon.mjs you@example.com')
   process.exit(1)
 }
 if (process.argv[3]) {
@@ -55,16 +55,47 @@ const env = Object.fromEntries(
 
 /* Bundled with esbuild rather than imported through the ts-resolve hook the
    welcome test uses. This template is self-contained but is bundled the same way, because '@/' alias
-   and that hook does not resolve it; send-lbvip.mjs already solved this the
+   and that hook does not resolve it; send-closing-soon.mjs already solved this the
    same way, and using the identical step here means the test and the broadcast
    are rendering through the same pipeline as well as the same file. */
-const bundle = join(tmpdir(), `esq-test-lbvip-${process.pid}.mjs`)
+const bundle = join(tmpdir(), `esq-test-closing-${process.pid}.mjs`)
 execSync(
-  `npx --yes esbuild "src/lib/email/templates/lbvip.ts" --bundle --platform=node --format=esm --log-level=error "--outfile=${bundle}"`,
+  `npx --yes esbuild "src/lib/email/templates/closing-soon.ts" --bundle --platform=node --format=esm --log-level=error "--outfile=${bundle}"`,
   { stdio: 'inherit' }
 )
-const { lbvipEmail } = await import(pathToFileURL(bundle).href)
+const { closingSoonEmail } = await import(pathToFileURL(bundle).href)
 rmSync(bundle, { force: true })
+
+/* The same closing rule the broadcast uses, bundled the same way. A test that
+   selected its items differently would prove nothing about what goes out. */
+const oppBundle = join(tmpdir(), `esq-test-closing-rule-${process.pid}.mjs`)
+execSync(
+  `npx --yes esbuild "src/lib/opportunities.ts" --bundle --platform=node --format=esm --log-level=error "--outfile=${oppBundle}"`,
+  { stdio: 'inherit' }
+)
+const { toBoardRow } = await import(pathToFileURL(oppBundle).href)
+rmSync(oppBundle, { force: true })
+
+/**
+ * ⚠ SEVEN DAYS HERE, FOURTEEN ON THE BOARD, AND THE DIFFERENCE IS DELIBERATE.
+ *
+ * ClosingSoon on /jobs shows a fortnight. That is right for a page: the reader
+ * went looking, and a thing closing in twelve days is worth knowing about while
+ * they are already there.
+ *
+ * An email is not that. It arrives uninvited and spends attention the reader did
+ * not offer, so it should only carry what is actually urgent. The first draft of
+ * this used the board's fourteen and the greeting read "3 things close this
+ * week" while one of the three closed on 31 August, which is not this week and
+ * was simply untrue. Seven days makes the sentence accurate rather than making
+ * the sentence vaguer, which was the other way to fix it and the worse one.
+ *
+ * The consequence is real and accepted: something at eight days out is on the
+ * board and not in this email. It is still on the board, and this send is a
+ * one-off rather than a weekly digest, so nothing is promising otherwise.
+ */
+const WINDOW_DAYS = 7
+const daysTo = d => Math.ceil((new Date(d).getTime() - Date.now()) / 86_400_000)
 
 /* The registered name, from the same column the broadcast reads. Paged the same
    way too, because listUsers caps at 1000 and a lookup that quietly missed the
@@ -92,7 +123,31 @@ if (account) {
 }
 
 const siteUrl = (env.NEXT_PUBLIC_SITE_URL || 'https://esquirely.com.ng').replace(/\/$/, '')
-const { subject, html, text } = lbvipEmail({ name, siteUrl })
+const [{ data: jobRows }, { data: oppRows }] = await Promise.all([
+  supabase.from('jobs').select('*').eq('is_active', true),
+  supabase.from('opportunities').select('*').eq('status', 'published'),
+])
+const items = [...(oppRows || []).map(toBoardRow), ...(jobRows || [])]
+  .filter(r => r.deadline && !r.is_rolling)
+  .filter(r => { const d = daysTo(r.deadline); return d >= 0 && d <= WINDOW_DAYS })
+  .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+  .map(r => ({
+    slug: r.slug,
+    title: r.title,
+    employer: r.employer,
+    deadline: r.deadline,
+    eligibility: r.eligibility ?? null,
+    application_steps: r.application_steps ?? null,
+  }))
+
+if (!items.length) {
+  console.error('Nothing is closing inside the window. There is no email to test.')
+  process.exit(1)
+}
+console.log('items   :')
+for (const it of items) console.log(`  ${String(daysTo(it.deadline)).padStart(2)}d  ${it.employer}: ${it.title}`)
+
+const { subject, html, text } = closingSoonEmail({ name, siteUrl, items })
 
 console.log('sender  :', `${env.BREVO_SENDER_NAME} <${env.BREVO_SENDER_EMAIL}>`)
 console.log('to      :', to)
@@ -117,7 +172,7 @@ const res = await fetch('https://api.brevo.com/v3/smtp/email', {
   },
   body: JSON.stringify({
     sender: { email: env.BREVO_SENDER_EMAIL, name: env.BREVO_SENDER_NAME || 'Esquirely' },
-    to: [{ email: to, name: name || undefined }], // same shape send-lbvip.mjs uses
+    to: [{ email: to, name: name || undefined }], // same shape send-closing-soon.mjs uses
     subject,
     htmlContent: html,
     textContent: text,

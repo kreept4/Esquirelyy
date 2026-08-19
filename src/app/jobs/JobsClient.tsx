@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import { daysUntil } from '@/lib/opportunities'
 import { practiceOptionsFor } from '@/lib/practice-areas'
-import FeaturedOpportunities from '@/components/features/FeaturedOpportunities'
+import ClosingSoon from '@/components/features/ClosingSoon'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Search, X, Bookmark, ChevronRight } from 'lucide-react'
@@ -498,12 +498,14 @@ export default function JobsClient({
         </div>
       </header>
 
-      {/* Under the header, not above it. `jobs` already carries the adapted
-          opportunity rows, so this needs no prop of its own and cannot show
-          something the board is not also holding. Filtering here rather than on
-          the server keeps the gating decision in one place: whatever reached
-          this component is what this reader is allowed to see. */}
-      <FeaturedOpportunities opportunities={jobs.filter((j: any) => j.is_opportunity)} />
+      {/* Under the header, not above it.
+          THE WHOLE BOARD IS PASSED, not the opportunities in it. The section
+          selects on the closing date, so a `jobs` row closing tomorrow belongs
+          in it and an opportunity closing in three months does not. Filtering
+          here rather than on the server also keeps the gating decision in one
+          place: whatever reached this component is what this reader is allowed
+          to see, so the section cannot surface something the board is hiding. */}
+      <ClosingSoon rows={jobs} />
 
       <div className="shell jobs-board-wrap">
         {filtered.length === 0 ? (

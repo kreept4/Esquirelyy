@@ -4,9 +4,9 @@
  * DRY RUN BY DEFAULT. Run it with no flags and it lists exactly who would be
  * written to and stops. Sending requires --send, typed on purpose.
  *
- *   node --experimental-strip-types scripts/send-lbvip.mjs
- *   node --experimental-strip-types scripts/send-lbvip.mjs --only you@example.com --send
- *   node --experimental-strip-types scripts/send-lbvip.mjs --send
+ *   node --experimental-strip-types scripts/send-closing-soon.mjs
+ *   node --experimental-strip-types scripts/send-closing-soon.mjs --only you@example.com --send
+ *   node --experimental-strip-types scripts/send-closing-soon.mjs --send
  *
  * ALWAYS SEND ONE TO YOURSELF FIRST, with --only. An email is the one artefact
  * here that cannot be corrected after the fact: a broken layout, a wrong link
@@ -66,16 +66,72 @@ for (const line of readFileSync('.env.local', 'utf8').split('\n')) {
    the copy, which is the thing that actually matters: an announcement whose
    wording lives in two files is an announcement that will disagree with
    itself. */
-const bundle = join(tmpdir(), `esq-lbvip-${process.pid}.mjs`)
+const bundle = join(tmpdir(), `esq-closing-${process.pid}.mjs`)
 /* shell: true because npx is a .cmd on Windows and spawnSync cannot execute
    one directly. Every path is quoted: this repository lives under a directory
    with a space and a full stop in it, which is exactly the shape that breaks an
    unquoted shell command. */
 execSync(
-  `npx --yes esbuild "src/lib/email/templates/lbvip.ts" --bundle --platform=node --format=esm --log-level=error "--outfile=${bundle}"`,
+  `npx --yes esbuild "src/lib/email/templates/closing-soon.ts" --bundle --platform=node --format=esm --log-level=error "--outfile=${bundle}"`,
   { stdio: 'inherit' }
 )
-const { lbvipEmail } = await import(pathToFileURL(bundle).href)
+const { closingSoonEmail } = await import(pathToFileURL(bundle).href)
+
+/**
+ * The items, fetched once and shared by every recipient.
+ *
+ * ⚠ THE SAME RULE THE BOARD USES, imported rather than reimplemented. An email
+ * naming two things while /jobs shows three is a disagreement nobody catches
+ * until a member does.
+ */
+const closingBundle = join(tmpdir(), `esq-closing-rule-${process.pid}.mjs`)
+execSync(
+  `npx --yes esbuild "src/lib/opportunities.ts" --bundle --platform=node --format=esm --log-level=error "--outfile=${closingBundle}"`,
+  { stdio: 'inherit' }
+)
+const { toBoardRow } = await import(pathToFileURL(closingBundle).href)
+rmSync(closingBundle, { force: true })
+
+/**
+ * ⚠ SEVEN DAYS HERE, FOURTEEN ON THE BOARD, AND THE DIFFERENCE IS DELIBERATE.
+ *
+ * ClosingSoon on /jobs shows a fortnight. That is right for a page: the reader
+ * went looking, and a thing closing in twelve days is worth knowing about while
+ * they are already there.
+ *
+ * An email is not that. It arrives uninvited and spends attention the reader did
+ * not offer, so it should only carry what is actually urgent. The first draft of
+ * this used the board's fourteen and the greeting read "3 things close this
+ * week" while one of the three closed on 31 August, which is not this week and
+ * was simply untrue. Seven days makes the sentence accurate rather than making
+ * the sentence vaguer, which was the other way to fix it and the worse one.
+ *
+ * The consequence is real and accepted: something at eight days out is on the
+ * board and not in this email. It is still on the board, and this send is a
+ * one-off rather than a weekly digest, so nothing is promising otherwise.
+ */
+const WINDOW_DAYS = 7
+const daysTo = d => Math.ceil((new Date(d).getTime() - Date.now()) / 86_400_000)
+
+async function fetchClosingItems(sb) {
+  const [{ data: jobs }, { data: opps }] = await Promise.all([
+    sb.from('jobs').select('*').eq('is_active', true),
+    sb.from('opportunities').select('*').eq('status', 'published'),
+  ])
+  const rows = [...(opps || []).map(toBoardRow), ...(jobs || [])]
+  return rows
+    .filter(r => r.deadline && !r.is_rolling)
+    .filter(r => { const d = daysTo(r.deadline); return d >= 0 && d <= WINDOW_DAYS })
+    .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+    .map(r => ({
+      slug: r.slug,
+      title: r.title,
+      employer: r.employer,
+      deadline: r.deadline,
+      eligibility: r.eligibility ?? null,
+      application_steps: r.application_steps ?? null,
+    }))
+}
 rmSync(bundle, { force: true })
 
 const args = process.argv.slice(2)
@@ -109,6 +165,16 @@ async function allUsers() {
     if (data.users.length < 1000) break
   }
   return out
+}
+
+const CLOSING_ITEMS = await fetchClosingItems(supabase)
+if (!CLOSING_ITEMS.length) {
+  console.error('Nothing is closing inside the window. There is no email to send.')
+  process.exit(1)
+}
+console.log(`closing inside ${WINDOW_DAYS} days: ${CLOSING_ITEMS.length}`)
+for (const it of CLOSING_ITEMS) {
+  console.log(`  ${String(daysTo(it.deadline)).padStart(2)}d  ${it.employer}: ${it.title}`)
 }
 
 const users = await allUsers()
@@ -153,7 +219,7 @@ let sent = 0
 
 for (const u of recipients) {
   const name = byId.get(u.id)?.full_name || ''
-  const { subject, text, html } = lbvipEmail({ name, siteUrl: SITE_URL })
+  const { subject, text, html } = closingSoonEmail({ name, siteUrl: SITE_URL, items: CLOSING_ITEMS })
 
   const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',

@@ -281,6 +281,35 @@ export function isUnread(n: Notification, seen: number, readIds: Set<string>) {
 /** Scholarships closing inside this window are worth interrupting someone for. */
 const DEADLINE_WINDOW_DAYS = 30
 
+/**
+ * How far ahead a closing job or opportunity is worth a notification, and the
+ * lead time its row is dated to.
+ *
+ * ⚠ SEVEN, NOT THIRTY, AND THE NUMBER IS LOAD-BEARING TWICE OVER. These rows are
+ * dated to `deadline` minus this window, so that they surface once and then age
+ * out of unread rather than re-alerting on every panel open. At thirty days
+ * that dating broke both jobs it has:
+ *
+ * The row sorted to the bottom. A thing closing tomorrow was dated a month ago,
+ * and the feed sorts newest first and keeps twenty. Against twenty-odd recent
+ * role rows, every closing notification fell off the end of the list and no
+ * reader ever saw one. That is how Zyph Legal could close tomorrow with nothing
+ * in the bell about it.
+ *
+ * And it was never unread anyway. Unread is "newer than the last time you
+ * looked", so a row backdated a month is already read on arrival for anybody
+ * who has opened the panel this month, which is everybody it matters to.
+ *
+ * Seven days fixes both without a special case in the sort: a closing row now
+ * appears exactly when it becomes urgent, dated to that moment, which is both
+ * recent enough to survive the cap and genuinely new.
+ *
+ * ⚠ THE SCHOLARSHIP DEADLINES ABOVE STILL USE THIRTY AND STILL HAVE THIS BUG.
+ * It is not fixed here because nothing is currently inside that window, so the
+ * change would be untested. It is the same fault and the same fix.
+ */
+const CLOSING_WINDOW_DAYS = 7
+
 const STAGE_LEVEL: Record<string, string> = {
   law_student: 'student',
   nysc: 'junior',
@@ -418,20 +447,41 @@ export function buildFeed(
    * window, so it surfaces once and then ages out of unread rather than
    * re-alerting every time the panel is opened.
    */
-  for (const o of opportunities) {
-    if (!o?.deadline || !o?.slug) continue
+  /**
+   * ⚠ JOBS ARE IN HERE TOO, AND THEIR ABSENCE WAS THE ACTUAL BUG.
+   *
+   * Section 1 above turns a job into a 'role' row, which announces that it
+   * exists and is filtered against the reader's saved preferences. Nothing
+   * anywhere announced that a job was about to CLOSE. Scholarships had that
+   * treatment and jobs never did, so Zyph Legal could close tomorrow and the
+   * bell would say nothing about it, while happily carrying a scholarship
+   * closing in three weeks.
+   *
+   * The two sources are walked together because the reader does not care which
+   * table a thing is in; they care that it shuts on Thursday. Deduped by slug
+   * against the role rows is NOT needed: a 'role' row and a 'deadline' row for
+   * the same listing say different things, and somebody who ignored the first
+   * is precisely who the second is for.
+   */
+  const closing: Array<{ slug?: string; title?: string; deadline?: string | null; is_rolling?: boolean }> =
+    [...opportunities, ...jobs]
+
+  for (const o of closing) {
+    if (!o?.deadline || !o?.slug || o.is_rolling) continue
     const d = new Date(o.deadline)
     if (Number.isNaN(d.getTime())) continue
     const days = Math.ceil((d.getTime() - now.getTime()) / 86_400_000)
-    if (days < 0 || days > DEADLINE_WINDOW_DAYS) continue
+    if (days < 0 || days > CLOSING_WINDOW_DAYS) continue
     out.push({
-      id: `opportunity-${o.slug}`,
+      id: `closing-${o.slug}`,
       kind: 'deadline',
-      title: o.title,
+      title: o.title || '',
       detail:
         days === 0 ? 'Closes today' : days === 1 ? 'Closes tomorrow' : `Closes in ${days} days`,
       href: `/jobs/${o.slug}`,
-      at: new Date(d.getTime() - DEADLINE_WINDOW_DAYS * 86_400_000).toISOString(),
+      /* Dated to the moment it entered the window, so it surfaces once and then
+         ages out of unread rather than re-alerting on every panel open. */
+      at: new Date(d.getTime() - CLOSING_WINDOW_DAYS * 86_400_000).toISOString(),
     })
   }
 
