@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import LogoFrame from '@/components/ui/LogoFrame'
+import { logoForEmployer } from '@/lib/firms-data'
 import { OPPORTUNITY_TYPE_LABELS, type ApplicationStep } from '@/lib/opportunities'
 
 /**
@@ -98,6 +98,9 @@ export default function OpportunityCard({
       })
     : null
 
+  /* Curated mark first, stored path second. See the note beside the markup. */
+  const mark = logoForEmployer(o.organization) || o.logo_url || null
+
   const daysLeft = o.deadline
     ? Math.ceil((new Date(o.deadline).getTime() - Date.now()) / 86_400_000)
     : null
@@ -105,10 +108,28 @@ export default function OpportunityCard({
   return (
     <article className="opp-card">
       <header className="opp-head">
-        {/* LogoFrame rather than a bare img: it is what gives every mark on the
-            site a common cap height and ground, which is why a row of them
-            reads as a row. See the note in scripts/normalise-logos.mjs. */}
-        {o.logo_url && <LogoFrame src={o.logo_url} alt="" />}
+        {/**
+          * ⚠ TWO FAULTS LIVED ON THIS ONE LINE, and both are ones that
+          * ClosingSoon.tsx already carries warnings about.
+          *
+          * IT READ `o.logo_url` ALONE. That column is null on almost every row,
+          * because a mark is normally resolved from the organisation name
+          * against the directory rather than stored per row. LBVIP happens to
+          * set it by hand, which is the only reason this ever appeared to work.
+          * Any other opportunity rendered with no mark at all. The precedence
+          * here is the one the board and the closing cards already use: curated
+          * mark first, stored path second.
+          *
+          * AND IT TOOK A LOGO WALL'S SIZING, a 9rem by 2.5rem slot with the
+          * image capped at 60% of its height. That put a 1.5rem mark beside a
+          * title set as large as 2.3rem, which is the same "too small and out
+          * of place" this component's sibling was reported for.
+          */}
+        {mark && (
+          <span className="opp-mark">
+            <img src={mark} alt="" loading="lazy" decoding="async" />
+          </span>
+        )}
         <div className="opp-head-text">
           <p className="grotesk-regular opp-org">{o.organization}</p>
           <h1 className="opp-title">{o.title}</h1>
