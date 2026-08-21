@@ -2,10 +2,13 @@ import {
   NEW_ROLES,
   NEW_ROLES_HREF,
   ROLE_ENTRIES,
+  dropPronoun,
   dropSubject,
   dropVerb,
   employerSentenceShort,
+  newRolesCta,
   noticePhrase,
+  publishedNouns,
   roleCountLabel,
   roleSummary,
 } from '@/lib/new-roles'
@@ -105,10 +108,10 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
     greeting,
     '',
     ...ROLES.flatMap(r => [`${r.employer}: ${r.title}`, r.line, '']),
-    `${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER}, so the closing dates and`,
-    'the application routes above are the ones they published.',
+    `${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER}, so ${publishedNouns()}`,
+    'above are the ones they published.',
     '',
-    `See them here: ${link}`,
+    `See ${dropPronoun()} here: ${link}`,
     '',
     'from Bolu & Ipinu',
     'Co-founders, Esquirely',
@@ -172,8 +175,8 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
             ).join('')}
 
             <p style="margin:14px 0 20px 0;font-size:15px;line-height:1.7;color:${INK};">
-              ${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER.replace(/’/g, '&rsquo;')}, so the
-              closing dates and the application routes above are the ones they published rather
+              ${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER.replace(/’/g, '&rsquo;')}, so
+              ${publishedNouns()} above are the ones they published rather
               than an aggregator&rsquo;s guess.
             </p>
 
@@ -186,7 +189,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#14B8A6" style="border-collapse:collapse;background-color:#14B8A6;border:2px solid ${INK};">
                           <tr>
                             <td align="center" bgcolor="#14B8A6" style="background-color:#14B8A6;padding:14px 28px;">
-                              <a href="${link}" style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FFFFFF;text-decoration:none;">Show me the new roles</a>
+                              <a href="${link}" style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FFFFFF;text-decoration:none;">${newRolesCta()}</a>
                             </td>
                           </tr>
                         </table>

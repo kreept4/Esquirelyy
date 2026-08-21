@@ -45,43 +45,26 @@
  */
 export const ROLE_ENTRIES = [
   {
-    slug: 'olajide-oyewole-associate-dispute-resolution-abuja',
-    /* The firm signs its own vacancies "Olajide Oyewole LLP" and the network it
-       belongs to is named in the same breath because most readers know it by
-       the second name. Not "DLA Piper Africa" alone: the member firms are
-       separate legal persons from DLA Piper, so naming only the network would
-       tell somebody they were applying to a firm they are not applying to. */
-    employer: 'Olajide Oyewole LLP (DLA Piper Africa)',
-    /* The same firm without the network in brackets, for the bell's detail
-       line. That row is one line of small type under the title and the full
-       string pushed it to three; the bracket is worth its space in an email and
-       is not worth it there. */
-    employerShort: 'Olajide Oyewole LLP',
-    title: 'Associate, Dispute Resolution',
-    line: 'Abuja, at three to five years post-qualification experience. Commercial litigation, arbitration, mediation, employment disputes and debt recovery. Apply by email to careers@oo.dlapiperafrica.com. Closes 13 November.',
-    short: 'an Abuja dispute resolution seat at three to five years post-call',
-    /* Two sentences, not one with the network in an appositive. It read
-       "Olajide Oyewole LLP, the DLA Piper Africa firm in Nigeria, want a
-       dispute resolution associate" — and a singular appositive ("firm")
-       wedged between a plural subject and "want" is the kind of sentence you
-       have to read twice. The house voice takes a firm as plural throughout
-       ("Zyph Legal are hiring", "Babalakin & Co want"), so the fix is to move
-       the network out to its own clause rather than to switch number midway. */
+    slug: 'jee-graduate-recruitment-development-program-2026',
+    /* The full registered name, comma included, because that is how the firm
+       signs itself and how ALL_FIRMS holds it. Not "JEE": the monogram is on
+       the flier and on the anniversary mark, and a subject line reading
+       "1 new role: JEE" names nobody a reader would recognise. */
+    employer: 'Jackson, Etti & Edu',
+    /* Identical, and that is fine. employerShort exists to drop a
+       parenthetical network name, and this firm has none to drop. */
+    employerShort: 'Jackson, Etti & Edu',
+    title: '2026 Graduate Recruitment & Development Program',
+    /* The firm's spelling of its own programme is kept. They write "Program".
+       We write "Programme" everywhere else, and a listing is named by whoever
+       is hiring. A member searching the phrase they saw on the flier finds it. */
+    /* The degree bar is in the line rather than left to the board, because it
+       is the fact that decides whether the reader can apply at all, and an
+       email that omits it sends people to a form they are not eligible for. */
+    line: 'Lagos, full time, for lawyers within two years of call. Rotations across departments, with mentoring and classroom training. Needs a Second Class Upper degree and at least a Second Class Lower from the Nigerian Law School. Apply through the firm’s own portal. Closes 28 August.',
+    short: 'a Lagos graduate programme for lawyers within two years of call',
     blurb:
-      'Olajide Oyewole LLP, the DLA Piper Africa member firm in Nigeria, are hiring a dispute resolution associate in Abuja at three to five years post-call. It closes on 13 November.',
-  },
-  {
-    slug: 'kbo-junior-associate-yaba',
-    employer: 'Kehinde Babatola Olofinmoyo LP',
-    employerShort: 'Kehinde Babatola Olofinmoyo LP',
-    title: 'Junior Associate (Post-NYSC)',
-    /* "Post-NYSC" is quoted, not converted to "post call". They are different
-       claims — you can finish service without having been called — and the
-       flier does not say which the firm means. */
-    line: 'Yaba, Lagos, full time, open to candidates who have finished NYSC. Litigation and corporate practice. Send an application to kbolegalpractitioners@gmail.com. No closing date stated.',
-    short: 'a Yaba junior associate seat open post-NYSC',
-    blurb:
-      'Kehinde Babatola Olofinmoyo LP are hiring a junior associate in Yaba, Lagos, open to anyone who has finished NYSC.',
+      'Jackson, Etti & Edu are taking applications for their 2026 graduate programme in Lagos, open to lawyers within two years of call. It closes on 28 August.',
   },
 ] as const
 
@@ -89,9 +72,9 @@ export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
    *  somebody who read the 10 August note has not seen this one. */
-  id: 'roles-2026-08-14',
+  id: 'roles-2026-08-21',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-08-14T09:00:00.000Z',
+  at: '2026-08-21T09:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   employers: ROLE_ENTRIES.map(r => r.employer),
   /** The same firms without the parenthetical network names. Read by the bell. */
@@ -263,4 +246,38 @@ export function dropSubject(): string {
 /** The verb to follow dropSubject(). "was" for one, "were" for the rest. */
 export function dropVerb(): string {
   return NEW_ROLES_COUNT === 1 ? 'was' : 'were'
+}
+
+/**
+ * "the closing date and the application route" / "the closing dates and the
+ * application routes".
+ *
+ * The provenance sentence in the announcement email had both nouns welded to
+ * the plural while its own subject came from dropSubject(), so a drop of one
+ * rendered "It was read off the employer's own notice, so the closing dates and
+ * the application routes above are the ones they published" — a singular
+ * subject governing two plural objects that describe a single role. Exactly the
+ * failure dropSubject, dropVerb and noticePhrase were each written to prevent,
+ * one clause further along the same sentence.
+ */
+export function publishedNouns(): string {
+  return NEW_ROLES_COUNT === 1
+    ? 'the closing date and the application route'
+    : 'the closing dates and the application routes'
+}
+
+/** "it" / "them", for a sentence that has already named the drop. */
+export function dropPronoun(): string {
+  return NEW_ROLES_COUNT === 1 ? 'it' : 'them'
+}
+
+/**
+ * The button on the announcement email.
+ *
+ * Hardcoded as "Show me the new roles", which is the one line of the email a
+ * reader is most likely to act on and was the last plural left welded on. A
+ * drop of one is not a hypothetical: this is what the 21 August drop is.
+ */
+export function newRolesCta(): string {
+  return `Show me the new role${NEW_ROLES_COUNT === 1 ? '' : 's'}`
 }

@@ -16,8 +16,24 @@
  * the app would report it. A named list changes only when somebody edits this
  * file.
  *
- * ⚠ THE WINDOW IS THE SEVEN MOST RECENTLY ADDED LISTINGS. Everything else on
- * the board asks for an account.
+ * ⚠ THE WINDOW IS A NAMED HANDFUL OF THE MOST RECENT LISTINGS. Everything else
+ * on the board asks for an account.
+ *
+ * IT WAS "THE SEVEN MOST RECENTLY ADDED" AND THAT SENTENCE STOPPED BEING TRUE
+ * WITHOUT ANYBODY EDITING IT, which is worth more than the tidiness it bought.
+ * Two rows have gone onto the board since it was written: the B.F.A. & Co
+ * intellectual property seat on 17 August, which was never added here and so is
+ * newer than six of the slugs that are, and the Jackson, Etti & Edu graduate
+ * programme on 21 August, which was added because the announcement email
+ * requires it. A count in a comment is a fact about one afternoon.
+ *
+ * ⚠ NOTHING ROLLED OFF TO MAKE ROOM FOR THE 21 AUGUST ENTRY, deliberately.
+ * The "next one on, oldest one off" habit reads as housekeeping and is not:
+ * every slug it drops is a URL that stops being publicly readable, which is the
+ * thing the paragraphs below spend their length warning about. There is no
+ * ceiling here that adding a ninth breaches, and the cost of keeping the eighth
+ * public is nil. If this list ever genuinely needs to shrink, it should shrink
+ * because a role closed, not because a newer one arrived.
  *
  * This file used to say the opposite — "THIS LIST GROWS, IT MUST NOT SHRINK" —
  * on the reasoning that removing a slug un-publishes a URL already sitting in
@@ -63,7 +79,19 @@
  * thirteen listings ask for an account.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
-  // 14 August — the current drop.
+  /* 21 August, and the current drop.
+     ⚠ OPEN FOR THE SAME REASON LBVIP IS, WHICH IS THE ANNOUNCEMENT EMAIL. The
+     new-roles broadcast points every recipient at /jobs?roles=<this slug>, and
+     that URL renders openJobs() for anybody without a session. A slug outside
+     this set would therefore send ninety members to an empty board, or to
+     /auth/login if they tapped through to the role, and a good number of them
+     open mail on a phone they have never signed in on. Seven days before the
+     deadline is not the week to make somebody remember a password.
+     Also the least gated thing on the board on its own merits: the firm put the
+     flier out publicly with a QR code on it. */
+  'jee-graduate-recruitment-development-program-2026',
+
+  // 14 August.
   'kbo-junior-associate-yaba',
   'olajide-oyewole-associate-dispute-resolution-abuja',
   // 10 August.
