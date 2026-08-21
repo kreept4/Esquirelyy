@@ -62,6 +62,35 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  /**
+   * ⚠ RASTER ICONS AT STABLE URLS, AND BOTH HALVES OF THAT MATTER.
+   *
+   * The only icon here was src/app/icon.svg through Next's file convention,
+   * which emits href="/icon.svg?icon.<hash>.svg". Google's favicon rules say in
+   * as many words that "the favicon URL must be stable", and a content hash
+   * moves it on every edit to the mark. Google recrawls favicons on a schedule
+   * of days to weeks, so a moving URL is a favicon it never settles on. Files in
+   * /public carry no hash.
+   *
+   * And the documented format list is raster; SVG is not named. It may well
+   * work, and this is not the place to find out, because the failure is
+   * invisible from here: the result simply shows a globe.
+   *
+   * The SVG stays FIRST for browsers, which prefer it and scale it properly.
+   * The PNGs are what a crawler is offered. apple-touch-icon is listed because
+   * it is one of the three rel values Google names as a favicon source, so it
+   * is a second chance at the same job rather than an iOS-only nicety.
+   *
+   * All three are written by scripts/make-logo-pngs.mjs from the same measured
+   * geometry as the SVG. Re-run it if the mark changes.
+   */
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon-192.png', type: 'image/png', sizes: '192x192' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+  },
 }
 
 /**
@@ -92,6 +121,22 @@ const ORGANIZATION = {
     'Nigeria\'s legal careers platform: an independent directory of Nigerian law firms, verified job and internship listings, and scholarship deadlines.',
   areaServed: { '@type': 'Country', name: 'Nigeria' },
   knowsLanguage: 'en-NG',
+  /**
+   * ⚠ THIS IS THE PROPERTY THE SITE LOGO IN SEARCH IS BUILT FROM, and it was
+   * missing entirely. Everything else in this block described the entity and
+   * then declined to say what it looks like, so there was nothing for Google to
+   * show and the result rendered with no mark at all.
+   *
+   * 512, against a documented minimum of 112. Big enough that a consumer
+   * scaling down never invents detail, and the file is 2KB because the mark is
+   * four rectangles.
+   *
+   * Opaque on its own amber ground, which is what "make sure the image looks
+   * how you intend it to look on a purely white background" asks for. A
+   * transparent version of this mark is dark ink floating on white, which is
+   * not the logo.
+   */
+  logo: `${SITE}/logo.png`,
   sameAs: [],
 }
 
