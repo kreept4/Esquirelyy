@@ -21,11 +21,10 @@
  *
  * IT WAS "THE SEVEN MOST RECENTLY ADDED" AND THAT SENTENCE STOPPED BEING TRUE
  * WITHOUT ANYBODY EDITING IT, which is worth more than the tidiness it bought.
- * Two rows have gone onto the board since it was written: the B.F.A. & Co
- * intellectual property seat on 17 August, which was never added here and so is
- * newer than six of the slugs that are, and the Jackson, Etti & Edu graduate
- * programme on 21 August, which was added because the announcement email
- * requires it. A count in a comment is a fact about one afternoon.
+ * Two rows went onto the board after it was written and neither was reflected
+ * here: the B.F.A. & Co intellectual property seat on 17 August and the
+ * Jackson, Etti & Edu graduate programme on 21 August. Both are listed now. A
+ * count in a comment is a fact about one afternoon; the rule is not.
  *
  * ⚠ NOTHING ROLLED OFF TO MAKE ROOM FOR THE 21 AUGUST ENTRY, deliberately.
  * The "next one on, oldest one off" habit reads as housekeeping and is not:
@@ -90,6 +89,14 @@ const OPEN_JOB_SLUGS = new Set<string>([
      Also the least gated thing on the board on its own merits: the firm put the
      flier out publicly with a QR code on it. */
   'jee-graduate-recruitment-development-program-2026',
+
+  /* 17 August. Added 21 August, later than it should have been.
+     It went onto the board on the 17th and was never listed here, so for four
+     days it was newer than six of the slugs below and was the only recent role
+     a stranger could not read. Nothing decided that; it was simply missed, which
+     is the failure mode a named list has instead of a rolling window. The
+     window's own header now says so rather than claiming a count. */
+  'bfa-intellectual-property-lawyer',
 
   // 14 August.
   'kbo-junior-associate-yaba',
