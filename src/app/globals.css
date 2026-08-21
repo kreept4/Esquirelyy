@@ -7303,6 +7303,32 @@ video::-webkit-media-controls { display: none !important; }
   height: 2.75rem;
   border-radius: 8px;
 }
+/* The slot for a real mark, as opposed to the initials chip below.
+   WIDER THAN THE FALLBACK ON PURPOSE, exactly as .job-mark is wider than
+   .job-mark-fallback on the board. A set of initials is square by nature; a
+   logo is whatever shape the firm drew, and forcing a wordmark into a square
+   turns it into a sliver. Height matches the fallback so the two kinds of card
+   still line up, which is what the equal-height work in this section was for.
+   88% height, not the 78% .job-mark uses. The board row can afford the extra
+   optical padding because its marks sit in a dense list where restraint reads
+   as tidy. A card has one mark and a lot of cream around it, and at 78% the
+   square marks still read as undersized. */
+.feat-opp-mark-logo {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 2.75rem;
+  overflow: hidden;
+}
+.feat-opp-mark-logo img {
+  max-width: 100%;
+  max-height: 88%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
 .feat-opp-mark-fallback {
   background: #FFF8E5;
   border: 1.5px solid var(--ink);

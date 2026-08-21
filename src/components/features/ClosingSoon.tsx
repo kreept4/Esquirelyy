@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import LogoFrame from '@/components/ui/LogoFrame'
 import { logoForEmployer } from '@/lib/firms-data'
 import { OPPORTUNITY_TYPE_LABELS, daysUntil } from '@/lib/opportunities'
 
@@ -135,12 +134,37 @@ function CardMark({ employer, logoUrl }: { employer: string; logoUrl?: string | 
       </span>
     )
   }
-  /* No brand-colour tile here, unlike the board row. LogoFrame has no such
-     prop: on the board the coloured ground is a wrapper EmployerMark draws for
-     marks whose artwork sits on a solid brand field, and none of the employers
-     that reach this section have one. If a bank ever closes a role, this is the
-     line to revisit. */
-  return <LogoFrame src={url} alt="" />
+  /**
+   * ⚠ THIS WAS <LogoFrame src={url} />, WITH NO SIZE PROPS, AND THAT IS WHY THE
+   * MARKS LOOKED LOST.
+   *
+   * LogoFrame's defaults are a logo WALL's defaults: a 9rem by 2.5rem slot, and
+   * an image capped at 78% of its width but only 60% of its height. Those
+   * numbers are right for the ticker, where a row of wordmarks is set to a
+   * common cap height and the width is allowed to run.
+   *
+   * In a card they are wrong twice over. The 60% height cap left a square mark
+   * rendering at 1.5rem, and `contain` then binds on height for anything
+   * squarer than 3.6:1, so Jackson Etti & Edu and the ECOWAS roundel came out
+   * about 24px wide inside a 144px slot. The other 120px is empty, which is
+   * also what pushed the employer name so far off the mark.
+   *
+   * The board row already solved this and did not use LogoFrame to do it: a
+   * plain span sized in CSS, 4.5rem by 3rem, image at 100% width and 78%
+   * height. This is that, at the card's own height. A square mark now fills the
+   * slot instead of floating in it, and the text starts beside the logo rather
+   * than a finger-width away from it.
+   *
+   * No brand-colour tile, unlike the board row. There the coloured ground is
+   * for marks whose artwork sits on a solid brand field, and none of the
+   * employers that reach this section have one. If a bank ever closes a role,
+   * this is the line to revisit.
+   */
+  return (
+    <span className="feat-opp-mark-logo">
+      <img src={url} alt="" loading="lazy" decoding="async" />
+    </span>
+  )
 }
 
 export default function ClosingSoon({ rows }: { rows: Row[] }) {
