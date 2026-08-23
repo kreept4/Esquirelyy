@@ -1,12 +1,15 @@
 /**
- * Crop marks for the three new employers (Iris Attorneys LP, Principle Legal
- * Consult, Uduakabasi & Partners / U&P Law) straight from their own
- * recruitment material, same treatment as scripts/extract-ovie-logo.mjs and
- * scripts/extract-kbo-logo.mjs: a tight crop plus sharp's trim, no background
- * keying. Iris and Principle Legal Consult sit on white/near-white grounds and
- * come out transparent-on-trim; U&P's mark is already isolated on its own
- * maroon tile, so it is kept as an opaque plate like the other dark-ground
- * marks in EMPLOYER_LOGOS.
+ * Crop marks for two new employers (Principle Legal Consult, Uduakabasi &
+ * Partners / U&P Law) straight from their own recruitment material, same
+ * treatment as scripts/extract-ovie-logo.mjs and scripts/extract-kbo-logo.mjs:
+ * a tight crop plus sharp's trim, no background keying — both sit on solid
+ * dark grounds, kept as opaque plates like the other dark-ground marks in
+ * EMPLOYER_LOGOS.
+ *
+ * A third employer, Iris Attorneys LP, was cropped and wired in here and then
+ * dropped from the board entirely on 23 August — not needed. Its crop step is
+ * removed rather than left commented out, since the source flier this read
+ * from is a local upload path, not something checked into the repo.
  *
  * Run: node scripts/extract-new-employer-logos.mjs
  */
@@ -30,13 +33,6 @@ async function crop(src, box, out, { keyWhite = false } = {}) {
   await img.trim({ threshold: 12 }).png().toFile(OUT + out)
   console.log('wrote', out)
 }
-
-await crop(
-  '/root/.claude/uploads/26d41ca4-240d-5ebb-b301-c2705cb6a05a/10ad1fa4-IMG_1813.jpeg',
-  { left: 30, top: 35, width: 280, height: 145 },
-  'iris-attorneys-lp.png',
-  { keyWhite: true }
-)
 
 await crop(
   '/root/.claude/uploads/26d41ca4-240d-5ebb-b301-c2705cb6a05a/ba399e9f-image.jpg',

@@ -82,7 +82,6 @@ const OPEN_JOB_SLUGS = new Set<string>([
      below: the new-roles broadcast points every recipient at
      /jobs?roles=<these slugs>, which renders openJobs() for anybody without a
      session. */
-  'iris-attorneys-lp-front-desk-officer',
   'principle-legal-consult-junior-associate',
   'uandp-law-multiple-practice-areas',
 

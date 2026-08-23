@@ -2408,15 +2408,6 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   castlefieldattorneys: '/employer-logos/castlefield.png',
   castlefield: '/employer-logos/castlefield.png',
 
-  /* Iris Attorneys LP. Same reasoning as Zyph, Pentagon and Ovie Obobolo for
-     why it is here rather than in ALL_FIRMS: on the board because they are
-     hiring a Front Desk Officer, not in the directory because nobody has
-     researched them. Cropped from their own recruitment flier and keyed to
-     transparency (white ground). */
-  irisattorneyslp: '/employer-logos/iris-attorneys-lp.png',
-  irisattorneys: '/employer-logos/iris-attorneys-lp.png',
-  iris: '/employer-logos/iris-attorneys-lp.png',
-
   /* Principle Legal Consult. Same reasoning again. Cropped from their own
      flier; the navy ground is kept as a plate rather than keyed out, same
      treatment as U&P below — the mark is white ink on that navy, so keying it
