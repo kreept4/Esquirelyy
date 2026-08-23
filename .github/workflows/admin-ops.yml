@@ -1,0 +1,87 @@
+name: Admin ops (seed / delist / announce)
+
+# Manual, one-off operations that need real Supabase and Brevo credentials —
+# the same ones fetch-jobs.yml already uses for the daily Adzuna pull, plus
+# Brevo for the ones that send mail. Everything here is idempotent (the seed
+# and delist scripts already say so in their own headers) except the two
+# email actions, which is why send-test and send-all are separate choices
+# rather than one "send" toggle: picking the wrong one is the one mistake on
+# this list that cannot be taken back.
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "What to run"
+        required: true
+        type: choice
+        options:
+          - report-expired-jobs
+          - seed-new-jobs
+          - delist-zyph-legal
+          - send-test-email
+          - send-all-email
+      test_email:
+        description: "Address for send-test-email (ignored otherwise)"
+        required: false
+        default: ""
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+
+      # The seed/delist/report scripts and send-new-roles.mjs all read a
+      # physical .env.local (see each script's own header for why — this app
+      # normally reads it through Next, and a plain node script does not).
+      # Written fresh on every run and never committed.
+      - name: Write .env.local from secrets
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          BREVO_SENDER_EMAIL: ${{ secrets.BREVO_SENDER_EMAIL }}
+          BREVO_SENDER_NAME: ${{ secrets.BREVO_SENDER_NAME }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        run: |
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$SUPABASE_URL"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$SUPABASE_SERVICE_ROLE_KEY"
+            echo "BREVO_API_KEY=$BREVO_API_KEY"
+            echo "BREVO_SENDER_EMAIL=$BREVO_SENDER_EMAIL"
+            echo "BREVO_SENDER_NAME=$BREVO_SENDER_NAME"
+            echo "NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-https://esquirely.com.ng}"
+          } > .env.local
+
+      - name: report-expired-jobs
+        if: inputs.action == 'report-expired-jobs'
+        run: node scripts/2026-08-23-report-expired-jobs.mjs
+
+      - name: seed-new-jobs
+        if: inputs.action == 'seed-new-jobs'
+        run: |
+          node scripts/seed-principle-legal-consult-junior-associate.mjs
+          node scripts/seed-uandp-law-hiring.mjs
+
+      - name: delist-zyph-legal
+        if: inputs.action == 'delist-zyph-legal'
+        run: node scripts/2026-08-23-delist-zyph-legal.mjs
+
+      - name: send-test-email
+        if: inputs.action == 'send-test-email'
+        run: |
+          if [ -z "${{ inputs.test_email }}" ]; then
+            echo "test_email input is required for send-test-email" >&2
+            exit 1
+          fi
+          node scripts/send-new-roles.mjs --only "${{ inputs.test_email }}" --send
+
+      - name: send-all-email
+        if: inputs.action == 'send-all-email'
+        run: node scripts/send-new-roles.mjs --send
