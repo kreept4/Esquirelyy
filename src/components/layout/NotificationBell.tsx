@@ -21,7 +21,7 @@ import {
   unreadCount,
   type Notification,
 } from '@/lib/notifications'
-import { TEAM_CALL, TEAM_CALL_MAILTO } from '@/lib/team-call'
+import { TEAM_CALL } from '@/lib/team-call'
 /* Same adapter the board uses, so an opportunity is the same shape in the bell
    as it is on /jobs and the two cannot describe it differently. */
 import { toBoardRow } from '@/lib/opportunities'
@@ -566,13 +566,14 @@ export default function NotificationBell({
                 </p>
               </div>
 
-              <a
-                href={TEAM_CALL_MAILTO}
-                className="grotesk-bold notif-modal-cta"
-                onClick={() => setShowTeam(false)}
-              >
-                Tell us how you can help
-              </a>
+              {/* Not a live mailto. Applications for the team aren't open yet
+                  — see the note on the 0c push this modal used to be reached
+                  from, in lib/notifications.ts. Left as a dead-end statement
+                  rather than a disabled-looking button, since there is
+                  currently no path that opens this modal at all. */}
+              <p className="grotesk-regular notif-modal-cta-note">
+                Not accepting applications for the team yet — check back soon.
+              </p>
             </div>
           </div>
         </div>

@@ -194,5 +194,31 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
     ],
     link: 'https://www.maastrichtuniversity.nl/studeren/toelating-inschrijving/financing-your-studies/scholarships/maastricht-university-nl-high',
   },
-
+  {
+    slug: 'mastercard-foundation-scholars-edinburgh',
+    title: 'Mastercard Foundation Scholars Program — University of Edinburgh',
+    provider: 'Mastercard Foundation, with the University of Edinburgh',
+    region: 'United Kingdom (on-campus) and online distance learning',
+    level: "Master's or diploma, on-campus or online",
+    funding: 'Full scholarship: tuition, stipend and related costs, per the Mastercard Foundation programme terms',
+    deadline:
+      'Register for an information session 15–24 September 2026 for entry in September 2027 — only attendees who also meet eligibility are invited to apply',
+    status: 'upcoming',
+    /* ⚠ NO LAW DEGREE ON THE PUBLISHED PROGRAMME LIST, and this file's own
+       header says a scholarship that welcomes Nigerians without funding legal
+       study does not belong here. It is included anyway, on explicit
+       instruction, and the description says so plainly rather than implying a
+       law fit that is not there — the closest overlaps are development,
+       governance and social-justice programmes, not a law degree. */
+    description:
+      'A fully-funded programme for African leaders, delivered on-campus at the University of Edinburgh or online, across development, sustainability and public-policy programmes. There is no law degree on the current list, so this is a fit for a lawyer or law graduate whose interest runs toward policy, development or governance work rather than a further legal qualification — closest overlaps are International Development, Social Justice & Community Action, and Data, Inequality & Society. Applications especially encouraged from young women, people with disabilities, and people with refugee or displaced status. Recruitment for this cycle is registration-gated: you register for an information session first, and only attendees who also meet the eligibility criteria receive an invitation to apply.',
+    eligibility: [
+      'No law degree currently on the programme list — check the on-campus and online lists before applying',
+      'On-campus: Africa & International Development, Climate Change Finance & Investment, Data Inequality & Society, Entrepreneurship & Innovation, Environment & Development, Environmental Sustainability, Food Security, Operational Research, Planetary Health, Sustainable Energy Systems',
+      'Online: Biodiversity Wildlife & Ecosystem Health, Climate Change Management, Data-Driven Breeding & Genetics, Data Science Technologies, Digital Education, Global Food Security & Nutrition, Global Health & Infectious Diseases, International Development, One Health, Social Justice & Community Action',
+      'Must register for and attend an information session, 15–24 September 2026, before an application invitation is sent',
+      'Applications especially encouraged from young women, people with disabilities, and people with refugee or displaced status',
+    ],
+    link: 'https://edinburgh-global.ed.ac.uk/mastercard-foundation',
+  },
 ]

@@ -2407,6 +2407,29 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   bridgegap: '/employer-logos/bridgegap.png',
   castlefieldattorneys: '/employer-logos/castlefield.png',
   castlefield: '/employer-logos/castlefield.png',
+
+  /* Iris Attorneys LP. Same reasoning as Zyph, Pentagon and Ovie Obobolo for
+     why it is here rather than in ALL_FIRMS: on the board because they are
+     hiring a Front Desk Officer, not in the directory because nobody has
+     researched them. Cropped from their own recruitment flier and keyed to
+     transparency (white ground). */
+  irisattorneyslp: '/employer-logos/iris-attorneys-lp.png',
+  irisattorneys: '/employer-logos/iris-attorneys-lp.png',
+  iris: '/employer-logos/iris-attorneys-lp.png',
+
+  /* Principle Legal Consult. Same reasoning again. Cropped from their own
+     flier; the navy ground is kept as a plate rather than keyed out, same
+     treatment as U&P below — the mark is white ink on that navy, so keying it
+     would erase the letterforms rather than the background. */
+  principlelegalconsult: '/employer-logos/principle-legal-consult.png',
+  plc: '/employer-logos/principle-legal-consult.png',
+
+  /* Uduakabasi & Partners, trading as U&P Law. Same reasoning again. Their own
+     monogram, already isolated on its own maroon tile — kept as a plate for
+     the same reason as Principle Legal Consult's mark. */
+  uduakabasiandpartners: '/employer-logos/uandp-law.png',
+  uandplaw: '/employer-logos/uandp-law.png',
+  uandp: '/employer-logos/uandp-law.png',
 }
 
 /** Ball ground for employers whose mark is drawn on a solid brand colour.

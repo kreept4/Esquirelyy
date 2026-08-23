@@ -1,6 +1,5 @@
 import { ALL_SCHOLARSHIPS } from './scholarships-data'
 import { NEW_ROLES, roleCountLabel } from './new-roles'
-import { TEAM_CALL } from './team-call'
 
 /**
  * Notifications, derived rather than stored.
@@ -375,17 +374,11 @@ export function buildFeed(
     at: NEW_ROLES.at,
   })
 
-  /* 0c. The open call to join the team. Sits below the drop because a role at
-         a firm is what somebody came here for, and this is us asking them for
-         something. It stays in the feed rather than expiring on a date: it is
-         open until it is not, and the id is what retires it. */
-  out.push({
-    id: TEAM_CALL.id,
-    kind: 'team',
-    title: 'We are opening up the team',
-    detail: 'Volunteer positions, open now',
-    at: TEAM_CALL.at,
-  })
+  /* 0c. The open call to join the team — taken out of the feed on 23 August
+         2026. Applications for the team (and separately, for ambassadors) are
+         not open yet, so nothing here should tell a reader they can apply.
+         TEAM_CALL itself is left in lib/team-call.ts rather than deleted: its
+         `id` still names this notification for whenever it goes back in. */
 
   const today = now.toISOString().slice(0, 10)
 

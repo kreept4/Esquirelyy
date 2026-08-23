@@ -14,6 +14,7 @@
  */
 
 import { ALL_FIRMS } from '@/lib/firms-data'
+import { roleCountLabel, carouselSummary, NEW_ROLES_HREF, newRolesCta } from '@/lib/new-roles'
 
 export type NewsKind = 'update' | 'tip' | 'news'
 
@@ -80,6 +81,36 @@ export const KIND_LABEL: Record<NewsKind, string> = {
  * decides a palette and nothing has to be re-baked after a reorder.
  */
 const ITEMS: NewsItem[] = [
+  {
+    /**
+     * The current roles drop, read from lib/new-roles.ts rather than written
+     * out here.
+     *
+     * ⚠ NOTHING IS HARDCODED BUT THE SLUG AND THE DATE. Title, summary and href
+     * all call into new-roles.ts, which is the single source three other
+     * surfaces (the bell, its modal, the email) already read from. Writing this
+     * slide's copy by hand a fourth time is exactly the drift the header
+     * comment on that file describes: a slide can promise a role count that the
+     * board has already moved past. Bumping NEW_ROLES.id for the next drop is
+     * the whole of updating this card too.
+     *
+     * `date` still has to be a literal — it sorts the carousel — so it is kept
+     * in step with NEW_ROLES.at by hand. It is a duplicated fact, not a
+     * duplicated sentence, and the two are not the same risk: a wrong date
+     * moves a card's position, a wrong sentence tells a reader something false.
+     *
+     * Illustration: new-entries.svg, sitting unused in /public/illustrations
+     * since before this slide existed.
+     */
+    slug: 'roles-drop-2026-08-23',
+    kind: 'update',
+    date: '2026-08-23',
+    title: `${roleCountLabel()} on the board`,
+    summary: carouselSummary(),
+    href: NEW_ROLES_HREF,
+    cta: newRolesCta(),
+    media: { type: 'image', src: '/illustrations/new-entries.svg', alt: '' },
+  },
   {
     /**
      * LBVIP 5.0, and the only slide here with a hard expiry.
@@ -192,12 +223,18 @@ const ITEMS: NewsItem[] = [
     media: { type: 'image', src: '/illustrations/file-searching.svg', alt: '' }
   },
   {
+    /* ⚠ NO LONGER SAYS "APPLICATIONS ARE OPEN", as of 23 August 2026.
+       Applications are not open yet — see the note on the ambassador page's
+       own apply section. This slide still points at the page, because the
+       pitch itself (what the role is, what it is not, what it returns) is
+       still worth reading; it just no longer promises a mailbox that isn't
+       accepting mail. */
     slug: 'ambassadors-open',
     kind: 'update',
     date: '2026-08-06',
-    title: 'Campus ambassador applications are open!',
+    title: 'What a campus ambassador does',
     summary:
-      'Run one session for your year, whenever it suits you, and leave with a signed reference. Not paid, and we would rather say so up front.',
+      'Run one session for your year, whenever it suits you, and leave with a signed reference. Not paid, and we would rather say so up front. Applications are not open yet.',
     href: '/ambassador',
     cta: 'Read the terms',
     media: { type: 'image', src: '/illustrations/ambassador.svg', alt: '' }

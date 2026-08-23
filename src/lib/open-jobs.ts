@@ -78,7 +78,15 @@
  * thirteen listings ask for an account.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
-  /* 21 August, and the current drop.
+  /* 23 August, and the current drop. Same reasoning as the 21 August entry
+     below: the new-roles broadcast points every recipient at
+     /jobs?roles=<these slugs>, which renders openJobs() for anybody without a
+     session. */
+  'iris-attorneys-lp-front-desk-officer',
+  'principle-legal-consult-junior-associate',
+  'uandp-law-multiple-practice-areas',
+
+  /* 21 August, and the previous drop.
      ⚠ OPEN FOR THE SAME REASON LBVIP IS, WHICH IS THE ANNOUNCEMENT EMAIL. The
      new-roles broadcast points every recipient at /jobs?roles=<this slug>, and
      that URL renders openJobs() for anybody without a session. A slug outside
@@ -105,7 +113,9 @@ const OPEN_JOB_SLUGS = new Set<string>([
   'ovie-obobolo-associate',
   'pentagon-partners-associate-grc',
   'babalakin-senior-associate-energy',
-  'zyph-legal-legal-associate',
+  /* 'zyph-legal-legal-associate' removed 23 August — the role closed, see
+     scripts/2026-08-23-delist-zyph-legal.mjs. Per the file header, this is the
+     one case where the open set is meant to shrink. */
   // 8 August.
   'abe-asotie-lawyer-legal-aid',
 

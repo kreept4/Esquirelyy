@@ -232,23 +232,19 @@ export default function AmbassadorPage() {
             </div>
           </section>
 
-          {/* The one carton card on the page, on the one action. */}
+          {/* The one carton card on the page, on the one action.
+              ⚠ APPLICATIONS ARE NOT OPEN YET, as of 23 August 2026. The mailto
+              and the address it pointed at are removed rather than left in
+              place and disabled — a live email that nobody is ready to answer
+              is worse than a page that says plainly it isn't open yet. */}
           <section className="amb-apply">
             <div className="amb-apply-copy">
               <p className="display-black amb-apply-heading">Put your campus on the map.</p>
               <p className="grotesk-regular amb-apply-body">
-                Email us your campus and year, and the one thing you would change about Esquirely.
-                That is the whole application. Your invite link comes back in the reply. We read
-                every one as it arrives and take a small number at a time, so you get a person
-                rather than a mailing list.
+                Applications aren't open yet. Check back here when they are — this page will
+                carry the address to write to.
               </p>
               <div className="amb-apply-actions">
-                <a
-                  href="mailto:ambassadors@esquirely.com.ng?subject=Ambassador%20application"
-                  className="grotesk-bold amb-apply-cta"
-                >
-                  Apply to join
-                </a>
                 <Link href="/faq" className="grotesk-regular amb-apply-alt">
                   Read the FAQ first
                 </Link>

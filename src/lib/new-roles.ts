@@ -66,15 +66,47 @@ export const ROLE_ENTRIES = [
     blurb:
       'Jackson, Etti & Edu are taking applications for their 2026 graduate programme in Lagos, open to lawyers within two years of call. It closes on 28 August.',
   },
+  {
+    slug: 'iris-attorneys-lp-front-desk-officer',
+    employer: 'Iris Attorneys LP',
+    employerShort: 'Iris Attorneys LP',
+    title: 'Front Desk Officer',
+    line: 'Lagos, full time, front-of-house for clients and visitors — no legal qualification needed. Apply by email with a CV and cover letter, subject line "secretary". Rolling, no stated deadline.',
+    short: 'a Lagos front desk officer seat at Iris Attorneys LP',
+    blurb:
+      'Iris Attorneys LP is hiring a Front Desk Officer in Lagos to run reception and client-facing enquiries. Rolling, no stated deadline.',
+  },
+  {
+    slug: 'principle-legal-consult-junior-associate',
+    employer: 'Principle Legal Consult',
+    employerShort: 'Principle Legal Consult',
+    title: 'Junior Associate',
+    line: 'Abuja, full time, litigation with exposure to matters across Abuja and London. Needs 2-3 years post-NYSC experience and confidence attending court independently. Apply by email with a CV and cover letter. Rolling, no stated deadline.',
+    short: 'an Abuja litigation associate seat at Principle Legal Consult',
+    blurb:
+      'Principle Legal Consult is hiring a Junior Associate in Abuja for litigation work, open to 2-3 years post-NYSC experience. Rolling, no stated deadline.',
+  },
+  {
+    slug: 'uandp-law-multiple-practice-areas',
+    employer: 'Uduakabasi & Partners (U&P Law)',
+    /* Drops the parenthetical network name for the bell and the subject line,
+       same move as Jackson, Etti & Edu would get if it had one. */
+    employerShort: 'U&P Law',
+    title: 'Multiple Roles Across Practice Areas',
+    line: 'Nigeria, corporate governance, commercial transactions, regulatory compliance, energy, technology, investment and business structuring. Apply by email with a CV and a three-question cover letter. Rolling, no stated deadline.',
+    short: 'a general call across practice areas at U&P Law',
+    blurb:
+      'Uduakabasi & Partners (U&P Law) are hiring across multiple practice areas in corporate, energy and technology work. Rolling, no stated deadline.',
+  },
 ] as const
 
 export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
-   *  somebody who read the 10 August note has not seen this one. */
-  id: 'roles-2026-08-21',
+   *  somebody who read the 21 August note has not seen these three. */
+  id: 'roles-2026-08-23',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-08-21T09:00:00.000Z',
+  at: '2026-08-23T12:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   employers: ROLE_ENTRIES.map(r => r.employer),
   /** The same firms without the parenthetical network names. Read by the bell. */

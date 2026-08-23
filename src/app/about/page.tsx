@@ -2,7 +2,6 @@ import JsonLd, { breadcrumb, openGraph, webPageSchema } from '@/components/seo/J
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { TEAM, AMBASSADORS, type Person } from './people'
-import { TEAM_CALL_MAILTO } from '@/lib/team-call'
 
 export const metadata = {
   title: 'About us',
@@ -197,13 +196,12 @@ export default function AboutPage() {
                 objection rather than stating the terms. What matters is that it
                 comes before the interesting part, not how many ways it is put. */}
             <p className="grotesk-bold about-note-title">Join us</p>
+            {/* Applications aren't open yet — see the 23 August note on the
+                'team' push this used to also live in (lib/notifications.ts).
+                No address here until they are: an email that goes nowhere is
+                worse than a section that says so plainly. */}
             <p className="grotesk-regular about-note">
-              We are opening up the team. These are volunteer positions, on something Nigerian
-              law students are using right now. Tell us what you do, what you would want to build
-              here, and take as much space as you need.{' '}
-              <a href={TEAM_CALL_MAILTO} className="about-note-mail">
-                careers@esquirely.com.ng
-              </a>
+              We are planning to open up the team. Not yet — check back here when it happens.
             </p>
           </section>
 
