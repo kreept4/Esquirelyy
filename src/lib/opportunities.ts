@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { daysUntilDay, hasPassed } from './day'
 
 /**
  * Opportunities, and how they reach the board.
@@ -172,15 +173,13 @@ export function toBoardRow(o: Opportunity) {
 
 /** Within a fortnight, and not already past. */
 function isClosingSoon(deadline: string | null): boolean {
-  if (!deadline) return false
-  const days = (new Date(deadline).getTime() - Date.now()) / 86_400_000
-  return days >= 0 && days <= 14
+  const days = daysUntilDay(deadline)
+  return days !== null && days >= 0 && days <= 14
 }
 
 /** Whether the closing date has passed. */
 export function hasClosed(deadline: string | null): boolean {
-  if (!deadline) return false
-  return new Date(deadline).getTime() < Date.now() - 86_400_000
+  return hasPassed(deadline)
 }
 
 /**
@@ -192,8 +191,12 @@ export function hasClosed(deadline: string | null): boolean {
  * tell "closed" from "closes today" rather than both rendering as zero.
  */
 export function daysUntil(deadline: string | null | undefined): number | null {
-  if (!deadline) return null
-  return Math.ceil((new Date(deadline).getTime() - Date.now()) / 86_400_000)
+  /* ⚠ CALENDAR DAYS IN LAGOS, NOT ELAPSED MILLISECONDS. This subtracted two
+     instants and ceil'd the result, which is one day too high for the hour
+     between 23:00 UTC and midnight, because Nigeria has already turned over and
+     UTC has not. Reported 25 August 2026 as Heirs showing eleven days when a
+     reader in Lagos counted ten. The whole argument is in lib/day.ts. */
+  return daysUntilDay(deadline)
 }
 
 function db() {

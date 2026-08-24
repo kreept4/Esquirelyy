@@ -1,3 +1,5 @@
+import { daysUntilDay } from './day'
+
 export interface Scholarship {
   slug: string
   title: string
@@ -309,11 +311,12 @@ export function parseDeadline(text: string): Date | null {
   return Number.isNaN(d.getTime()) ? null : d
 }
 
-/** Whole days until a scholarship's deadline. Negative once it has passed. */
+/** Whole days until a scholarship's deadline. Negative once it has passed.
+ *  Calendar days in the site's timezone, for the reason lib/day.ts sets out. */
 export function daysUntilDeadline(s: Scholarship, now = new Date()): number | null {
   const d = parseDeadline(s.deadline)
   if (!d) return null
-  return Math.ceil((d.getTime() - now.getTime()) / 86_400_000)
+  return daysUntilDay(d.toISOString().slice(0, 10), now)
 }
 
 /**
@@ -337,7 +340,4 @@ export function closingScholarships(withinDays: number, now = new Date()): Schol
   }).sort((a, b) => (daysUntilDeadline(a, now) ?? 0) - (daysUntilDeadline(b, now) ?? 0))
 }
 
-/** "Closes today" / "Closes tomorrow" / "Closes in 3 days". */
-export function closesInWords(days: number): string {
-  return days === 0 ? 'Closes today' : days === 1 ? 'Closes tomorrow' : `Closes in ${days} days`
-}
+export { closesInWords } from './day'

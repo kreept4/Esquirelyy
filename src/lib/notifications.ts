@@ -1,5 +1,6 @@
 import { ALL_SCHOLARSHIPS, parseDeadline } from './scholarships-data'
 import { NEW_ROLES, roleCountLabel } from './new-roles'
+import { daysUntilDay, closesInWords, today as lagosToday } from './day'
 
 /**
  * Notifications, derived rather than stored.
@@ -415,7 +416,10 @@ export function buildFeed(
          reason: nothing costs anything by being unused, and a reader who
          dismissed the old note keeps that record. */
 
-  const today = now.toISOString().slice(0, 10)
+  /* The reader's calendar day, not the server's. An ISO slice is UTC, so for
+     the hour before midnight UTC this hid nothing that had actually expired in
+     Lagos and could hide a role on its closing day. See lib/day.ts. */
+  const today = lagosToday(now)
 
   // 1. Roles matching the filters they actually set. With no prefs the match is
   //    everything, which is the honest reading of "no filters".
@@ -441,14 +445,18 @@ export function buildFeed(
     if (s.status !== 'open') continue
     const d = parseDeadline(s.deadline)
     if (!d) continue
-    const days = Math.ceil((d.getTime() - now.getTime()) / 86_400_000)
-    if (days < 0 || days > DEADLINE_WINDOW_DAYS) continue
+    /* Calendar days in the site's timezone. This ran in the BROWSER, so it was
+       computed against whatever clock the reader's device carries: a member on
+       a phone set to London saw a different countdown from one in Lagos, and
+       both could disagree with the board rendered on a UTC server. See
+       lib/day.ts. */
+    const days = daysUntilDay(d.toISOString().slice(0, 10), now)
+    if (days === null || days < 0 || days > DEADLINE_WINDOW_DAYS) continue
     out.push({
       id: `deadline-${s.slug}`,
       kind: 'deadline',
       title: s.title,
-      detail:
-        days === 0 ? 'Closes today' : days === 1 ? 'Closes tomorrow' : `Closes in ${days} days`,
+      detail: closesInWords(days),
       href: '/scholarships',
       // Dated to the moment it entered the window, so it surfaces once and then
       // ages out of unread rather than re-alerting every time the panel opens.
@@ -496,20 +504,20 @@ export function buildFeed(
 
   for (const o of closing) {
     if (!o?.deadline || !o?.slug || o.is_rolling) continue
-    const d = new Date(o.deadline)
-    if (Number.isNaN(d.getTime())) continue
-    const days = Math.ceil((d.getTime() - now.getTime()) / 86_400_000)
-    if (days < 0 || days > CLOSING_WINDOW_DAYS) continue
+    const days = daysUntilDay(o.deadline, now)
+    if (days === null || days < 0 || days > CLOSING_WINDOW_DAYS) continue
     out.push({
       id: `closing-${o.slug}`,
       kind: 'deadline',
       title: o.title || '',
-      detail:
-        days === 0 ? 'Closes today' : days === 1 ? 'Closes tomorrow' : `Closes in ${days} days`,
+      detail: closesInWords(days),
       href: `/jobs/${o.slug}`,
       /* Dated to the moment it entered the window, so it surfaces once and then
-         ages out of unread rather than re-alerting on every panel open. */
-      at: new Date(d.getTime() - CLOSING_WINDOW_DAYS * 86_400_000).toISOString(),
+         ages out of unread rather than re-alerting on every panel open.
+         Derived from `days` rather than from a parsed deadline, so this cannot
+         drift from the number printed above it: the row is stamped exactly
+         CLOSING_WINDOW_DAYS before the deadline, counted the same way. */
+      at: new Date(now.getTime() - (CLOSING_WINDOW_DAYS - days) * 86_400_000).toISOString(),
     })
   }
 
