@@ -117,6 +117,24 @@ const OPEN_JOB_SLUGS = new Set<string>([
      flier out publicly with a QR code on it. */
   'jee-graduate-recruitment-development-program-2026',
 
+  /* 6 August, and added to this set on 25 August, late and for a reported
+     reason rather than a tidy one.
+     ⚠ IT WAS THE ONLY THING IN "CLOSING SOON" A STRANGER COULD NOT SEE, and
+     that is a worse failure than it sounds. ClosingSoon renders from the rows
+     the page hands it, and jobs/page.tsx hands a signed-out reader openJobs()
+     first, so a slug outside this set is stripped BEFORE the section is built.
+     The section therefore showed three cards to a member and two to everybody
+     else, with no gap and nothing to indicate anything was missing. It was
+     reported as a mobile bug, because that is what it looks like: a card that
+     is simply not there.
+     A public urgency signal cannot be gated. The whole argument for the section
+     is that these things shut on a date, and hiding the one closing soonest
+     from the readers most likely to be signed out defeats it.
+     It is also public on its own merits, exactly as JEE and LBVIP are: the
+     ECOWAS Commission publishes the programme and its application portal at
+     youngprofessional.ecowas.int for anyone to read. */
+  'ecowas-young-graduates-immersion-programme-2027',
+
   /* 17 August. Added 21 August, later than it should have been.
      It went onto the board on the 17th and was never listed here, so for four
      days it was newer than six of the slugs below and was the only recent role

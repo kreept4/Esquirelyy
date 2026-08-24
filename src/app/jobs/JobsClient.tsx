@@ -603,7 +603,28 @@ export default function JobsClient({
                 <span className="job-meta">
                   <span className="grotesk-regular job-cell">{job.location}</span>
                   <span className="grotesk-regular job-cell">{TYPE_LABELS[job.type] || job.type}</span>
-                  <span className="grotesk-regular job-cell job-deadline">{deadlineLabel(job)}</span>
+                  {/* ⚠ THE DAYS-LEFT BADGE IS NESTED IN THIS CELL, NOT A SIBLING
+                      OF IT, and that is a layout fix rather than a tidy-up.
+                      .job-meta is `display: contents` on desktop, so its
+                      CHILDREN are the grid items, not the wrapper. The badge
+                      sat beside the three cells, which made four items in a
+                      group the six-column grid budgets three for. Every row
+                      carrying a badge therefore had seven items against six
+                      columns, and the seventh — .job-actions — wrapped onto a
+                      new implicit row and landed under the employer mark. That
+                      is the reported "save button and chevron underneath the
+                      logo", and it hit only rows inside the fourteen-day
+                      window, which is why the rolling listings under it looked
+                      correct.
+                      Nesting keeps the badge in the Closes column where it
+                      belongs: it is a fact about the deadline, next to the
+                      deadline. Its `margin-left: 0.5rem` in globals.css was
+                      always written for this position. On mobile .job-meta
+                      becomes a block and the badge simply follows the date
+                      inline, and because it is no longer a sibling cell it
+                      cannot pick up the `.job-cell + .job-cell` dot. */}
+                  <span className="grotesk-regular job-cell job-deadline">
+                    {deadlineLabel(job)}
                   {/* ⚠ DERIVED FROM THE DATE, NOT FROM is_closing_soon. That
                       column is a stored boolean, so it is only true until the
                       day somebody forgets to update it, and a board that says
@@ -626,6 +647,7 @@ export default function JobsClient({
                       </span>
                     )
                   })()}
+                  </span>
                 </span>
 
                 <span className="job-actions">
