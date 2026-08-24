@@ -1,4 +1,6 @@
-import { daysUntilDay } from './day'
+import { daysUntilDay, hasPassed } from './day'
+
+export type ScholarshipStatus = 'open' | 'closed' | 'upcoming'
 
 export interface Scholarship {
   slug: string
@@ -7,8 +9,36 @@ export interface Scholarship {
   region: string
   level: string
   funding: string
+  /** Free text, as the provider publishes it. What a reader sees. */
   deadline: string
-  status: 'open' | 'closed' | 'upcoming'
+  /**
+   * The day the application window OPENS, as YYYY-MM-DD, when there is a
+   * published one.
+   *
+   * ⚠ THIS IS WHY `status` STOPPED BEING THE ANSWER. `status` was typed by
+   * hand, so an entry marked 'upcoming' stayed upcoming until somebody
+   * remembered to edit this file and redeploy. The Commonwealth Master's opens
+   * on 8 September and would have gone on saying "Upcoming" indefinitely, on a
+   * page whose whole job is telling people what they can apply for today.
+   *
+   * Absent on purpose where no opening date is published. Gates and Clarendon
+   * open "December 2026 or January 2027, set by your course", and Margaret
+   * Bennett is tied to a deadline LSE describes as "usually late April". A date
+   * invented for those would be worse than the editorial `status` below,
+   * because it would look authoritative.
+   */
+  opensOn?: string
+  /** The day the window CLOSES, as YYYY-MM-DD, when there is a published one. */
+  closesOn?: string
+  /**
+   * The editorial fallback, used only when the dates above cannot answer.
+   *
+   * Still hand-typed and still meaningful: Queen Elizabeth Commonwealth runs
+   * "two cycles yearly" with no date this file can hold, and calling it closed
+   * is a judgement rather than a calculation. Where `opensOn` or `closesOn`
+   * exists, they win. See `statusOf`.
+   */
+  status: ScholarshipStatus
   description: string
   eligibility: string[]
   link: string
@@ -28,9 +58,11 @@ export interface Scholarship {
  *  recruitment flier and has NOT been checked against the Edinburgh Global page
  *  the way the nine above were. Its funding line says so rather than itemising
  *  an award the flier does not itemise. */
-export const ALL_SCHOLARSHIPS: Scholarship[] = [
+const SCHOLARSHIPS: Scholarship[] = [
   {
     slug: 'rhodes-scholarship-west-africa',
+    opensOn: '2026-06-01',
+    closesOn: '2026-08-27',
     title: 'Rhodes Scholarship for West Africa',
     provider: 'Rhodes Trust, University of Oxford',
     region: 'United Kingdom',
@@ -55,6 +87,8 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
   },
   {
     slug: 'chevening-scholarship',
+    opensOn: '2026-08-04',
+    closesOn: '2026-10-06',
     title: 'Chevening Scholarship',
     provider: 'UK Foreign, Commonwealth and Development Office',
     region: 'United Kingdom',
@@ -74,6 +108,8 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
   },
   {
     slug: 'commonwealth-masters-scholarship',
+    opensOn: '2026-09-08',
+    closesOn: '2026-10-20',
     title: "Commonwealth Master's Scholarship",
     provider: 'Commonwealth Scholarship Commission in the UK',
     region: 'United Kingdom',
@@ -218,6 +254,8 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
    */
   {
     slug: 'mastercard-foundation-scholars-edinburgh',
+    opensOn: '2026-10-13',
+    closesOn: '2026-11-19',
     title: 'Mastercard Foundation Scholars Program at the University of Edinburgh',
     provider: 'Mastercard Foundation and the University of Edinburgh',
     region: 'United Kingdom',
@@ -246,6 +284,8 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
 
   {
     slug: 'utrecht-leg-international-talent',
+    opensOn: '2026-11-01',
+    closesOn: '2027-02-01',
     title: 'Law, Economics and Governance International Talent Scholarship',
     provider: 'Utrecht University',
     region: 'Netherlands',
@@ -265,6 +305,7 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
   },
   {
     slug: 'maastricht-nl-high-potential',
+    closesOn: '2027-02-01',
     title: 'Maastricht University NL-High Potential Scholarship',
     provider: 'Maastricht University',
     region: 'Netherlands',
@@ -333,7 +374,7 @@ export function daysUntilDeadline(s: Scholarship, now = new Date()): number | nu
  * `closingSoon()` for the jobs side.
  */
 export function closingScholarships(withinDays: number, now = new Date()): Scholarship[] {
-  return ALL_SCHOLARSHIPS.filter(s => {
+  return allScholarships(now).filter(s => {
     if (s.status !== 'open') return false
     const days = daysUntilDeadline(s, now)
     return days !== null && days >= 0 && days <= withinDays
@@ -341,3 +382,54 @@ export function closingScholarships(withinDays: number, now = new Date()): Schol
 }
 
 export { closesInWords } from './day'
+
+/**
+ * The status of a scholarship right now, derived from its dates.
+ *
+ * ⚠ THE STORED `status` FIELD WAS A SNAPSHOT OF WHOEVER LAST EDITED THIS FILE.
+ * It is typed by hand, so an entry marked 'upcoming' stayed upcoming until a
+ * person remembered it and shipped a deploy. The Commonwealth Master's opens on
+ * 8 September; nothing anywhere would have noticed, and the page would have
+ * gone on telling people they could not yet apply for something they could.
+ * That is the one thing a scholarships page must not get wrong.
+ *
+ * ORDER MATTERS AND CLOSED WINS. A cycle that has opened and then closed
+ * satisfies both tests, so closed is checked first. Reversed, an expired award
+ * would advertise itself as open for the rest of the year.
+ *
+ * FALLS BACK TO THE STORED VALUE RATHER THAN GUESSING. Four entries publish no
+ * usable date at all: Gates and Clarendon open "December 2026 or January 2027,
+ * set by your course", Margaret Bennett is tied to a deadline LSE calls "usually
+ * late April", and Queen Elizabeth Commonwealth runs "two cycles yearly". For
+ * those the hand-typed status is the best information there is, and inventing a
+ * date to make the machinery apply would replace a known judgement with a
+ * fabrication.
+ *
+ * The site's timezone, not the server's. See lib/day.ts: a window that opens on
+ * the 8th opens on the 8th in Lagos, and for the hour before midnight UTC those
+ * are different days.
+ */
+export function statusOf(s: Scholarship, now: Date = new Date()): ScholarshipStatus {
+  if (s.closesOn && hasPassed(s.closesOn, now)) return 'closed'
+  if (s.opensOn) {
+    const until = daysUntilDay(s.opensOn, now)
+    if (until !== null) return until > 0 ? 'upcoming' : 'open'
+  }
+  return s.status
+}
+
+/**
+ * Every scholarship, with `status` resolved for the moment it is asked for.
+ *
+ * ⚠ A FUNCTION, NOT A CONSTANT, AND THAT IS THE WHOLE POINT. An exported array
+ * is evaluated once when the module is first imported, so a derived status
+ * baked into it would freeze at the same instant the old hand-typed one did and
+ * nothing would have been fixed. Callers ask when they need to know.
+ *
+ * `ALL_SCHOLARSHIPS` is deliberately NOT exported any more. Anything still
+ * importing it would have compiled fine and read a stale status forever, which
+ * is exactly the failure being removed.
+ */
+export function allScholarships(now: Date = new Date()): Scholarship[] {
+  return SCHOLARSHIPS.map(s => ({ ...s, status: statusOf(s, now) }))
+}

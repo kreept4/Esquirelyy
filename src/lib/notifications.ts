@@ -1,4 +1,4 @@
-import { ALL_SCHOLARSHIPS, parseDeadline } from './scholarships-data'
+import { allScholarships, parseDeadline } from './scholarships-data'
 import { NEW_ROLES, roleCountLabel } from './new-roles'
 import { daysUntilDay, closesInWords, today as lagosToday } from './day'
 
@@ -441,7 +441,9 @@ export function buildFeed(
   }
 
   // 2. Open scholarships closing inside the window.
-  for (const s of ALL_SCHOLARSHIPS) {
+  /* Derived for `now`, not read off the stored field, so a window that opened
+     today is announced today. See statusOf in scholarships-data.ts. */
+  for (const s of allScholarships(now)) {
     if (s.status !== 'open') continue
     const d = parseDeadline(s.deadline)
     if (!d) continue
