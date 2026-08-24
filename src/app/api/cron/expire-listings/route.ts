@@ -73,7 +73,17 @@ import { today, hasPassed } from '@/lib/day'
  * ============================================================
  *
  * Vercel calls this daily from the `crons` entry in vercel.json, with
- * `Authorization: Bearer $CRON_SECRET`. It is safe to call by hand at any time
+ * `Authorization: Bearer $CRON_SECRET`.
+ *
+ * 30 5 * * * is 05:30 UTC, which is 06:30 in Lagos: the board is right before
+ * anyone opens it, and it is safely past midnight everywhere the audience is.
+ * The schedule lives in vercel.json with no note beside it because that file
+ * rejects a `comment` key on a cron entry, so the reasoning is here instead.
+ *
+ * ⚠ IT DOES NOTHING UNTIL CRON_SECRET IS SET IN THE VERCEL PROJECT. The guard
+ * fails closed by design, and Vercel only sends the Authorization header when
+ * that variable exists. With it unset the cron fires, gets a 401 and reports
+ * success at the platform level, which is the quiet failure to watch for. It is safe to call by hand at any time
  * and safe to call repeatedly: a row already inactive is not selected, so a
  * second run in the same minute reports nothing to do rather than rewriting
  * `delisted_at` and losing when it actually closed.
