@@ -14,6 +14,8 @@
  * deployment with no bot token should not 500 on a cron tick.
  */
 
+import { createHash, timingSafeEqual } from 'node:crypto'
+
 const API = 'https://api.telegram.org'
 
 /**
@@ -117,7 +119,52 @@ export function isAuthorised(chatId: number, username?: string | null): boolean 
 export function webhookSecretMatches(headerValue: string | null): boolean {
   const expected = process.env.TELEGRAM_WEBHOOK_SECRET
   if (!expected) return false
-  return headerValue === expected
+  return secretEquals(headerValue, expected)
+}
+
+/**
+ * Compare a presented secret against the expected one in constant time.
+ *
+ * ⚠ `===` ON A SECRET LEAKS ITS LENGTH AND ITS PREFIX. String comparison
+ * returns as soon as two bytes differ, so a wrong guess sharing a longer prefix
+ * with the real value takes measurably longer to reject. Against an endpoint
+ * that can be called as often as you like — which is exactly what this webhook
+ * and the cron route are — that difference is enough to recover a secret byte
+ * by byte without ever guessing it whole.
+ *
+ * Small risk here, and not a theoretical one: both secrets guard routes that
+ * middleware.ts deliberately never gates, at paths that are guessable, and
+ * forging a Telegram update means driving the agent.
+ *
+ * ⚠ THE HASHING IS NOT DECORATION. timingSafeEqual THROWS on a length
+ * mismatch rather than returning false, so calling it straight on
+ * attacker-controlled input turns a wrong-length guess into a 500 — and
+ * reintroduces the length oracle it was meant to remove, because a wrong length
+ * now fails differently from a wrong value. Hashing both sides to a fixed 32
+ * bytes first means the comparison is always equal-length and the real secret's
+ * length never reaches it.
+ *
+ * A null header is rejected before hashing, rather than hashing the string
+ * "null" and letting it fail the comparison. Both work; only one reads as
+ * deliberate.
+ */
+function secretEquals(presented: string | null, expected: string): boolean {
+  if (presented === null) return false
+  const a = createHash('sha256').update(presented).digest()
+  const b = createHash('sha256').update(expected).digest()
+  return timingSafeEqual(a, b)
+}
+
+/**
+ * The same comparison, for the cron route's own shared secret.
+ *
+ * Exported rather than duplicated: api/agent/sweep compared its Authorization
+ * header with `===` for the same reason this file used to, and two copies of a
+ * security primitive is how one of them stays wrong after the other is fixed.
+ */
+export function bearerMatches(headerValue: string | null, expected: string): boolean {
+  if (headerValue === null) return false
+  return secretEquals(headerValue, `Bearer ${expected}`)
 }
 
 export type Button = { text: string; data: string }

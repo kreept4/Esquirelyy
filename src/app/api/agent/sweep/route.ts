@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { runSweep } from '@/lib/agent/sweep'
+import { bearerMatches } from '@/lib/agent/telegram'
 
 /**
  * The scheduled sweep.
@@ -26,7 +27,14 @@ function authorised(req: Request): boolean {
      everybody — the same choice isAuthorised makes in telegram.ts, for the same
      reason: a forgotten env var should disable the agent, not expose it. */
   if (!secret) return false
-  return req.headers.get('authorization') === `Bearer ${secret}`
+  /* ⚠ NOT `===`. This route is public — middleware.ts never gates /api — and it
+     can be hammered as often as an attacker likes, so a comparison that returns
+     early on the first wrong byte leaks the secret's prefix through timing.
+     bearerMatches hashes both sides and compares in constant time; see its note
+     in lib/agent/telegram.ts, including why the hashing is load-bearing rather
+     than decorative. Imported rather than reimplemented: two copies of a
+     security primitive is how one of them stays wrong. */
+  return bearerMatches(req.headers.get('authorization'), secret)
 }
 
 async function handle(req: Request) {

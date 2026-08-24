@@ -2401,6 +2401,66 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   bfalegal: '/employer-logos/bfa-legal.png',
   bfa: '/employer-logos/bfa-legal.png',
 
+  /* Heirs Holdings, on the board for their 2026 graduate traineeship, and the
+     first employer here that is not a law firm OR a bank — an investment
+     holding company. Same reasoning as Zyph, Pentagon, Ovie Obobolo, KBO and
+     B.F.A. for why it sits in this map rather than in ALL_FIRMS: on the board
+     because it is hiring, not in the directory because the directory is a
+     researched list of NIGERIAN LAW FIRMS and this is neither.
+     THE FULL LOCKUP AT 5.8:1, which the World Bank note below says to cut down.
+     That note is about BallMark's clamp; the board row and the closing card
+     both size on width, where a horizontal mark loses width rather than
+     legibility. And the Bank's globe identifies the Bank on its own, whereas
+     Heirs' does not identify Heirs to a law student who has not met them — the
+     words are doing the work. Same call as B.F.A., opposite call to the Bank,
+     both for the shape rather than a preference.
+     Straight off heirsholdings.com, already transparent. See
+     scripts/2026-08-24-employer-logos-heirs-plc-uandp.mjs. */
+  heirsholdings: '/employer-logos/heirs-holdings.png',
+  heirsholdingslimited: '/employer-logos/heirs-holdings.png',
+  heirsholdingsltd: '/employer-logos/heirs-holdings.png',
+  heirs: '/employer-logos/heirs-holdings.png',
+
+  /* Principle Legal Consult, on the board for their Abuja junior associate
+     seat. Hiring, not researched — same as every entry above.
+     ⚠ "PRINCIPLE", NOT "PRINCIPAL". It is the firm's own spelling of its own
+     name and it reads as a typo to everybody who meets it, so the misspelling
+     is keyed too: a listing that arrives spelled the intuitive way still finds
+     the mark rather than silently falling back to initials.
+     THE MONOGRAM, NOT THE LOCKUP, which is the opposite call to Heirs directly
+     above and the same call as Ovie Obobolo and KBO. Their lockup stacks the
+     pillar device over the words over a rule; a mark gets about 37px of height
+     on the board, and a third of that is not a wordmark. The device is square,
+     so it fills the slot. */
+  principlelegalconsult: '/employer-logos/principle-legal-consult.png',
+  principlelegal: '/employer-logos/principle-legal-consult.png',
+  principallegalconsult: '/employer-logos/principle-legal-consult.png',
+  plc: '/employer-logos/principle-legal-consult.png',
+
+  /* Uduakabasi & Partners, who sign themselves U&P Law, on the board for their
+     open call across practice areas.
+     FIVE KEYS BECAUSE THE FIRM IS NAMED THREE WAYS. Supabase stores the full
+     "Uduakabasi & Partners (U&P Law)", which norm() flattens with the
+     parenthetical attached, so that exact string needs its own key — this is
+     the same trap the World Bank '(Client)' suffix note below describes. The
+     registered name alone and the trading name alone both need one too.
+     ⚠ THE ARTWORK IS TRANSPARENT AND THE MAROON IS A REGISTERED GROUND, not
+     part of the image. See EMPLOYER_BALL_BG below and the long note in
+     scripts/2026-08-24-employer-logos-heirs-plc-uandp.mjs. Gold on cream is
+     nearly invisible, so the two have to travel together: removing the
+     EMPLOYER_BALL_BG entry does not fall back to the old square, it produces a
+     mark you cannot see.
+     ⚠ IT IS A 70px MONOGRAM AND THAT IS THE CEILING. The firm has no website
+     — they take applications at a Gmail address — so the only source that
+     exists is their LinkedIn avatar, 188x180, of which the monogram is about
+     seventy. Soft on a retina display and correct at 1x. If they ever publish
+     a real asset, this is the one mark here worth replacing. */
+  uduakabasiandpartnersuandplaw: '/employer-logos/uandp-law.png',
+  uduakabasiandpartners: '/employer-logos/uandp-law.png',
+  uandplaw: '/employer-logos/uandp-law.png',
+  uandp: '/employer-logos/uandp-law.png',
+  uandplawfirm: '/employer-logos/uandp-law.png',
+
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',
   mtnnigeria: '/employer-logos/mtn.png',
@@ -2468,6 +2528,20 @@ const EMPLOYER_BALL_BG: Record<string, string> = {
   unionbankofnigeriaplc: '#00A0E0',
   castlefieldattorneys: '#1E4E72',
   castlefield: '#1E4E72',
+  /* U&P Law's own ground, sampled off their avatar rather than guessed.
+     ⚠ THIS IS NOT DECORATION, IT IS HALF THE MARK. The artwork in
+     /employer-logos/uandp-law.png is a bronze monogram on transparency, and
+     bronze on the board's cream is barely there. The maroon is what makes it
+     legible, which is why the two were added together and why removing this
+     line does not degrade the mark, it hides it. Full reasoning in
+     scripts/2026-08-24-employer-logos-heirs-plc-uandp.mjs.
+     Keyed the same five ways as the logo above, so a listing that resolves a
+     mark can never fail to resolve its ground. */
+  uduakabasiandpartnersuandplaw: '#250301',
+  uduakabasiandpartners: '#250301',
+  uandplaw: '#250301',
+  uandp: '#250301',
+  uandplawfirm: '#250301',
 }
 
 /** Brand ground for an employer's ball, or null to use the default white. */

@@ -120,6 +120,45 @@ const ITEMS: NewsItem[] = [
     media: { type: 'logos', slugs: ['lekan-bamidele'] },
   },
   {
+    /**
+     * The 66th AGC, in progress as this goes up.
+     *
+     * ⚠ DATED 24 AUGUST, WHICH IS MID-CONFERENCE, AND THAT IS THE POINT.
+     * It opened on Sunday the 23rd at the Yakubu Gowon Stadium and runs to the
+     * 28th, so this slide is not an announcement of something coming — it is
+     * telling a reader that the thing is happening now and there are days of it
+     * left. A slide dated to the opening would sort below the roles drop within
+     * a day and be seen by nobody while the conference was still on.
+     *
+     * ⚠ IT WILL BE STALE ON 29 AUGUST. Nothing in this file expires on a
+     * date; every other entry here is either a standing tip or a fact that
+     * stays true. This one stops being true the moment the closing ceremony
+     * ends, and the summary is written in the present tense, so it must be
+     * pulled or rewritten in the past tense then. That is the cost of running a
+     * live slide and it is worth it for five days of relevance.
+     *
+     * The figure is the AGC's own identity card, from the conference site, used
+     * whole rather than cut to a mark. `photo` rather than `logos` for that
+     * reason: the logos branch clips each mark into a paint-splash blob, which
+     * is right for a mark on transparency and would take a bite out of a
+     * designed card. It is credited like any other supplied image.
+     */
+    slug: 'nba-agc-2026-beyond-limits',
+    kind: 'news',
+    date: '2026-08-24',
+    title: 'Beyond Limits: the NBA conference is on now',
+    summary:
+      'The 66th NBA Annual General Conference opened on Sunday at the Yakubu Gowon Stadium in Port Harcourt and runs to 28 August, under the theme Beyond Limits. Plenaries, breakout sessions and the Young Lawyers’ programme run through the week, and more than eighteen thousand lawyers registered before the early bird window even closed.',
+    href: 'https://agc.nigerianbar.org.ng',
+    cta: 'See the programme',
+    media: {
+      type: 'photo',
+      src: '/news/nba-agc-2026-beyond-limits.jpg',
+      alt: 'NBA Annual General Conference 2026, Beyond Limits',
+      credit: 'Nigerian Bar Association',
+    },
+  },
+  {
     slug: 'nba-president-elect-2026',
     kind: 'news',
     date: '2026-08-06',
