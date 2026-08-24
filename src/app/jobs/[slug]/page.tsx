@@ -373,7 +373,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
             {job.role_desc && (
               <section>
                 <h2 className="grotesk-bold job-section-heading">The role</h2>
-                <p className="grotesk-regular job-prose">{job.role_desc}</p>
+                <RoleProse text={job.role_desc} canApply={canApply} />
               </section>
             )}
 
@@ -582,5 +582,110 @@ function OpportunityPage({
       </main>
       <Footer />
     </div>
+  )
+}
+
+
+/**
+ * The role description, as paragraphs, with a gated footnote.
+ *
+ * ⚠ THIS USED TO BE `<p>{job.role_desc}</p>` AND THAT HAD TWO FAULTS AT ONCE.
+ *
+ * A single <p> means the whole description is one block however it was written.
+ * The Heirs Holdings listing needs a closing aside that is NOT part of the
+ * description — a fallback route to use when the employer’s own link will not
+ * open — and running that into the same paragraph as the job’s content is how
+ * a reader misses it.
+ *
+ * And a bare URL in a text node is not a link. It rendered as characters, so a
+ * reader on a phone had to retype a Google Forms path by hand, which nobody
+ * does. The one thing the sentence exists to provide was the one thing it did
+ * not provide.
+ *
+ * ============================================================
+ * ⚠ THE NOTE IS BEHIND THE ACCOUNT, AND THAT IS THE WHOLE REASON THIS TAKES
+ * `canApply` RATHER THAN JUST RENDERING
+ * ============================================================
+ *
+ * Read the long note on `applyHref` above. The product’s split is that the
+ * DESCRIPTION is public and the APPLICATION ROUTE is what the account is for,
+ * and applyHref goes null at the source so there is nothing in the markup to
+ * find. A footnote carrying a working application URL in the description would
+ * walk straight through that gate: this listing is in OPEN_JOB_SLUGS, so a
+ * signed-out reader renders this section, and the form link would sit in the
+ * HTML for anybody who pressed View Source — while the Apply button two
+ * sections down still said "sign in to apply".
+ *
+ * So a Note paragraph is dropped entirely for a signed-out reader. Not hidden,
+ * not stubbed: never rendered. The body paragraphs are unaffected, which is
+ * correct, because the description is the half that is meant to be public.
+ *
+ * ============================================================
+ * THE CONVENTION, AND WHY IT IS A PREFIX RATHER THAN A COLUMN
+ * ============================================================
+ *
+ * A paragraph is a note when it starts with "Note:". That is a convention in a
+ * text column rather than a schema change, and the trade is deliberate: one
+ * listing needs this today, and a migration plus a nullable column plus a
+ * second editing surface is a lot of machinery for one row. WHEN A THIRD
+ * LISTING NEEDS ONE, give it a real `apply_note` column and read it here —
+ * everything downstream of this component already goes through one place.
+ *
+ * Paragraphs split on a blank line, which is how the seed scripts write them.
+ *
+ * ⚠ LINKS ARE BUILT AS REACT ELEMENTS, NEVER dangerouslySetInnerHTML. This
+ * text comes from a database row, so an href assembled into a raw HTML string
+ * would be an injection point one careless edit away. React escapes the text
+ * nodes and the href, and the URL pattern below cannot match a `javascript:`
+ * scheme because it only ever matches https:// or a bare domain, which is then
+ * prefixed with https:// by us rather than by the row.
+ */
+/** Paragraphs are separated by a blank line, which is how the seed scripts write them. */
+const SPLIT_ON_BLANK_LINE = /\n\s*\n/
+const URL_IN_PROSE = /(https?:\/\/[^\s)]+|(?:docs\.google\.com|forms\.gle)\/[^\s)]+)/g
+
+function linkify(text: string, key: string) {
+  const parts = text.split(URL_IN_PROSE)
+  return parts.map((part, i) => {
+    if (!part) return null
+    if (!URL_IN_PROSE.test(part)) {
+      URL_IN_PROSE.lastIndex = 0
+      return <span key={`${key}-t${i}`}>{part}</span>
+    }
+    URL_IN_PROSE.lastIndex = 0
+    /* Trailing sentence punctuation is not part of the address. Stripped here
+       rather than tightened in the pattern, because a URL may legitimately end
+       in a character this drops and only the LAST one is ever punctuation. */
+    const trimmed = part.replace(/[.,;:]+$/, '')
+    const tail = part.slice(trimmed.length)
+    const href = trimmed.startsWith('http') ? trimmed : `https://${trimmed}`
+    return (
+      <span key={`${key}-l${i}`}>
+        <a href={href} target="_blank" rel="noopener noreferrer" className="job-prose-link">
+          {trimmed}
+        </a>
+        {tail}
+      </span>
+    )
+  })
+}
+
+function RoleProse({ text, canApply }: { text: string; canApply: boolean }) {
+  const paragraphs = text.split(SPLIT_ON_BLANK_LINE).map(p => p.trim()).filter(Boolean)
+  return (
+    <>
+      {paragraphs.map((para, i) => {
+        const isNote = /^Note:/i.test(para)
+        if (isNote && !canApply) return null
+        return (
+          <p
+            key={i}
+            className={`grotesk-regular job-prose${isNote ? ' job-prose-note' : ''}`}
+          >
+            {linkify(para, `p${i}`)}
+          </p>
+        )
+      })}
+    </>
   )
 }

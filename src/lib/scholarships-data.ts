@@ -207,13 +207,13 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
     deadline: 'Register for an information session: sessions begin 15 September 2026 and run to 24 September, for 2027/2028 entry',
     status: 'open',
     description:
-      'Sustainability and development subjects rather than law: the funded degrees are things like Africa & International Development, Data, Inequality & Society, Social Justice & Community Action, Climate Change Finance & Investment and Global Health, on campus in Edinburgh or by online distance learning. That makes it a route for a lawyer moving into policy, development or climate governance, and the wrong door for anyone set on an LLM. The recruitment process changed for 2027/28 and the change is the important part: you must register for and attend an information session, and only attendees who also meet the eligibility requirements are invited to apply. There is no way to apply without doing that first. Applications are especially encouraged from young women, young people with disabilities, and young people with refugee or displaced status.',
+      'The funded degrees are not law. They are subjects like Africa & International Development, Data, Inequality & Society, Social Justice & Community Action and Global Health, studied on campus in Edinburgh or by online distance learning. That makes it a route for a lawyer moving into policy, development or climate work, and not a way to fund an LLM. The process changed this cycle: you must register for and attend an information session, and only attendees who also meet the eligibility requirements are invited to apply. Applications are especially encouraged from young women, young people with disabilities, and young people with refugee or displaced status.',
     eligibility: [
       'From Africa, so Nigerian nationality qualifies',
       'Applying for one of the listed sustainability-focused programmes, not an LLM',
       'Must register for and attend an information session between 15 and 24 September 2026',
       'Only session attendees who meet the eligibility bar receive an invitation to apply',
-      'Programme list is subject to change each cycle — check the page before registering',
+      'Programme list changes each cycle, so check the page before registering',
     ],
     link: 'https://edinburgh-global.ed.ac.uk/mastercard-foundation',
   },

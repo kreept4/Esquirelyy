@@ -4618,6 +4618,37 @@ select.filter-pill {
   color: var(--ink-light);
   max-width: 68ch;
 }
+/* Consecutive paragraphs in a description need air between them. The role
+   section was a single <p> until RoleProse split it, so nothing had ever set
+   this and two paragraphs would have run together. */
+.job-prose + .job-prose { margin-top: 0.9rem; }
+
+/* A closing aside, not part of the description.
+   Italic and set a size down, so it reads as a footnote at a glance rather
+   than as another paragraph of the role. The rule above it does the separating
+   that the italic alone would not: this is the fallback application route, and
+   a reader who has hit a dead link needs to FIND it, not discover it on a
+   careful second read. Only ever rendered to a signed-in reader; see RoleProse
+   in jobs/[slug]/page.tsx for why that gate is load-bearing. */
+.job-prose-note {
+  font-style: italic;
+  font-size: 0.88rem;
+  margin-top: 1.15rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(36, 31, 22, 0.14);
+  opacity: 0.92;
+}
+/* Underlined rather than coloured. The page has one accent and it belongs to
+   the Apply button; a second coloured link in a footnote would compete with the
+   action it is a fallback for. */
+.job-prose-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  overflow-wrap: anywhere;
+}
+.job-prose-link:hover { text-decoration-thickness: 2px; }
 
 .job-reqs {
   list-style: none;

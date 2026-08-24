@@ -148,7 +148,7 @@ const ITEMS: NewsItem[] = [
     date: '2026-08-24',
     title: 'Beyond Limits: the NBA conference is on now',
     summary:
-      'The 66th NBA Annual General Conference opened on Sunday at the Yakubu Gowon Stadium in Port Harcourt and runs to 28 August, under the theme Beyond Limits. Plenaries, breakout sessions and the Young Lawyers’ programme run through the week, and more than eighteen thousand lawyers registered before the early bird window even closed.',
+      'The 66th NBA Annual General Conference opened on Sunday at the Yakubu Gowon Stadium in Port Harcourt and runs to 28 August, under the theme Beyond Limits. Plenaries, breakout sessions and the Young Lawyers’ programme run through the week, More than eighteen thousand lawyers registered during the early bird window.',
     href: 'https://agc.nigerianbar.org.ng',
     cta: 'See the programme',
     media: {

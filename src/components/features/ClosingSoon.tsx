@@ -25,10 +25,21 @@ import { OPPORTUNITY_TYPE_LABELS, daysUntil } from '@/lib/opportunities'
  * them, soonest first.
  */
 
-/** How far ahead counts as soon. A fortnight is long enough to be worth acting
- *  on and short enough that the section stays a handful rather than a second
- *  board. ECOWAS at twelve days is the current edge case and belongs in. */
-const WINDOW_DAYS = 14
+/**
+ * How far ahead counts as soon.
+ *
+ * TEN, AND IT WAS FOURTEEN. A fortnight was chosen when the section had three
+ * cards in it and the argument was that longer is more useful. It is not: the
+ * heading says "Closing soon", and a thing eleven days out is not closing soon,
+ * it is simply open. Every card that does not earn its place spends the
+ * urgency of the ones that do, and the stopwatch on a seven-day card means less
+ * beside a row of listings with a fortnight left.
+ *
+ * Ten keeps the section a handful and keeps every card in it genuinely urgent.
+ * The board underneath is where everything else already lives, in date order,
+ * so nothing is lost by a listing waiting a few days to arrive here.
+ */
+const WINDOW_DAYS = 10
 
 /** Mirrors TYPE_LABELS in JobsClient. Kept here rather than imported because
  *  that file is the board and this is a card; the two happen to agree today and
@@ -50,6 +61,7 @@ type Row = {
   logo_url?: string | null
   location?: string | null
   practice_areas?: string[] | null
+  level?: string | null
   is_opportunity?: boolean
   opportunity_type?: string
   type?: string
@@ -85,8 +97,42 @@ function summarise(r: Row): string {
   const where = r.location || ''
   if (areas && where) return `${areas}. ${where}.`
   if (areas) return `${areas}.`
+  /**
+   * ⚠ A BARE LOCATION IS NOT A SUMMARY, and this line used to return one.
+   *
+   * A row with no practice areas produced a card whose only middle line was
+   * "Nigeria." — a full stop after a country, sitting where every neighbouring
+   * card carried two areas and a city. It reads as a field somebody forgot to
+   * fill in, which on a careers board is worse than an empty line, because the
+   * reader concludes the listing is thin rather than that the card is.
+   *
+   * The level and the kind are on the row already and neither is on this line,
+   * so the fallback uses them. "Entry level role. Nigeria." says something a
+   * reader can decide on; "Nigeria." does not.
+   *
+   * THIS IS A FALLBACK AND NOT A FIX. A listing that genuinely has practice
+   * areas should carry them, and the first branch above is where a good card
+   * comes from. This exists so the WORST card on the board is still a sentence.
+   */
+  const level = LEVEL_WORDS[r.level || ''] || ''
+  const kind = r.is_opportunity
+    ? OPPORTUNITY_TYPE_LABELS[r.opportunity_type || ''] || ''
+    : JOB_TYPE_LABELS[r.type || ''] || ''
+  const what = [level, kind.toLowerCase()].filter(Boolean).join(' ')
+  if (what && where) return `${cap(what)}. ${where}.`
+  if (what) return `${cap(what)}.`
   return where ? `${where}.` : ''
 }
+
+/** How a stored level reads in a sentence. */
+const LEVEL_WORDS: Record<string, string> = {
+  student: 'student',
+  junior: 'entry level',
+  mid: 'mid level',
+  senior: 'senior',
+}
+
+const cap = (s: string) => (s ? s[0].toUpperCase() + s.slice(1) : s)
 
 /** Initials, for an employer with no mark anywhere. Same filtering as the
  *  board's, so the two produce the same letters for the same name. */
