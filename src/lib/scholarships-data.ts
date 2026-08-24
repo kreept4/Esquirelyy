@@ -34,7 +34,12 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
     region: 'United Kingdom',
     level: "Master's and doctoral study at Oxford",
     funding: 'Full University and College fees, £20,400 annual stipend, flights, visa and health cover',
-    deadline: 'Closes 27 August 2026 for entry in October 2027',
+    /* The time is on it because the date alone is not the deadline when a
+       reader is three days out. Rhodes House publishes "Closing date: 23:59 GMT
+       27 August 2026", and GMT is WAT minus one, so a Nigerian applicant has
+       until 00:59 on the 28th. Verified against rhodeshouse.ox.ac.uk on 24
+       August 2026; the window opened on 1 June. */
+    deadline: 'Closes 23:59 GMT on 27 August 2026, for entry in October 2027',
     status: 'open',
     description:
       'Three scholarships a year for the whole of West Africa, funding any full-time postgraduate degree at Oxford. For lawyers that usually means the BCL or the MJur, both of which sit among the most respected taught law degrees anywhere. Selection weighs academic excellence alongside character, leadership and a commitment to service.',
@@ -166,27 +171,48 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
    * The rule at the top of this file is that a scholarship which welcomes
    * Nigerians but funds only an MSc in Robotics does not belong. This one is the
    * genuine edge of that rule rather than an exception to it. Every funded
-   * programme is sustainability-facing and none of them is a law degree — but
-   * several are degrees Nigerian law graduates actually read and are actually
-   * admitted to: Africa & International Development, Data, Inequality & Society,
-   * Social Justice & Community Action, and International Development. A lawyer
-   * moving into policy, development or climate governance is the intended
-   * candidate for those, not a stranger to them.
+   * programme is sustainability-facing and none is a law degree, but several are
+   * degrees Nigerian law graduates actually read and are admitted to: Africa &
+   * International Development, Data, Inequality & Society, Social Justice &
+   * Community Action, International Development. A lawyer moving into policy,
+   * development or climate governance is the intended candidate for those.
    *
-   * So it goes in WITH THE SUBJECT LIMIT STATED IN THE FIRST LINE OF THE
-   * DESCRIPTION rather than buried in the eligibility list. The failure this
-   * file is guarding against is somebody spending an evening on an application
-   * they were never eligible for; naming the constraint before the award does
-   * more to prevent that than leaving the row out would.
+   * So it goes in WITH THE SUBJECT LIMIT IN THE FIRST LINE OF THE DESCRIPTION
+   * rather than buried in the eligibility list. The failure this file guards
+   * against is somebody spending an evening on an application they were never
+   * eligible for.
    *
-   * ⚠ AND THE DEADLINE IS NOT AN APPLICATION DEADLINE. The route changed this
-   * cycle and the flier is emphatic about it: you register for an information
-   * session, and only attendees who also meet the eligibility bar are invited
-   * to apply at all. Registering is therefore the whole of what a reader can do
-   * now, and missing the sessions forecloses the application entirely. That is
-   * why the sessions are what the `deadline` field carries — parseDeadline in
-   * lib/notifications.ts reads the last date out of this string, so the bell
-   * counts down to 24 September, which is the date that actually shuts a door.
+   * ============================================================
+   * ⚠ 'upcoming', NOT 'open', AND IT WAS 'open' UNTIL KREEPT CAUGHT IT
+   * ============================================================
+   *
+   * Checked against the programme's own How to Apply page on 24 August 2026.
+   * You cannot apply today and there is no form to apply on. The sequence is:
+   *
+   *   15 to 24 Sept 2026   six virtual information sessions, three for
+   *                        on-campus applicants and three for online
+   *   13 October 2026      attendees are told whether they are invited to apply
+   *   19 October 2026      Applicant Declaration Form deadline, 5pm UK
+   *   19 November 2026     the application itself closes, 5pm UK
+   *
+   * Every other entry here uses 'open' to mean an application window that is
+   * accepting submissions right now, which is what Chevening's "Open 4 August to
+   * 6 October" means and what Commonwealth's 'upcoming' means by contrast.
+   * Marking this 'open' put it under a filter promising something a reader
+   * cannot do, and would have sent somebody looking for a form that does not
+   * exist yet.
+   *
+   * ⚠ THE COST OF THAT HONESTY IS THAT buildFeed SKIPS IT, because the bell
+   * only notifies on 'open'. That is the right trade today: the first session
+   * is 22 days out and the bell's window is seven, so it would not have fired
+   * anyway. IT BECOMES THE WRONG TRADE AROUND 8 SEPTEMBER, when the registration
+   * gate is a week away and still nothing will announce it. If this is still
+   * 'upcoming' then, that is the moment to give buildFeed a second rule for
+   * scholarships whose ACTION is open even though their APPLICATION is not.
+   *
+   * The registration step is what the deadline line leads with, because it is
+   * the only thing a reader can act on now and missing it forecloses the
+   * application entirely.
    */
   {
     slug: 'mastercard-foundation-scholars-edinburgh',
@@ -194,28 +220,26 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
     provider: 'Mastercard Foundation and the University of Edinburgh',
     region: 'United Kingdom',
     level: "On-campus and online distance learning Master's degrees, starting September 2027",
-    funding: 'Full scholarship. Check the programme page for what the award covers in this cycle',
-    /* ⚠ ANCHORED ON THE FIRST SESSION, NOT THE LAST, and the wording is built
-       around that. parseDeadline takes the first complete day-month-year in
-       this string, so "15 September 2026" is what the bell counts down to and
-       "to 24 September" carries no year precisely so it cannot be picked up
-       instead. The sessions do run to the 24th and a reader can attend the last
-       one — but registration closes ahead of the sessions, the exact cut-off is
-       not published on the flier, and a countdown that expires nine days late is
-       the one failure mode this field must not have. The earlier date is the
-       one somebody can safely act on. */
-    deadline: 'Register for an information session: sessions begin 15 September 2026 and run to 24 September, for 2027/2028 entry',
-    status: 'open',
+    funding: 'Fully funded',
+    /* ⚠ THIS DOES NOT CLAIM A REGISTRATION CUT-OFF, AND AN EARLIER DRAFT DID.
+       It read "Register for an information session by 15 September 2026", which
+       is an invented deadline: the programme publishes six sessions running to
+       24 September and does not say when registration for each one closes. A
+       reader who could have taken the 24 September session and was told to
+       register by the 15th has been shut out by our copy rather than by the
+       programme. The dates that ARE published are the ones here. */
+    deadline: 'Information sessions 15 to 24 September 2026. Applications close 19 November 2026',
+    status: 'upcoming',
     description:
-      'The funded degrees are not law. They are subjects like Africa & International Development, Data, Inequality & Society, Social Justice & Community Action and Global Health, studied on campus in Edinburgh or by online distance learning. That makes it a route for a lawyer moving into policy, development or climate work, and not a way to fund an LLM. The process changed this cycle: you must register for and attend an information session, and only attendees who also meet the eligibility requirements are invited to apply. Applications are especially encouraged from young women, young people with disabilities, and young people with refugee or displaced status.',
+      'The funded degrees are not law. They are subjects like Africa & International Development, Data, Inequality & Society, Social Justice & Community Action and Global Health, studied on campus in Edinburgh or by online distance learning. That makes it a route for a lawyer moving into policy, development or climate work, and not a way to fund an LLM. The process changed this cycle and the change is the important part: you must register for and attend one of the virtual information sessions held between 15 and 24 September 2026. Attending does not guarantee anything, but not attending rules you out, because the application form is only released to invited attendees. Invitations go out on 13 October and the application itself closes on 19 November 2026. Applications are especially encouraged from young women, young people with disabilities, and young people with refugee or displaced status.',
     eligibility: [
       'From Africa, so Nigerian nationality qualifies',
       'Applying for one of the listed sustainability-focused programmes, not an LLM',
       'Must register for and attend an information session between 15 and 24 September 2026',
-      'Only session attendees who meet the eligibility bar receive an invitation to apply',
+      'Only attendees who meet the eligibility bar are invited to apply, on 13 October',
       'Programme list changes each cycle, so check the page before registering',
     ],
-    link: 'https://edinburgh-global.ed.ac.uk/mastercard-foundation',
+    link: 'https://edinburgh-global.ed.ac.uk/mastercard-foundation-scholars-program/apply-for-a-scholarship/how-to-apply',
   },
 
   {
@@ -259,3 +283,61 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
   },
 
 ]
+
+/**
+ * The date out of a free-text deadline, or null when there is not an
+ * unambiguous one.
+ *
+ * MOVED HERE FROM lib/notifications.ts, which is where it was written and is
+ * not where it belongs: a scholarship deadline is a fact about a scholarship,
+ * and the bell was simply the first thing that needed to read one. The email
+ * needs the same answer now, and two parsers that disagree about what "Closes
+ * 27 August 2026 for entry in October 2027" means is a worse outcome than one
+ * import. notifications.ts re-exports it so nothing that used it there breaks.
+ *
+ * Deliberately returns null rather than guessing. "Tied to the LSE graduate
+ * financial support deadline, usually late April" has no date in it, and a
+ * parser that invented one would put a scholarship in a closing-soon list on
+ * the strength of a guess.
+ */
+export function parseDeadline(text: string): Date | null {
+  const m = text.match(
+    /(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})/i
+  )
+  if (!m) return null
+  const d = new Date(`${m[1]} ${m[2]} ${m[3]} 00:00:00Z`)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
+/** Whole days until a scholarship's deadline. Negative once it has passed. */
+export function daysUntilDeadline(s: Scholarship, now = new Date()): number | null {
+  const d = parseDeadline(s.deadline)
+  if (!d) return null
+  return Math.ceil((d.getTime() - now.getTime()) / 86_400_000)
+}
+
+/**
+ * Open scholarships closing inside `withinDays`, soonest first.
+ *
+ * ⚠ 'open' ONLY, AND THAT IS THE WHOLE FILTER THAT MATTERS. An 'upcoming'
+ * scholarship has a date in this window sometimes — the Mastercard Foundation
+ * entry's first information session is one — and telling somebody it is
+ * "closing in 22 days" would be false twice over: it is not closing, and they
+ * could not act on it if it were. A closed one is worse still.
+ *
+ * Read by the bell and by the announcement email so the two cannot disagree
+ * about what is closing, which is the same reason ClosingSoon.tsx exports
+ * `closingSoon()` for the jobs side.
+ */
+export function closingScholarships(withinDays: number, now = new Date()): Scholarship[] {
+  return ALL_SCHOLARSHIPS.filter(s => {
+    if (s.status !== 'open') return false
+    const days = daysUntilDeadline(s, now)
+    return days !== null && days >= 0 && days <= withinDays
+  }).sort((a, b) => (daysUntilDeadline(a, now) ?? 0) - (daysUntilDeadline(b, now) ?? 0))
+}
+
+/** "Closes today" / "Closes tomorrow" / "Closes in 3 days". */
+export function closesInWords(days: number): string {
+  return days === 0 ? 'Closes today' : days === 1 ? 'Closes tomorrow' : `Closes in ${days} days`
+}

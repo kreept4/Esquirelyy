@@ -1,4 +1,4 @@
-import { ALL_SCHOLARSHIPS } from './scholarships-data'
+import { ALL_SCHOLARSHIPS, parseDeadline } from './scholarships-data'
 import { NEW_ROLES, roleCountLabel } from './new-roles'
 
 /**
@@ -60,17 +60,16 @@ export interface Notification {
 
 export type Prefs = { stage?: string; goal?: string; city?: string }
 
-/** A scholarship deadline is free text ("Closes 27 August 2026 for entry in
- *  October 2027"), so the date has to be dug out of it. Returns null rather
- *  than guessing when there is no unambiguous day-month-year in the string. */
-export function parseDeadline(text: string): Date | null {
-  const m = text.match(
-    /(\d{1,2})\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})/i
-  )
-  if (!m) return null
-  const d = new Date(`${m[1]} ${m[2]} ${m[3]} 00:00:00Z`)
-  return Number.isNaN(d.getTime()) ? null : d
-}
+/**
+ * Re-exported from lib/scholarships-data.ts, where it now lives.
+ *
+ * It was defined here, which was the wrong home for it: a scholarship deadline
+ * is a fact about a scholarship, and the bell was only the first thing that
+ * needed to read one. The announcement email needs the same answer, and two
+ * parsers that disagree would be worse than one import. Kept exported from this
+ * module so any older caller keeps working.
+ */
+export { parseDeadline } from './scholarships-data'
 
 export function readPrefs(): Prefs {
   if (typeof window === 'undefined') return {}
@@ -277,8 +276,32 @@ export function isUnread(n: Notification, seen: number, readIds: Set<string>) {
   return Date.parse(n.at) > seen
 }
 
-/** Scholarships closing inside this window are worth interrupting someone for. */
-const DEADLINE_WINDOW_DAYS = 30
+/**
+ * Scholarships closing inside this window are worth interrupting someone for.
+ *
+ * ⚠ SEVEN, AND IT WAS THIRTY. The note on CLOSING_WINDOW_DAYS below explains
+ * at length why thirty broke the job rows, and ends by saying the scholarship
+ * window "STILL USES THIRTY AND STILL HAS THIS BUG", left unfixed only because
+ * nothing was inside the window at the time so the change would have been
+ * untested. Something is inside it now: the Rhodes Scholarship for West Africa
+ * closes on 27 August, and Kreept asked why the bell was silent about it.
+ *
+ * It was silent for exactly the two reasons written down a few lines below. The
+ * row was dated `deadline` minus thirty days, so a scholarship closing in three
+ * days was stamped 28 July. That is old enough to sort below twenty newer rows
+ * and fall off the end of the capped feed, and old enough to count as already
+ * read for anybody who has opened the panel this month. The notification
+ * existed; nobody could see it.
+ *
+ * Seven fixes both, and it is the same number the job and opportunity rows use,
+ * so the whole feed now answers "closing soon" the same way rather than having
+ * one rule for a job and another for a scholarship.
+ *
+ * WHAT IT COSTS: a scholarship three weeks out no longer appears in the bell. It
+ * never usefully did. It appeared as a row nobody saw, and /scholarships is
+ * where a reader browses rather than gets interrupted.
+ */
+const DEADLINE_WINDOW_DAYS = 7
 
 /**
  * How far ahead a closing job or opportunity is worth a notification, and the
@@ -303,9 +326,11 @@ const DEADLINE_WINDOW_DAYS = 30
  * appears exactly when it becomes urgent, dated to that moment, which is both
  * recent enough to survive the cap and genuinely new.
  *
- * ⚠ THE SCHOLARSHIP DEADLINES ABOVE STILL USE THIRTY AND STILL HAVE THIS BUG.
- * It is not fixed here because nothing is currently inside that window, so the
- * change would be untested. It is the same fault and the same fix.
+ * ⚠ THE SCHOLARSHIP WINDOW HAD THIS EXACT BUG AND IS NOW FIXED, 24 August
+ * 2026, when Rhodes came inside it and the bell stayed silent. See
+ * DEADLINE_WINDOW_DAYS above. Both constants are seven, both for these reasons,
+ * and they are kept as two names rather than one because they answer different
+ * questions and a future reason to move one should not silently move the other.
  */
 const CLOSING_WINDOW_DAYS = 7
 

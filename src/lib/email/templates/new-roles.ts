@@ -12,6 +12,11 @@ import {
   roleCountLabel,
   roleSummary,
 } from '@/lib/new-roles'
+import {
+  closingScholarships,
+  daysUntilDeadline,
+  closesInWords,
+} from '@/lib/scholarships-data'
 
 /**
  * The new roles announcement.
@@ -104,6 +109,31 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
   const subject = `${roleCountLabel()}: ${firms}`
   const link = `${siteUrl}${NEW_ROLES_HREF}`
 
+  /**
+   * A scholarship closing this week, if there is one.
+   *
+   * ⚠ DERIVED, NOT WRITTEN IN. The obvious way to add Rhodes to this email was
+   * to type Rhodes into it, and that would have been wrong by the next send:
+   * this template is reused for every drop, so a hardcoded scholarship becomes a
+   * message announcing a closing date that passed weeks ago. closingScholarships
+   * reads the same array /scholarships renders and the bell notifies on, so all
+   * three can only ever say the same thing.
+   *
+   * SEVEN DAYS, matching the bell's window and the jobs board's. A member should
+   * not be told something is closing soon in one place and not in another.
+   *
+   * IT RENDERS NOTHING WHEN NOTHING IS CLOSING, which is the normal case. This
+   * is a roles email; the scholarship block is an interruption that has to earn
+   * its place, and an empty section headed "Closing soon" would be worse than no
+   * section at all.
+   *
+   * ONE, NOT ALL. If two ever close in the same week the soonest wins, because
+   * the block is a nudge rather than a digest and the button under it already
+   * goes to the page that lists every one of them.
+   */
+  const closingScholarship = closingScholarships(7)[0] ?? null
+  const scholarshipDays = closingScholarship ? daysUntilDeadline(closingScholarship) : null
+
   const text = [
     greeting,
     '',
@@ -173,6 +203,22 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
               </tr>
             </table>`
             ).join('')}
+
+            ${
+              closingScholarship && scholarshipDays !== null
+                ? `
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:18px 0 4px 0;">
+              <tr>
+                <td style="padding:14px 16px;background-color:${INK};border:2px solid ${INK};">
+                  <p style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:#F0C030;">Funding &middot; ${closesInWords(scholarshipDays)}</p>
+                  <p style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:#FFF8E5;">${closingScholarship.title}</p>
+                  <p style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:#FFF8E5;">${closingScholarship.funding}. ${closingScholarship.deadline}.</p>
+                  <a href="${siteUrl}/scholarships" style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#F0C030;text-decoration:underline;">See the terms</a>
+                </td>
+              </tr>
+            </table>`
+                : ''
+            }
 
             <p style="margin:14px 0 20px 0;font-size:15px;line-height:1.7;color:${INK};">
               ${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER.replace(/’/g, '&rsquo;')}, so
