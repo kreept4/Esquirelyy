@@ -1,6 +1,5 @@
 import { ALL_SCHOLARSHIPS } from './scholarships-data'
 import { NEW_ROLES, roleCountLabel } from './new-roles'
-import { TEAM_CALL } from './team-call'
 
 /**
  * Notifications, derived rather than stored.
@@ -375,17 +374,21 @@ export function buildFeed(
     at: NEW_ROLES.at,
   })
 
-  /* 0c. The open call to join the team. Sits below the drop because a role at
-         a firm is what somebody came here for, and this is us asking them for
-         something. It stays in the feed rather than expiring on a date: it is
-         open until it is not, and the id is what retires it. */
-  out.push({
-    id: TEAM_CALL.id,
-    kind: 'team',
-    title: 'We are opening up the team',
-    detail: 'Volunteer positions, open now',
-    at: TEAM_CALL.at,
-  })
+  /* 0c. THE TEAM CALL IS NOT PUSHED, 24 August 2026, AND THE ID IS WHAT
+         RETIRED IT — exactly as lib/team-call.ts said it would be.
+         It sat here saying "We are opening up the team / Volunteer positions,
+         open now", and opened a modal ending in a mailto. Applications are
+         closed while we get the intake right, so a notification saying they are
+         open now was the single most misleading thing left on the site: a
+         notification is a claim about right now in a way a page is not.
+         REMOVED, NOT DATE-EXPIRED. There is no date on which this stops being
+         true, only a decision, which is the reasoning team-call.ts gave for
+         retiring it by id rather than by a deadline in the first place.
+         TEAM_CALL survives with `paused: true` so the kind, the modal and this
+         push can come back together rather than being reassembled from memory.
+         The 'team' kind stays in NotificationKind and in ACK_KINDS for the same
+         reason: nothing costs anything by being unused, and a reader who
+         dismissed the old note keeps that record. */
 
   const today = now.toISOString().slice(0, 10)
 

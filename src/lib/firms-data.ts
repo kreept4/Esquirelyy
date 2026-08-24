@@ -297,12 +297,21 @@ const LOCAL_ONLY_LOGO = new Set([
   // reconstruct the dark version of the same monochrome mark; Giwa-Osagie's
   // header logo is not in their served HTML, so it comes from an uploaded copy
   // elsewhere on the site.
-  // Added with CLP and ALP. CLP's source carries a white frame around a maroon
-  // banner with the lettering pushed to the right third, so it is cropped to
+  // Added with CLP and ALP. CLP's source carried a white frame around a maroon
+  // banner with the lettering pushed to the right third, so it was cropped to
   // the lettering and the maroon padded back evenly; ALP's is cropped out of a
   // ruled box that also held 'An SGRB firm' and the site URL.
+  //
+  // ⚠ 'clp-legal' IS NOW 'ukpong-omotoso', 24 August 2026, and the ART IS A
+  // DIFFERENT MARK rather than the same mark under a new key. The firm restored
+  // its founding name and published a new lockup with it: the two surnames set
+  // in maroon serif over a CLP rule, beside a monogram U in a split roundel.
+  // The old maroon CLP box is retired art, not a fallback — see
+  // scripts/2026-08-24-rename-clp-to-ukpong-omotoso.mjs, which cuts the new
+  // lockup out of the firm's own announcement card and keys the white ground
+  // out of it the way babalakin and kola-awodein were handled.
   'alp-ng',
-  'clp-legal',
+  'ukpong-omotoso',
   'alliance-law-firm',
   'dd-dodo',
   'doa-law',
@@ -387,14 +396,41 @@ export function firmLogo(firm: Pick<Firm, 'slug' | 'logoFile'>): string | null {
 }
 
 const FIRMS_UNSORTED: Firm[] = [
+  /**
+   * ⚠ THIS FIRM WAS "CLP LEGAL" UNTIL 24 AUGUST 2026. It is now Ukpong &
+   * Omotoso, and the change is a restoration rather than a rebrand: the firm
+   * announced that the name is the one it was registered under in 1990 and
+   * commenced practice under in 1992, so the founding facts below are unchanged
+   * and are corroborated by the new site rather than contradicted by it.
+   *
+   * ⚠ THE SLUG CHANGED TOO, AND THAT NEEDED A REDIRECT TO BE SAFE. Renaming
+   * the firm while leaving /firms/clp-legal as its URL would have been the
+   * cautious-looking option and the wrong one: the slug is what the breadcrumb,
+   * the canonical and the OG image all print, so the page would have gone on
+   * advertising the retired name to every crawler that read it. The old URL is
+   * in the sitemap and may be indexed, so it is redirected permanently in
+   * next.config.js — /firms/clp-legal and /firms/clp-legal/* both land here.
+   * Rename and redirect are ONE change; doing either alone breaks something.
+   *
+   * Checked against ukpongomotoso.com on 24 August 2026: the four offices are
+   * the same four at the same addresses, and info@ukpongomotoso.com is the
+   * address the firm's own contact page publishes. The old info@clplegal.com.ng
+   * is not carried over — an address on a domain the firm has moved off is the
+   * exact failure documented at olajide-oyewole below, where a stale careers@
+   * sat here undeliverable.
+   */
   {
-    slug: 'clp-legal',
+    slug: 'ukpong-omotoso',
     logoFile: null,
-    name: 'CLP Legal',
-    shortName: 'CLP',
+    name: 'Ukpong & Omotoso',
+    /* Not initialled. "U&O" is not how the firm signs itself and would be
+       unrecognisable next to the mark, which sets the two names in full over a
+       CLP rule. shortName drops a parenthetical or a suffix; there is neither
+       here, so it is the same string. */
+    shortName: 'Ukpong & Omotoso',
     tier: 'Established',
-    email: 'info@clplegal.com.ng',
-    website: 'https://clplegal.com.ng',
+    email: 'info@ukpongomotoso.com',
+    website: 'https://www.ukpongomotoso.com',
     offices: [
       { city: 'Lagos', address: '62 Awolowo Road, Ikoyi, Lagos' },
       { city: 'Abuja', address: '6th Floor Right Wing, NICON Plaza, Plot 242, Muhammadu Buhari Way, Central Business District, Abuja' },
@@ -402,7 +438,7 @@ const FIRMS_UNSORTED: Firm[] = [
       { city: 'Uyo', address: 'Second Floor, Right Wing, Suite 201, Peace Plaza, 300 Oron Road, Uyo, Akwa Ibom State' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Dispute Resolution', 'Energy & Natural Resources', 'Intellectual Property', 'Tax', 'Shipping & Maritime'],
-    description: 'A commercial firm founded in 1990, acting for multinationals, Nigerian corporates, family businesses and government ministries. Four offices, with corporate, finance, litigation and energy at the core of the practice.',
+    description: 'A commercial firm registered in 1990 and practising since 1992, known as CLP Legal until August 2026, when it restored its founding name. It acts for multinationals, Nigerian corporates, family businesses and government ministries across four offices, with corporate, finance, litigation and energy at the core of the practice.',
     foundedYear: 1990,
     openRoles: 0,
   },
@@ -2216,7 +2252,8 @@ export const FIRM_RANKINGS: Record<string, FirmRankings> = {
    * its band read off the structured web table, never off the PDF.
    *
    * NOT RANKED BY CHAMBERS NIGERIA. Thirty firms, confirmed absent from the
-   * whole document: CLP Legal, Abe & Asotie, Aina Blankson, Ajumogobia & Okeke,
+   * whole document: Ukpong & Omotoso (as CLP Legal, its name at the time of
+   * the tables), Abe & Asotie, Aina Blankson, Ajumogobia & Okeke,
    * Blackfriars, Famsville, George Etomi, Mike Igbokwe, Platinum & Taylor Hill,
    * Primera Africa, Resolution, D.D. Dodo, Ikeyi Shittu, Lekan Bamidele,
    * Omaplex, Pavestones, Kola Awodein, F. R. A. Williams, Chris Ogunbanjo,

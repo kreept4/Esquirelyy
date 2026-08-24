@@ -36,7 +36,13 @@ const NAV_ITEMS = [
   { label: 'CV Review', ariaLabel: 'Get your CV reviewed', link: '/tools/cv-review' },
   { label: 'Cover Letter', ariaLabel: 'Draft a cover letter', link: '/tools/cover-letter' },
   { label: 'Interview Prep', ariaLabel: 'Practise for interviews', link: '/tools/interview-prep' },
-  { label: 'Ambassador', ariaLabel: 'Become a campus ambassador', link: '/ambassador' },
+  /* ⚠ THE ARIA LABEL WAS "Become a campus ambassador" AND IS NOT ANY MORE,
+     24 August 2026. Applications are closed while we get the intake right,
+     and an imperative in an accessible name is a call to apply that only
+     screen reader users hear — the one recruiting surface that would have
+     survived the takedown by being invisible to everyone checking it.
+     The link stays: what the role involves is still worth reading. */
+  { label: 'Ambassador', ariaLabel: 'The campus ambassador programme', link: '/ambassador' },
   { label: 'News', ariaLabel: 'Read news and product updates', link: '/news' },
   { label: 'FAQ', ariaLabel: 'Read frequently asked questions', link: '/faq' },
 ]

@@ -20,7 +20,12 @@ export interface Scholarship {
  *  Check the eligible-course list before adding anything.
  *
  *  Verified 2026-08-05 against each provider's own page. Deadlines move every
- *  cycle, so re-check the `status` field each term rather than trusting it. */
+ *  cycle, so re-check the `status` field each term rather than trusting it.
+ *
+ *  The Mastercard Foundation entry was added 2026-08-24 off the programme's own
+ *  recruitment flier and has NOT been checked against the Edinburgh Global page
+ *  the way the nine above were. Its funding line says so rather than itemising
+ *  an award the flier does not itemise. */
 export const ALL_SCHOLARSHIPS: Scholarship[] = [
   {
     slug: 'rhodes-scholarship-west-africa',
@@ -153,6 +158,64 @@ export const ALL_SCHOLARSHIPS: Scholarship[] = [
       'Strong academic record',
     ],
     link: 'https://www.acu.ac.uk/our-work/queen-elizabeth-commonwealth-scholarships/',
+  },
+
+  /**
+   * ⚠ THE ONE ENTRY HERE THAT DOES NOT FUND AN LLM, AND IT IS IN ON PURPOSE.
+   *
+   * The rule at the top of this file is that a scholarship which welcomes
+   * Nigerians but funds only an MSc in Robotics does not belong. This one is the
+   * genuine edge of that rule rather than an exception to it. Every funded
+   * programme is sustainability-facing and none of them is a law degree — but
+   * several are degrees Nigerian law graduates actually read and are actually
+   * admitted to: Africa & International Development, Data, Inequality & Society,
+   * Social Justice & Community Action, and International Development. A lawyer
+   * moving into policy, development or climate governance is the intended
+   * candidate for those, not a stranger to them.
+   *
+   * So it goes in WITH THE SUBJECT LIMIT STATED IN THE FIRST LINE OF THE
+   * DESCRIPTION rather than buried in the eligibility list. The failure this
+   * file is guarding against is somebody spending an evening on an application
+   * they were never eligible for; naming the constraint before the award does
+   * more to prevent that than leaving the row out would.
+   *
+   * ⚠ AND THE DEADLINE IS NOT AN APPLICATION DEADLINE. The route changed this
+   * cycle and the flier is emphatic about it: you register for an information
+   * session, and only attendees who also meet the eligibility bar are invited
+   * to apply at all. Registering is therefore the whole of what a reader can do
+   * now, and missing the sessions forecloses the application entirely. That is
+   * why the sessions are what the `deadline` field carries — parseDeadline in
+   * lib/notifications.ts reads the last date out of this string, so the bell
+   * counts down to 24 September, which is the date that actually shuts a door.
+   */
+  {
+    slug: 'mastercard-foundation-scholars-edinburgh',
+    title: 'Mastercard Foundation Scholars Program at the University of Edinburgh',
+    provider: 'Mastercard Foundation and the University of Edinburgh',
+    region: 'United Kingdom',
+    level: "On-campus and online distance learning Master's degrees, starting September 2027",
+    funding: 'Full scholarship. Check the programme page for what the award covers in this cycle',
+    /* ⚠ ANCHORED ON THE FIRST SESSION, NOT THE LAST, and the wording is built
+       around that. parseDeadline takes the first complete day-month-year in
+       this string, so "15 September 2026" is what the bell counts down to and
+       "to 24 September" carries no year precisely so it cannot be picked up
+       instead. The sessions do run to the 24th and a reader can attend the last
+       one — but registration closes ahead of the sessions, the exact cut-off is
+       not published on the flier, and a countdown that expires nine days late is
+       the one failure mode this field must not have. The earlier date is the
+       one somebody can safely act on. */
+    deadline: 'Register for an information session: sessions begin 15 September 2026 and run to 24 September, for 2027/2028 entry',
+    status: 'open',
+    description:
+      'Sustainability and development subjects rather than law: the funded degrees are things like Africa & International Development, Data, Inequality & Society, Social Justice & Community Action, Climate Change Finance & Investment and Global Health, on campus in Edinburgh or by online distance learning. That makes it a route for a lawyer moving into policy, development or climate governance, and the wrong door for anyone set on an LLM. The recruitment process changed for 2027/28 and the change is the important part: you must register for and attend an information session, and only attendees who also meet the eligibility requirements are invited to apply. There is no way to apply without doing that first. Applications are especially encouraged from young women, young people with disabilities, and young people with refugee or displaced status.',
+    eligibility: [
+      'From Africa, so Nigerian nationality qualifies',
+      'Applying for one of the listed sustainability-focused programmes, not an LLM',
+      'Must register for and attend an information session between 15 and 24 September 2026',
+      'Only session attendees who meet the eligibility bar receive an invitation to apply',
+      'Programme list is subject to change each cycle — check the page before registering',
+    ],
+    link: 'https://edinburgh-global.ed.ac.uk/mastercard-foundation',
   },
 
   {

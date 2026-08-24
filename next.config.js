@@ -89,6 +89,19 @@ const nextConfig = {
         permanent: true,
       },
       { source: '/opportunities/:path*', destination: '/jobs', permanent: true },
+      {
+        /* CLP Legal restored its founding name and is now Ukpong & Omotoso, so
+           its directory slug changed with it (see the long note on the entry in
+           lib/firms-data.ts). /firms/clp-legal is in the sitemap and may be
+           indexed, and a renamed firm must not cost a page its history — so the
+           old URL is redirected rather than left to 404.
+           Permanent, because the rename is. The rename and this redirect are
+           one change: doing either without the other breaks something. */
+        source: '/firms/clp-legal',
+        destination: '/firms/ukpong-omotoso',
+        permanent: true,
+      },
+      { source: '/firms/clp-legal/:path*', destination: '/firms/ukpong-omotoso', permanent: true },
     ]
   },
 }

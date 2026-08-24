@@ -2658,17 +2658,64 @@ select.filter-pill {
   pointer-events: none;
 }
 
-/* The quieter of the two. Colour is set inline, per ground, like the wordmark. */
+/* The quieter of the two. Colour is set inline, per ground, like the wordmark.
+ *
+ * ⚠ IT WAS BARE TEXT AT opacity 0.85 AND IT WAS REPORTED AS ALMOST INVISIBLE.
+ * Four things were stacked against 10.9px of it: uppercase, 0.1em tracking, no
+ * ground of its own, and then 15% of the contrast taken off the top. Any one is
+ * survivable. Together, next to a solid amber pill with a hard ink shadow, the
+ * eye reads the pill and skips the text — which means a RETURNING member, the
+ * one person on the page who already has an account, is the one who cannot find
+ * their way in.
+ *
+ * SO IT BECOMES AN OUTLINE PILL, AND THE WEIGHTING IS PRESERVED IN THE FILL
+ * RATHER THAN IN THE CONTRAST. The file header is right that these two must not
+ * look like the same control: most first-time visitors want Join, and two
+ * identical buttons make them choose before they know which applies. But the
+ * way to say "secondary" is an unfilled shape beside a filled one, which is
+ * legible at a glance and is how every other pair on this site is built — not
+ * an under-contrasted label, which is just a primary control somebody has made
+ * harder to read.
+ *
+ * WHAT IT BORROWS FROM .auth-cta-join, EXACTLY: the height, the radius, the
+ * font size, the tracking and the case. Same object, same line, same family.
+ *
+ * ⚠ WHAT IT DELIBERATELY DOES NOT BORROW IS THE BOX-SHADOW, and that single
+ * omission is what carries the whole hierarchy. The 3px hard offset is what
+ * makes Join sit proud of the page and invite a press; without it this reads as
+ * an outline on the surface. Adding a shadow here would flatten the pair into
+ * the two identical controls the header warns about. Do not add one.
+ *
+ * currentColor throughout, so both the border and the text follow the inline
+ * `color` prop — cream over the dark home hero, ink over every light inner
+ * header — with no second rule per ground. The border sits at 45% of it: a
+ * full-strength ring reads as loud as a fill at this size, and the point is to
+ * be findable, not to be the first thing seen.
+ */
 .auth-cta-signin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.4rem;
+  padding: 0 1.05rem;
+  background: transparent;
+  border: 2px solid color-mix(in srgb, currentColor 45%, transparent);
+  border-radius: 999px;
   font-size: 0.68rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
-  opacity: 0.85;
-  transition: opacity 0.18s ease;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
 }
-.auth-cta-signin:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+/* A wash of its own colour at low alpha, the same technique .notif-btn uses, so
+   the hover works on ink and on cream without a second rule per ground. No
+   transform: Join presses into its shadow and this has no shadow to press into,
+   so a nudge here would be a gesture with nothing behind it. */
+.auth-cta-signin:hover {
+  border-color: currentColor;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
 .auth-cta-signin:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 
 .auth-cta-join {
@@ -2707,7 +2754,34 @@ select.filter-pill {
   .auth-cta { top: 1.15rem; right: 6.75rem; gap: 0.6rem; }
   /* "Join" alone from here down. */
   .auth-cta-word { display: none; }
-  .auth-cta-signin { font-size: 0.62rem; letter-spacing: 0.06em; }
+  /* ⚠ THE PILL COMES OFF HERE AND THE FIX STAYS ON. Below 640px the header
+     line is the tightest thing on the site: the wordmark, two controls and the
+     menu toggle share about 390px, and the pair had roughly 13px of clearance
+     to the wordmark BEFORE any of this. A ring costs about 28px in border and
+     padding that bare text does not, which spends that clearance and then some
+     — and a Sign in control that overlaps the wordmark is worse than the
+     under-contrasted one this set out to repair.
+     So the ring is a desktop treatment, and on mobile the same problem is
+     solved the way the rest of the site solves it: full contrast plus a rule
+     under the word, which is exactly .about-alt and .amb-apply-alt. That is a
+     house pattern rather than a one-off, it reads as a control rather than as a
+     label, and it is width-neutral — an underline occupies no horizontal space,
+     so this cannot collide with anything.
+     WHAT IS ACTUALLY BEING FIXED IS THE 0.85 OPACITY, and that is fixed on both
+     grounds and at every width. The ring is the desktop bonus, not the repair. */
+  .auth-cta-signin {
+    height: auto;
+    padding: 0 0 1px;
+    border: none;
+    border-bottom: 1.5px solid color-mix(in srgb, currentColor 55%, transparent);
+    border-radius: 0;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+  }
+  .auth-cta-signin:hover {
+    background: transparent;
+    border-bottom-color: currentColor;
+  }
   .auth-cta-join {
     height: 2.1rem;
     padding: 0 0.8rem;
@@ -2729,6 +2803,8 @@ select.filter-pill {
   .auth-cta { transition: opacity 0.2s ease; }
   .auth-cta-hidden { transform: none; }
   .auth-cta-join:hover, .auth-cta-join:active { transform: none; }
+  /* Nothing to disable on the Sign in pill: its hover is colour only, which is
+     not motion. Listed here so the next person does not go looking for it. */
 }
 
 /* The welcome note, opened from the panel. */

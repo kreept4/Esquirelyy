@@ -11,11 +11,23 @@ import Link from 'next/link'
  * able to do were the two things hardest to find. They now sit on the same line
  * as the wordmark, over the top of the hero, and ride along to every page.
  *
- * The pair is weighted, not balanced. Join is an amber pill and Sign in is a
- * plain link, because they are not equally likely: most people arriving on the
- * home page do not have an account yet, and giving both the same treatment
- * would make the reader choose between two identical-looking controls before
- * they know which one applies to them.
+ * The pair is weighted, not balanced, because they are not equally likely: most
+ * people arriving on the home page do not have an account yet, and giving both
+ * the same treatment would make the reader choose between two identical-looking
+ * controls before they know which one applies to them.
+ *
+ * ⚠ THE WEIGHTING IS NOW FILLED-VERSUS-UNFILLED, NOT BUTTON-VERSUS-LABEL.
+ * Sign in was a plain link at 85% opacity and was reported as almost invisible
+ * — 10.9px of uppercase text with wide tracking, no ground of its own, sitting
+ * beside a solid amber pill. It is now an outline pill on the same geometry as
+ * Join: same height, same radius, same type. Join keeps the amber fill and the
+ * hard ink shadow, so it is still plainly the primary of the two.
+ *
+ * That is the right axis for this. Under-contrasting a control does not make it
+ * secondary, it makes it hard to find, and the person it was hardest for was
+ * the returning member — the one reader on the page who definitely needs it.
+ * See the long note on .auth-cta-signin in globals.css, including why it must
+ * not be given a box-shadow.
  *
  * The group takes the notification bell's slot. It can never collide with the
  * bell — that needs someone signed in and this needs someone signed out — so
@@ -25,9 +37,10 @@ export default function AuthActions({
   hidden,
   user,
   ready,
-  /* Sign in is a bare link, so it needs the same treatment as the wordmark:
-     cream over the dark home hero, ink over every light inner header. The Join
-     pill is exempt — amber on an ink border carries itself on both grounds. */
+  /* Sign in takes its colour per ground, the same as the wordmark: cream over
+     the dark home hero, ink over every light inner header. Its border is
+     currentColor too, so this one value drives both. The Join pill is exempt —
+     amber on an ink border carries itself on both grounds. */
   color = '#1A1A1A',
 }: {
   hidden?: boolean

@@ -21,7 +21,6 @@ import {
   unreadCount,
   type Notification,
 } from '@/lib/notifications'
-import { TEAM_CALL, TEAM_CALL_MAILTO } from '@/lib/team-call'
 /* Same adapter the board uses, so an opportunity is the same shape in the bell
    as it is on /jobs and the two cannot describe it differently. */
 import { toBoardRow } from '@/lib/opportunities'
@@ -141,7 +140,6 @@ export default function NotificationBell({
   const [justCleared, setJustCleared] = useState(0)
   const [showWelcome, setShowWelcome] = useState(false)
   const [showDrop, setShowDrop] = useState(false)
-  const [showTeam, setShowTeam] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const checkedWelcomeParam = useRef(false)
 
@@ -274,12 +272,6 @@ export default function NotificationBell({
     setOpen(false)
     setShowDrop(true)
     setReadIds(markRead(NEW_ROLES.id))
-  }
-
-  function openTeam() {
-    setOpen(false)
-    setShowTeam(true)
-    setReadIds(markRead(TEAM_CALL.id))
   }
 
   function closeWelcome() {
@@ -432,7 +424,7 @@ export default function NotificationBell({
                         /* Two hrefless kinds now, so the click has to ask which
                            note it is opening rather than assuming the welcome. */
                         onClick={() =>
-                          n.kind === 'drop' ? openDrop() : n.kind === 'team' ? openTeam() : openNote()
+                          n.kind === 'drop' ? openDrop() : openNote()
                         }
                       >
                         <NotifRow n={n} unread={isNew} />
@@ -526,57 +518,19 @@ export default function NotificationBell({
         </div>
       )}
 
-      {/* The open call to join the team.
-          "VOLUNTEER" IS IN THE FIRST SENTENCE and the word "unpaid" is not
-          anywhere. Volunteer is not a euphemism: it is the plain word for this
-          and every reader already knows what it means, so spelling it out a
-          second time reads as a company bracing for an objection rather than
-          simply stating the terms. What matters is the position of the word,
-          not how many ways it is said. */}
-      {showTeam && (
-        <div className="notif-modal-scrim" onClick={() => setShowTeam(false)}>
-          <div
-            className="notif-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Join the Esquirely team"
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              className="notif-modal-close"
-              onClick={() => setShowTeam(false)}
-              aria-label="Close"
-            >
-              ×
-            </button>
+      {/* ⚠ THE TEAM-CALL MODAL IS GONE, 24 August 2026, and it is worth
+          saying what it was so it can be rebuilt rather than reinvented. It was
+          headed "We are opening up the team.", said in its first sentence that
+          the positions were volunteer ones — that word's position was the whole
+          design of the copy and must survive any restoration — and ended in a
+          "Tell us how you can help" button pointing at TEAM_CALL_MAILTO.
 
-            <div className="notif-modal-inner">
-              <p className="display-black notif-modal-title">We are opening up the team.</p>
-
-              <div className="notif-modal-body">
-                <p className="grotesk-regular">
-                  Esquirely is built by a small group of people, and we are making room for more.
-                  These are volunteer positions, on something being used by Nigerian law students
-                  right now.
-                </p>
-                <p className="grotesk-regular">
-                  Lawyers, students, writers, designers and engineers are all useful here. Tell us
-                  what you do and what you would want to build. Take as much space as you need.
-                </p>
-              </div>
-
-              <a
-                href={TEAM_CALL_MAILTO}
-                className="grotesk-bold notif-modal-cta"
-                onClick={() => setShowTeam(false)}
-              >
-                Tell us how you can help
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+          It comes down with the notification that opened it (see step 0c in
+          lib/notifications.ts) and with the address it sent people to (see
+          lib/team-call.ts). Applications are closed while we get the intake
+          right, and a dialog is the most emphatic surface on the site: leaving
+          it reachable while the mailbox goes unread is worse than any of the
+          static copy we have also had to withdraw. */}
 
       {/* The welcome note in full. A dialog rather than a route, because it is a
           one-off greeting and giving it a URL would mean a page that exists

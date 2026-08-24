@@ -102,12 +102,19 @@ const ITEMS: NewsItem[] = [
      * and the eligibility are read on the platform first, and the form is one
      * more tap from there.
      */
+    /* ⚠ REDATED TO 24 AUGUST BECAUSE THE FIRM EXTENDED IT, and the redate is
+       the point rather than a side effect. This slide said "closes on 23 August
+       2026" and, on 24 August, that made it a slide announcing something that
+       was over. Lekan Bamidele & Co reopened it to the 30th, so the deadline
+       here moves with theirs and the date moves with it, which is what pulls
+       the slide back up the carousel to where somebody with six days left can
+       see it. See scripts/2026-08-24-extend-lbvip-deadline.mjs for the source. */
     slug: 'lbvip-5-2026',
     kind: 'update',
-    date: '2026-08-17',
-    title: 'LBVIP 5.0 is open to students, graduates and new wigs',
+    date: '2026-08-24',
+    title: 'LBVIP 5.0 has been extended to 30 August',
     summary:
-      'Lekan Bamidele & Co are running the fifth edition of their virtual internship. Applying takes a two minute video on a set topic, a public post tagging the firm, and their form. It closes on 23 August 2026.',
+      'Lekan Bamidele & Co have reopened the fifth edition of their virtual internship after the first deadline passed. Applying still takes a two minute video on a set topic, a public post tagging the firm, and their form. It now closes on 30 August 2026.',
     href: '/jobs/lbvip-5-0-lekan-bamidele-virtual-internship-programme',
     cta: 'See the three steps',
     media: { type: 'logos', slugs: ['lekan-bamidele'] },
@@ -191,17 +198,18 @@ const ITEMS: NewsItem[] = [
     cta: 'Find a firm to write to',
     media: { type: 'image', src: '/illustrations/file-searching.svg', alt: '' }
   },
-  {
-    slug: 'ambassadors-open',
-    kind: 'update',
-    date: '2026-08-06',
-    title: 'Campus ambassador applications are open!',
-    summary:
-      'Run one session for your year, whenever it suits you, and leave with a signed reference. Not paid, and we would rather say so up front.',
-    href: '/ambassador',
-    cta: 'Read the terms',
-    media: { type: 'image', src: '/illustrations/ambassador.svg', alt: '' }
-  },
+  /* ⚠ THE CAMPUS AMBASSADOR SLIDE IS OUT, 24 August 2026, and this comment is
+     here so the next person does not put it back without checking.
+     It read "Campus ambassador applications are open!" and linked to
+     /ambassador. Applications are closed — not because the programme ended but
+     because we are not ready to run the intake, so a slide inviting people to
+     apply was inviting them into a queue nobody was reading. The programme page
+     stays up and still says what the role is; what came down is every route
+     that asks somebody to apply for it, here and in app/about, app/contact and
+     app/ambassador.
+     WHEN IT REOPENS this slide comes back with a new `date`, because a slide
+     restored at 2026-08-06 would reappear buried under three weeks of newer
+     items and be seen by nobody. */
   {
     slug: 'cv-tools-live',
     kind: 'update',

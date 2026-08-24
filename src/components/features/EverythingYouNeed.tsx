@@ -78,7 +78,19 @@ const BLOCKS = [
   { title: 'Funding, deadline-tracked', desc: 'Local and international scholarships for Nigerian law students and lawyers, curated and watched so you never miss a cycle.', href: '/scholarships', cta: 'See scholarships', preview: 'scholarships' },
   { title: 'Know the firm before you apply', desc: 'Tier rankings, practice-area breakdowns, office locations, and hiring history for Nigerian firms.', href: '/firms', cta: 'Browse firms', preview: 'firms' },
   { title: 'Feedback that says something', desc: 'CV reviews, cover letter drafts, and interview prep tuned to the Nigerian legal market: specific notes, not platitudes.', href: '/tools/cv-review', cta: 'Try the tools', preview: 'ai' },
-  { title: 'Represent us on your campus', desc: 'Ambassadors run Esquirely where it matters most, inside university law faculties. You get early access, a signed reference, and a say in what we build next.', href: '/ambassador', cta: 'Become an ambassador', preview: 'ambassador' },
+  /* ⚠ THE AMBASSADOR BLOCK IS OUT, 24 August 2026, and it was the loudest
+     recruiting surface left on the site: a full-width panel on the HOME PAGE,
+     with a "Become an ambassador" call to action. Applications are closed while
+     we get the intake right, so it was asking every first-time visitor to apply
+     for something nobody is reading.
+     REMOVED RATHER THAN REWORDED. Every other entry in this list is a product
+     the reader can use right now, and the shape of the block is a promise that
+     the thing behind the button is available. A block saying "here is a
+     programme you cannot join" fails that promise in the one place a stranger
+     forms their first impression.
+     The `ambassador` preview renderer below is KEPT so this can be restored as
+     one line rather than rebuilt. See lib/news-data.ts, app/about/page.tsx,
+     app/contact/page.tsx and lib/notifications.ts for the rest of the takedown. */
   { title: 'Questions, answered plainly', desc: 'What the tools do with your CV, how firms get listed, what it costs, and whether we can get you a job. Short answers, no hedging.', href: '/faq', cta: 'Read the FAQ', preview: 'faq' },
 ]
 
@@ -400,10 +412,16 @@ function Preview({ kind }: { kind: string }) {
     )
   }
 
+  /* ⚠ UNREACHABLE SINCE 24 August 2026 AND KEPT ON PURPOSE. Nothing in BLOCKS
+     asks for `preview: 'ambassador'` any more, because the block that did was
+     removed when applications closed. This renderer stays so restoring the
+     programme is a one-line change to BLOCKS rather than rebuilding a panel
+     from the description of one. Delete it only if the programme is ending
+     rather than pausing. */
   if (kind === 'ambassador') {
     /* What the role actually involves, as a checklist. An ambassador programme
      * is easy to describe in words nobody can picture ("represent the brand",
-     * "build community"), so the panel states the four concrete things and what
+     * "build community"), so the panel states the three concrete things and what
      * you get back, which is the only part a student is really weighing. */
     const duties = [
       'Host one one-hour workshop a semester',

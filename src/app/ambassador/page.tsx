@@ -2,10 +2,18 @@ import { openGraph } from '@/components/seo/JsonLd'
 import Footer from '@/components/layout/Footer'
 import Link from 'next/link'
 
+/* ⚠ THE TITLE NO LONGER ASKS FOR ANYTHING, 24 August 2026. It was "Be an
+   ambassador", which is an imperative, and an imperative is a call to apply —
+   in the tab, in a Google result and in a shared link, all of which outlive the
+   page being read. Applications are closed while we get the intake right, so
+   the page describes the programme instead of recruiting for it. The
+   description says so in its last clause rather than its first: what the role
+   is remains the useful part, and somebody who arrives from a search for it
+   should still get the answer. */
 export const metadata = {
-  title: 'Be an ambassador',
+  title: 'The campus ambassador programme',
   description:
-    'Bring Esquirely to your faculty. Run one session when it suits you, pass on what is worth passing on, and leave with a signed reference.',
+    'What an Esquirely campus ambassador does: run one session for your faculty when it suits you, pass on what is worth passing on, and leave with a signed reference. Applications are closed for now.',
   alternates: { canonical: '/ambassador' },
   openGraph: openGraph({ path: '/ambassador' }),
 }
@@ -17,8 +25,8 @@ export const metadata = {
  * which is the default shape this codebase reaches for and the wrong one here.
  * A grid of equal cards says "these are five interchangeable features". This
  * page is an argument with a sequence: here is what we ask, here is what you
- * get, here is who it is for, here is how to apply. Equal weight flattens that
- * into a menu.
+ * get, here is who it is for, here is where it stands. Equal weight flattens
+ * that into a menu.
  *
  * So the structure is editorial rather than modular:
  *
@@ -33,9 +41,12 @@ export const metadata = {
  * legal pages already use, so a wide screen is filled with hierarchy rather
  * than with stretched cards.
  *
- * One carton card on the whole page, on the application, because that is the
- * single action being asked for and the design language reserves that treatment
- * for exactly that.
+ * One carton card on the whole page, at the end, because the design language
+ * reserves that treatment for the single thing the page resolves to. That used
+ * to be the application. Applications are closed, so it now carries the notice
+ * saying so — same slot, same weight, because a reader who has read the whole
+ * argument needs to be told where it stands with exactly as much emphasis as
+ * they would have been asked to act.
  */
 
 /* Three columns, not two, and the third is the change.
@@ -232,25 +243,45 @@ export default function AmbassadorPage() {
             </div>
           </section>
 
-          {/* The one carton card on the page, on the one action. */}
+          {/* ⚠ THIS CARD USED TO BE THE APPLICATION AND IS NOW THE OPPOSITE OF
+              ONE, 24 August 2026. It carried the heading "Put your campus on the
+              map.", a paragraph explaining that an email was the whole
+              application, and a mailto to ambassadors@esquirely.com.ng.
+
+              APPLICATIONS ARE CLOSED BECAUSE WE ARE NOT READY TO RUN THE
+              INTAKE, which is a different thing from the programme ending, and
+              the copy has to make that difference audible. Everything above this
+              card — what an ambassador does, what they get, what it costs them —
+              is still true and still worth reading, so the page stays. What
+              cannot stay is an invitation to apply into a queue nobody is
+              reading: somebody spends an evening on it, sends it, and hears
+              nothing, which costs them more than never seeing the button.
+
+              ⚠ AND THE MAILTO IS GONE RATHER THAN DISABLED. A dead address
+              styled as a button is still an address: it gets copied, it gets
+              written down, and it gets mail we are not answering. The address
+              itself is removed here, in app/contact and in lib/team-call, so
+              there is no route left that produces an application.
+
+              NO DATE IS PROMISED. "Back in September" is a promise made by
+              whoever writes it and kept by whoever has to. This says we will
+              say when, and the news carousel is where that would be said. */}
           <section className="amb-apply">
             <div className="amb-apply-copy">
-              <p className="display-black amb-apply-heading">Put your campus on the map.</p>
+              <p className="display-black amb-apply-heading">Applications are closed for now.</p>
               <p className="grotesk-regular amb-apply-body">
-                Email us your campus and year, and the one thing you would change about Esquirely.
-                That is the whole application. Your invite link comes back in the reply. We read
-                every one as it arrives and take a small number at a time, so you get a person
-                rather than a mailing list.
+                We are not taking new campus ambassadors at the moment. Not because the programme
+                is over, but because we would rather not have you write in and hear nothing back
+                while we get the intake right. Everything above is what the role is and what it
+                asks of you, and none of it changes. When we open again it will be announced on
+                the site.
               </p>
               <div className="amb-apply-actions">
-                <a
-                  href="mailto:ambassadors@esquirely.com.ng?subject=Ambassador%20application"
-                  className="grotesk-bold amb-apply-cta"
-                >
-                  Apply to join
-                </a>
+                <Link href="/news" className="grotesk-bold amb-apply-cta">
+                  See what is new
+                </Link>
                 <Link href="/faq" className="grotesk-regular amb-apply-alt">
-                  Read the FAQ first
+                  Read the FAQ
                 </Link>
               </div>
             </div>

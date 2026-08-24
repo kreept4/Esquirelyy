@@ -59,26 +59,53 @@
  * is behind the account. See the note on `canApply` below.
  *
  * This is deliberately NOT derived from NEW_ROLES.slugs, even though the drop's
- * two roles are the top two of the seven today. The drop is an announcement and
- * is meant to be replaced wholesale next time; this is a publishing window and
- * turns over on its own schedule. Wiring one to the other would mean announcing
- * two roles silently un-published the five under them.
+ * roles are the top of the list today and every slug in the drop must be in
+ * here (see the note on the first group below). The implication runs one way
+ * only. The drop is an announcement and is meant to be replaced wholesale next
+ * time; this is a publishing window and turns over on its own schedule. Wiring
+ * one to the other would mean announcing three roles silently un-published
+ * everything under them.
  */
 
 /**
- * The seven, newest first, as `created_at` orders them on the board.
+ * The window, newest first, as `created_at` orders them on the board.
  *
  * KEPT IN THAT ORDER ON PURPOSE, even though a Set does not care. This list is
- * a window over a sorted board, so the next role added goes on the top and the
- * bottom one comes off. Written in any other order that operation stops being
- * obvious and the window quietly stops being the newest seven.
+ * a window over a sorted board, so the next role added goes on the top.
+ * Written in any other order that operation stops being obvious.
  *
- * Verified against the board on 14 August 2026: these are exactly the seven
- * most recent rows by `created_at`, and there are twenty rows in total, so
- * thirteen listings ask for an account.
+ * ⚠ NO COUNT IS CLAIMED HERE ANY MORE, and the header above explains why at
+ * length: this block said "the seven, newest first" and "verified against the
+ * board on 14 August 2026", and both sentences went on being read as true for a
+ * week after they had stopped being either. A count in a comment is a fact
+ * about one afternoon.
+ *
+ * Two entries below are CLOSED ROLES kept deliberately — see the note on
+ * zyph-legal-legal-associate. They are in the set so their URLs 404 honestly
+ * rather than redirecting a crawler to a login page; openJobs() filters real
+ * rows, so neither produces anything on the board.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
-  /* 21 August, and the current drop.
+  /* 23 and 24 August, and the current drop — all three of it.
+     ⚠ ALL OPEN FOR THE REASON THE JEE NOTE BELOW GIVES, and it has stopped
+     being an exception and become the rule: EVERY SLUG IN NEW_ROLES BELONGS
+     HERE. The broadcast points every recipient at /jobs?roles=<these slugs>,
+     and that URL renders openJobs() for anybody without a session, so a slug in
+     the drop but outside this set sends the whole list to an empty board — or
+     to /auth/login if they tap through, on a phone many of them have never
+     signed in on.
+     None of the three is gated on its own merits either. Principle Legal
+     Consult put the seat out as a public recruitment flier with the application
+     address printed on it, U&P Law posted theirs to LinkedIn for anyone to
+     read, and Heirs Holdings' application route is a public Google Form.
+     Heirs Holdings leads because it is the only one of the three with a
+     deadline: it shuts on 4 September, and days spent recovering a password
+     come out of an eleven-day window. The other two are rolling. */
+  'heirs-holdings-graduate-trainee-programme-2026',
+  'uandp-law-multiple-practice-areas',
+  'principle-legal-consult-junior-associate',
+
+  /* 21 August.
      ⚠ OPEN FOR THE SAME REASON LBVIP IS, WHICH IS THE ANNOUNCEMENT EMAIL. The
      new-roles broadcast points every recipient at /jobs?roles=<this slug>, and
      that URL renders openJobs() for anybody without a session. A slug outside
@@ -105,6 +132,18 @@ const OPEN_JOB_SLUGS = new Set<string>([
   'ovie-obobolo-associate',
   'pentagon-partners-associate-grc',
   'babalakin-senior-associate-energy',
+  /* Closed, and STAYING IN THE SET, which is not an oversight.
+     Zyph Legal was delisted on 23 August, the day after its 20 August deadline
+     passed, and Ovie Obobolo before it on the 17th. The row's own delisted note
+     says it was "removed from the board and from lib/open-jobs.ts"; only the
+     first half of that happened, and only the first half should have. The rule
+     at the top of this file and the long note in
+     scripts/2026-08-17-delist-ovie-obobolo.mjs both say why: left in the set,
+     isOpenJob() stays true and a signed-out reader gets a clean 404, which is
+     the honest signal. Taken out, the same reader is bounced to /auth/login for
+     a role that no longer exists — the pattern that teaches a search engine to
+     stop trusting a host. openJobs() filters real rows, so a slug whose row is
+     inactive produces nothing anywhere else. */
   'zyph-legal-legal-associate',
   // 8 August.
   'abe-asotie-lawyer-legal-aid',

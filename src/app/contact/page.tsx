@@ -53,17 +53,17 @@ const ROUTES = [
       </>
     ),
   },
-  {
-    what: 'Campus ambassadors',
-    who: 'ambassadors@esquirely.com.ng',
-    body:
-      'Applications, questions about the commitment, or a note from a faculty that wants a session run. The terms are published rather than negotiated, so read them first and the reply will be quicker.',
-    aside: (
-      <>
-        The terms are on the <Link href="/ambassador">ambassador page</Link>.
-      </>
-    ),
-  },
+  /* ⚠ THE CAMPUS AMBASSADOR ROW IS OUT, 24 August 2026, and taking the
+     ADDRESS out is the whole point of removing it. It listed
+     ambassadors@esquirely.com.ng and invited applications. Applications are
+     closed while we get the intake right (see app/ambassador/page.tsx), and a
+     published address is not made harmless by the page beside it saying not to
+     write: this page exists to be scanned for an address, and the address is
+     what gets copied.
+     A faculty that genuinely wants a session run still has a route — 'Anything
+     else' below is read by a person and is the correct destination for it while
+     the programme is paused. Restoring this row means restoring the mailbox
+     first. */
   {
     what: 'Anything else',
     who: 'hello@esquirely.com.ng',

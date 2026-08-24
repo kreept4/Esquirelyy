@@ -2,7 +2,6 @@ import JsonLd, { breadcrumb, openGraph, webPageSchema } from '@/components/seo/J
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { TEAM, AMBASSADORS, type Person } from './people'
-import { TEAM_CALL_MAILTO } from '@/lib/team-call'
 
 export const metadata = {
   title: 'About us',
@@ -181,29 +180,33 @@ export default function AboutPage() {
               ))}
             </div>
 
-            {/* Two rewrites, and the second is the one that matters.
-                "We are still expanding" was a statement about us, so it became
-                an invitation. The invitation was then an argument about who we
-                would rather hear from, which is our preference described to
-                somebody who only wanted to know what to send. It is now three
-                instructions and an address. */}
-            {/* ⚠ IT SAYS VOLUNTEER, AND IT SAYS IT IN THE FIRST SENTENCE.
-                This block read "We are hiring", which was written before anybody
-                said these were volunteer positions and would have had people
-                spending an evening on an application under the wrong
-                assumption. The word does not need "unpaid" beside it, and did
-                carry it for a while: volunteer is the plain term and every
-                reader knows it, so saying it twice reads as bracing for an
-                objection rather than stating the terms. What matters is that it
-                comes before the interesting part, not how many ways it is put. */}
-            <p className="grotesk-bold about-note-title">Join us</p>
+            {/* ⚠ THE TEAM CALL IS DOWN, 24 August 2026, AND THE ADDRESS WENT
+                WITH IT. This block was headed "Join us", gave three
+                instructions, and ended in a mailto to careers@esquirely.com.ng
+                built by lib/team-call.ts. The call is withdrawn: we are not
+                ready to read what comes in, and an application nobody answers
+                costs the sender an evening and costs us the goodwill.
+
+                THE ADDRESS IS REMOVED RATHER THAN LEFT UNLINKED. Printed as
+                plain text it is still an address — it gets copied, it gets
+                written down, and it collects mail into a mailbox nobody is
+                working. Same call made on app/ambassador and app/contact.
+
+                ⚠ IT STILL SAYS VOLUNTEER, IN THE FIRST SENTENCE, and that
+                survives the rewrite deliberately. The block read "We are hiring"
+                once, before anybody said the positions were unpaid, which would
+                have had people spending an evening on an application under the
+                wrong assumption. Whoever restores the call must restore the word
+                with it, in front of the interesting part rather than after it.
+
+                NO DATE IS PROMISED. "Back in September" is a promise made by
+                whoever writes it and kept by whoever has to. */}
+            <p className="grotesk-bold about-note-title">Joining us</p>
             <p className="grotesk-regular about-note">
-              We are opening up the team. These are volunteer positions, on something Nigerian
-              law students are using right now. Tell us what you do, what you would want to build
-              here, and take as much space as you need.{' '}
-              <a href={TEAM_CALL_MAILTO} className="about-note-mail">
-                careers@esquirely.com.ng
-              </a>
+              We are not taking applications for the team at the moment. The positions are
+              volunteer ones on something Nigerian law students are using right now, and we would
+              rather open them when we can actually read what comes in than collect applications
+              nobody answers. It will be announced here when that changes.
             </p>
           </section>
 
@@ -220,19 +223,32 @@ export default function AboutPage() {
             </div>
           </section>
 
+          {/* ⚠ THIS SECTION USED TO RECRUIT AND NOW ONLY POINTS, 24 August 2026.
+              It was headed "Join them", said campus ambassador applications were
+              open, and led with a "Be an ambassador" call to action. They are
+              not open: we are not ready to run the intake, and the whole of that
+              reasoning is in app/ambassador/page.tsx.
+
+              THE SECOND LINK IS WHY THIS BLOCK STAYS AT ALL. "Or just tell us
+              what is missing" was always the more useful of the two and was
+              sitting underneath the one we have had to withdraw. Promoted to the
+              action, it is a route that is genuinely open, which is better than
+              a section that reads as a closed door. The programme page keeps its
+              link because what the role involves is still worth reading. */}
           <section className="about-section">
-            <p className="grotesk-bold about-section-title">Join them</p>
+            <p className="grotesk-bold about-section-title">Tell us what is missing</p>
             <p className="grotesk-regular about-outro">
-              Campus ambassador applications are open, and the terms are published rather than
-              negotiated. If something here is wrong, thin or useless for your faculty, that is the
-              thing we most want to hear.
+              Campus ambassador applications are closed while we get the intake right, and the
+              terms are published rather than negotiated whenever they reopen. What is always open
+              is the other half of it: if something here is wrong, thin or useless for your
+              faculty, that is the thing we most want to hear.
             </p>
             <div className="about-actions">
-              <Link href="/ambassador" className="grotesk-bold about-cta">
-                Be an ambassador
+              <Link href="/contact" className="grotesk-bold about-cta">
+                Tell us what is missing
               </Link>
-              <Link href="/contact" className="grotesk-regular about-alt">
-                Or just tell us what is missing
+              <Link href="/ambassador" className="grotesk-regular about-alt">
+                Or read what an ambassador does
               </Link>
             </div>
           </section>

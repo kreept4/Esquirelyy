@@ -45,26 +45,74 @@
  */
 export const ROLE_ENTRIES = [
   {
-    slug: 'jee-graduate-recruitment-development-program-2026',
-    /* The full registered name, comma included, because that is how the firm
-       signs itself and how ALL_FIRMS holds it. Not "JEE": the monogram is on
-       the flier and on the anniversary mark, and a subject line reading
-       "1 new role: JEE" names nobody a reader would recognise. */
-    employer: 'Jackson, Etti & Edu',
-    /* Identical, and that is fine. employerShort exists to drop a
-       parenthetical network name, and this firm has none to drop. */
-    employerShort: 'Jackson, Etti & Edu',
-    title: '2026 Graduate Recruitment & Development Program',
-    /* The firm's spelling of its own programme is kept. They write "Program".
-       We write "Programme" everywhere else, and a listing is named by whoever
-       is hiring. A member searching the phrase they saw on the flier finds it. */
-    /* The degree bar is in the line rather than left to the board, because it
-       is the fact that decides whether the reader can apply at all, and an
-       email that omits it sends people to a form they are not eligible for. */
-    line: 'Lagos, full time, for lawyers within two years of call. Rotations across departments, with mentoring and classroom training. Needs a Second Class Upper degree and at least a Second Class Lower from the Nigerian Law School. Apply through the firm’s own portal. Closes 28 August.',
-    short: 'a Lagos graduate programme for lawyers within two years of call',
+    /* ⚠ FIRST BECAUSE IT IS THE ONLY ONE WITH A CLOCK ON IT, not because it
+       is the biggest name. The two below are rolling: they close when the firms
+       fill them, and a reader who leaves it a fortnight has lost nothing they
+       can measure. This one shuts on 4 September, and a reader who leaves it a
+       fortnight has lost it outright. The email prints these in array order, so
+       array order is a claim about what to read first. */
+    slug: 'heirs-holdings-graduate-trainee-programme-2026',
+    employer: 'Heirs Holdings',
+    employerShort: 'Heirs Holdings',
+    title: '2026 Graduate Trainee Programme',
+    /* ⚠ THE BARS ARE IN THE LINE, and they are why this one is the longest of
+       the three. They are what disqualifies most readers, none of them is
+       obvious from the title, and an announcement that omits them sends people
+       to a form they were never eligible for.
+       "Lawyers can apply" leads because on a legal careers board the first
+       question a conglomerate raises is whether it is meant for the reader at
+       all, and the post itself never answers it — it says "a Bachelor's degree"
+       and names no subject, which reads as a maybe. It is a yes.
+       ⚠ AND THE CERTIFICATE IS NAMED, not just the NYSC year. Having finished
+       service and being able to produce the discharge or exemption certificate
+       are different states, and the second is what the application actually
+       needs. Somebody who has to request a replacement will not do it inside
+       eleven days, which is exactly why it belongs in an announcement rather
+       than at the top of a form. */
+    line: 'Lawyers can apply — it is open to any discipline at a 2:2 or better, and an LL.B counts. A six-month graduate traineeship at the investment holding company, pairing Heirs Academy training with live work across the group. Strict bars: NYSC completed WITH the discharge or exemption certificate in hand, no more than two years post-NYSC experience, and 27 or younger at the time of applying. Apply through the link on their posting. Closes 4 September.',
+    short: 'a six-month graduate traineeship at Heirs Holdings, open to lawyers',
     blurb:
-      'Jackson, Etti & Edu are taking applications for their 2026 graduate programme in Lagos, open to lawyers within two years of call. It closes on 28 August.',
+      'Heirs Holdings are taking applications for their 2026 graduate trainee programme, six months of Heirs Academy training alongside live work across the group. It is open to any discipline at a 2:2 or better, so lawyers can apply. You need your NYSC discharge or exemption certificate in hand, no more than two years post-NYSC experience, and to be 27 or younger. It closes on 4 September.',
+  },
+  {
+    slug: 'principle-legal-consult-junior-associate',
+    employer: 'Principle Legal Consult',
+    /* Identical. employerShort exists to drop a parenthetical network name and
+       this firm has none to drop. */
+    employerShort: 'Principle Legal Consult',
+    title: 'Junior Associate',
+    /* ⚠ "PRINCIPLE", NOT "PRINCIPAL". It is the firm's own spelling of its own
+       name, it looks like a typo to every reader who meets it, and it will be
+       "corrected" by somebody eventually. It is right as written. */
+    /* The experience bar leads, because it is the fact that decides whether the
+       reader can apply at all. Rolling: the flier prints no closing date, and
+       inventing one to fill the field would be the worst kind of tidy. */
+    line: 'Abuja, full time, 2–3 years post-NYSC and preferably from an established firm. Litigation-facing: attending court independently, tracking cases, drafting opinions and agreements, with exposure to matters across Abuja and London. Apply by email to hr@principlelegalconsult.com. No closing date given, so it is open until they fill it.',
+    short: 'an Abuja junior associate seat at 2–3 years post-NYSC',
+    blurb:
+      'Principle Legal Consult are taking a junior associate in Abuja, at 2–3 years post-NYSC, on a litigation-facing seat with work across Abuja and London. No closing date was published.',
+  },
+  {
+    slug: 'uandp-law-multiple-practice-areas',
+    /* The full registered name with the trading name after it, because that is
+       how the firm signs the post and how a reader will recognise it. "U&P Law"
+       alone names nobody outside the firm. */
+    employer: 'Uduakabasi & Partners (U&P Law)',
+    /* Here the parenthetical IS the recognisable half, so the short form keeps
+       it and drops the registered name rather than the other way round. A
+       subject line reading "2 new roles: Principle Legal Consult and Uduakabasi
+       & Partners" is 68 characters before the parenthetical. */
+    employerShort: 'U&P Law',
+    title: 'Legal Professionals — Multiple Practice Areas',
+    /* ⚠ THE THREE QUESTIONS ARE IN THE LINE, and they are the only reason this
+       entry is longer than its sibling. This is an open call with no named
+       vacancy, so "what is the job" cannot be answered; what a reader can act on
+       instead is exactly what the email has to contain and how to title it.
+       An applicant who sends a bare CV to this address has wasted the send. */
+    line: 'Nigeria, full time, across corporate governance, commercial transactions, regulatory compliance, energy, technology, investment and business structuring. An open call rather than one named seat. Send a CV and a cover letter to UandPlawfirm@gmail.com saying why you want to join, what you would contribute, and where you see your career in 3–5 years, with the subject “Job Application – [Position/Area of Interest] – [Your Name]”. No closing date given.',
+    short: 'an open call across U&P Law’s practice areas, Nigeria-wide',
+    blurb:
+      'Uduakabasi & Partners (U&P Law) are hiring across multiple practice areas, from corporate governance and commercial transactions to energy and technology. It is an open call rather than one seat, and there is no published closing date.',
   },
 ] as const
 
@@ -72,9 +120,9 @@ export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
    *  somebody who read the 10 August note has not seen this one. */
-  id: 'roles-2026-08-21',
+  id: 'roles-2026-08-24',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-08-21T09:00:00.000Z',
+  at: '2026-08-24T09:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   employers: ROLE_ENTRIES.map(r => r.employer),
   /** The same firms without the parenthetical network names. Read by the bell. */
