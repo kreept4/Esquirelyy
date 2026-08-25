@@ -111,8 +111,17 @@ export default function InterviewPrepPage() {
         fd.append('targetRole', targetRole.trim())
         if (practiceArea) fd.append('practiceArea', practiceArea)
       } else if (cvFile) {
-        fd.append('cv', cvFile)
-        fd.append('targetRole', ' ')
+        /* The field is 'file', which is what the route reads and what the CV
+           tools already send. It was 'cv' here, so the upload never arrived:
+           the route saw no file, generated questions from an empty role, and
+           returned six generic ones that had nothing to do with the CV. It
+           never errored, which is why it looked like the model was at fault.
+
+           The blank-space targetRole went with it. It existed only to get past
+           the route's "a role or a CV" guard, which a single space passes
+           because a space is truthy. With the CV actually arriving there is
+           nothing left to smuggle past. */
+        fd.append('file', cvFile)
       }
       const res = await fetch('/api/interview-prep', { method: 'POST', body: fd })
       const data = await res.json()

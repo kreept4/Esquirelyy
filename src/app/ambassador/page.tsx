@@ -149,23 +149,30 @@ export default function AmbassadorPage() {
             being discovered three scrolls later. */}
         <header className="amb-masthead">
           <div className="shell amb-masthead-inner">
+            {/* ⚠ NOT AN IMPERATIVE, for the same reason the metadata title
+                stopped being one on 24 August. "Run Esquirely where the
+                students are" is a command, and a command is a call to apply.
+                Applications are closed, so the heading names the subject and
+                lets the page describe it. */}
             <h1 className="display-black amb-title">
-              Run Esquirely<br />where the students are.
+              What a campus<br />ambassador does.
             </h1>
-            {/* The old lede explained our problem and left the reader to work
-                out their own part from it. It was true and it was an argument
-                about us. This one names the job, the cost and the return in
-                that order, so somebody can decide before they scroll. */}
-            {/* The old lede explained our problem and left the reader to work
-                out their own part from it. It was true and it was an argument
-                about us. This one names the job, the cost and the return in
-                that order, so somebody can decide before they scroll. */}
+            {/* The lede names the job, the cost and the return in that order,
+                so somebody can decide before they scroll.
+
+                ⚠ IT DESCRIBES THE ROLE, IT DOES NOT OFFER IT. The previous
+                version opened "If you would like to represent us on your
+                campus", which is an invitation, on a page whose closing card
+                says applications are closed. A reader was pitched for four
+                sections and then told they could not apply. Same facts, stated
+                rather than sold, so the notice at the foot lands as the end of
+                a description instead of a door shut in their face. */}
             <p className="grotesk-regular amb-lede">
-              One person carries this to a faculty. If you would like to represent us on your
-              campus, that is an hour a term in front of your year, the openings worth passing on,
-              and a straight answer when we get something wrong. You get an invite link that is
-              yours, a signed reference at the end of it, and a partnership if what you build
-              deserves one.
+              One student carries Esquirely to a faculty. The work is an hour a term in front of
+              your year, plus the openings worth forwarding into the group chats you are already
+              in. It comes with an invite link of your own and a signed reference at the end. If
+              what you build on your campus outgrows that, there is a partnership on the other
+              side of it.
             </p>
 
             <dl className="amb-terms">

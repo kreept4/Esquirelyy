@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { requireUser } from '@/lib/api-auth'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { aiToolsDisabled, AI_DISABLED_MESSAGE } from '@/lib/ai'
 
 /**
  * The per-user daily quota on the AI routes.
@@ -72,11 +73,47 @@ const ROUTE_NAMES: Record<AiRoute, string> = {
  * database function and a transaction — is a lot of machinery to buy an
  * off-by-one on a budget guard.
  */
+/**
+ * Accounts the daily limit does not apply to.
+ *
+ * ⚠ THIS IS AN EXEMPTION FROM A SPENDING CONTROL, so it is deliberately not a
+ * column on the user row that anything in the app can set. It is read from the
+ * environment, which means adding somebody to it is a deploy, not a click, and
+ * a compromised session cannot grant it to itself.
+ *
+ * Comma-separated, matched on the email, case-insensitively — an address is
+ * what a person actually knows about their own account, and the id is not.
+ *
+ * ⚠ SET IT IN VERCEL TOO, NOT ONLY IN .env.local. The local file governs the
+ * dev server and nothing else, so an exemption that exists only there will look
+ * like it works right up until it is tried on the live site.
+ */
+const EXEMPT_EMAILS = new Set(
+  (process.env.AI_QUOTA_EXEMPT_EMAILS || '')
+    .split(',')
+    .map(e => e.trim().toLowerCase())
+    .filter(Boolean)
+)
+
 export async function requireUserWithQuota(
   route: AiRoute
 ): Promise<{ user: { id: string; email?: string }; error: null } | { user: null; error: NextResponse }> {
   const auth = await requireUser()
   if (auth.error) return auth
+
+  /* The off switch is checked here, before the ledger is written, so a tool
+     switched off mid-incident does not quietly spend people's daily allowance
+     on requests it was never going to answer. */
+  if (aiToolsDisabled()) {
+    return { user: null, error: NextResponse.json({ error: AI_DISABLED_MESSAGE }, { status: 503 }) }
+  }
+
+  /* Exempt accounts skip the ledger entirely rather than being counted and
+     waved through. Counting them would leave the usage table implying a spend
+     pattern for a user the limit never applied to. */
+  if (auth.user.email && EXEMPT_EMAILS.has(auth.user.email.toLowerCase())) {
+    return { user: auth.user, error: null }
+  }
 
   const limit = AI_LIMITS[route]
   const db = createAdminClient()
