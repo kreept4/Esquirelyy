@@ -252,31 +252,69 @@ for (const u of recipients) {
   const name = byId.get(u.id)?.full_name || ''
   const { subject, text, html } = closingSoonEmail({ name, siteUrl: SITE_URL, items: CLOSING_ITEMS, daysAhead: WINDOW_DAYS })
 
-  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: {
-      'api-key': process.env.BREVO_API_KEY,
-      'content-type': 'application/json',
-      accept: 'application/json',
-    },
-    body: JSON.stringify({
-      sender: {
-        email: process.env.BREVO_SENDER_EMAIL,
-        name: process.env.BREVO_SENDER_NAME || 'Esquirely',
-      },
-      to: [{ email: u.email, name: name || undefined }],
-      subject,
-      htmlContent: html,
-      textContent: text,
-    }),
-  })
+  /* ⚠ THE SEND IS WRAPPED, AND IT WAS NOT, AND THAT COST A WHOLE BROADCAST.
+     On 27 August 2026 the first request to api.brevo.com hit a ten second
+     connect timeout. fetch rejects on a network failure rather than returning a
+     response, there was no catch, and the rejection reached the top level and
+     killed the process on recipient one of eighty eight. None of them were
+     written to, the `failed` list below never printed, and the only way to
+     learn any of that was to go and ask Brevo what it had actually accepted.
 
-  if (res.ok) {
+     A transient network error is the most ordinary thing that can happen in the
+     middle of a loop that makes eighty eight sequential HTTP calls, and it must
+     cost one recipient rather than all of them. Three attempts with a widening
+     pause, then the address goes on the failed list and the run continues.
+
+     ⚠ RETRY ONLY ON A THROWN ERROR OR A 5xx, NEVER ON A 4xx. A rejected
+     recipient, a malformed address or a rejected key will fail identically
+     three times, and retrying a 429 without honouring its window makes the rate
+     limit worse. Those go straight to `failed`, which is the list a human then
+     reruns deliberately with --only. */
+  let res = null
+  let lastErr = null
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': process.env.BREVO_API_KEY,
+          'content-type': 'application/json',
+          accept: 'application/json',
+        },
+        body: JSON.stringify({
+          sender: {
+            email: process.env.BREVO_SENDER_EMAIL,
+            name: process.env.BREVO_SENDER_NAME || 'Esquirely',
+          },
+          to: [{ email: u.email, name: name || undefined }],
+          subject,
+          htmlContent: html,
+          textContent: text,
+        }),
+        signal: AbortSignal.timeout(30000),
+      })
+      lastErr = null
+      if (res.status < 500) break
+      lastErr = new Error(`HTTP ${res.status}`)
+    } catch (err) {
+      res = null
+      lastErr = err
+    }
+    if (attempt < 3) {
+      console.log(`  retry ${attempt} ${u.email}  ${lastErr?.message ?? ''}`)
+      await new Promise(r => setTimeout(r, attempt * 2000))
+    }
+  }
+
+  if (res && res.ok) {
     sent++
     console.log(`  sent  ${u.email}`)
-  } else {
+  } else if (res) {
     failed.push(u.email)
     console.log(`  FAILED ${u.email}  ${res.status} ${await res.text()}`)
+  } else {
+    failed.push(u.email)
+    console.log(`  FAILED ${u.email}  ${lastErr?.message ?? 'network error'}`)
   }
 
   // Gentle on the API, and it keeps a mistake slow enough to interrupt.
