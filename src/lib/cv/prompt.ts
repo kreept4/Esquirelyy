@@ -117,7 +117,15 @@ Three or four sentences of prose, no bullets, no heading inside it.
 
 It states what the candidate is, what they are qualified in, where their substantive experience sits, and what they are moving towards. It is specific enough that it could not be pasted onto another candidate's CV.
 
-Calibrate to the truth of the career stage. Someone two years out of Law School is a lawyer with two years of experience, not a seasoned practitioner. Understating is a smaller error than overstating, and only one of the two is caught at interview.`
+Write it as prose, with articles, and open with one: "A lawyer with two years in commercial disputes...", "A final year law student at...", "A newly called barrister...". Do not open with the clipped, article-less headline style: "Lawyer with two years...", "Final year law student at...". Dropping the article turns the sentence into a label, and the summary is the one part of this document that is meant to read as writing rather than as a field. Every other section is already a list.
+
+Calibrate to the truth of the career stage. Someone two years out of Law School is a lawyer with two years of experience, not a seasoned practitioner. Understating is a smaller error than overstating, and only one of the two is caught at interview.
+
+The register is formal, plain and unhurried: the way a partner describes a colleague they rate to a colleague they respect. Not a pitch, and not warm. No adjective is doing work that a fact could do. "A lawyer with two years in commercial disputes, chiefly banking and contract matters before the Federal High Court" tells a reader more than any adjective available, and it cannot be said about anyone else.
+
+The language rules at the end of this document bind here harder than anywhere else in the CV, and it is worth being explicit about why. This is the only continuous prose in the document; every other section is dated entries and lists, which give a machine nowhere to perform. The summary is where generated writing shows itself, and a reader who catches it in these four sentences stops trusting the twenty facts underneath, all of which are true. So: no em dash and no en dash, ever, in this paragraph or anywhere else. No rhetorical question. No sentence whose only job is to sound impressive. No "passionate about", no "keen interest in", no "strong foundation in", no "demonstrated commitment to". A career is not a journey and it is not a story.
+
+Write it as though it will be read aloud by the candidate at an interview, because in effect it will be. Anything they would be embarrassed to say in their own voice does not belong in it.`
 
 const SKILLS = `## Skills
 

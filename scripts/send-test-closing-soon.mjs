@@ -95,7 +95,38 @@ rmSync(oppBundle, { force: true })
  * one-off rather than a weekly digest, so nothing is promising otherwise.
  */
 const WINDOW_DAYS = 7
-const daysTo = d => Math.ceil((new Date(d).getTime() - Date.now()) / 86_400_000)
+
+/* ⚠ THE SAME CALENDAR ARITHMETIC THE SITE USES, BUNDLED FROM lib/day.ts RATHER
+   THAN REWRITTEN HERE.
+
+   This line used to be its own one-liner:
+
+       Math.ceil((new Date(d).getTime() - Date.now()) / 86_400_000)
+
+   which is the exact expression lib/day.ts was written to delete, still living
+   here because these scripts are .mjs and could not import the TypeScript. It
+   subtracts two INSTANTS in UTC. A deadline column holds a plain date, read as
+   midnight UTC, and the reader is in Lagos at UTC+1, so between 23:00 and
+   midnight UTC every count it produced was a day too high.
+
+   On an email that is worse than it is on the page. The page recomputes itself
+   the next time somebody loads it; a send is final. An email that went out in
+   that hour would tell a member a deadline was two days away when the site,
+   read a minute later, said one, and the whole reason closingSoon() is shared
+   between the two surfaces is so they cannot disagree.
+
+   So the rule is bundled the way the template and the board row already are.
+   Three esbuild steps rather than two, and no second implementation of the one
+   piece of arithmetic in this codebase that has already been got wrong once. */
+const dayBundle = join(tmpdir(), `esq-day-${process.pid}.mjs`)
+execSync(
+  `npx --yes esbuild "src/lib/day.ts" --bundle --platform=node --format=esm --log-level=error "--outfile=${dayBundle}"`,
+  { stdio: 'inherit' }
+)
+const { daysUntilDay } = await import(pathToFileURL(dayBundle).href)
+rmSync(dayBundle, { force: true })
+
+const daysTo = d => daysUntilDay(d)
 
 /* The registered name, from the same column the broadcast reads. Paged the same
    way too, because listUsers caps at 1000 and a lookup that quietly missed the

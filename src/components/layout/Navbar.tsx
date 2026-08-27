@@ -103,16 +103,33 @@ export default function Navbar() {
   // off-screen, so any route change resets it.
   useEffect(() => { setHidden(false) }, [pathname])
 
-  // The wordmark and toggle sit over the top of whatever the page opens with, so
-  // their colour has to follow that. Cream on a light page is invisible, which
-  // once left inner pages with no way back to the home page; ink on a dark one
-  // is the same fault in reverse.
-  //
-  // The home page is the only thing left that opens on a dark ground. Every
-  // inner header is now a cream band carrying an amber panel, so the list of
-  // "dark header" routes this used to keep — /jobs, /privacy, /terms — was
-  // painting the wordmark and the toggle cream on cream and making both vanish.
-  // With one dark surface left there is no list to maintain.
+  /* The wordmark and toggle sit over the top of whatever the page opens with, so
+     their colour follows that. Cream on a light page is invisible, which once
+     left inner pages with no way back to the home page; ink on a dark one is
+     the same fault in reverse.
+
+     The home page is the only thing left that opens on a dark ground, so there
+     is no list of routes to maintain.
+
+     ⚠ A DARK BAND WAS TRIED HERE, ON 27 AUGUST 2026, SO THAT THE MARK COULD BE
+     CREAM ON EVERY PAGE. It was reverted the same day and should not be tried
+     again without reading this.
+
+     The idea was that one ink colour everywhere reads as one brand. It does
+     not survive contact with the page. The mark is #FAF6F0 and the inner pages
+     are #FAF7F2, so a band behind it has to supply the entire contrast: below
+     about 85% ink opacity white type on it fails legibility, and at 85% it is a
+     slab. There is no setting that is both light and readable, which is why
+     "just make it lighter" was not available. On top of that it stacked a dark
+     block directly above the amber masthead, which is the exact failure
+     globals.css records when inner mastheads were taken off ink ("the top of
+     each page a second black band under a black nav"), and being fixed it
+     covered the breadcrumb on firm profiles.
+
+     Inverting a wordmark to suit its ground is not an inconsistency; it is what
+     wordmarks do. What would make it two marks is a change of size, weight,
+     letterspacing or face, and there is none: the span below is the single
+     definition of the mark and `color` is the only thing that varies. */
   const overDark = pathname === '/'
   const restColor = overDark ? '#FAF6F0' : '#1A1A1A'
 
@@ -185,7 +202,7 @@ export default function Navbar() {
           markers should encode a real sequence, and a nav list is not one.
           LBVIP's application steps keep theirs precisely because they are. */}
       <StaggeredMenu
-        className={hidden ? 'nav-hidden' : undefined}
+        className={[hidden ? 'nav-hidden' : '', overDark ? 'nav-over-dark' : ''].filter(Boolean).join(' ') || undefined}
         position="right"
         isFixed
         onMenuOpen={() => setMenuOpen(true)}
@@ -210,9 +227,33 @@ export default function Navbar() {
       />
 
       <style>{`
+        /* ⚠ THE HEADER SCRIM DARKENS, AND ONLY THE HOME PAGE STILL WANTS THAT.
+
+           StaggeredMenu.css puts blur(12px) brightness(0.55) behind the header,
+           and its comment says why: the wordmark and toggle are cream, so the
+           backdrop is dimmed to keep cream legible over pale sections. That was
+           true when the mark was cream on every page. It is not true now. On the
+           inner pages the mark is ink, and dimming the cream behind dark type
+           lowers its contrast rather than raising it: the scrim was working
+           against the thing it exists to help, everywhere except home.
+
+           Blur alone on the light routes. Blur is what separates the header from
+           whatever scrolls under it, and unlike brightness it takes no position
+           on tone, so it helps ink and cream equally. The dimming is kept where
+           the mark is still cream. */
+        .staggered-menu-header::before {
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+        }
+        .staggered-menu-wrapper.nav-over-dark .staggered-menu-header::before {
+          backdrop-filter: blur(12px) brightness(0.55);
+          -webkit-backdrop-filter: blur(12px) brightness(0.55);
+        }
+
         /* Brand overrides for the vendored ReactBits panel. */
         .sm-wordmark { transition: color 0.3s ease; }
         .staggered-menu-wrapper[data-open] .sm-wordmark { color: #1A1A1A !important; }
+
         .staggered-menu-header { padding: 1.5rem 1.75rem; }
         .staggered-menu-panel {
           background: #FAF6F0;

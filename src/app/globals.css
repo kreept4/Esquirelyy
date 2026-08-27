@@ -15,6 +15,15 @@
   --cream-dark: #F0EBE3;
   --cream-border: #E8E0D5;
 
+  /* ⚠ PINNED LIGHT, and it is about the controls rather than the palette.
+     Native UI the page does not draw, and cannot style, follows this: the open
+     select popup, the scrollbars, the date and file pickers. Left unset it
+     follows the reader's OS, so anyone on a dark system got a dark popup with
+     this file's near-black option text sitting on it. Every ground on this site
+     is cream or amber; there is no dark reading of it for the browser to match,
+     so saying so is simply accurate. */
+  color-scheme: light;
+
   --ink: #1A1A1A;
   --ink-light: #2C2C2C;
   --ink-muted: #4A4A4A;
@@ -380,11 +389,33 @@ select.filter-pill {
 }
 
 /* Set when a filter holds a value, so an active control is legible at a glance
-   instead of being inferred from a ternary buried in a style prop. */
+   instead of being inferred from a ternary buried in a style prop.
+
+   ⚠ background-color, NOT THE `background` SHORTHAND, and this rule is where
+   that lesson was learned the hard way. The shorthand does not merely set the
+   colour: it resets every other background property to its initial value,
+   background-repeat to `repeat` and background-position to `0% 0%` among them.
+   select.filter-pill above paints its chevron as a 10x7 image held to one
+   corner by exactly those two declarations. The shorthand threw both away, the
+   later rule put the IMAGE back without them, and a mark meant to sit once at
+   the right edge tiled across the whole pill: choosing any filter turned it
+   into a field of zigzags with the label invisible underneath. Reported as a
+   contour over the words, which is a fair description of what it looked like.
+
+   The `.page-header-ink .field` rule further down already carries this warning
+   in its own comment. It was never applied here, which is why the two grounds
+   behaved differently for the same reason. */
 .filter-pill[data-active='true'] {
   color: var(--on-mint);
-  background: var(--mint);
+  background-color: var(--mint);
   border-color: var(--mint);
+}
+/* Restated rather than relied upon. These are the two declarations the bug
+   above turned out to hinge on, and they are cheap; anything that reaches for
+   the shorthand again on an active pill is corrected here instead of shipping. */
+select.filter-pill[data-active='true'] {
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
 }
 
 /* Shared controls, redrawn for an ink header.
@@ -416,9 +447,22 @@ select.filter-pill {
   color: var(--on-amber);
   border-color: var(--on-amber);
 }
-.page-header-ink .filter-pill option {
+/* The open dropdown is drawn by the browser, and it takes its ground from the
+   <select> rather than from this list. Every select here carries a chevron in
+   its background-image, so the options say what they want explicitly and
+   switch the inherited image off.
+
+   This is hardening, not the fix for the tiling bug above: that one was in the
+   closed control and is solved at .filter-pill[data-active='true']. This rule
+   is here because the same inherited-background route exists into the popup,
+   nothing on the page can style a popup once it is open, and the cost of
+   saying so is three lines. */
+.page-header-ink .filter-pill option,
+select.filter-pill option,
+.jobs-select option {
   color: var(--ink);
-  background: var(--cream);
+  background-color: var(--cream);
+  background-image: none;
 }
 .page-header-ink .filter-pill[data-active='true'] {
   color: var(--on-mint);
@@ -999,6 +1043,25 @@ select.filter-pill {
 /* Cream, matching .page-main. This was #FDFCFA, three points off the cream
    every other page uses, which is the kind of difference nobody can name but
    everybody notices when two tabs are open side by side. */
+/* ⚠ THE LAST LINE OF DEFENCE ON THE HERO'S PLAY BUTTON, after the muted
+   attribute and the play() call in HeroSection.
+
+   iOS paints its own start-playback button over any video it has decided not to
+   autoplay, and it is drawn by the UA, not by the page, so nothing in the
+   markup removes it. This pseudo-element is the documented handle on it. It
+   only ever hides a control on a video that carries no `controls` attribute in
+   the first place, so nothing the reader could have used is being taken away.
+
+   This does NOT make the video play. Where iOS refuses outright, in Low Power
+   Mode, the poster stays up and this stops the refusal being announced with a
+   grey circle in the middle of the hero. */
+video:not([controls])::-webkit-media-controls,
+video:not([controls])::-webkit-media-controls-start-playback-button,
+video:not([controls])::-webkit-media-controls-panel {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
 .jobs-page {
   background: var(--cream);
   min-height: 100vh;
@@ -4508,6 +4571,26 @@ select.filter-pill {
   .job-cell { display: inline; font-size: inherit; }
   /* Run the three meta values together as one line rather than three orphans. */
   .job-cell + .job-cell::before { content: ' · '; }
+
+  /* ⚠ THE DEADLINE TAKES ITS OWN LINE ON PURPOSE NOW, because it was taking one
+     by accident and it showed.
+
+     The countdown inside it is `white-space: nowrap` (see .job-days-left, and
+     the note there explains why it has to be: the stopwatch and the words are
+     one label and must not split). At phone width there is never room for
+     "Nigeria · Full-time · 4 Sept" AND "8 days left" on one line, so the
+     countdown broke away as a unit and landed underneath — still carrying the
+     0.5rem margin that was meant to separate it from a date now sitting on the
+     line above. An indented fragment hanging under the row, which is what was
+     reported: the deadline looked dropped rather than placed.
+
+     So the date and its countdown are moved together, deliberately, onto a
+     second line. They are one fact and they now read as one. The separator dot
+     is dropped with them, since a leading "· " at the start of a line is a
+     join to something no longer beside it. */
+  .job-meta .job-deadline { display: block; margin-top: 0.15rem; }
+  .job-meta .job-cell.job-deadline::before { content: none; }
+  .job-meta .job-days-left { margin-left: 0.35rem; }
 }
 
 /* ---- Single role ---------------------------------------------------------
@@ -4728,11 +4811,30 @@ select.filter-pill {
 /* Secondary link inside the carton. The hairline sits on the card's own warm
    ink rather than on the page's cream border, which is invisible against
    #FFF8E5. */
+/* ⚠ ONE PER LINE, AND `width: fit-content` IS WHY IT CAN BE.
+
+   These were inline-flex, which was fine while the website link was the only
+   one here. The moment LinkedIn joined it the two sat on the same line with
+   nothing between them, because JSX drops the whitespace between sibling
+   elements: the card read "Visit websitein LinkedIn", one run-on string with
+   the LinkedIn glyph buried in the middle of it. The second link was on the
+   page and effectively unfindable.
+
+   `display: flex` on its own would fix the line break and break the underline
+   instead: a block-level box fills its parent, so the border-bottom would rule
+   the whole width of the card rather than sitting under the words. fit-content
+   keeps the box the width of its own text, so the underline stays a link and
+   the list stays a list. */
 .apply-card-link {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
   align-items: center;
   gap: 0.4rem;
-  margin-top: 1.1rem;
+  /* Was 1.1rem, when this margin was separating one link from the paragraph
+     above it. It now also sets the leading between the links themselves, and
+     1.1rem between two lines of the same short list reads as two unrelated
+     items. The first link keeps the larger gap through the rule below. */
+  margin-top: 0.6rem;
   font-family: var(--font-sans);
   font-size: 0.79rem;
   color: var(--ink-muted);
@@ -4741,6 +4843,9 @@ select.filter-pill {
   padding-bottom: 1px;
   transition: color 0.18s ease, border-color 0.18s ease;
 }
+/* The first link in the group keeps its distance from the prose above it; the
+   ones after it sit close, as a list. */
+.apply-card-link:first-of-type { margin-top: 1.1rem; }
 .apply-card-link:hover {
   color: var(--ink);
   border-color: var(--ink);
@@ -6655,9 +6760,17 @@ video::-webkit-media-controls { display: none !important; }
 @media (max-width: 640px) {
   /* The band. `.page-header` sets its padding inline, so it needs the
      override to be marked; the other two do not. */
+  /* ⚠ 1.15rem A SIDE, NOT 1rem, AND THE 0.15 IS THE POINT. The band is not
+     empty margin: it carries the contour, and the contour is the frame the
+     amber panel sits inside. At 1rem the cream showing either side was thinner
+     than one wave of the texture, so on a phone the frame stopped reading as a
+     frame and the panel looked jammed against the screen edge instead of placed
+     on the page. Reported as the header having no borderline space on mobile
+     where the desktop has it. Costs nothing vertically, which is what this
+     block is actually rationing. */
   .jobs-header,
-  .doc-masthead { padding: 1.5rem 1rem 1.75rem; }
-  .page-header { padding: 1.5rem 1rem 1.75rem !important; }
+  .doc-masthead { padding: 1.5rem 1.15rem 1.75rem; }
+  .page-header { padding: 1.5rem 1.15rem 1.75rem !important; }
   /* Clears the fixed nav. 6.5rem was set when this band had no panel inside
      it and is most of a phone screen's worth of empty contour. */
   .jobs-header { padding-top: 4.25rem; }
@@ -6666,7 +6779,19 @@ video::-webkit-media-controls { display: none !important; }
   .jobs-header > .shell,
   .doc-masthead-inner,
   .amb-masthead-inner { padding: 1.35rem 1.1rem 1.2rem; }
-  .page-header-panel { padding: 0; }
+  /* ⚠ THIS WAS `padding: 0` AND THAT WENT TOO FAR. Stripping the panel's
+     inside was the cheapest height in this whole block, and it bought that
+     height by putting the heading, the lede and the filters hard against a 3px
+     border. The panel stopped being a panel with something in it and became a
+     coloured box with text touching its edges: the "stifled" mastheads.
+
+     A small inset is not decoration here. It is what tells the reader the
+     border belongs to the block rather than to the first line of type. The two
+     other mastheads in this block already keep theirs, at 1.35rem/1.1rem, and
+     this one is brought back in line with them a touch tighter. Roughly 40px of
+     height comes back, which is a price worth paying on a band that is meant to
+     introduce the page rather than survive being measured. */
+  .page-header-panel { padding: 1.2rem 1.05rem 1.1rem; }
 
   .jobs-title,
   .doc-title { margin-bottom: 0.75rem; }
@@ -7417,6 +7542,35 @@ video::-webkit-media-controls { display: none !important; }
    surfaces looked right and this one did not, from one duplicated declaration.
    Only the things genuinely particular to a board row belong here. */
 .job-days-left { margin-left: 0.5rem; }
+/* Inside the urgent window the countdown replaces the date rather than
+   following it, so it becomes the only thing in the cell and the gap meant to
+   separate it from a date is left indenting it away from nothing. */
+.job-deadline .job-days-left:first-child { margin-left: 0; }
+
+/* ⚠ THE STOPWATCH HANGS OUTSIDE THE COLUMN ON DESKTOP, and it has to.
+   Aligning the boxes is not the same as aligning the words. Every value in the
+   Closes column starts at the column's left edge, but an urgent row starts with
+   a 16px icon, so its WORDS began 21px further right than "Rolling" and "4 Sept"
+   directly above and below them. Down a board of twelve rows that reads as the
+   red ones being indented, which is what was reported.
+   Taking the mark out of flow puts the text back on the column edge, level with
+   every other value and with the "Closes" header, which is a plain span and
+   would not have followed a padded column. The mark then sits in the gutter: the
+   Type column's box ends 20px to the left, so a 16px icon and a hair of margin
+   clear it without touching.
+   Desktop only. Below 900px the deadline takes its own line at the card's left
+   margin, where there is no column to align to and nothing to the left to hang
+   into: the icon would simply leave the card. */
+@media (min-width: 901px) {
+  .job-deadline .job-days-left:first-child { position: relative; }
+  .job-deadline .job-days-left:first-child .urgency-mark {
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 0.18rem;
+  }
+}
 
 
 /* Initials tile, for a closing-soon card whose employer has no mark anywhere.

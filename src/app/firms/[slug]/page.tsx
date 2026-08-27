@@ -125,6 +125,8 @@ const MapPinIcon = () => (
     />
   </svg>
 )
+const LinkedInIcon = () => (<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C21.6 8.75 23 10.9 23 14.1V21h-4v-6.1c0-1.5-.03-3.4-2.1-3.4-2.1 0-2.4 1.6-2.4 3.3V21h-4V9Z"/></svg>)
+
 const GlobeIcon = () => (<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>)
 const MailIcon = () => (<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>)
 const ArrowLeftIcon = () => (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7M19 12H5"/></svg>)
@@ -162,7 +164,12 @@ function firmSchema(firm: Firm, locked: boolean) {
     name: firm.name,
     url: `${SITE_URL}/firms/${firm.slug}`,
     description: firm.description,
-    ...(firm.website ? { sameAs: [firm.website] } : {}),
+    /* sameAs is the schema.org field for "another page about this same
+       organisation", which is exactly what a LinkedIn company page is, so both
+       go in the one array rather than the website going in alone. */
+    ...(firm.website || firm.linkedin
+      ? { sameAs: [firm.website, firm.linkedin].filter(Boolean) }
+      : {}),
     ...(firm.foundedYear ? { foundingDate: String(firm.foundedYear) } : {}),
     areaServed: { '@type': 'Country', name: 'Nigeria' },
     knowsAbout: firm.practiceAreas,
@@ -237,7 +244,15 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
       {/* No min-height. It was 100vh, which on a firm with one office and no
           open roles left a full screen of empty cream between the last line of
           content and the footer. The page is as long as it has things to say. */}
-      <main style={{ backgroundColor: '#FAF6F0', paddingTop: '64px' }}>
+      {/* ⚠ 5rem, MATCHING .page-main, AND NOT THE 64px IT WAS. The fixed header
+          is about 76px tall, so 64px of clearance left the breadcrumb tucked
+          under it. That was invisible while the header was transparent and
+          became a bug the moment it was given a ground: "Firms directory", the
+          only way back to the list from here, was sitting behind the nav.
+
+          Every other inner page clears the header through .page-main's 5rem.
+          This one set its own number inline and drifted. */}
+      <main style={{ backgroundColor: '#FAF6F0', paddingTop: '5rem' }}>
 
         {/* Breadcrumb */}
         <div className="firm-profile-crumb">
@@ -454,6 +469,23 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
               {firm.website && (
                 <a href={firm.website} target="_blank" rel="noopener noreferrer" className="apply-card-link">
                   <GlobeIcon /> Visit website
+                </a>
+              )}
+
+              {/* ⚠ CONTACT DETAIL, NOT AN APPLICATION ROUTE, and the label says
+                  so. This sits with the website and the email because it is the
+                  same kind of fact: another address at which the firm can be
+                  found. It is deliberately not "Apply on LinkedIn" and not
+                  styled as an action. Almost none of these firms recruit
+                  through LinkedIn, the apply route is the email above, and a
+                  link that implied otherwise would send students somewhere the
+                  firm is not reading.
+
+                  Outside the gate for the same reason the website is: the firm
+                  published it themselves. */}
+              {firm.linkedin && (
+                <a href={firm.linkedin} target="_blank" rel="noopener noreferrer" className="apply-card-link">
+                  <LinkedInIcon /> LinkedIn
                 </a>
               )}
             </div>

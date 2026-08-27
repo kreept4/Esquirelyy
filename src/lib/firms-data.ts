@@ -207,7 +207,44 @@ export interface Firm {
   alsoKnownAs?: string
   tier: FirmTier
   email: string
-  website: string
+  /**
+   * The firm's own site.
+   *
+   * OPTIONAL, AND IT WAS REQUIRED UNTIL A FIRM HAD NONE THAT WORKED. Ninewells
+   * owns ninewellslegal.com and it serves an error stub, so the field could be
+   * filled and still send a student nowhere. A link that resolves to nothing is
+   * worse than an absent one: the reader spends the click and concludes the firm
+   * is defunct.
+   *
+   * Absent means "no working site we can point at", not "no site". Where that is
+   * the case, `linkedin` below is usually the firm's only live public page and
+   * carries the profile on its own.
+   */
+  website?: string
+  /**
+   * The firm's LinkedIn page.
+   *
+   * ⚠ HARVESTED FROM EACH FIRM'S OWN SITE, NEVER FROM SEARCHING LINKEDIN, and
+   * the constraint is not laziness. LinkedIn answers anonymous requests with a
+   * redirect to its login page, so nothing here can be machine checked, and a
+   * Nigerian firm's name is not unique on that platform: there is more than one
+   * page called "Alliance Law Firm" and only one of them is this one. A guessed
+   * URL renders as a link, and a reader who follows it to the wrong firm has
+   * been misled by us rather than merely unhelped.
+   *
+   * A link the firm publishes in its own footer has neither problem: the firm
+   * says it is theirs, which makes it both right and attributable.
+   * scripts/harvest-firm-linkedin.mjs does the reading, and the ampersand note
+   * in it explains why half of these carry a %26.
+   *
+   * A handful are numeric company ids rather than vanity slugs, because that is
+   * the form the firm's own follow widget publishes. They are equivalent:
+   * LinkedIn resolves the id to the page for a signed-in reader.
+   *
+   * Absent means nobody found one on the firm's site, NOT that the firm has no
+   * LinkedIn. Same rule as the rankings table. Do not fill a gap with a guess.
+   */
+  linkedin?: string
   offices: FirmOffice[]
   practiceAreas: string[]
   description: string
@@ -372,6 +409,29 @@ const LOCAL_ONLY_LOGO = new Set([
   'enr-advisory',
   'mj-numa',
   'aekley',
+  // Fifth batch, 2026-08-27, the seven that took the directory to seventy five.
+  // Five came down clean. Two needed repair, and they are opposite failures:
+  // J-K Gadzama publish only the reversed mark for their dark header, so it is
+  // inverted the way fra-law and matrix-solicitors are, while F.O. Akinrele
+  // publish white lettering baked onto a flat brown plate that neither keying
+  // nor inverting could fix. The brown is named and the lettering lifted off it
+  // as a matte, then redrawn in ink; see scripts/lib/key-plate.mjs.
+  //
+  // O. A. Omonuwa is the footer file rather than the header one, for the same
+  // reason sofunde-osakwe is not the "_1i" file: the header pair is reversed.
+  // Its host also needed an address supplied by hand, which is a DNS fault
+  // rather than a dead site. Both notes are on the entry in the fetch script.
+  //
+  // chukwunyere-chambers reads pale at lum 124 and is deliberately kept. It is
+  // a gold mark with a dark outline, not reversed artwork, and the outline is
+  // what carries it on cream. Same call as chris-ogunbanjo.
+  'fo-akinrele',
+  'jk-gadzama',
+  'dikko-mahmoud',
+  'ninewells',
+  'oa-omonuwa',
+  'chukwunyere-chambers',
+  'akaraiwe',
   // abe-asotie: re-sourced 2026-08-08 from the firm's own site, replacing the
   // opaque crop taken off a hiring flier when abeandasotie.com was unreachable.
   // The download is already RGBA, and it is trimmed to its content box rather
@@ -431,6 +491,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@ukpongomotoso.com',
     website: 'https://www.ukpongomotoso.com',
+    linkedin: 'https://www.linkedin.com/company/clp-legal-ng',
     offices: [
       { city: 'Lagos', address: '62 Awolowo Road, Ikoyi, Lagos' },
       { city: 'Abuja', address: '6th Floor Right Wing, NICON Plaza, Plot 242, Muhammadu Buhari Way, Central Business District, Abuja' },
@@ -450,6 +511,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@alp.company',
     website: 'https://alp.company',
+    linkedin: 'https://www.linkedin.com/company/africa-law-practice-alp',
     offices: [
       { city: 'Lagos', address: '15 Military Street, Onikan, Lagos' },
       { city: 'Abuja', address: '3 Lobito Crescent, Wuse II, Abuja' },
@@ -470,6 +532,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'info@abeandasotie.com',
     website: 'https://abeandasotie.com',
+    linkedin: 'https://www.linkedin.com/company/abeandasotie',
     // Read off the firm's own contact block at abeandasotie.com. The earlier
     // 'Lagos' / 'Lagos' placeholder was written when the site was unreachable;
     // it is published, so it is recorded rather than left as the city twice.
@@ -504,6 +567,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Leading',
     email: 'recruit@acas-law.com',
     website: 'https://acas-law.com',
+    linkedin: 'https://www.linkedin.com/company/acas-law',
     /* Three offices, not one. The Abuja address was supplied by hand: the firm's
        own office-details page returns 403 to every automated request, and Legal
        500's contact listing shows only Lagos and Port Harcourt, so neither
@@ -526,6 +590,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Leading',
     email: 'info@aelex.com',
     website: 'https://aelex.com',
+    linkedin: 'https://www.linkedin.com/company/507546',
     offices: [
       { city: 'Lagos', address: '4th Floor, Marble House, 1 Kingsway Road, Falomo, Ikoyi, Lagos' },
       { city: 'Abuja', address: '4th Floor, Adamawa Plaza, Off Shehu Shagari Way, Central Business District, Abuja' },
@@ -545,6 +610,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@ainablankson.com',
     website: 'https://ainablankson.com',
+    linkedin: 'https://www.linkedin.com/company/103737330',
     offices: [
       { city: 'Lagos', address: '5/7 Ademola Street, Off Awolowo Road, South West Ikoyi, Lagos' },
       { city: 'London', address: '85 Great Portland Street, London W1W 7LT' },
@@ -562,6 +628,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'ao@ajumogobiaokeke.com',
     website: 'https://ajumogobiaokeke.com',
+    linkedin: 'https://www.linkedin.com/company/ajumogobia-%26-okeke',
     offices: [
       { city: 'Lagos', address: '2nd Floor, Sterling Towers, 20 Marina, Lagos' },
       { city: 'Abuja', address: '84 Kwame Nkrumah Crescent, Asokoro District, Abuja' },
@@ -579,6 +646,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Leading',
     email: 'careers@aluko-oyebode.com',
     website: 'https://aluko-oyebode.com',
+    linkedin: 'https://www.linkedin.com/company/aluko-%26-oyebode',
     offices: [
       { city: 'Lagos', address: '1 Murtala Muhammed Drive, Ikoyi, Lagos' },
       { city: 'Abuja', address: 'Plot 1384A Agulu Lake Street, Maitama, Abuja' },
@@ -597,6 +665,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Leading',
     email: 'hr@banwo-ighodalo.com',
     website: 'https://banwo-ighodalo.com',
+    linkedin: 'https://www.linkedin.com/company/banwo%26ighodalo',
     offices: [
       { city: 'Lagos', address: '48 Awolowo Road, South West Ikoyi, Lagos' },
       { city: 'Abuja', address: '14 Negro Crescent, Maitama, Abuja' },
@@ -615,6 +684,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'recruitment@blackfriars-law.com',
     website: 'https://blackfriars-law.com',
+    linkedin: 'https://www.linkedin.com/company/blackfriars-solicitors',
     offices: [{ city: 'Lagos', address: '28 McCarthy Street, Onikan, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Banking & Finance'],
     description: 'A boutique commercial law firm offering focused expertise in corporate transactions and dispute resolution.',
@@ -636,6 +706,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'employment@bloomfield-law.com',
     website: 'https://bloomfield-law.com',
+    linkedin: 'https://www.linkedin.com/company/bloomfield-solicitors',
     offices: [{ city: 'Lagos', address: '15 Agodogba Avenue, Parkview, Ikoyi, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Intellectual Property', 'Dispute Resolution'],
     description: 'A commercial law firm offering expertise across corporate transactions, banking, intellectual property, and dispute resolution.',
@@ -650,6 +721,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'info@dealhqpartner.com',
     website: 'https://dealhqpartner.com',
+    linkedin: 'https://www.linkedin.com/company/dealhq-partners',
     offices: [{ city: 'Lagos', address: '3B Dr. Omon Ebhomenye Street, Lekki Phase 1, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Capital Markets'],
     description: 'A transactions-focused boutique law firm specialising in corporate finance, capital markets, and commercial advisory.',
@@ -664,6 +736,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'nysc@detailsolicitors.com',
     website: 'https://detailsolicitors.com',
+    linkedin: 'https://www.linkedin.com/company/detail-commercial-solicitors',
     offices: [{ city: 'Lagos', address: 'DCS Place, 8 DCS Street, Off Remi Olowude Way, Lekki Phase 1, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Intellectual Property', 'Tax', 'Banking & Finance'],
     description: 'A specialist commercial firm with a formidable reputation in intellectual property, corporate advisory, and tax matters.',
@@ -691,6 +764,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'info@moroomafrica.com',
     website: 'https://moroomafrica.com',
+    linkedin: 'https://www.linkedin.com/company/famsville-solicitors',
     /* From the firm's own site on 2026-08-10. Note this is a different building
        from the Association Way address Famsville used. The firm now describes
        itself as distributed and says it does not rely on physical offices, so
@@ -712,6 +786,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Leading',
     email: 'info@gelias.com',
     website: 'https://gelias.com',
+    linkedin: 'https://www.linkedin.com/company/gelias',
     offices: [
       { city: 'Lagos', address: '6 Broad Street, Lagos Island, Lagos' },
       { city: 'Abuja', address: '30 Mediterranean Street, Maitama, Abuja' },
@@ -743,6 +818,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@geplaw.com',
     website: 'https://geplaw.com',
+    linkedin: 'https://www.linkedin.com/company/1541447',
     offices: [
       { city: 'Lagos', address: '1B Tiramiyu Belo-Osagie Street, Parkview Estate, Ikoyi, Lagos' },
       { city: 'Port Harcourt', address: '11 Finima Street, Old GRA, Port Harcourt' },
@@ -760,6 +836,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Leading',
     email: 'jee@jee.africa',
     website: 'https://jee.africa',
+    linkedin: 'https://www.linkedin.com/company/jackson-etti-and-edu',
     offices: [
       { city: 'Lagos', address: '3-5 Sinari Daranijo Street, Off Ajose Adeogun, Victoria Island, Lagos' },
       { city: 'Lagos', address: '1st Floor, Ereke House, Plot 15 CIPM Avenue, CBD Alausa, Ikeja, Lagos' },
@@ -779,6 +856,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'careers@kennapartners.com',
     website: 'https://kennapartners.com',
+    linkedin: 'https://www.linkedin.com/company/kennapartners',
     offices: [
       { city: 'Lagos', address: '8 Ogunyemi Road, Palace Way, Oniru, Lagos' },
       { city: 'Abuja', address: 'C3 Bensima House, 3rd Floor, Plot 2942, Cadastral Zone A6, Aguiyi Ironsi Street, Maitama, Abuja' },
@@ -808,6 +886,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@rajichambers.ng',
     website: 'https://rajichambers.ng',
+    linkedin: 'https://www.linkedin.com/company/raji-chambers',
     offices: [
       { city: 'Ibadan', address: '38 Ladoke Akintola Avenue, New Bodija, Ibadan, Oyo State' },
       { city: 'Abuja', address: '8 Benue Crescent, Area 1, Garki, Abuja' },
@@ -848,6 +927,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'mike@mikeigbokwe.com',
     website: 'https://mikeigbokwe.com',
+    linkedin: 'https://www.linkedin.com/company/mikeigbokwesan',
     offices: [
       { city: 'Lagos', address: '28A Mainland Way, Dolphin Estate, Ikoyi, Lagos' },
       { city: 'Abuja', address: 'A1 Nelson Mandela Street, Palma Royale Estate, Plot 304 Ameh Ebute Street, Wuye, Abuja' },
@@ -885,6 +965,7 @@ const FIRMS_UNSORTED: Firm[] = [
     /* Was 'https://olajide-oyewole.com', which does not resolve. The firm's site
        is a country section of the DLA Piper Africa domain. */
     website: 'https://www.dlapiperafrica.com/en/nigeria',
+    linkedin: 'https://www.linkedin.com/company/olajide-oyewole-llp',
     /* Both offices, read off the firm's own location pages rather than inferred.
        Lagos gained its postcode and Abuja was simply missing — the firm has had
        an Asokoro office throughout, and a directory whose whole value is that
@@ -915,6 +996,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Leading',
     email: 'recruitment@olaniwunajayi.net',
     website: 'https://olaniwunajayi.net',
+    linkedin: 'https://www.linkedin.com/company/olaniwun-ajayi-lp',
     offices: [
       { city: 'Lagos', address: 'The Adunola, Plot L2, 401 Close, Banana Island, Ikoyi, Lagos' },
       { city: 'Abuja', address: '4th Floor, Leadway House, Plot 1061, Cadastral Avenue, Central Business District, Abuja' },
@@ -934,6 +1016,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'info@pthlp.com',
     website: 'https://pthlp.com',
+    linkedin: 'https://www.linkedin.com/company/platinum-taylor-hill-lp',
     offices: [
       { city: 'Lagos', address: '7th Floor, Mulliner Towers, 39 Alfred Rewane Road, Ikoyi, Lagos' },
       { city: 'Abuja', address: '4th Floor, Church Gate Plaza, Plot 473 Constitution Avenue, Central Business District, Abuja' },
@@ -951,6 +1034,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'info@topeadebayolp.com',
     website: 'https://topeadebayolp.com',
+    linkedin: 'https://www.linkedin.com/company/tope-adebayo-llp',
     offices: [{ city: 'Lagos', address: 'The Phoenix, 3rd Floor, 31 Mobolaji Bank Anthony Way, Ikeja, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Energy & Natural Resources', 'Intellectual Property', 'Shipping & Maritime', 'Banking & Finance'],
     description:
@@ -965,6 +1049,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'perchstone@perchstoneandgraeys.com',
     website: 'https://perchstoneandgraeys.com',
+    linkedin: 'https://www.linkedin.com/company/perchstone-%26-graeys',
     offices: [
       { city: 'Lagos', address: '1 Perchstone & Graeys Close, Off Adekola Balogun Street, Off Remi Olowude Way, Lekki, Lagos' },
       { city: 'Abuja', address: 'D3 Jima Plaza, Plot 1267 Ahmadu Bello Way, Area 11, Garki, Abuja' },
@@ -983,6 +1068,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@primeraal.com',
     website: 'https://primeraal.com',
+    linkedin: 'https://www.linkedin.com/company/primera-africa-legal',
     offices: [{ city: 'Lagos', address: '1B Utomi Aire Avenue, Off Fola Osibo, Lekki Phase 1, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Capital Markets', 'Energy & Natural Resources'],
     description: 'A leading commercial law firm with a strong focus on banking, finance, capital markets, and energy transactions.',
@@ -997,6 +1083,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'careers@punuka.com',
     website: 'https://punuka.com',
+    linkedin: 'https://www.linkedin.com/company/punuka-attorneys-%26-solicitors',
     offices: [
       { city: 'Lagos', address: 'PAS World Centre, Plot 7 Block A10, Layi Yusuf Street, Off Admiralty Way, Lekki Phase 1, Lagos' },
       { city: 'Abuja', address: '9 Freetown Street, Behind Rockview Hotel, Wuse 2, Abuja' },
@@ -1015,6 +1102,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'info@resolutionlawng.com',
     website: 'https://resolutionlawng.com',
+    linkedin: 'https://www.linkedin.com/company/resolution-law-firm',
     offices: [{ city: 'Lagos', address: '50/52 Toyin Street, Ikeja, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Intellectual Property'],
     description: 'A boutique commercial law firm offering expertise in corporate advisory, dispute resolution, and intellectual property.',
@@ -1029,6 +1117,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'careers@scp-law.com',
     website: 'https://scp-law.com',
+    linkedin: 'https://www.linkedin.com/company/simmonscooperpartners',
     offices: [
       { city: 'Lagos', address: '9th Floor, Fortune Towers, 27/29 Adeyemo Alakija Street, Victoria Island, Lagos' },
       { city: 'Abuja', address: '9 Rima Street, Maitama, Abuja' },
@@ -1046,6 +1135,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'hr@spaajibade.com',
     website: 'https://spaajibade.com',
+    linkedin: 'https://www.linkedin.com/company/spaajibade',
     offices: [
       { city: 'Lagos', address: 'Suite 201, SPAACO House, 27A Macarthy Street, Onikan, Lagos' },
       /* Gudu, not Garki Mall. Reported first hand by someone who externed in
@@ -1069,6 +1159,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'Careers@strenandblan.com',
     website: 'https://strenandblan.com',
+    linkedin: 'https://www.linkedin.com/company/strenandblan',
     offices: [
       { city: 'Lagos', address: '3 Theophilus Orji Street, Off Fola Osibo Road, Lekki Phase 1, Lagos' },
       { city: 'Abuja', address: 'House 22, 21 Road Kado Estate Phase 1, Abuja' },
@@ -1086,6 +1177,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@streamsowers.com',
     website: 'https://streamsowers.com',
+    linkedin: 'https://www.linkedin.com/company/sskohnng',
     offices: [
       { city: 'Lagos', address: '852B Bishop Aboyade Cole Street, Victoria Island, Lagos' },
       { city: 'Abuja', address: 'Block C Terrace 3, CT3 Lobito Crescent, Stallion Estate, Wuse II, Abuja' },
@@ -1104,6 +1196,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'reception@tayooyetibolaw.com',
     website: 'https://tayooyetibolaw.com',
+    linkedin: 'https://www.linkedin.com/company/tayo-oyetibo-%26-co-',
     offices: [{ city: 'Lagos', address: 'Faith House, Plot 6 Block 113, Lekki-Epe Expressway, Lekki Phase 1, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Banking & Finance', 'Energy & Natural Resources'],
     description: 'A full-service commercial law firm with expertise in corporate transactions, energy, and dispute resolution.',
@@ -1118,6 +1211,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Leading',
     email: 'careers@templars-law.com',
     website: 'https://templars-law.com',
+    linkedin: 'https://www.linkedin.com/company/templars',
     offices: [
       { city: 'Lagos', address: 'The Octagon, 13A A. J. Marinho Drive, Victoria Island, Lagos' },
       { city: 'Abuja', address: '6 Usuma Close, Off Gana Street, Maitama, Abuja' },
@@ -1141,6 +1235,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Leading',
     email: 'careers@uubo.org',
     website: 'https://uubo.org',
+    linkedin: 'https://www.linkedin.com/company/uubolaw',
     offices: [
       { city: 'Lagos', address: 'St Nicholas House, 10th, 12th & 13th Floors, Catholic Mission Street, Lagos Island, Lagos' },
       { city: 'Abuja', address: 'Abia House, 2nd Floor, Michika Street, Ahmadu Bello Way, Central Business District, Abuja' },
@@ -1170,6 +1265,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@woleolanipekun.com',
     website: 'https://woleolanipekun.com',
+    linkedin: 'https://www.linkedin.com/company/wole-olanipekun-company',
     offices: [
       { city: 'Lagos', address: "God's Grace House, 5 Maple Close, Osborne Foreshore Estate Phase 2, Ikoyi, Lagos" },
       { city: 'Abuja', address: "God's Grace House, 6 Oshakati Close, Off Constantine Street, Wuse Zone 4, Abuja" },
@@ -1200,6 +1296,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@alliancelf.com',
     website: 'https://alliancelawfirm.ng',
+    linkedin: 'https://www.linkedin.com/company/alliancelawfirm',
     offices: [
       { city: 'Lagos', address: 'Alliance House, 71 Ademola Street, Off Awolowo Road, South-West Ikoyi, Lagos' },
       { city: 'Abuja', address: '63 Mississippi Street, Off Alvan Ikoku Way, Maitama, Abuja' },
@@ -1217,6 +1314,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@dddodo.com',
     website: 'https://dddodo.com',
+    linkedin: 'https://www.linkedin.com/company/d-d-dodo-%26-co-',
     // The firm names Abuja, Lagos, Kano and Jos, but publishes a street address
     // only for Abuja. The other three are described rather than invented.
     offices: [
@@ -1235,6 +1333,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@doa-law.com',
     website: 'https://www.doa-law.com',
+    linkedin: 'https://www.linkedin.com/company/duale-ovia-%26-alex-adedipe',
     offices: [
       { city: 'Lagos', address: 'Plot 1b, Block 129, Jide Sawyerr Drive, Lekki Phase 1, Lagos' },
     ],
@@ -1250,6 +1349,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'giwa-osagie@giwa-osagie.com',
     website: 'https://www.giwa-osagie.com',
+    linkedin: 'https://www.linkedin.com/company/giwa-osagie-co',
     offices: [
       { city: 'Lagos', address: '2nd Floor, Wing A, Sapetro Towers, 1 Adeola Odeku Street, Victoria Island, Lagos' },
     ],
@@ -1265,6 +1365,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@ikeyishittuco.com',
     website: 'https://isc.ng',
+    linkedin: 'https://www.linkedin.com/company/ikeyi-shittu-co',
     offices: [
       { city: 'Lagos', address: '1st Floor, 21 Boyle Street, Onikan, Lagos Island, Lagos' },
       { city: 'Abuja', address: 'Suite 7, Moz Mall, 19 Durban Street, Off Ademola Adetokunbo Crescent, Wuse II, Abuja' },
@@ -1283,6 +1384,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'info@lbandcolaw.com',
     website: 'https://lbandcolaw.com',
+    linkedin: 'https://www.linkedin.com/company/lekan-bamidele-co-the-bohemian-firm',
     offices: [
       { city: 'Lagos', address: '10 Oluwole Omole Street, Ikeja, Lagos' },
     ],
@@ -1299,6 +1401,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@odujinrinadefulu.com',
     website: 'https://odujinrinadefulu.com',
+    linkedin: 'https://www.linkedin.com/company/odujinrin-%26-adefulu',
     offices: [
       { city: 'Lagos', address: '1 Ademola Street, South West Ikoyi, Lagos' },
       { city: 'Abuja', address: '3rd Floor, WAEC Complex, 10 Zambezi Crescent, Maitama, Abuja' },
@@ -1318,6 +1421,7 @@ const FIRMS_UNSORTED: Firm[] = [
     // than the general legal@ inbox: it is the one a candidate should write to.
     email: 'applications@omaplex.com.ng',
     website: 'https://omaplex.com.ng',
+    linkedin: 'https://www.linkedin.com/company/omaplex-law-firm',
     offices: [
       { city: 'Abuja', address: 'Plot 994, Edwin Ume Ezeoke Street, Off Ahmeh, Wuye District, Abuja' },
     ],
@@ -1333,6 +1437,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@paulusoro.com',
     website: 'https://paulusoro.com',
+    linkedin: 'https://www.linkedin.com/company/paul-usoro-%26-co',
     offices: [
       { city: 'Lagos', address: '7th Floor, 999c Danmole Street, Victoria Island, Lagos' },
     ],
@@ -1356,6 +1461,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'info@pavestoneslegal.com',
     website: 'https://pavestoneslegal.com',
+    linkedin: 'https://www.linkedin.com/company/pavestones-legal',
     offices: [
       { city: 'Lagos', address: '3A Gbenga Ademulegun Street, Parkview Estate, Ikoyi, Lagos' },
     ],
@@ -1371,6 +1477,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@sooblaw.com',
     website: 'https://sooblaw.com',
+    linkedin: 'https://www.linkedin.com/company/sofunde-osakwe-ogundipe-%26-belgore-legal-practitioners-',
     offices: [
       { city: 'Lagos', address: '23/25 Catholic Mission Street, Lagos Island, Lagos' },
     ],
@@ -1386,6 +1493,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'tnp@tnp.com.ng',
     website: 'https://tnp.com.ng',
+    linkedin: 'https://www.linkedin.com/company/the-new-practice-tnp-',
     offices: [
       { city: 'Lagos', address: '50 Raymond Njoku Street, Ikoyi, Lagos' },
     ],
@@ -1417,6 +1525,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@babalakinandco.com',
     website: 'https://www.babalakinandco.com',
+    linkedin: 'https://www.linkedin.com/company/babalakin-%26-co--legal-practitioners',
     /* All three read from babalakinandco.com on 2026-08-08. */
     offices: [
       { city: 'Lagos', address: '1261A Adeola Hopewell Street, 3rd to 6th Floors, Victoria Island, Lagos' },
@@ -1443,6 +1552,7 @@ const FIRMS_UNSORTED: Firm[] = [
        and looks like a dead end to anything that does not run JavaScript. The
        mail stays on the .com because that is the address they publish. */
     website: 'https://sololaakpana.ng',
+    linkedin: 'https://www.linkedin.com/company/solola-akpana-barristers-solicitors',
     /* Read from the firm's contact record on Chambers Global 2026. Its own site
        renders its contact details in a way that could not be read.
 
@@ -1472,6 +1582,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'law@abdulaitaiwo.com',
     website: 'https://www.abdulaitaiwo.com',
+    linkedin: 'https://www.linkedin.com/company/abdulai-taiwo-co',
     /* Both read from abdulaitaiwo.com/contact.html on 2026-08-08. The postal
        boxes the page also lists are dropped: a P.O. box is not somewhere a
        student can walk into, and this field is the address to write to. */
@@ -1495,6 +1606,7 @@ const FIRMS_UNSORTED: Firm[] = [
        here: this field exists to be written to by a student. */
     email: 'careers@advocaat-law.com',
     website: 'https://www.advocaat-law.com',
+    linkedin: 'https://www.linkedin.com/company/10171950',
     /* Read from advocaat-law.com/contact on 2026-08-08. Calabar is the reason
        to re-read a contact page rather than trust an earlier note: an earlier
        pass had this firm at two offices, and the third is the only entry in
@@ -1528,6 +1640,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'ka@kolaawodeinandco.com',
     website: 'https://kolaawodeinandco.com',
+    linkedin: 'https://www.linkedin.com/company/kola-awodein-co',
     /* All three from kolaawodeinandco.com/offices.php on 2026-08-08. Each
        office publishes its own address, so writing to the Abuja or Port
        Harcourt office directly is possible: kaabj@ and kaph@ respectively. */
@@ -1551,6 +1664,7 @@ const FIRMS_UNSORTED: Firm[] = [
        the general one for a field whose entire purpose is to be written to. */
     email: 'hr@frawilliams.com',
     website: 'https://frawilliams.com',
+    linkedin: 'https://www.linkedin.com/company/chief-rotimi-williams-chambers-fra-law',
     /* Both from frawilliams.com/contact on 2026-08-08. The P.O. box the page
        also lists is dropped, as everywhere else in this file. */
     offices: [
@@ -1572,6 +1686,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@chrisogunbanjo.com',
     website: 'https://chrisogunbanjo.com',
+    linkedin: 'https://www.linkedin.com/company/chris-ogunbanjo-lp',
     offices: [
       { city: 'Lagos', address: '3 Hospital Road, Lagos Island, Lagos' },
     ],
@@ -1596,6 +1711,7 @@ const FIRMS_UNSORTED: Firm[] = [
        not a timeout. The firm's site is on femiatoyebi.com.ng, which is also
        where their mail is, so the odd pair resolved itself. */
     website: 'https://femiatoyebi.com.ng',
+    linkedin: 'https://www.linkedin.com/company/femi-atoyebi-co',
     offices: [
       { city: 'Lagos', address: 'Sea Voyager House, 29 Norman Williams Street, Off Awolowo Road, South West Ikoyi, Lagos' },
     ],
@@ -1618,6 +1734,7 @@ const FIRMS_UNSORTED: Firm[] = [
        the fix belongs to them, not to us. Recheck before assuming it is still
        true, since a renewal clears it in an afternoon. */
     website: 'https://idowusofola.com',
+    linkedin: 'https://www.linkedin.com/company/idowu-sofola-co',
     offices: [
       { city: 'Lagos', address: 'Ereke House, 4th and 5th Floors, Plot 15 CIPM Road, Alausa, Ikeja, Lagos' },
       { city: 'Abuja', address: 'F3 ABM Plaza, Plot 23 Ekukinam Street, Utako District, Abuja' },
@@ -1651,6 +1768,7 @@ const FIRMS_UNSORTED: Firm[] = [
        to the person about to send their CV. */
     email: 'clientsupport@oal.law',
     website: 'https://oal.law',
+    linkedin: 'https://www.linkedin.com/company/olisa-agbakoba-legal',
     /* ⚠ NOT from the live site. oal.law now publishes only city names on its
        contact page: Ikoyi, Apapa, FCT Abuja, Port Harcourt. The street
        addresses below come from the firm's OWN /our-offices/ page as archived
@@ -1684,6 +1802,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@yusufali.net',
     website: 'https://www.yusufali.net',
+    linkedin: 'https://www.linkedin.com/company/yusuf-ali-%26-co',
     /* All three read off yusufali.net/contact on 2026-08-08. The firm practises
        as Ghalib Chambers and both of its owned buildings are called Ghalib
        House, which is not a duplication error: one is in Ilorin and one is in
@@ -1713,6 +1832,7 @@ const FIRMS_UNSORTED: Firm[] = [
        office directly has the third address on the firm's contact page. */
     email: 'info@ao2law.com',
     website: 'https://ao2law.com',
+    linkedin: 'https://www.linkedin.com/company/ao2law',
     /* All four read off ao2law.com/contact on 2026-08-08. Lagos is the address
        the page gives under "Physical Address"; the other three sit under
        "Other Offices". */
@@ -1766,6 +1886,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@afebabalola.com',
     website: 'https://afebabalola.com',
+    linkedin: 'https://www.linkedin.com/company/14813991',
     /* All five read off afebabalola.com/contact on 2026-08-08. Each office
        publishes its own address, so writing to a branch directly works:
        afelagos@, afeabuja@ and afeph@ respectively.
@@ -1793,6 +1914,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@oakelegal.com',
     website: 'https://oakelegal.com',
+    linkedin: 'https://www.linkedin.com/company/oake-legal',
     /* Both from oakelegal.com/contact-us on 2026-08-08. */
     offices: [
       { city: 'Lagos', address: '5th Floor, AIICO Plaza, Plot PC 12, Churchgate Street, Victoria Island, Lagos' },
@@ -1810,6 +1932,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@thelawcrest.com',
     website: 'https://thelawcrest.com',
+    linkedin: 'https://www.linkedin.com/company/the-law-crest-llp',
     /* Both from thelawcrest.com on 2026-08-08. The Lagos address is in the
        footer of every page; Abuja is on the contact page only. */
     offices: [
@@ -1831,6 +1954,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'info@matrixsolicitors.com',
     website: 'https://matrixsolicitors.com',
+    linkedin: 'https://www.linkedin.com/company/matrix-solicitors-llp',
     /* Both from matrixsolicitors.com/contact on 2026-08-08. The page gives the
        Abuja address twice with and without "Garki"; the fuller one is used. */
     offices: [
@@ -1849,6 +1973,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     email: 'admin@pinheirolp.com',
     website: 'https://pinheirolp.com',
+    linkedin: 'https://www.linkedin.com/company/pinheiro-legal-practitioners',
     /* All three from the footer of pinheirolp.com on 2026-08-08. */
     offices: [
       { city: 'Lagos', address: '5/7 Folayemi Street, Off Coker Road, Ilupeju, Lagos' },
@@ -1870,6 +1995,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'enr@enradvisory.com',
     website: 'https://enradvisory.com',
+    linkedin: 'https://www.linkedin.com/company/advisory-legal-consultants',
     /* From enradvisory.com/contact-us on 2026-08-08. South Atlantic Petroleum
        Towers is the SAPETRO building, which is also where Giwa-Osagie sit, so
        the two Adeola Odeku entries in this file are the same address and not a
@@ -1892,6 +2018,7 @@ const FIRMS_UNSORTED: Firm[] = [
        the general info@ for a directory whose purpose is to be written to. */
     email: 'career@mjnuma.com',
     website: 'https://www.mjnuma.com',
+    linkedin: 'https://www.linkedin.com/company/m-j-numa-partners-llp',
     /* From mjnuma.com/contact on 2026-08-08. */
     offices: [
       { city: 'Abuja', address: 'Flat 1, Tripple A Villas, 495 Adegboyega Atanda Street, Mabushi, Abuja' },
@@ -1908,6 +2035,7 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Boutique',
     email: 'info@aekleysolicitors.com',
     website: 'https://aekleysolicitors.com',
+    linkedin: 'https://www.linkedin.com/company/aekleysolicitors',
     /* Both from the footer of every page on aekleysolicitors.com, read
        2026-08-08. No Lagos office, which is worth noticing rather than
        assuming an omission. */
@@ -1917,6 +2045,163 @@ const FIRMS_UNSORTED: Firm[] = [
     ],
     practiceAreas: ['Corporate & Commercial', 'Real Estate', 'Intellectual Property', 'Public Law & Regulatory', 'Start-up Advisory'],
     description: 'A small practice built around SMEs and the paperwork of actually starting something: company registration, industrial designs, certificates of occupancy, moneylender and FCCPC licensing. The Ibadan office is opposite the University of Ibadan second gate, which makes it one of the few firms in this directory a law student could walk to.',
+    openRoles: 0,
+  },
+  {
+    slug: 'fo-akinrele',
+    logoFile: null,
+    name: 'F.O. Akinrele & Co',
+    shortName: 'F.O. Akinrele',
+    tier: 'Established',
+    email: 'info@foakinrele.com',
+    website: 'https://foakinrele.com',
+    linkedin: 'https://www.linkedin.com/company/f-o-akinrele-co',
+    offices: [
+      { city: 'Lagos', address: '188 Awolowo Road, Ikoyi, Lagos' },
+    ],
+    practiceAreas: ['Banking & Capital Markets', 'Corporate & Commercial', 'Energy & Natural Resources', 'Infrastructure & Telecommunications', 'Litigation & Dispute Resolution', 'Transport Law'],
+    description: 'A full-service commercial law firm established in 1959, with six decades of experience advising on energy, banking, infrastructure and cross-border transactions across West Africa.',
+    foundedYear: 1959,
+    openRoles: 0,
+  },
+  {
+    slug: 'jk-gadzama',
+    logoFile: null,
+    name: 'J-K Gadzama LLP',
+    shortName: 'J-K Gadzama',
+    tier: 'Established',
+    email: 'info@j-kgadzamallp.com',
+    website: 'https://j-kgadzamallp.com',
+    linkedin: 'https://www.linkedin.com/company/j-k-gadzama-llp',
+    offices: [
+      { city: 'Abuja', address: 'Plot 1805, Damaturu Crescent, off Ahmadu Bello Way, Garki 2, Abuja' },
+      { city: 'Lagos', address: 'No. 2A, Manuwa Street, off Keffi, Ikoyi, Lagos' },
+      { city: 'Maiduguri', address: '15B, Circular Road, near Nigeria Air Force Officers\' Mess, Old GRA, Maiduguri, Borno State' },
+      { city: 'Lassa', address: 'No. 22, Wamdeo Road, Askira/Uba LGA, Lassa, Borno State' },
+      { city: 'Port Harcourt', address: 'No. 66, Mbonu Street, D/Line, Port Harcourt, Rivers State' },
+      { city: 'Jos', address: 'Plot No. 1, Block 1, Fwati/Wait Zawan, Jos South LGA, Jos, Plateau State' },
+      { city: 'London', address: '107-111 Fleet Street, London, EC4A 2AB, United Kingdom' },
+      { city: 'South Florida', address: '7235 Fairfax Dr, Unit 206A, Tamarac, FL 33321, USA' },
+      { city: 'Dubai', address: 'Sheikh Zayed Road, Dubai World Trade Center District, C1 Building, 2nd Floor, Dubai, UAE' },
+    ],
+    practiceAreas: ['Litigation', 'Corporate & Commercial', 'Capital Markets', 'Energy & Natural Resources', 'Constitutional & Electoral Law', 'Arbitration & Mediation'],
+    description: 'A full-service Nigerian law firm founded in 1989 by Chief Joe-Kyari Gadzama, SAN, with nine offices spanning Nigeria, the UK, the US and the UAE and over 1,500 briefs handled.',
+    foundedYear: 1989,
+    openRoles: 0,
+  },
+  {
+    slug: 'dikko-mahmoud',
+    logoFile: null,
+    name: 'Dikko & Mahmoud',
+    shortName: 'Dikko & Mahmoud',
+    tier: 'Established',
+    email: 'info@dikkoandmahmoud.com',
+    website: 'https://dikkoandmahmoud.com',
+    linkedin: 'https://www.linkedin.com/company/dikko-%26-mahmouud',
+    offices: [
+      { city: 'Kano', address: 'No. 3 Dorawa Road, Nasarawa, Kano' },
+      { city: 'Abuja', address: 'No. 10 Seguela Street, Wuse 2, Abuja' },
+    ],
+    practiceAreas: ['Dispute Resolution', 'Corporate & Secretarial Services', 'Energy Law & Natural Resources', 'Capital Market & Commercial Law', 'Intellectual Property', 'Policy & Government Advisory'],
+    description: 'A full-service law firm founded in 1993 by A.B. Mahmoud and A.B. Dikko, former Attorneys General of Kano and Kebbi States, serving public and private sector clients from Kano and Abuja.',
+    foundedYear: 1993,
+    openRoles: 0,
+  },
+  {
+    slug: 'ninewells',
+    logoFile: null,
+    name: 'Ninewells Law Practice',
+    shortName: 'Ninewells',
+    tier: 'Established',
+    email: 'info@ninewellslegal.com',
+    /* ⚠ NO `website`, ON PURPOSE, AND IT IS THE ONLY RECORD HERE WITHOUT ONE.
+       The firm owns ninewellslegal.com and it serves a bare "Error. Page cannot
+       be displayed" stub; the www host answers 403. Their site is built and
+       deployed, but only to an unannounced vercel.app preview host, which is
+       deliberately not circulated here: the firm has not published it, and a
+       directory has no business handing out a deployment its owner has not put
+       its name to. That left a field whose only honest value was a link that
+       goes nowhere, so it is left empty and LinkedIn carries the profile.
+       Restore it the day the domain points at the deployment.
+
+       The LinkedIn is the firm's own, taken from the `social` object in their
+       site's JS bundle rather than from a search. scripts/harvest-firm-linkedin.mjs
+       missed it for the reason its header predicts: it reads served HTML, and
+       this site is a Vite build that injects its footer links at runtime. */
+    linkedin: 'https://www.linkedin.com/company/ninewells',
+    offices: [
+      { city: 'Lagos', address: 'Construction House, 18 Adeyemo Alakija, Victoria Island, Lagos 101241' },
+      { city: 'Abuja', address: '16 Aso Garden Estate, River Trent Street, off Thames Street, Ministers Hills, Maitama, Abuja' },
+    ],
+    practiceAreas: ['Corporate & Commercial', 'Capital Markets', 'Dispute Resolution', 'Energy & Natural Resources', 'Financial Services', 'Telecommunications & ICT'],
+    description: 'A fully integrated multidisciplinary practice organised as a partnership, working across capital markets, energy and extractives, financial services and technology from Victoria Island and Maitama. Led by Professor Bayo Adaralegbe.',
+    openRoles: 0,
+  },
+  {
+    slug: 'oa-omonuwa',
+    logoFile: null,
+    name: 'O. A. Omonuwa (SAN) & Co',
+    shortName: 'O. A. Omonuwa',
+    tier: 'Established',
+    email: 'info@oaomonuwaandco.com',
+    website: 'https://www.oaomonuwaandco.com',
+    offices: [
+      { city: 'Benin City', address: '34 Urubi Street, P.O. Box 475, Benin City, Edo State' },
+      { city: 'Abuja', address: '5A Testimony Avenue, Pleasant Places Estate, Apo Dutse, Abuja' },
+    ],
+    practiceAreas: ['Dispute Resolution', 'Arbitration', 'Corporate & Commercial'],
+    /* Their own site divides the practice into exactly two spectrums, and the
+       list above says so rather than padding it out to the six or seven a
+       full-service firm usually carries here. The four icons on their home page
+       (car, criminal, drug, injury) are the WordPress theme's stock art, not
+       practice areas, and are deliberately not read as such. */
+    description: 'A Benin City firm of more than thirty years led by Omoruyi A. Omonuwa, SAN, with a second office in Abuja. The practice divides into dispute resolution, where its team includes a Fellow of the Chartered Institute of Arbitrators, and general commercial work.',
+    openRoles: 0,
+  },
+  {
+    slug: 'chukwunyere-chambers',
+    logoFile: null,
+    name: 'Chukwunyere Chambers',
+    shortName: 'Chukwunyere',
+    /* Both names are current, which is why this is alsoKnownAs and not
+       formerName. The domain and the masthead say Chukwunyere Chambers; the
+       title tag, the letterhead and the firm's own articles say Emeka O. Nwagwu
+       (SAN) & Associates. Neither has replaced the other. */
+    alsoKnownAs: 'Emeka O. Nwagwu (SAN) & Associates',
+    tier: 'Established',
+    email: 'info@chukwunyere-chambers.org',
+    website: 'https://chukwunyere-chambers.org',
+    offices: [
+      { city: 'Owerri', address: '82/84 Wetheral Road, Owerri, Imo State' },
+    ],
+    practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Arbitration', 'Insolvency'],
+    description: 'One of the oldest and largest practices in Owerri, with close to four decades in commercial law and dispute resolution. Its named work is election petitions, insolvency and corporate reorganisation, and it is among the few firms in this directory headquartered in the South East.',
+    openRoles: 0,
+  },
+  {
+    slug: 'akaraiwe',
+    logoFile: null,
+    name: 'Akaraiwe & Associates',
+    shortName: 'Akaraiwe',
+    /* The bracketed second name is on their own masthead, their copyright line
+       and the title of their annual lecture, so it is a name the firm trades
+       under today rather than one it left behind. */
+    alsoKnownAs: 'Lex Rehoboth Partners',
+    tier: 'Established',
+    email: 'akaraiweassociates@gmail.com',
+    website: 'https://www.akaraiweandassociates.com',
+    linkedin: 'https://www.linkedin.com/company/akaraiwe-%26-associates',
+    /* One office. The associates listed against Aba, Delta, Abuja, Lagos and
+       Anambra on their team page are people, not premises, and are not recorded
+       here as offices. */
+    offices: [
+      { city: 'Enugu', address: 'Plot H174, Tony Monagor Street, by Akaraiwe Lane, Trade Fair Layout, Golf Course Estate, Enugu' },
+    ],
+    practiceAreas: ['Dispute Resolution', 'Real Estate', 'Corporate & Commercial', 'Intellectual Property', 'Public Law & Regulatory'],
+    description: 'An Enugu practice led by Ikeazor Akaraiwe, SAN, a past first vice president of the Nigerian Bar Association, built around litigation, land and public interest work. It runs an annual lecture at the Enugu High Court and takes externs each legal year.',
+    /* Off their own lockup, which sets EST. 1994 under the wordmark. It is the
+       only place the date appears; the site's prose never gives one. */
+    foundedYear: 1994,
     openRoles: 0,
   },
 ]
@@ -2189,6 +2474,16 @@ export const FIRM_RANKINGS: Record<string, FirmRankings> = {
      band, and the one-way failure this table is built around says an absent
      entry means nobody has checked rather than that a firm is unranked. */
   'solola-akpana':      { chambers: { band: 'Band 4', year: 2026, areas: ['Dispute Resolution'] } },
+  /* Read 2026-08-27 off the Chambers Global 2026 Dispute Resolution table for
+     Nigeria, where the firm is banded in its own right.
+
+     Chambers ALSO ranks Ademola Akinrele SAN there, as a Senior Statesperson,
+     and that is deliberately NOT recorded as a rankedIndividual. The individual
+     block exists for firms the guide passes over as firms, and it renders a
+     line saying the guide "records none for the practice as a whole". Here it
+     records Band 4, so that sentence would be false on this profile. The firm
+     entry is the accurate one and it stands alone. */
+  'fo-akinrele':        { chambers: { band: 'Band 4', year: 2026, areas: ['Dispute Resolution'] } },
 
   /* Legal 500 only. No Chambers entry here means Chambers does not rank them in
      the seven Nigeria tables, not that they went unchecked. */
@@ -2460,6 +2755,29 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   uandplaw: '/employer-logos/uandp-law.png',
   uandp: '/employer-logos/uandp-law.png',
   uandplawfirm: '/employer-logos/uandp-law.png',
+
+  /* Andersen Tax LP, added 27 August 2026 with the 2027 graduate intake.
+     Their own lockup from ng.andersen.com, with ONE thing removed: the pale
+     grey door that sits to the right of the wordmark in the published file.
+
+     Cropping it off cut through the registered-trademark mark beside it, so it
+     is taken out by tone instead. The door is drawn in a light grey that lands
+     around lum 210; the wordmark is black and the swoosh is a deep red, and
+     both sit far below that. Alpha is held at full below 150, ramped to nothing
+     by 205, so the door leaves and the anti-aliased edges of the letterforms
+     survive.
+
+     Worth removing rather than keeping: on the board's cream and in the pit's
+     white ball, a light grey outline is not faint, it is absent, and what it
+     leaves behind is a wordmark with a large empty margin that the fitter then
+     shrinks the type to accommodate. No EMPLOYER_BALL_BG entry, unlike U&P
+     below: this mark is black and red on transparency and needs no ground of
+     its own to be seen. */
+  andersen: '/employer-logos/andersen.png',
+  andersentax: '/employer-logos/andersen.png',
+  andersentaxlp: '/employer-logos/andersen.png',
+  andersennigeria: '/employer-logos/andersen.png',
+  andersenng: '/employer-logos/andersen.png',
 
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',

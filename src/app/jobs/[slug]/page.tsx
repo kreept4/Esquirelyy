@@ -15,6 +15,7 @@ import {
   opportunitySlug,
   hasClosed,
   daysUntil,
+  closingLabel,
   type Opportunity,
 } from '@/lib/opportunities'
 
@@ -345,7 +346,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                       absorb. Derived, so it cannot go stale. */}
                   {daysLeft !== null && daysLeft >= 0 && !job.is_rolling && (
                     <span className="job-days-left" data-urgent={daysLeft <= 7}>
-                      {daysLeft === 0 ? 'Today' : daysLeft === 1 ? '1 day left' : `${daysLeft} days left`}
+                      {closingLabel(job.deadline)}
                     </span>
                   )}
                 </dd>

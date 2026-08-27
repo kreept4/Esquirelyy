@@ -48,6 +48,18 @@
  *             and the visible box on the cream card. Only ever set this on art
  *             you have looked at, for the reason in lib/key-white.mjs.
  *
+ *   resolveTo O. A. Omonuwa's host does not resolve through every DNS server.
+ *             The address is supplied by hand so the fetch can proceed; see the
+ *             entry itself for why this is a resolver problem and not a dead
+ *             domain, and for when to take it back out.
+ *
+ *   plate     F.O. Akinrele's only mark is white lettering printed on a flat
+ *             brown header ground that reaches every edge of the file. It is
+ *             neither a white plate to key nor a mark to invert, so the ground
+ *             colour is named and the lettering lifted off it as a matte, then
+ *             redrawn in ink. See lib/key-plate.mjs for why a matte and not a
+ *             threshold.
+ *
  *   negate    F. R. A. Williams's header mark measured lum 255, flat white,
  *             and unlike the others there is no second file to fall back to:
  *             the only other logo-shaped assets on that site are a TerraLex
@@ -64,6 +76,7 @@ import path from 'node:path'
 import https from 'node:https'
 import { fileURLToPath } from 'node:url'
 import { keyWhite } from './lib/key-white.mjs'
+import { keyPlate } from './lib/key-plate.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const OUT = path.join(ROOT, 'public', 'firm-logos')
@@ -74,7 +87,7 @@ const UA =
 /** Brand ink. Matches --ink in globals.css and the email signature. */
 const INK = '#241F16'
 
-/** slug -> url, or slug -> { url, referer, insecure, recolour } */
+/** slug -> url, or slug -> { url, referer, insecure, recolour, key, negate, plate } */
 const PICKS = {
   // ---- added 2026-08-05 -----------------------------------------------------
   'alliance-law-firm':
@@ -175,6 +188,58 @@ const PICKS = {
     url: 'https://aekleysolicitors.com/wp-content/uploads/2023/02/Aekley-logo-rev.jpg',
     key: 'white',
   },
+
+  // ---- fifth batch, 2026-08-27, the seven firms that took the directory to 75 -
+  // F.O. Akinrele publish exactly one mark and it is white lettering baked onto
+  // a flat brown header plate, rgb(132,85,58) across 51% of the file and out to
+  // every corner. Neither existing repair fits: keyWhite would eat the
+  // lettering, which IS the white here, and negate would turn the brown to a
+  // pale blue nobody at that firm has ever used. `plate` is the third case, and
+  // it is the cleanest of the three because the art is genuinely monochrome:
+  // the mark is lifted off the ground as a matte and redrawn in ink.
+  'fo-akinrele': {
+    url: 'https://foakinrele.com/wp-content/themes/foa/images/logo.png',
+    plate: '#845538',
+  },
+  // Their only mark is the reversed one for the dark header, at lum 246. Same
+  // treatment as fra-law, law-crest and matrix-solicitors.
+  'jk-gadzama': {
+    url: 'https://j-kgadzamallp.com/assets/logo-white-1tRDbXJ7.png',
+    negate: true,
+  },
+  // The full-size upload, not the 231x70 cropped copy the header renders. Note
+  // there is no "-scaled" variant despite WordPress's usual pattern: that URL
+  // 404s and the plain name is the original.
+  'dikko-mahmoud':
+    'https://dikkoandmahmoud.com/wp-content/uploads/2019/11/High-Resolution-Logo-DM.png',
+  // An SVG, so it rasterises to whatever width the script asks for. Comes down
+  // dark on transparent and needs nothing doing to it.
+  'ninewells': 'https://ninewellsweb.vercel.app/assets/ninewells-logo-CXJ23_N4.svg',
+  // logo-footer.png, NOT img/resources/logo.png. The header file is the
+  // reversed pair for their dark hero and measured lum 255, flat white; the
+  // footer file is the same lockup in the firm's actual green and gold, already
+  // carrying alpha. The word "footer" in the filename is the only thing
+  // distinguishing them and it points at the right one here.
+  //
+  // resolveTo IS NOT A HACK AROUND A DEAD SITE. The host is up and serving; it
+  // is DNS for this one domain that fails, and only from some resolvers: a
+  // query to 8.8.8.8 answers 165.140.69.238 immediately while the local
+  // resolver times out, which is what fetch reports as a bare "fetch failed".
+  // Try the plain download first if you are re-running this. If it works,
+  // delete this line rather than keeping a pinned address that can go stale.
+  'oa-omonuwa': {
+    url: 'https://www.oaomonuwaandco.com/img/resources/logo-footer.png',
+    resolveTo: '165.140.69.238',
+  },
+  // Their site serves this through an Optimole CDN rewrite that re-encodes to
+  // AVIF. The origin path underneath it is the plain WordPress upload and is
+  // what is fetched, so the art arrives as the firm uploaded it.
+  'chukwunyere-chambers':
+    'https://chukwunyere-chambers.org/wp-content/uploads/2020/01/logo.png',
+  // Dark on transparent on the first attempt. It also settles the founding
+  // year: the lockup carries EST. 1994 under the wordmark, which is the only
+  // place on the site that date appears.
+  'akaraiwe': 'https://www.akaraiweandassociates.com/images/logo.png',
 }
 
 /* Left on the monogram placeholder:
@@ -194,11 +259,30 @@ const PICKS = {
  *                   and every image on the site is stock photography. The
  *                   wordmark came from elsewhere and was processed by hand. */
 
-/** GET that tolerates an expired certificate, for the one host that has one. */
-function getInsecure(url, headers) {
+/** GET through node's https rather than fetch, for the two hosts that need
+ *  something fetch will not give them: a relaxed certificate check, or an
+ *  address supplied by hand because DNS will not produce one. */
+function getViaHttps(url, headers, { insecure, resolveTo } = {}) {
   return new Promise((resolve, reject) => {
+    const opts = { headers, timeout: 30000 }
+    if (insecure) opts.rejectUnauthorized = false
+    // Hands the socket an address directly instead of asking the resolver for
+    // one. Everything else about the request, TLS and SNI included, still goes
+    // through the hostname in the URL, so the server sees a normal request.
+    // Node calls a custom lookup either as (host, options, cb) or as
+    // (host, cb), and asks for an ARRAY when options.all is set. Answering the
+    // wrong shape is what produces "Invalid IP address: undefined".
+    if (resolveTo) {
+      opts.lookup = (_hostname, a, b) => {
+        const cb = typeof a === 'function' ? a : b
+        const all = typeof a === 'object' && a !== null && a.all
+        return all
+          ? cb(null, [{ address: resolveTo, family: 4 }])
+          : cb(null, resolveTo, 4)
+      }
+    }
     https
-      .get(url, { headers, rejectUnauthorized: false, timeout: 30000 }, res => {
+      .get(url, opts, res => {
         if (res.statusCode !== 200) {
           res.resume()
           return reject(new Error(`HTTP ${res.statusCode}`))
@@ -215,10 +299,10 @@ function getInsecure(url, headers) {
 }
 
 async function download(pick) {
-  const { url, referer, insecure } = pick
+  const { url, referer, insecure, resolveTo } = pick
   const headers = { 'User-Agent': UA, ...(referer ? { Referer: referer } : {}) }
 
-  if (insecure) return getInsecure(url, headers)
+  if (insecure || resolveTo) return getViaHttps(url, headers, { insecure, resolveTo })
 
   const res = await fetch(url, { headers, signal: AbortSignal.timeout(30000) })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -278,6 +362,10 @@ for (const [slug, raw] of Object.entries(PICKS)) {
 
     // Trim first, key second. Keying turns the border transparent, and trim
     // reads the border colour, so the other order leaves the plate behind.
+    // The same ordering argument applies to `plate`, and more strongly: trim
+    // reads the uniform brown border and crops straight to the lettering, so
+    // the matte runs over the mark rather than over a field of empty ground.
+    if (pick.plate) out = await keyPlate(out, pick.plate, INK)
     if (pick.key === 'white') out = await keyWhite(out)
 
     // Colour channels only. Alpha is left alone so the mark keeps the

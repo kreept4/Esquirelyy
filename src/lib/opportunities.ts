@@ -199,6 +199,38 @@ export function daysUntil(deadline: string | null | undefined): number | null {
   return daysUntilDay(deadline)
 }
 
+/**
+ * The words that go with the number.
+ *
+ * ⚠ THE COUNTDOWN AGREED AND THE COPY DID NOT, which is the same bug daysUntil
+ * was written to prevent, one layer up. Three surfaces each phrased the answer
+ * their own way, so a listing one day out read as "1 day left" on the board,
+ * "Closes tomorrow" in Closing soon, and "1 day left" again on the listing page
+ * whose zero case said "Today" rather than "Closes today". Reported 27 August
+ * 2026 against JEE, which was showing "1 day left" and "Closes tomorrow" on the
+ * same screen. Both were computed from the same integer and a reader has no way
+ * to know that; two different sentences about one deadline read as two
+ * different deadlines.
+ *
+ * So the phrasing moves next to the arithmetic and the surfaces stop deciding.
+ *
+ * "Closes tomorrow" is the one kept for 1, and "1 day left" is the one dropped,
+ * because they are not equally clear. A deadline of tomorrow leaves you today
+ * AND tomorrow to apply, so "1 day left" invites the reader to subtract a day
+ * they still have. A named day cannot be miscounted.
+ *
+ * Returns null for a missing or past date rather than inventing a phrase for
+ * it. Rolling and closed listings are labelled by their callers, which know
+ * which of the two they are looking at; this does not.
+ */
+export function closingLabel(deadline: string | null | undefined): string | null {
+  const d = daysUntilDay(deadline)
+  if (d === null || d < 0) return null
+  if (d === 0) return 'Closes today'
+  if (d === 1) return 'Closes tomorrow'
+  return `${d} days left`
+}
+
 function db() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY

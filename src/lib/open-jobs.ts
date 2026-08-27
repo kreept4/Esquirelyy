@@ -178,6 +178,25 @@ const OPEN_JOB_SLUGS = new Set<string>([
      the firm published it on Instagram to anyone who cared to look, so gating
      it would be withholding something that is not ours to withhold. */
   'lbvip-5-0-lekan-bamidele-virtual-internship-programme',
+
+  /* 27 August, and open for the same reason LBVIP above is, only more urgently.
+
+     ⚠ IT CLOSES THE DAY IT WAS ADDED, AND IT IS IN A BROADCAST. The closing
+     soon email names it first and its button goes to Esquirely rather than to
+     Andersen's portal. Left out of this set, every signed-out member who opened
+     that mail on a phone they have never signed in on would be redirected to
+     /auth/login, on the one listing with hours left rather than days. That is
+     not a gate, it is a closed door, and it would be our door rather than the
+     employer's.
+
+     It was also invisible before this line existed, which is worth recording
+     because nothing reported it: the row was inserted, active and verified, it
+     resolved its logo, it reached the ball pit on the home page, and the board
+     simply did not draw it for a signed-out reader. openJobs() filters silently
+     by design. A new listing that must be publicly readable needs a slug here
+     as well as a row in the table, and adding the row is the half that looks
+     like the whole job. */
+  'andersen-2027-graduate-recruitment',
 ])
 
 /** Whether a signed-out reader may read this listing in full. */

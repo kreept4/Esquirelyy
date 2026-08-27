@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { logoForEmployer } from '@/lib/firms-data'
-import { OPPORTUNITY_TYPE_LABELS, daysUntil } from '@/lib/opportunities'
+import { OPPORTUNITY_TYPE_LABELS, daysUntil, closingLabel } from '@/lib/opportunities'
 
 /**
  * What is closing soon, whatever table it came from.
@@ -283,7 +283,7 @@ export default function ClosingSoon({ rows }: { rows: Row[] }) {
                         {days <= 7 && (
                           <img src="/icons/stopwatch.svg" alt="" className="urgency-mark" width={16} height={16} />
                         )}
-                        {days === 0 ? 'Closes today' : days === 1 ? 'Closes tomorrow' : `${days} days left`}
+                        {closingLabel(r.deadline)}
                       </span>
                     )}
                   </div>

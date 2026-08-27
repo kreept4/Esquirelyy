@@ -1,7 +1,19 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { daysUntil } from '@/lib/opportunities'
+import { daysUntil, closingLabel } from '@/lib/opportunities'
+
+/**
+ * When the board stops printing a date and starts printing a countdown.
+ *
+ * THREE, NOT THE SEVEN USED FOR THE STOPWATCH ELSEWHERE, and the two numbers
+ * are answering different questions. Closing soon and the opportunity cards use
+ * seven to decide what deserves a stopwatch: they are a curated block of things
+ * worth hurrying over. This decides when a date has stopped being useful, and a
+ * date is useful for longer than that. A week out, "4 September" is a plan. Three
+ * days out it is arithmetic the reader should not be doing.
+ */
+const URGENT_DAYS = 3
 import { practiceOptionsFor } from '@/lib/practice-areas'
 import ClosingSoon from '@/components/features/ClosingSoon'
 import Link from 'next/link'
@@ -624,7 +636,6 @@ export default function JobsClient({
                       inline, and because it is no longer a sibling cell it
                       cannot pick up the `.job-cell + .job-cell` dot. */}
                   <span className="grotesk-regular job-cell job-deadline">
-                    {deadlineLabel(job)}
                   {/* ⚠ DERIVED FROM THE DATE, NOT FROM is_closing_soon. That
                       column is a stored boolean, so it is only true until the
                       day somebody forgets to update it, and a board that says
@@ -634,16 +645,41 @@ export default function JobsClient({
                       is_closing_soon was still false.
                       Same component and same threshold as the opportunity card
                       and the featured block, so urgency looks identical
-                      wherever it appears. */}
+                      wherever it appears.
+
+                      ⚠ THE CELL SHOWS ONE THING, NEVER TWO, AND WHICH ONE IS
+                      DECIDED BY HOW CLOSE THE DEADLINE IS.
+
+                      It used to print both: "4 Sept  8 days left", which is one
+                      fact stated twice, the second half being the first half
+                      done for the reader. Two readings of the same deadline
+                      side by side ask to be reconciled, and neither is doing
+                      the other any good.
+
+                      Outside the window the DATE wins. "4 September" is
+                      something a reader can put in a calendar and plan around,
+                      which is what they are doing at that range; a countdown
+                      there is noise.
+
+                      At three days or fewer the COUNTDOWN wins, in red, with the
+                      stopwatch. At that range nobody is planning, they are
+                      deciding whether to start tonight, and "Closes tomorrow"
+                      answers that where "28 Aug" makes them work it out.
+
+                      THE HANDOVER IS AUTOMATIC because both sides read the same
+                      column through daysUntil, which counts calendar days in
+                      Lagos. Nothing is scheduled and no flag is stored: a row
+                      crosses into red because the date arrived, and it does so
+                      at midnight in Lagos rather than at midnight UTC. See
+                      lib/day.ts for why that distinction is not academic. */}
                   {(() => {
                     const d = daysUntil(job.deadline)
-                    if (job.is_rolling || d === null || d < 0 || d > 14) return null
+                    const urgent = !job.is_rolling && d !== null && d >= 0 && d <= URGENT_DAYS
+                    if (!urgent) return deadlineLabel(job)
                     return (
-                      <span className="job-days-left" data-urgent={d <= 7}>
-                        {d <= 7 && (
-                          <img src="/icons/stopwatch.svg" alt="" className="urgency-mark" width={14} height={14} />
-                        )}
-                        {d === 0 ? 'Closes today' : d === 1 ? '1 day left' : `${d} days left`}
+                      <span className="job-days-left" data-urgent>
+                        <img src="/icons/stopwatch.svg" alt="" className="urgency-mark" width={14} height={14} />
+                        {closingLabel(job.deadline)}
                       </span>
                     )
                   })()}

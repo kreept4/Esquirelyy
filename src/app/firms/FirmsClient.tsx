@@ -81,6 +81,16 @@ const PRACTICE_OPTIONS = [
 type View = 'detailed' | 'grid' | 'list'
 
 const VIEW_KEY = 'esquirely.firms.view'
+
+/** Where the browse state parks itself while the reader is off reading a firm.
+ *
+ *  sessionStorage, NOT localStorage, and the difference is the whole design.
+ *  The layout preference above is a preference: the reader picked it and means
+ *  it next week. This is a position in a list. Restoring "you were twenty four
+ *  cards into a search for tax" a fortnight later is not helpful, it is a
+ *  directory that will not go back to the beginning. Session storage forgets it
+ *  when the tab closes, which is exactly the life of the browse it belongs to. */
+const BROWSE_KEY = 'esquirely.firms.browse'
 const VIEWS: View[] = ['detailed', 'grid', 'list']
 
 /** The switch is desktop only.
@@ -363,13 +373,78 @@ export default function FirmsClient() {
    */
   const [visible, setVisible] = useState(PAGE_SIZE)
 
-  /* Back to the first page whenever the result set changes underneath.
-     Without this, searching "tax" while forty eight cards are open shows all of
-     the matches at once, and then clearing the search leaves the reader forty
-     eight cards deep in a list they never expanded. The reset is on the filter
-     inputs rather than on `filtered.length`, because two different filters can
-     return the same number of firms and that is still a new list. */
-  useEffect(() => { setVisible(PAGE_SIZE) }, [search, tier, city, practiceArea, ranked])
+  /* ⚠ THE RESET TO PAGE ONE USED TO LIVE HERE, AS AN EFFECT WATCHING THE FILTER
+     VALUES, and it had to move for the restore below to be possible at all.
+
+     The intent has not changed: searching "tax" while forty eight cards are open
+     should not show every match at once, and clearing that search should not
+     leave the reader forty eight cards deep in a list they never expanded. What
+     changed is who says so. An effect watching the values cannot tell a reader
+     changing a filter from this component setting those same values back while
+     restoring a session, so it reset the page count every time it was restored
+     and the restore could never take. `resetPage` now runs from the controls
+     themselves, which is where the intent actually is, and restoring is simply
+     not a control. See resetPage below.
+
+     ⚠ RESTORED IN AN EFFECT, NEVER IN THE INITIAL STATE. Reading storage while
+     rendering is the hydration trap the `view` preference above documents: the
+     server has no session and would render twelve cards while the client
+     rendered twenty four, React would keep the server's markup, and the reader
+     would be back where they started with no error anywhere. One frame at the
+     default, then the correction. */
+  /* ⚠ STATE, NOT A REF, AND THAT DISTINCTION IS THE WHOLE FIX.
+
+     This gate was a ref first, and the restore silently did nothing. A ref set
+     at the end of the restore effect is already true when the write effect runs
+     later in the SAME commit, and that commit still holds the first frame's
+     values, because the setState calls above it have not been applied yet. So
+     the write fired immediately with `visible: 12` and overwrote the twenty
+     four it had just read. In development it was worse: React's double-invoked
+     mount effects then re-ran the restore, which now read back the twelve it
+     had just clobbered and set that.
+
+     A state flag cannot do this. Flipping it schedules a render, so the write
+     effect is never reached until a commit that already carries the restored
+     values. */
+  const [restored, setRestored] = useState(false)
+
+  useEffect(() => {
+    try {
+      const raw = window.sessionStorage.getItem(BROWSE_KEY)
+      if (raw) {
+        const saved = JSON.parse(raw) as Partial<Record<string, unknown>>
+        const str = (k: string) => (typeof saved[k] === 'string' ? (saved[k] as string) : null)
+        const search0 = str('search'); if (search0 !== null) setSearch(search0)
+        const tier0 = str('tier'); if (tier0 !== null) setTier(tier0)
+        const city0 = str('city'); if (city0 !== null) setCity(city0)
+        const pa0 = str('practiceArea'); if (pa0 !== null) setPracticeArea(pa0)
+        const rk0 = str('ranked'); if (rk0 !== null) setRanked(rk0)
+        /* Clamped rather than trusted. This is a number that has been out of the
+           app's hands, and a hostile or stale one here would either draw nothing
+           or ask the grid for thousands of cards. */
+        const v = saved.visible
+        if (typeof v === 'number' && Number.isFinite(v)) {
+          setVisible(Math.min(Math.max(PAGE_SIZE, Math.floor(v)), ALL_FIRMS.length))
+        }
+      }
+    } catch { /* Private mode, or something else wrote nonsense here. The
+                 defaults are a fine place to land. */ }
+    setRestored(true)
+  }, [])
+
+  /* Written on every change, so whatever the reader is looking at when they tap
+     a firm is what comes back when they return. Gated on the restore having
+     run, or the first frame's defaults would overwrite the very state being
+     restored before the restore effect had a chance to read it. */
+  useEffect(() => {
+    if (!restored) return
+    try {
+      window.sessionStorage.setItem(
+        BROWSE_KEY,
+        JSON.stringify({ search, tier, city, practiceArea, ranked, visible })
+      )
+    } catch { /* Nothing to do, and nothing worth telling the reader. */ }
+  }, [restored, search, tier, city, practiceArea, ranked, visible])
 
   const gridRef = useRef<HTMLDivElement>(null)
   /* Set on the click, read after the extra cards have rendered. */
@@ -401,6 +476,16 @@ export default function FirmsClient() {
 
   const shown = useMemo(() => filtered.slice(0, visible), [filtered, visible])
   const remaining = filtered.length - shown.length
+
+  /* Every control that narrows the list goes back to page one through here.
+     Wrapping the setter rather than watching the value is what lets the session
+     restore above set the same values without being mistaken for a reader. */
+  function resetPage<T>(set: (value: T) => void) {
+    return (value: T) => {
+      set(value)
+      setVisible(PAGE_SIZE)
+    }
+  }
 
   const hasFilters = tier || city || practiceArea || ranked
 
@@ -442,7 +527,7 @@ export default function FirmsClient() {
                   type="text"
                   placeholder="Search firms or practice areas"
                   value={search}
-                  onChange={e => setSearch(e.target.value)}
+                  onChange={e => resetPage(setSearch)(e.target.value)}
                   className="field"
                   style={{ paddingLeft: '2.25rem' }}
                 />
@@ -452,18 +537,18 @@ export default function FirmsClient() {
                 { value: tier, setter: setTier, options: TIER_OPTIONS, placeholder: 'Standing' },
                 { value: city, setter: setCity, options: CITY_OPTIONS, placeholder: 'City' },
               ].map(({ value, setter, options, placeholder }) => (
-                <select key={placeholder} className="filter-pill" data-active={!!value} value={value} onChange={e => setter(e.target.value)}>
+                <select key={placeholder} className="filter-pill" data-active={!!value} value={value} onChange={e => resetPage(setter)(e.target.value)}>
                   {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               ))}
 
-              <select className="filter-pill" data-active={!!practiceArea} value={practiceArea} onChange={e => setPracticeArea(e.target.value)}>
+              <select className="filter-pill" data-active={!!practiceArea} value={practiceArea} onChange={e => resetPage(setPracticeArea)(e.target.value)}>
                 <option value="">All Practice Areas</option>
                 {PRACTICE_OPTIONS.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
 
               {anyRankings && (
-                <select className="filter-pill" data-active={!!ranked} value={ranked} onChange={e => setRanked(e.target.value)}>
+                <select className="filter-pill" data-active={!!ranked} value={ranked} onChange={e => resetPage(setRanked)(e.target.value)}>
                   {RANKED_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               )}
@@ -472,7 +557,7 @@ export default function FirmsClient() {
                   The inline `color: var(--ink)` this button used to carry made
                   the label invisible against the dark ground. */}
               {hasFilters && (
-                <button className="filter-pill" onClick={() => { setTier(''); setCity(''); setPracticeArea(''); setRanked('') }}
+                <button className="filter-pill" onClick={() => { setTier(''); setCity(''); setPracticeArea(''); setRanked(''); setVisible(PAGE_SIZE) }}
                   style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <XIcon /> Clear
                 </button>

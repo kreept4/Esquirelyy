@@ -14,7 +14,58 @@ export default function HeroSection() {
 
   return (
     <div ref={containerRef} style={{ position: 'relative', height: '100vh', overflow: 'hidden', backgroundColor: '#000' }}>
-      <video autoPlay loop muted playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}>
+      {/* Held back to 70% against the black ground behind it. At full strength
+          the footage competed with the headline sitting on top of it: bright
+          moving detail directly behind white type, with nothing between them but
+          a text shadow. Dimming the video rather than laying a scrim over it
+          keeps the one element and costs no extra paint, and the black backdrop
+          does the darkening for free.
+
+          ⚠ THE POSTER IS THE VIDEO'S OWN FIRST FRAME, and that is the whole
+          point of it. The file is 13.7MB from CloudFront, so on a cold load
+          there were several seconds of the container's black showing through
+          before the first frame arrived: the hero opened on a black rectangle
+          with the headline animating over nothing. A poster fills exactly that
+          gap, and taking it from frame one rather than from a nice-looking
+          moment later in the clip means playback starts on the image already on
+          screen instead of cutting to a different scene.
+
+          preload="auto" because this is the first thing on the page and there
+          is nothing to save bandwidth for; "metadata" would fetch the header,
+          learn the dimensions, and still leave the poster sitting there.
+
+          ⚠ THE REF IS NOT DECORATION EITHER. React does not emit a `muted`
+          ATTRIBUTE into server-rendered HTML: it sets the property after
+          hydration. Mobile Safari and Chrome on Android read the attribute when
+          they decide whether an autoplaying video is allowed, so on a phone the
+          element was, for its first moments, an unmuted autoplaying video.
+          Autoplay is refused for those, and a refused autoplay is exactly what
+          puts the big play button on top of it. Setting the attribute and the
+          property on mount, then asking for playback and swallowing the refusal,
+          is what actually gets it running.
+
+          The catch is empty on purpose. iOS Low Power Mode blocks playback
+          outright and no amount of asking changes that; the honest outcome
+          there is the poster sitting still, which is a still hero rather than a
+          broken one. */}
+      <video
+        ref={el => {
+          if (!el) return
+          el.setAttribute('muted', '')
+          el.muted = true
+          el.play().catch(() => {})
+        }}
+        autoPlay
+        loop
+        muted
+        playsInline
+        controls={false}
+        disablePictureInPicture
+        preload="auto"
+        poster="/hero-poster.jpg"
+        aria-hidden="true"
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }}
+      >
         <source src={HERO_VIDEO_URL} type="video/mp4" />
       </video>
 
