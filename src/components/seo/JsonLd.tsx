@@ -99,6 +99,75 @@ const EMPLOYMENT_TYPE: Record<string, string> = {
 }
 
 /**
+ * The country a listing sits in, as an ISO code for JobPosting.
+ *
+ * ⚠ THIS WAS HARDCODED 'NG' AND WAS SILENTLY WRONG THE DAY A LONDON ROLE WENT
+ * UP. It was correct for every row on the board until then, which is exactly
+ * why nothing caught it: the Greenberg Traurig training contract published
+ * "London, United Kingdom" as its street address and Nigeria as its country, in
+ * the structured data Google reads to decide which searches a job appears in.
+ * A job in the wrong country is worse than one with no country: it is eligible
+ * for the wrong results and invites a manual action against the whole domain.
+ *
+ * Nigeria stays the default because the board is Nigerian and almost every row
+ * always will be. This only overrides when the location NAMES somewhere else,
+ * which keeps every existing row producing exactly what it produced before.
+ *
+ * The list is deliberately short. It covers the places Nigerian lawyers
+ * actually apply to and nothing more, because a wrong guess here is worse than
+ * the default: an unrecognised country falls back to NG, which is at least the
+ * answer that was right for the last three years.
+ */
+const COUNTRY_BY_NAME: Record<string, string> = {
+  'united kingdom': 'GB',
+  uk: 'GB',
+  england: 'GB',
+  scotland: 'GB',
+  wales: 'GB',
+  'northern ireland': 'GB',
+  'united states': 'US',
+  usa: 'US',
+  us: 'US',
+  canada: 'CA',
+  ireland: 'IE',
+  ghana: 'GH',
+  kenya: 'KE',
+  'south africa': 'ZA',
+  rwanda: 'RW',
+  uae: 'AE',
+  'united arab emirates': 'AE',
+  netherlands: 'NL',
+  france: 'FR',
+  germany: 'DE',
+  australia: 'AU',
+  singapore: 'SG',
+}
+
+/** The last comma-separated segment, lowercased. */
+function tail(location?: string | null): string {
+  return (location || '').split(',').pop()!.trim().toLowerCase()
+}
+
+export function countryOf(location?: string | null): string {
+  return COUNTRY_BY_NAME[tail(location)] || 'NG'
+}
+
+/**
+ * The city, which is the last segment UNLESS that segment is a country.
+ *
+ * "Yaba, Lagos" gives Lagos. "London, United Kingdom" gives London rather than
+ * United Kingdom, which is what the naive version produced and is a country
+ * sitting in a city field.
+ */
+export function localityOf(location?: string | null): string {
+  const parts = (location || '').split(',').map(p => p.trim()).filter(Boolean)
+  if (!parts.length) return ''
+  const last = parts[parts.length - 1].toLowerCase()
+  if (COUNTRY_BY_NAME[last] && parts.length > 1) return parts[parts.length - 2]
+  return parts[parts.length - 1]
+}
+
+/**
  * A listing, as JobPosting.
  *
  * THE HEADER OF THIS FILE HAS PROMISED "eligibility for the Google Jobs box on
@@ -193,10 +262,15 @@ export function jobPostingSchema(
         ...(job.location
           ? {
               streetAddress: job.location,
-              addressLocality: job.location.split(',').pop()!.trim(),
+              /* ⚠ THE LOCALITY IS THE CITY, NOT THE TAIL, ONCE A COUNTRY CAN BE
+                 IN THE STRING. "London, United Kingdom" split on the last comma
+                 gives "United Kingdom" as the locality, which is a country in a
+                 city field. Where the tail is a country the board knows about,
+                 the city is the segment before it. */
+              addressLocality: localityOf(job.location),
             }
           : {}),
-        addressCountry: 'NG',
+        addressCountry: countryOf(job.location),
       },
     },
     ...(job.practice_areas?.length ? { occupationalCategory: job.practice_areas.join(', ') } : {}),

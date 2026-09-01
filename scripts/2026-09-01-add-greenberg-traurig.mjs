@@ -92,9 +92,17 @@ const ROW = {
   role_desc:
     'A two year training contract starting in 2029, made up of four six month rotations across the Corporate, Real Estate, Litigation, Banking and Finance, Employment, Funds, Tax and Regulatory practices, with the option of a client secondment in the second year. Trainees start on 55,000 pounds, rising to 60,000 in the second year. Selection runs in stages after the application closes: shareholder interviews in February 2027, assessment days in March, and offers in early April.',
   /* ⚠ ELIGIBILITY FIRST. See the header: the reader who cannot apply has to be
-     able to tell from the card rather than from the portal. */
+     able to tell from the card rather than from the portal.
+
+     ⚠ AND IT STATES THE REQUIREMENT WITHOUT GLOSSING IT. The first line read
+     "A-levels at ABB or above, which most Nigerian LL.B holders will not have",
+     and the second half of that was ours, not the firm's, sitting inside a list
+     a reader takes as the employer's own words. It was also doing the reader's
+     thinking for them: somebody who holds A-levels, or IB, or schooled abroad,
+     was being told in passing that this is probably not for them. The bare
+     requirement carries the same information and lets them decide. */
   requirements: [
-    'A-levels at ABB or above, which most Nigerian LL.B holders will not have',
+    'A-levels at ABB or above',
     'On track for a 2:1 degree classification',
     'Open to law and non-law graduates',
     'Non-law graduates complete the PGDL before the SQE',
