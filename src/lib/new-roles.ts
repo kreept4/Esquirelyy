@@ -45,61 +45,48 @@
  */
 export const ROLE_ENTRIES = [
   {
-    /* First because it is the only one with a clock on it. The two below are
-       rolling and close when the firms fill them; this one shuts on 4
-       September. The email prints these in array order, so array order is a
-       claim about what to read first. */
-    slug: 'heirs-holdings-graduate-trainee-programme-2026',
-    employer: 'Heirs Holdings',
-    employerShort: 'Heirs Holdings',
-    title: '2026 Graduate Trainee Programme',
-    /* The bars are in the line because they are what disqualifies most readers
-       and none of them is obvious from the title. "Lawyers can apply" leads
-       because the post itself never says so: it says "a Bachelor's degree" and
-       names no subject, which on a legal careers board reads as a maybe. It is
-       a yes.
-       The certificate is named, not just the NYSC year. Having finished service
-       and being able to produce the discharge or exemption certificate are two
-       different things, and only the second one gets you through the form. */
-    line: 'Six months split between Heirs Academy training and live work across the group. Open to any degree at a 2:2, so an LL.B counts. You need NYSC finished with your discharge or exemption certificate in hand, no more than two years since, and to be 27 or under. Closes 4 September.',
-    short: 'six months at Heirs Holdings, open to lawyers',
+    /* AVA leads, and it leads on eligibility rather than on prestige.
+       This is the only seat in either drop that a member who was called this
+       year can take, because the flier says NYSC members may apply and puts the
+       floor at zero years post-call. Everything else currently on the board at
+       junior level still wants a year or two. For the share of this list that
+       finished Law School in July, this is the row, so it goes first.
+
+       ⚠ THE LINE NAMES THE HYBRID SPLIT, because "hybrid" on its own tells a
+       reader nothing and the flier is specific: remote, plus court and
+       regulatory visits. Somebody deciding whether they can take a Lagos seat
+       from outside Lagos needs the second half of that sentence. */
+    slug: 'ava-law-practice-associate-entry-level',
+    employer: 'AVA Law Practice',
+    employerShort: 'AVA Law Practice',
+    title: 'Associate (Entry-Level)',
+    line: 'Lagos, hybrid: remote plus court and regulatory visits. LL.B and BL, called to the Nigerian Bar, nought to three years post-call, and the firm says NYSC members may apply. Legal research, drafting, court filings and regulatory compliance. Apply to recruitments@avalawpractice.com, titled "Application for Associate – [Your Name]". No closing date.',
+    short: 'an entry-level role at AVA that NYSC members can take',
     blurb:
-      'Heirs Holdings are taking graduate trainees for six months. It is open to any degree at a 2:2, so an LL.B counts, and it closes on 4 September.',
+      'AVA Law Practice are taking an entry-level associate in Lagos. It is open from nought years post-call and the firm says NYSC members may apply.',
   },
   {
-    slug: 'principle-legal-consult-junior-associate',
-    employer: 'Principle Legal Consult',
-    employerShort: 'Principle Legal Consult',
-    title: 'Junior Associate',
-    /* "PRINCIPLE", NOT "PRINCIPAL". The firm's own spelling of its own name. It
-       reads as a typo to everyone who meets it and will be "corrected" by
-       somebody eventually. It is right as written. */
-    line: 'Abuja, 2 to 3 years post-NYSC, preferably from an established firm. Attending court independently, tracking cases, and drafting opinions and agreements, on matters across Abuja and London. Apply to hr@principlelegalconsult.com. No closing date published.',
-    short: 'an Abuja litigation seat at 2 to 3 years post-NYSC',
+    /* ⚠ THIS LINE WAS REWRITTEN ONCE AND THE REASON IS WORTH KEEPING.
+       It first read "the post publishes no requirements and no closing date, so
+       the address is the whole route in", which was true of the LinkedIn post
+       it was drafted from and false of the role. Tangerine's own listing for
+       the same seat on MyJobMag carries the qualifications the LinkedIn post
+       omits, and the board row was completed from it. See
+       scripts/2026-09-01-complete-tangerine-listing.mjs, which also records
+       what the missing requirements broke on the detail page.
+
+       The original instinct, not to invent requirements, was right. The mistake
+       was stopping at the first source and then writing the absence into the
+       copy as though it were a fact about the job. Check the employer's other
+       postings before describing a listing as thin. */
+    slug: 'tangerine-africa-legal-and-compliance-officer',
+    employer: 'Tangerine Africa',
+    employerShort: 'Tangerine',
+    title: 'Legal and Compliance Officer',
+    line: 'In-house at an insurance and financial services group in Surulere, Lagos, supporting the Legal and Compliance Manager on regulatory and statutory obligations and internal corporate governance. Wants a Second Class LL.B, call to the Nigerian Bar, and two to five years in a similar role. Send your credentials to careers@tangerine.africa. No closing date published.',
+    short: 'an in-house legal and compliance role at Tangerine',
     blurb:
-      'Principle Legal Consult are taking a junior associate in Abuja, 2 to 3 years post-NYSC, on a litigation seat with matters across Abuja and London.',
-  },
-  {
-    slug: 'uandp-law-multiple-practice-areas',
-    /* The registered name with the trading name after it, because that is how
-       the firm signs the post. "U&P Law" alone names nobody outside the firm. */
-    employer: 'Uduakabasi & Partners (U&P Law)',
-    /* Here the parenthetical is the recognisable half, so the short form keeps
-       it and drops the registered name rather than the other way round. */
-    employerShort: 'U&P Law',
-    title: 'Legal Professionals, Multiple Practice Areas',
-    /* The three questions are in the line because this is an open call with no
-       named seat: "what is the job" cannot be answered, so what a reader can
-       act on is what the email must contain. A bare CV to this address is a
-       wasted send.
-       THE SUBJECT LINE KEEPS THE FIRM'S OWN PUNCTUATION, dash included, and it
-       is the one place in this file that does. It is not our copy, it is an
-       instruction from the firm, and an application titled differently from
-       what they asked for is the kind of thing that gets filed wrong. */
-    line: 'An open call rather than one seat, across corporate governance, commercial transactions, compliance, energy, technology and investment. Send a CV and cover letter to UandPlawfirm@gmail.com saying why you want to join, what you would contribute, and where you see your career in three to five years. Title it "Job Application – [Position/Area of Interest] – [Your Name]". No closing date.',
-    short: 'an open call across U&P Law’s practice areas',
-    blurb:
-      'U&P Law are hiring across several practice areas, from corporate governance and commercial transactions to energy and technology. No closing date published.',
+      'Tangerine Africa are hiring a legal and compliance officer in Lagos, in-house at an insurance and financial services group.',
   },
 ] as const
 
@@ -107,9 +94,9 @@ export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
    *  somebody who read the 10 August note has not seen this one. */
-  id: 'roles-2026-08-24',
+  id: 'roles-2026-09-01',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-08-24T09:00:00.000Z',
+  at: '2026-09-01T09:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   employers: ROLE_ENTRIES.map(r => r.employer),
   /** The same firms without the parenthetical network names. Read by the bell. */

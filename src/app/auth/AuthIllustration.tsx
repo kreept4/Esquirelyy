@@ -2,8 +2,8 @@
 
 export default function AuthIllustration() {
   return (
-    <div style={{
-      width: '100%', height: '100%', minHeight: '100vh',
+    <div className="vh-min-full" style={{
+      width: '100%', height: '100%',
       backgroundColor: '#1A1A1A',
       display: 'flex', flexDirection: 'column',
       justifyContent: 'center', alignItems: 'center',

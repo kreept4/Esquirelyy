@@ -3,8 +3,8 @@ import Link from 'next/link'
 export default function NotFound() {
   return (
     <div
+      className="vh-min-full"
       style={{
-        minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

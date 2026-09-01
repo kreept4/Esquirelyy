@@ -1,6 +1,6 @@
 'use client'
-import { useState, useRef } from 'react'
-import { Copy, Check, AlertCircle, ArrowRight, X, Loader2 } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { Copy, Check, AlertCircle, ArrowRight, X, Loader2, Pencil, FileDown, FileText } from 'lucide-react'
 import { useRequireAuth } from '../useRequireAuth'
 import { createClient } from '@/lib/supabase/client'
 import ToolShell from '../ToolShell'
@@ -66,6 +66,50 @@ export default function CoverLetterPage() {
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
 
+  /* The draft the user is actually holding.
+     ⚠ SEPARATE FROM `result`, NOT A MUTATION OF IT. `result` is what the model
+     returned and it stays untouched, so Reset gives back the original draft
+     rather than whatever state an edit left behind. Everything downstream, the
+     copy button, the word count and both exports, reads `letter` below. */
+  const [edited, setEdited] = useState<string | null>(null)
+  const [editing, setEditing] = useState(false)
+
+  /* The letterhead. Not asked for before the letter exists, because none of it
+     changes a word of the draft: it is only needed at the moment somebody
+     downloads, and putting four more boxes above the Write button would cost
+     completions on the step that matters. Prefilled from the profile where we
+     already know the answer. */
+  const [contact, setContact] = useState({ fullName: '', email: '', phone: '', location: '', linkedin: '' })
+  const [downloading, setDownloading] = useState<'pdf' | 'docx' | null>(null)
+
+  useEffect(() => {
+    if (!userId) return
+    let live = true
+    ;(async () => {
+      try {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        const { data } = await (supabase as any)
+          .from('profiles')
+          .select('full_name, email, linkedin_url, location')
+          .eq('id', userId)
+          .maybeSingle()
+        if (!live) return
+        setContact(c => ({
+          ...c,
+          fullName: c.fullName || data?.full_name || '',
+          email: c.email || data?.email || user?.email || '',
+          linkedin: c.linkedin || data?.linkedin_url || '',
+          location: c.location || data?.location || '',
+        }))
+      } catch {
+        /* A letterhead the user can type themselves is not worth an error
+           message. The fields simply start empty. */
+      }
+    })()
+    return () => { live = false }
+  }, [userId])
+
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
 
   /* Checked here as well as on the server, so a wrong file type or an oversized
@@ -106,6 +150,10 @@ export default function CoverLetterPage() {
 
   function loadFromHistory(item: HistoryItem) {
     setResult(item.result)
+    /* Clear the edit, or the letter opened from history renders the previous
+       draft's edited text over the top of it. `letter` prefers `edited`. */
+    setEdited(null)
+    setEditing(false)
     setForm(f => ({ ...f, targetRole: item.target_role || '', employer: item.employer || '', careerStage: item.career_stage || '', tone: item.tone || 'formal and confident' }))
     setShowHistory(false)
   }
@@ -163,15 +211,79 @@ export default function CoverLetterPage() {
     }
   }
 
+  /** The draft as it stands: the edit if there is one, else what came back. */
+  const letter = edited ?? result?.coverLetter ?? ''
+
   function handleCopy() {
-    if (!result) return
-    navigator.clipboard.writeText(result.coverLetter)
+    if (!letter) return
+    navigator.clipboard.writeText(letter)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
+  /**
+   * Download the letter as PDF or Word.
+   *
+   * ⚠ THE BLOB IS REVOKED AND THE ANCHOR REMOVED. An object URL held after the
+   * click keeps the whole rendered file in memory for the life of the tab, and
+   * somebody trying both formats on three drafts would be holding six of them.
+   */
+  async function handleDownload(format: 'pdf' | 'docx') {
+    if (!letter || downloading) return
+    setDownloading(format)
+    setError('')
+    try {
+      const res = await fetch(`/api/cover-letter/export?format=${format}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          letter,
+          name: contact.fullName || form.firstName,
+          email: contact.email,
+          phone: contact.phone,
+          location: contact.location,
+          linkedin: contact.linkedin,
+          employer: form.employer,
+        }),
+      })
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => null)
+        setError(body?.error || 'That did not download. Try again in a moment.')
+        return
+      }
+
+      /* The server sets the filename in Content-Disposition; read it back so
+         the two cannot disagree, and fall back if the header is missing. */
+      const disp = res.headers.get('Content-Disposition') || ''
+      const starred = /filename\*=UTF-8''([^;]+)/i.exec(disp)
+      const plain = /filename="([^"]+)"/i.exec(disp)
+      const filename = starred
+        ? decodeURIComponent(starred[1])
+        : plain
+          ? plain[1]
+          : `cover-letter.${format}`
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    } catch {
+      setError('That did not download. Check your connection and try again.')
+    } finally {
+      setDownloading(null)
+    }
+  }
+
   const handleReset = () => {
     setResult(null)
+    setEdited(null)
+    setEditing(false)
     setForm({ firstName: '', targetRole: '', employer: '', careerStage: '', tone: 'formal and confident', cvSummary: '', highlights: '' })
     setCvFile(null)
     setMode('manual')
@@ -350,7 +462,10 @@ export default function CoverLetterPage() {
         )}
 
         {result && (() => {
-          const wordCount = result.coverLetter.trim().split(/\s+/).filter(Boolean).length
+          /* Counts the draft in hand, not the one that came back, so the number
+             tracks an edit as it is typed. It is the only signal that a letter
+             has drifted past the 250 word brief after somebody added to it. */
+          const wordCount = letter.trim().split(/\s+/).filter(Boolean).length
           return (
           <section className="doc-section">
             <div className="doc-section-label">
@@ -374,15 +489,112 @@ export default function CoverLetterPage() {
                 <p className="grotesk-bold tool-section-heading" style={{ marginBottom: 0 }}>
                   Your cover letter <span className="grotesk-regular tool-label-hint">{wordCount} words</span>
                 </p>
-                <button type="button" onClick={handleCopy} className="grotesk-bold tool-copy">
-                  {copied ? <><Check size={13} aria-hidden /> Copied</> : <><Copy size={13} aria-hidden /> Copy</>}
-                </button>
+                <div className="tool-letter-actions">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      /* Entering edit seeds the textarea from whatever is
+                         showing. Leaving it keeps the text: there is no Cancel,
+                         because the only way back to the original is "Write
+                         another letter", and a Cancel that silently discarded a
+                         paragraph somebody had just typed would be worse than
+                         not offering one at all. */
+                      if (!editing) setEdited(letter)
+                      setEditing(e => !e)
+                    }}
+                    className="grotesk-bold tool-copy"
+                  >
+                    {editing
+                      ? <><Check size={13} aria-hidden /> Done</>
+                      : <><Pencil size={13} aria-hidden /> Edit</>}
+                  </button>
+                  <button type="button" onClick={handleCopy} className="grotesk-bold tool-copy">
+                    {copied ? <><Check size={13} aria-hidden /> Copied</> : <><Copy size={13} aria-hidden /> Copy</>}
+                  </button>
+                </div>
               </div>
 
-              <div className="tool-letter">
-                {result.coverLetter.split('\n').map((para, i) => para.trim()
-                  ? <p key={i} className="grotesk-regular">{para}</p>
-                  : <div key={i} style={{ height: '0.5rem' }} />)}
+              {editing ? (
+                <textarea
+                  className="tool-letter-edit grotesk-regular"
+                  value={letter}
+                  onChange={e => setEdited(e.target.value)}
+                  aria-label="Edit your cover letter"
+                  spellCheck
+                />
+              ) : (
+                <div className="tool-letter">
+                  {letter.split('\n').map((para, i) => para.trim()
+                    ? <p key={i} className="grotesk-regular">{para}</p>
+                    : <div key={i} style={{ height: '0.5rem' }} />)}
+                </div>
+              )}
+
+              {/* ---- Letterhead and download -------------------------------
+                  Asked for here rather than on the form above, because none of
+                  it changes a word of the draft. It is only needed at the point
+                  somebody downloads, and four more boxes above the Write button
+                  would cost completions on the step that actually matters. */}
+              <div className="tool-row">
+                <p className="grotesk-bold tool-section-heading">Your details</p>
+                <p className="grotesk-regular doc-section-note" style={{ marginBottom: '0.9rem' }}>
+                  These go in the letterhead of the download. The LinkedIn address becomes a real
+                  link in both formats. Leave anything blank and it is left out.
+                </p>
+                <div className="tool-grid">
+                  <div>
+                    <label htmlFor="cl-fullname" className="tool-label">Full name</label>
+                    <input id="cl-fullname" type="text" className="tool-input grotesk-regular"
+                      value={contact.fullName}
+                      onChange={e => setContact(c => ({ ...c, fullName: e.target.value }))}
+                      placeholder="e.g. Boluwatife Ogunleye" />
+                  </div>
+                  <div>
+                    <label htmlFor="cl-email" className="tool-label">Email</label>
+                    <input id="cl-email" type="email" className="tool-input grotesk-regular"
+                      value={contact.email}
+                      onChange={e => setContact(c => ({ ...c, email: e.target.value }))}
+                      placeholder="you@example.com" />
+                  </div>
+                  <div>
+                    <label htmlFor="cl-phone" className="tool-label">Phone</label>
+                    <input id="cl-phone" type="tel" className="tool-input grotesk-regular"
+                      value={contact.phone}
+                      onChange={e => setContact(c => ({ ...c, phone: e.target.value }))}
+                      placeholder="+234 800 000 0000" />
+                  </div>
+                  <div>
+                    <label htmlFor="cl-linkedin" className="tool-label">
+                      LinkedIn <span className="tool-label-hint">(optional)</span>
+                    </label>
+                    <input id="cl-linkedin" type="text" className="tool-input grotesk-regular"
+                      value={contact.linkedin}
+                      onChange={e => setContact(c => ({ ...c, linkedin: e.target.value }))}
+                      placeholder="linkedin.com/in/your-name" />
+                  </div>
+                  <div>
+                    <label htmlFor="cl-location" className="tool-label">Location</label>
+                    <input id="cl-location" type="text" className="tool-input grotesk-regular"
+                      value={contact.location}
+                      onChange={e => setContact(c => ({ ...c, location: e.target.value }))}
+                      placeholder="e.g. Lagos, Nigeria" />
+                  </div>
+                </div>
+
+                <div className="tool-letter-actions" style={{ marginTop: '1.1rem' }}>
+                  <button type="button" onClick={() => handleDownload('pdf')}
+                    disabled={!!downloading} className="grotesk-bold tool-copy">
+                    {downloading === 'pdf'
+                      ? <><Loader2 size={13} className="animate-spin" aria-hidden /> Building</>
+                      : <><FileDown size={13} aria-hidden /> Download PDF</>}
+                  </button>
+                  <button type="button" onClick={() => handleDownload('docx')}
+                    disabled={!!downloading} className="grotesk-bold tool-copy">
+                    {downloading === 'docx'
+                      ? <><Loader2 size={13} className="animate-spin" aria-hidden /> Building</>
+                      : <><FileText size={13} aria-hidden /> Download Word</>}
+                  </button>
+                </div>
               </div>
 
               {result.tipsForSending?.length > 0 && (

@@ -86,6 +86,53 @@
  * rows, so neither produces anything on the board.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
+  /* 1 September, and both in the current drop.
+     Same rule as every drop before this one: the broadcast points recipients at
+     /jobs?roles=<these slugs>, which renders openJobs() for anyone without a
+     session, so a slug in the announcement and outside this set sends the
+     reader to an empty board. Neither is gated on its own merits either. AVA
+     put the seat out as a public recruitment flier with the application address
+     printed on it, and Tangerine posted theirs to LinkedIn for anyone to read.
+     Both are rolling, so neither carries a countdown. */
+  'ava-law-practice-associate-entry-level',
+  'tangerine-africa-legal-and-compliance-officer',
+
+  /* ⚠ THE TWELVE ALUKO ROWS, PUBLIC FROM 1 SEPTEMBER, AND THIS IS A FIX RATHER
+     THAN AN ADDITION.
+
+     They were seeded active and rolling and have been on the board for members
+     since, but no slug of theirs was ever listed here. The effect was a board
+     that showed 21 roles to a signed-in member and 9 to everybody else, with no
+     gap and nothing to indicate anything was missing: openJobs() filters
+     silently, which is the same failure the Andersen note at the bottom of this
+     file records. Twelve rows is a large enough hole that it changed what the
+     board appeared to be. More than half of it was invisible.
+
+     It is also the single biggest employer block on the site, so the version a
+     stranger saw was not a smaller board, it was a different one, missing every
+     capital markets, banking, IP and company secretarial seat at once.
+
+     ⚠ VERIFIED BEFORE OPENING, NOT ASSUMED. All twelve were checked against the
+     firm's own applicant tracking system at aluko-oyebode.hua.hrsmart.com on
+     1 September 2026 and every one is still posted: ids 20, 21, 22, 23, 27, 34,
+     35, 40, 43, 51, 52 and 53. That check is the reason these go in. A rolling
+     row carries no deadline, so nothing would ever have delisted a filled seat
+     on its own, and publishing a closed role to search engines is worse than
+     leaving it behind an account. Check the ATS again before assuming these are
+     still live. */
+  'aluko-associate-tmt',
+  'aluko-assistant-company-secretary',
+  'aluko-cosec-admin-support',
+  'aluko-associate-grc',
+  'aluko-senior-associate-grc',
+  'aluko-associate-business-advisory',
+  'aluko-associate-business-advisory-2',
+  'aluko-associate-banking-finance',
+  'aluko-associate-capital-markets',
+  'aluko-senior-associate-capital-markets',
+  'aluko-associate-ip-abuja',
+  'aluko-associate-ip-lagos',
+
   /* 23 and 24 August, and the current drop — all three of it.
      ⚠ ALL OPEN FOR THE REASON THE JEE NOTE BELOW GIVES, and it has stopped
      being an exception and become the rule: EVERY SLUG IN NEW_ROLES BELONGS

@@ -1019,7 +1019,15 @@ select.filter-pill option,
 /* Inner pages clear the fixed header. rem so it tracks the root scale. */
 .page-main {
   background: var(--cream);
+  /* dvh with a vh fallback, the same pattern and the same reason as
+     .staggered-menu-wrapper in StaggeredMenu.css: on iOS Safari 100vh is the
+     LARGE viewport, the height the page would have with the browser's bottom
+     bar hidden, so a 100vh floor is taller than the screen actually is and the
+     page gains scroll it does not need. dvh tracks the visible area. The vh
+     line stays as the fallback for browsers without dvh, so this can only be
+     an improvement. */
   min-height: 100vh;
+  min-height: 100dvh;
   padding-top: 5rem;
 }
 
@@ -1065,6 +1073,7 @@ video:not([controls])::-webkit-media-controls-panel {
 .jobs-page {
   background: var(--cream);
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .jobs-header {
@@ -3374,19 +3383,63 @@ video:not([controls])::-webkit-media-controls-panel {
 
 /* The letter itself sits on carton, so it reads as a document rather than as
    more page copy. */
+/* ⚠ THE MEASURE IS ON THE CARD, NOT ON THE PARAGRAPHS.
+   It used to be `max-width: 70ch` on `.tool-letter p` with the card left at
+   full width, which was reported as the letter being "aligned to the left
+   leaving excess space on the right". That is exactly what it does: past about
+   1100px the card keeps growing, the text stops at 70ch, and the reader gets a
+   wide cream panel with a column of type pinned to its left edge and a third of
+   it empty.
+
+   Capping the card instead keeps the same comfortable measure and makes the
+   panel look like a sheet of paper, which is what it is. Left aligned rather
+   than centred in its column on purpose: it sits under the section heading and
+   the subject line, and those start at the left edge. */
 .tool-letter {
   background: #FFF8E5;
   border: 2px solid #241F16;
   box-shadow: 5px 6px 0 #241F16;
   padding: 1.9rem 1.75rem;
   margin-bottom: 2.5rem;
+  max-width: 52rem;
 }
 .tool-letter p {
   font-size: 0.95rem;
   line-height: 1.9;
   color: var(--ink);
   margin-bottom: 1.1rem;
-  max-width: 70ch;
+}
+
+/* The editable view. Same box, same measure, same type, so toggling Edit does
+   not make the letter jump or reflow: only the caret appears. A textarea that
+   restyles its content is how you get somebody editing one layout and
+   downloading another. */
+.tool-letter-edit {
+  display: block;
+  width: 100%;
+  max-width: 52rem;
+  min-height: 26rem;
+  background: #FFF8E5;
+  border: 2px dashed #241F16;
+  box-shadow: 5px 6px 0 #241F16;
+  padding: 1.9rem 1.75rem;
+  margin-bottom: 2.5rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--ink);
+  resize: vertical;
+  box-sizing: border-box;
+}
+.tool-letter-edit:focus { outline: 2px solid #241F16; outline-offset: 3px; }
+
+/* The download row. Buttons share the .tool-copy shape so the whole strip above
+   the letter reads as one set of controls. */
+.tool-letter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
 }
 .tool-letter p:last-child { margin-bottom: 0; }
 
@@ -7229,6 +7282,7 @@ video::-webkit-media-controls { display: none !important; }
 .opp-page {
   background: var(--cream);
   min-height: 100vh;
+  min-height: 100dvh;
   padding: 5rem 0 4rem;
 }
 
@@ -7616,4 +7670,32 @@ video::-webkit-media-controls { display: none !important; }
   color: var(--ink);
   font-size: 0.82rem;
   letter-spacing: 0.02em;
+}
+
+/* ============================================================
+   VIEWPORT HEIGHT UTILITIES
+   ============================================================
+
+   Two classes so that inline styles stop reaching for 100vh. A React style
+   object cannot carry the two-declaration fallback that `dvh` needs, because an
+   object cannot hold the same key twice, so any component wanting a full-height
+   box has to come through here.
+
+   The reasoning is the one recorded at length on .staggered-menu-wrapper in
+   StaggeredMenu.css, and it was written after a real bug: on iOS Safari 100vh
+   is the LARGE viewport, the height the page would have if the browser's bottom
+   bar were hidden. The bar is not hidden until you scroll, so anything sized to
+   100vh is taller than the screen actually is and its bottom edge sits under
+   Safari's chrome, where it cannot be tapped.
+
+   `dvh` tracks the visible area and shrinks while the bar is showing. The `vh`
+   line stays first as the fallback for anything without `dvh` support, which is
+   what those browsers were already getting, so this is never a regression. */
+.vh-full {
+  height: 100vh;
+  height: 100dvh;
+}
+.vh-min-full {
+  min-height: 100vh;
+  min-height: 100dvh;
 }

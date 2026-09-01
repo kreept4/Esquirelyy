@@ -80,104 +80,176 @@ export const KIND_LABEL: Record<NewsKind, string> = {
  * decides a palette and nothing has to be re-baked after a reorder.
  */
 const ITEMS: NewsItem[] = [
+  /* ⚠ THE LBVIP SLIDE CAME OFF ON 1 SEPTEMBER, ON THE SCHEDULE IT SET ITSELF.
+
+     It was the only entry in this file with a hard expiry, and it said so at
+     length: a slide advertising a programme that has shut is worse than one
+     that never carried it, because the reader who taps it finds a closed form.
+     Lekan Bamidele & Co extended it once, from 23 to 30 August, and the slide
+     was redated to follow. The 30th has now passed and there is no third
+     extension to follow, so it goes.
+
+     getNewsItems() sorts and does not expire, deliberately, so nothing here
+     removes a stale slide on its own. That is still true and it is still the
+     thing to watch: this file expires by somebody editing it.
+   */
+
   {
     /**
-     * LBVIP 5.0, and the only slide here with a hard expiry.
+     * The swearing-in, and NOT the election result that used to sit here.
      *
-     * ⚠ THIS SLIDE HAS TO COME OUT ON 24 AUGUST 2026. Every other entry stays
-     * true indefinitely: a ranking, a directory, a tip about writing early. This
-     * one names a programme that shuts on the 23rd, and a carousel still
-     * advertising it on the 24th is worse than one that never carried it,
-     * because the reader who taps it finds a form that has closed.
-     * `getNewsItems()` sorts and does not expire, deliberately, so there is no
-     * mechanism to lean on here. It is a diary note, and it is written in the
-     * one place somebody editing this file will read.
+     * ⚠ THIS IS THE SECOND BADEJO-OKUSANYA SLIDE AND IT IS NOT THE SAME STORY.
+     * The first, nba-president-elect-2026, was the 6 August vote and it came off
+     * the same day this went on, because by then it was a month-old result about
+     * a swearing-in that had already happened. This is the swearing-in itself
+     * and, more to the point, the agenda she set out at it. That agenda names
+     * welfare and access to opportunities, which is this platform's subject.
+     * A result is a fact; a stated intention about what lawyers get paid is
+     * something a reader here has a stake in.
      *
-     * THE DEADLINE IS IN THE SUMMARY RATHER THAN LEFT TO THE CARD. The carousel
-     * does not render a countdown, so a slide about a closing programme that
-     * does not say when it closes is asking the reader to tap to find out.
+     * ⚠ IT WILL GO STALE, JUST SLOWLY. The address is a promise with a two-year
+     * term attached, so this is fair until it is either delivered on or clearly
+     * not. Revisit it rather than leaving it to sit: the failure mode this file
+     * keeps repeating is a slide that was true when it was written.
      *
-     * The link goes to the opportunity on Esquirely, not to the firm's Google
-     * Form, for the same reason the announcement email does: the three steps
-     * and the eligibility are read on the platform first, and the form is one
-     * more tap from there.
+     * THE PHOTOGRAPH IS THE NBA'S OWN, of the NBA's own ceremony, and it is
+     * credited to them. See the note on NewsMedia: fair dealing for reporting
+     * current events under the Copyright Act 2022 is what carries a press
+     * photograph here, and it expects sufficient acknowledgement, which is why
+     * `credit` is a required field rather than an optional one.
+     *
+     * ⚠ THE ASSET IS PRE-CROPPED AND THE CSS IS UNTOUCHED, which is the same
+     * call scripts/2026-08-25-agc-card-both-slots.mjs made and for the reason
+     * recorded there. `.news-photo` is `cover` at three different ratios:
+     * 4/3.4 on desktop, 16/9 under 900px and 3/2 under 640px. All three crop
+     * the SIDES of a landscape photo, so a frame only works here if its subject
+     * is CENTRED. The file is cut to 16/9 from the NBA's own gallery and
+     * checked at all three ratios before it went in. Retuning object-position
+     * for one card would make the next card added inherit values chosen for
+     * this one.
+     *
+     * ⚠ WHICH FRAME, AND THE TWO THAT WERE REJECTED. Three were tried, and the
+     * reasons are worth keeping because the next photo slide meets the same
+     * constraints.
+     *
+     * The oath itself, her repeating it at the microphone, is the obvious
+     * choice and it fails this slot. The administering officer is at the far
+     * left and she is at the far right, so the pair spans more of the frame
+     * than the narrowest crop keeps, and the 4/3.4 desktop slot cut her. No
+     * crop of that frame holds both.
+     *
+     * The handshake afterwards, both facing the camera, survives every ratio
+     * and was rejected on how it reads rather than on geometry: cropped to two
+     * people filling the frame it looks like a photograph taken on a phone, not
+     * like coverage of a ceremony.
+     *
+     * This one is the instrument of office being handed over. It keeps the
+     * microphone, the seal on the folder, the presidential medal and a third
+     * official in shot, so the room is legible as a ceremony, and its subjects
+     * sit near the middle, so all three ratios hold them whole. Centred subject
+     * AND visible context is the bar; a frame that clears only one of those is
+     * not good enough.
      */
-    /* ⚠ REDATED TO 24 AUGUST BECAUSE THE FIRM EXTENDED IT, and the redate is
-       the point rather than a side effect. This slide said "closes on 23 August
-       2026" and, on 24 August, that made it a slide announcing something that
-       was over. Lekan Bamidele & Co reopened it to the 30th, so the deadline
-       here moves with theirs and the date moves with it, which is what pulls
-       the slide back up the carousel to where somebody with six days left can
-       see it. See scripts/2026-08-24-extend-lbvip-deadline.mjs for the source. */
-    slug: 'lbvip-5-2026',
-    kind: 'update',
-    date: '2026-08-24',
-    title: 'LBVIP 5.0 has been extended to 30 August',
-    summary:
-      'Lekan Bamidele & Co have reopened the fifth edition of their virtual internship after the first deadline passed. Applying still takes a two minute video on a set topic, a public post tagging the firm, and their form. It now closes on 30 August 2026.',
-    href: '/jobs/lbvip-5-0-lekan-bamidele-virtual-internship-programme',
-    cta: 'See the three steps',
-    media: { type: 'logos', slugs: ['lekan-bamidele'] },
-  },
-  {
-    /**
-     * The 66th AGC, in progress as this goes up.
-     *
-     * ⚠ DATED 24 AUGUST, WHICH IS MID-CONFERENCE, AND THAT IS THE POINT.
-     * It opened on Sunday the 23rd at the Yakubu Gowon Stadium and runs to the
-     * 28th, so this slide is not an announcement of something coming — it is
-     * telling a reader that the thing is happening now and there are days of it
-     * left. A slide dated to the opening would sort below the roles drop within
-     * a day and be seen by nobody while the conference was still on.
-     *
-     * ⚠ IT WILL BE STALE ON 29 AUGUST. Nothing in this file expires on a
-     * date; every other entry here is either a standing tip or a fact that
-     * stays true. This one stops being true the moment the closing ceremony
-     * ends, and the summary is written in the present tense, so it must be
-     * pulled or rewritten in the past tense then. That is the cost of running a
-     * live slide and it is worth it for five days of relevance.
-     *
-     * The figure is the AGC's own identity card, from the conference site, used
-     * whole rather than cut to a mark. `photo` rather than `logos` for that
-     * reason: the logos branch clips each mark into a paint-splash blob, which
-     * is right for a mark on transparency and would take a bite out of a
-     * designed card. It is credited like any other supplied image.
-     */
-    slug: 'nba-agc-2026-beyond-limits',
+    slug: 'nba-president-sworn-in-2026',
     kind: 'news',
-    date: '2026-08-24',
-    title: 'Beyond Limits: the NBA conference is on now',
+    date: '2026-08-28',
+    title: 'Badejo-Okusanya sworn in as NBA president',
     summary:
-      'The 66th NBA Annual General Conference opened on Sunday at the Yakubu Gowon Stadium in Port Harcourt and runs to 28 August, under the theme Beyond Limits. Plenaries, breakout sessions and the Young Lawyers’ programme run through the week, More than eighteen thousand lawyers registered during the early bird window.',
-    href: 'https://agc.nigerianbar.org.ng',
-    cta: 'See the programme',
+      'She was sworn in at Port Harcourt on 28 August, the second woman to lead the association in its 66 years. In her inaugural address she named welfare, access to opportunities and new areas of practice as her priorities for the next two years.',
+    href: 'https://blog.nigerianbar.org.ng/2026/08/29/33rd-nba-president-oyinkansola-badejo-okusanya-san-delivers-inaugural-address-sets-out-vision-for-a-bolder-bar/',
+    cta: 'Read the address',
     media: {
       type: 'photo',
-      src: '/news/nba-agc-2026-beyond-limits.jpg',
-      alt: 'NBA Annual General Conference 2026, Beyond Limits',
+      src: '/news/badejo-okusanya-sworn-in-2026.jpg',
+      alt: 'Oyinkansola Badejo-Okusanya SAN receiving the instrument of office as 33rd President of the Nigerian Bar Association',
       credit: 'Nigerian Bar Association',
     },
   },
+
   {
-    slug: 'nba-president-elect-2026',
-    kind: 'news',
-    date: '2026-08-06',
-    /* Checked against Punch, Daily Post, The Nation and Tribune, which agree on
-     * the name, the margin and the swearing-in date. Deliberately states the
-     * result and nothing further: several outlets also report a dispute around
-     * the election, and characterising that is not this carousel's job. */
-    title: 'Badejo-Okusanya SAN elected NBA President',
+    /**
+     * Greenberg Traurig's London trainee intake, on the carousel rather than on
+     * the board, and that placement is the decision worth recording.
+     *
+     * ⚠ IT IS DELIBERATELY NOT A LISTING. Every row on the board is something a
+     * Nigerian law student or lawyer can act on with what they already hold.
+     * This one is gated on ABB at A-level and runs through the SQE, so for most
+     * of this audience it is not an application, it is information. Putting it
+     * in the jobs table would have it counted, filtered and searched alongside
+     * seats that are genuinely open to the reader, and a board that does that
+     * stops meaning anything. The carousel is where something worth knowing but
+     * not broadly applicable belongs.
+     *
+     * ⚠ THE ENTRY BAR IS IN THE SUMMARY, NOT BEHIND THE LINK, and it is there
+     * on purpose. The temptation with a name like this is to lead with the
+     * salary and let the reader discover the A-level requirement after they
+     * have started the form. Stating it in the two sentences the carousel
+     * actually shows means the readers it does not fit skip it in three
+     * seconds, and the ones it does fit know they qualify before they click.
+     *
+     * WHY THE TIMING IS THE HOOK. The intake is 2029, so the people who should
+     * apply are in university now. That is the one genuinely useful thing here
+     * and it is the thing a reader is least likely to work out unaided, which
+     * is why the first sentence carries it.
+     *
+     * ⚠ THE MARK IS `image` RATHER THAN `logos`, AND NOT BY DEFAULT.
+     * The `logos` branch resolves through logoForEmployer, which would work:
+     * add a greenbergtraurig key to EMPLOYER_LOGOS and the slug resolves. It is
+     * the wrong branch anyway. That branch clips each mark into an irregular
+     * paint splash about 6.4rem square, which suits a roughly square firm mark
+     * and destroys this one. The GT lockup is a monogram plus wordmark at about
+     * 6:1, so inside a splash it renders as a thin illegible strip.
+     * `.news-illustration` is a 20rem-wide slot with the aspect left alone,
+     * which is the shape this artwork actually needs.
+     *
+     * It is also not an employer on the board, and EMPLOYER_LOGOS is keyed for
+     * board rows. Adding a key there for something that will never be a listing
+     * would leave a mark behind for an employer the board cannot show.
+     *
+     * SOURCED FROM WIKIMEDIA COMMONS, where the file is recorded as public
+     * domain: a wordmark below the threshold of originality, credited to
+     * Greenberg Traurig, marked trademarked but not copyrighted. gtlaw.com
+     * answers 403 to anything without a browser fingerprint, so their own copy
+     * is not reachable. Trademark is not copyright and this is nominative use,
+     * naming the firm whose programme the slide is about, which is the same
+     * basis every employer mark on the board sits on.
+     */
+    slug: 'greenberg-traurig-london-trainee-2029',
+    kind: 'update',
+    date: '2026-09-01',
+    title: 'Greenberg Traurig is taking 2029 trainees now',
     summary:
-      'Oyinkansola Badejo-Okusanya SAN takes 47 per cent of the vote to become only the second woman to lead the Nigerian Bar Association, after Priscilla Kuye in 1991. She is sworn in as the 33rd President on 21 August for a two-year term.',
-    href: 'https://punchng.com/full-list-winners-of-2026-nba-elections/',
-    cta: 'Full list of winners',
+      'Their London office has opened applications for training contracts starting in 2029, so this one is aimed at students still at university. Two years, four six-month rotations, starting on 55,000 pounds. You need ABB at A-level and to be on track for a 2:1. It closes on 30 November 2026.',
+    href: 'https://www.gtlaw.com/en/general/careers/law-students/europe-law-students/london-trainee-recruiting',
+    cta: 'Check the entry requirements',
     media: {
-      type: 'photo',
-      src: '/news/badejo-okusanya.jpg',
-      alt: 'Oyinkansola Badejo-Okusanya SAN',
-      credit: 'The Unknown Nigeria',
+      type: 'image',
+      src: '/news/greenberg-traurig.png',
+      alt: 'Greenberg Traurig',
     },
   },
+  /* THE TWO NBA SLIDES CAME OFF ON 1 SEPTEMBER, and both had earned it.
+
+     nba-agc-2026-beyond-limits was written in the present tense about a
+     conference that closed on 28 August, and the note that used to sit here
+     said in terms that it had to be pulled or rewritten the moment the closing
+     ceremony ended. It was still up four days later telling readers the
+     conference "is on now", which is the failure that note predicted.
+
+     nba-president-elect-2026 was a 6 August election result about a swearing-in
+     that happened on the 21st.
+
+     Neither was news by the time it came off, and between them they held two of
+     eight slots on a carousel whose job is to show a reader something they can
+     act on. Removed rather than rewritten, because the election is settled and
+     the conference is over: there is no version of either that a job seeker
+     does anything with.
+
+     ⚠ THE PHOTO BRANCH IS NOW UNUSED. These were the only two `type: 'photo'`
+     entries. The `.news-photo` rules in globals.css and their object-position
+     values were tuned for the Badejo portrait specifically, so leave them
+     alone rather than tidying them away: the next photo slide will want them,
+     and rederiving those numbers costs more than the dead CSS does. */
   {
     slug: 'virtual-internships',
     kind: 'tip',

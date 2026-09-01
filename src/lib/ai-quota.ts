@@ -44,6 +44,71 @@ export const AI_LIMITS = {
 
 export type AiRoute = keyof typeof AI_LIMITS
 
+/**
+ * ============================================================
+ * THE PLATFORM-WIDE CEILING
+ * ============================================================
+ *
+ * ⚠ THE PER-USER QUOTA ABOVE DOES NOT BOUND THE BILL, AND THE HEADER OF THIS
+ * FILE ALREADY SAYS WHY: an attacker "can make more accounts". Signup is free,
+ * takes an email, and has no captcha in front of it, so the real daily maximum
+ * is not 3 CV generations, it is 3 multiplied by however many accounts somebody
+ * cares to create. With 99 accounts today the honest worst case is already into
+ * three figures a day; with a script pointed at signup it is unbounded.
+ *
+ * That header then says the backstop is "the spend limit on the Anthropic
+ * account", and it is right that no application code substitutes for it. But
+ * that limit fails hard: when it trips, every AI route on the platform starts
+ * returning provider errors to real members with no warning and no wording of
+ * our own. This ceiling sits below it and fails soft, in our voice, at a number
+ * we choose.
+ *
+ * ⚠ SET IT FROM WHAT A NORMAL DAY LOOKS LIKE, NOT FROM WHAT LOOKS SAFE. Too
+ * high and it never fires. Too low and a genuinely busy day, the morning after
+ * a broadcast to ninety people, reads as an outage. The default below is about
+ * five times the busiest legitimate day the ledger has recorded, which leaves
+ * room to grow and still catches abuse an order of magnitude before the invoice
+ * does.
+ *
+ * Tunable without a deploy through AI_GLOBAL_DAILY_LIMIT, because the number
+ * you want during an incident is not the number you want on a Tuesday.
+ */
+const GLOBAL_DAILY_DEFAULT = 400
+
+function globalDailyLimit(): number {
+  const raw = Number((process.env.AI_GLOBAL_DAILY_LIMIT || '').trim())
+  return Number.isFinite(raw) && raw > 0 ? raw : GLOBAL_DAILY_DEFAULT
+}
+
+/**
+ * The smallest gap between two calls by the same user on the same route.
+ *
+ * ⚠ A DAILY COUNT IS NOT A RATE. The quota above says a member may run the
+ * cover letter ten times today; it says nothing about whether they may run it
+ * ten times in four seconds. They can, and a browser tab left looping does
+ * exactly that: ten concurrent requests, ten Anthropic calls in flight, ten
+ * functions billed at once, and the count query races itself so the eleventh
+ * often gets through too.
+ *
+ * The interval is per route because the routes are not alike. Nobody reads a CV
+ * review in under half a minute, so thirty seconds there costs an honest user
+ * nothing. interview-feedback fires once per answer in a live practice session
+ * and a fast typist genuinely submits two answers inside a minute, so it gets
+ * the shortest gap on the list.
+ *
+ * ⚠ THIS IS NOT A SECURITY CONTROL EITHER. It is measured from the ledger, so
+ * two requests arriving in the same instant can both read the same empty window
+ * and both pass. It cuts sustained looping, which is the actual failure mode,
+ * and it does not pretend to be a mutex.
+ */
+const MIN_SECONDS_BETWEEN: Record<AiRoute, number> = {
+  'cv-generate': 45,
+  'cv-review': 30,
+  'cover-letter': 20,
+  'interview-prep': 20,
+  'interview-feedback': 5,
+}
+
 /** Friendly name for the message the user actually sees. */
 const ROUTE_NAMES: Record<AiRoute, string> = {
   'cv-generate': 'CV generations',
@@ -124,12 +189,21 @@ export async function requireUserWithQuota(
   const since = new Date()
   since.setUTCHours(0, 0, 0, 0)
 
-  const { count, error } = await db
+  /* ⚠ ROWS, NOT A HEAD COUNT, and the change is load bearing. This was
+     `select('id', { head: true })`, which returns a number and nothing else.
+     The burst check below needs the most recent timestamp, and asking for it
+     separately would be a second round trip for data the first query is already
+     standing on. The ceiling is 40 rows on the busiest route, so reading them
+     costs less than the extra query would. */
+  const { data: mine, error } = await db
     .from('ai_usage')
-    .select('id', { count: 'exact', head: true })
+    .select('created_at')
     .eq('user_id', auth.user.id)
     .eq('route', route)
     .gte('created_at', since.toISOString())
+    .order('created_at', { ascending: false })
+
+  const count = mine?.length ?? 0
 
   /**
    * ⚠ A BROKEN LEDGER FAILS OPEN, ON PURPOSE, AND THIS IS THE ONE JUDGEMENT
@@ -148,6 +222,68 @@ export async function requireUserWithQuota(
   if (error) {
     console.error(`[ai-quota] could not read usage for ${route}, allowing through:`, error.message)
     return { user: auth.user, error: null }
+  }
+
+  /* ---- Burst -------------------------------------------------------------
+     Checked before the daily limit, because a user who is looping should be
+     told to slow down rather than told they have spent an allowance that the
+     loop is in the middle of spending for them. */
+  const gap = MIN_SECONDS_BETWEEN[route]
+  const lastAt = mine?.[0]?.created_at
+  if (gap && lastAt) {
+    const sinceLast = (Date.now() - new Date(lastAt).getTime()) / 1000
+    if (sinceLast >= 0 && sinceLast < gap) {
+      const wait = Math.max(1, Math.ceil(gap - sinceLast))
+      return {
+        user: null,
+        error: NextResponse.json(
+          {
+            error: `That was quick. Give it ${wait} more second${wait === 1 ? '' : 's'} and try again.`,
+          },
+          /* Retry-After is the standard way to say the same thing to something
+             that is not a person, and a well-behaved client backs off on it
+             rather than hammering. */
+          { status: 429, headers: { 'Retry-After': String(wait) } }
+        ),
+      }
+    }
+  }
+
+  /* ---- The platform ceiling ----------------------------------------------
+     Counted across every user and every route. See the note on
+     GLOBAL_DAILY_DEFAULT: this is the backstop the per-user quota cannot be,
+     because signup is free and unprotected.
+
+     ⚠ CHECKED AFTER THE USER'S OWN LIMITS, ON PURPOSE. It is the rarest of the
+     three and the most expensive to evaluate, and a member who is over their
+     own allowance should be told that rather than told the platform is busy,
+     which would be both less useful and less true. */
+  const cap = globalDailyLimit()
+  const { count: globalCount, error: globalError } = await db
+    .from('ai_usage')
+    .select('id', { count: 'exact', head: true })
+    .gte('created_at', since.toISOString())
+
+  if (globalError) {
+    /* Fails open, consistent with the per-user read below and for the same
+       reason recorded there. */
+    console.error('[ai-quota] could not read the global count, allowing through:', globalError.message)
+  } else if ((globalCount ?? 0) >= cap) {
+    console.error(`[ai-quota] GLOBAL DAILY CEILING HIT: ${globalCount} calls today, cap ${cap}`)
+    return {
+      user: null,
+      error: NextResponse.json(
+        {
+          /* Deliberately does not say "limit" or name a number. This is our
+             ceiling, not the member's fault, and telling them the platform is
+             unusually busy is both true and the only thing they can act on. */
+          error:
+            'Our writing tools are unusually busy today and have paused to keep up. ' +
+            'Please try again later, or tomorrow. Your own daily allowance has not been used.',
+        },
+        { status: 503, headers: { 'Retry-After': '3600' } }
+      ),
+    }
   }
 
   if ((count ?? 0) >= limit) {

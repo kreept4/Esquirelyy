@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QUIZ_PRACTICE_AREAS } from '@/lib/practice-areas'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -96,6 +96,79 @@ export default function QuickQuestions() {
   const [answers, setAnswers] = useState<Answers>({ stage: '', goal: '', city: '', area: '' })
   const [saving, setSaving] = useState(false)
 
+  /**
+   * ⚠ ASK ONCE. THIS SECTION USED TO COME BACK FOR EVERY VISITOR, FOREVER.
+   *
+   * persist() below has always written the answers twice, to localStorage and
+   * to `profiles`, and the header of this file says the second copy exists so
+   * that onboarding does not "ask twice". Nothing ever read either of them
+   * back, and page.tsx renders this component unconditionally, so a member who
+   * answered all four questions in August was asked the same four questions on
+   * every home page visit since. It was reported as the questionnaire popping
+   * up for returning users, which is exactly what it was.
+   *
+   * `resolved` is a third state, not a boolean flip, and it matters. The home
+   * page is statically generated on an hourly revalidate, so the server has no
+   * idea who is looking: localStorage only exists after mount. Rendering the
+   * quiz first and hiding it once the check comes back would show the section
+   * to everyone for a frame and then yank it, which is worse than the bug. So
+   * nothing renders until the answer is known.
+   *
+   * BOTH SOURCES ARE CHECKED, and localStorage first because it needs no
+   * network. The profile is the fallback for somebody who answered on their
+   * phone and opened the site on a laptop: same person, same answers, empty
+   * localStorage. A signed-out visitor only ever hits the first check.
+   */
+  const [resolved, setResolved] = useState(false)
+  const [alreadyAnswered, setAlreadyAnswered] = useState(false)
+
+  useEffect(() => {
+    let live = true
+
+    ;(async () => {
+      try {
+        const raw = localStorage.getItem(PREFS_KEY)
+        if (raw) {
+          const saved = JSON.parse(raw)
+          /* `stage` is the first question and the one every other answer keys
+             off, so its presence is what "answered" means. A half-finished run
+             never reaches persist(), so a stored stage implies a full set. */
+          if (saved && saved.stage) {
+            if (live) { setAlreadyAnswered(true); setResolved(true) }
+            return
+          }
+        }
+      } catch {
+        // Private browsing or storage disabled. Fall through to the profile.
+      }
+
+      try {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          const { data } = await (supabase as any)
+            .from('profiles')
+            .select('career_stage')
+            .eq('id', user.id)
+            .maybeSingle()
+          if (data?.career_stage && live) {
+            setAlreadyAnswered(true)
+            setResolved(true)
+            return
+          }
+        }
+      } catch {
+        /* Never let a failed lookup hide the quiz: showing it to somebody who
+           already answered is a small annoyance, hiding it from somebody who
+           has not is the feature not existing. */
+      }
+
+      if (live) setResolved(true)
+    })()
+
+    return () => { live = false }
+  }, [])
+
   const stageGoals = goalsFor(answers.stage)
   const base = QUESTIONS[step]
   const current = base.key === 'goal' ? { ...base, options: stageGoals } : base
@@ -116,11 +189,30 @@ export default function QuickQuestions() {
          * them they hid a missing GRANT on `profiles` that made every one of
          * these writes fail. The localStorage copy above is why nothing was
          * visibly wrong: the quiz kept working, it just never persisted. */
+        /* ⚠ practice_areas WAS BEING COLLECTED AND THROWN AWAY.
+           The fourth question, "Which area of law?", has always been asked and
+           has always been used, but only to build the ?practice= parameter on
+           the redirect below. It was never written here, so `profiles.
+           practice_areas` stayed empty for every account that answered, and the
+           one question whose answer nobody can infer from anything else was the
+           one that was not kept. Three of four answers persisted looks like it
+           works, which is why it survived.
+
+           Written as a single-element array because the column is text[] and
+           the quiz asks for one area. A member who later picks several keeps
+           them in the same column, so nothing downstream has to know whether
+           the value came from here.
+
+           "Not sure yet" is the empty option, and it writes an empty array
+           rather than [''] : an array containing a blank string would match
+           nothing on the board and would count as a stated preference in any
+           tally of what members want, which is worse than a null answer. */
         const { error } = await (supabase as any).from('profiles').upsert({
           id: user.id,
           career_stage: final.stage,
           goals: final.goal,
           location: final.city === 'Anywhere' ? null : final.city,
+          practice_areas: final.area ? [final.area] : [],
           updated_at: new Date().toISOString(),
         })
         if (error) console.error('[quiz] could not save profile', error)
@@ -168,6 +260,12 @@ export default function QuickQuestions() {
     setDirection('back')
     setStep((s) => s - 1)
   }
+
+  /* Nothing until we know, and nothing ever again once they have answered. See
+     the note on `resolved` above. Returning null rather than a collapsed
+     section keeps the dark run continuous: the ticker, the carousel and the pit
+     all share this background, so a zero-height gap here is invisible. */
+  if (!resolved || alreadyAnswered) return null
 
   // #1A1A1A left a faint seam where this met the black sections above it.
   // The whole dark run shares one value now.

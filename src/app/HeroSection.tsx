@@ -13,7 +13,7 @@ export default function HeroSection() {
   const overlayOpacity = useTransform(scrollYProgress, [0, 0.35], [1, 0])
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', height: '100vh', overflow: 'hidden', backgroundColor: '#000' }}>
+    <div ref={containerRef} className="vh-full" style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#000' }}>
       {/* Held back to 70% against the black ground behind it. At full strength
           the footage competed with the headline sitting on top of it: bright
           moving detail directly behind white type, with nothing between them but

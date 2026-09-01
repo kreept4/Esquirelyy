@@ -17,6 +17,8 @@ import {
   daysUntilDeadline,
   closesInWords,
 } from '@/lib/scholarships-data'
+import { activeStudentNotice } from '@/lib/email/student-notice'
+import { activeClosingNotice } from '@/lib/email/closing-notice'
 
 /**
  * The new roles announcement.
@@ -41,6 +43,23 @@ const INK = '#241F16'
 const AMBER = '#FBBF24'
 const CREAM = '#FAF7F2'
 const MUTED = '#8A8378'
+
+/**
+ * The closing card's accent, and the one place in this email that is red.
+ *
+ * ⚠ RED IS RESERVED FOR "THIS SHUTS SOON", NOTHING ELSE. The scholarship block
+ * further down keeps amber, and that difference is the point rather than an
+ * inconsistency: a funding deadline a week out and a role that closes in three
+ * days are not the same claim on a reader's evening, and two blocks in the same
+ * colour would flatten the distinction the ordering is there to make.
+ *
+ * Chosen for legibility on the ink ground rather than off a palette. #F0C030,
+ * the amber it replaced, is a warm gold that on #241F16 reads as decoration.
+ * This is bright enough to register as an alarm and still clears sensible
+ * contrast against the card at 11px uppercase, which is the smallest and
+ * hardest-working type in the message.
+ */
+const URGENT = '#FF6B5B'
 
 const CONTOUR =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23241F16' stroke-opacity='0.28' stroke-width='1.5'%3E%3Cpath d='M0 20c26-14 54 14 80 0s54-14 80 0'/%3E%3Cpath d='M0 47c26-11 54 11 80 0s54-11 80 0'/%3E%3Cpath d='M0 74c26-16 54 16 80 0s54-16 80 0'/%3E%3Cpath d='M0 101c26-9 54 9 80 0s54-9 80 0'/%3E%3Cpath d='M0 128c26-15 54 15 80 0s54-15 80 0'/%3E%3C/g%3E%3C/svg%3E\")"
@@ -132,15 +151,42 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
    * goes to the page that lists every one of them.
    */
   const closingScholarship = closingScholarships(7)[0] ?? null
+  /* Null once the notice expires, which is what keeps a reused template from
+     announcing a deadline that has passed. See lib/email/student-notice.ts. */
+  const studentNotice = activeStudentNotice()
+  /* Null once the deadline passes, so a reused template cannot announce a
+     role that has closed. See lib/email/closing-notice.ts. */
+  const closingNotice = activeClosingNotice()
   const scholarshipDays = closingScholarship ? daysUntilDeadline(closingScholarship) : null
 
   const text = [
     greeting,
     '',
+    /* The closing card leads the plain-text part too, for the same reason it
+       leads the HTML: a reader on a text-only client has the same deadline. */
+    ...(closingNotice
+      ? [
+          `${closingNotice.label.toUpperCase()}: ${closingNotice.employer}, ${closingNotice.title}`,
+          closingNotice.body,
+          `${siteUrl}/jobs/${closingNotice.slug}`,
+          '',
+        ]
+      : []),
     ...ROLES.flatMap(r => [`${r.employer}: ${r.title}`, r.line, '']),
     `${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER}, so ${publishedNouns()}`,
     'above are the ones they published.',
     '',
+    /* The plain-text part gets the notice too. A recipient whose client
+       blocks HTML would otherwise receive a different email from everybody
+       else, and this block is the half of the message aimed at students. */
+    ...(studentNotice
+      ? [
+          `${studentNotice.kicker.toUpperCase()}: ${studentNotice.title}`,
+          studentNotice.body,
+          `${studentNotice.cta}: ${studentNotice.href}`,
+          '',
+        ]
+      : []),
     `See ${dropPronoun()} here: ${link}`,
     '',
     'from Bolu & Ipinu',
@@ -191,6 +237,31 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
           <td style="padding:0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;">
             <p style="margin:0 0 18px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:-0.6px;color:${INK};">${greeting.replace(/—/g, '&mdash;')}</p>
 
+            ${
+              /* ⚠ ABOVE THE NEW ROLES, DELIBERATELY. See lib/email/
+                 closing-notice.ts: the email is ordered by what the reader
+                 stands to lose, not by what we added. This is the only block
+                 permitted above the role cards.
+
+                 Amber on ink, which is the treatment the scholarship block uses
+                 for a deadline further down. Same visual language for the same
+                 kind of fact, so a reader who has had one of these before knows
+                 what the colour means before reading a word. */
+              closingNotice
+                ? `
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 18px 0;">
+              <tr>
+                <td style="padding:14px 16px;background-color:${INK};border:2px solid ${INK};">
+                  <p style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${URGENT};">${closingNotice.label} &middot; ${closingNotice.employer}</p>
+                  <p style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:#FFF8E5;">${closingNotice.title}</p>
+                  <p style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:#FFF8E5;">${closingNotice.body}</p>
+                  <a href="${siteUrl}/jobs/${closingNotice.slug}" style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${URGENT};text-decoration:underline;">See the role</a>
+                </td>
+              </tr>
+            </table>`
+                : ''
+            }
+
             ${ROLES.map(
               r => `
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 14px 0;">
@@ -214,6 +285,29 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
                   <p style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:#FFF8E5;">${closingScholarship.title}</p>
                   <p style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:#FFF8E5;">${closingScholarship.funding}. ${closingScholarship.deadline}.</p>
                   <a href="${siteUrl}/scholarships" style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#F0C030;text-decoration:underline;">See the terms</a>
+                </td>
+              </tr>
+            </table>`
+                : ''
+            }
+
+            ${
+              /* The student notice, on a light card rather than the ink one the
+                 scholarship block uses. Two dark blocks stacked would read as a
+                 second footer, and this one is an aside rather than an urgent
+                 deadline: it is here for the share of the list still at
+                 university, and the rest should be able to skip it at a glance.
+                 Renders nothing at all when activeStudentNotice() returns null,
+                 which it does once the notice expires. */
+              studentNotice
+                ? `
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:18px 0 4px 0;">
+              <tr>
+                <td style="padding:14px 16px;background-color:#FFF8E5;border:2px dashed ${INK};">
+                  <p style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${MUTED};">${studentNotice.kicker}</p>
+                  <p style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:${INK};">${studentNotice.title}</p>
+                  <p style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:${INK};">${studentNotice.body}</p>
+                  <a href="${studentNotice.href}" style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${INK};text-decoration:underline;">${studentNotice.cta}</a>
                 </td>
               </tr>
             </table>`

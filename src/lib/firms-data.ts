@@ -2779,6 +2779,51 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   andersennigeria: '/employer-logos/andersen.png',
   andersenng: '/employer-logos/andersen.png',
 
+  /* AVA Law Practice, added 1 September 2026 with the entry-level associate
+     seat.
+
+     ⚠ CUT OUT OF THE FIRM'S RECRUITMENT FLIER, because there is no logo file to
+     take. AVA publishes no press kit and no mark on its own site, so the only
+     artwork that exists is the top-left corner of the "WE'RE HIRING" graphic.
+     scripts/2026-09-01-extract-ava-logo.mjs does the cut and carries the whole
+     argument, including the two bugs it went through: the flier's ground is
+     cream rather than white, so trimming alone leaves a plate, and the first
+     key put a dark rim on every letterform that showed on the ticker band and
+     nowhere else.
+
+     No EMPLOYER_BALL_BG. The mark is a single burnt orange, rgb(178,79,14),
+     which carries on the cream card and in the white ball without a ground of
+     its own. It is close in tone to the amber the site already uses, so it will
+     look at home rather than borrowed.
+
+     ⚠ NO BARE 'ava' KEY, deliberately, unlike the bare 'bfa' above. Three
+     letters that common will collide with an employer nobody has added yet, and
+     a wrong mark on a card is worse than no mark: LogoFrame falls back to the
+     employer's initials, which is honest. */
+  avalawpractice: '/employer-logos/ava-law-practice.png',
+  avalaw: '/employer-logos/ava-law-practice.png',
+
+  /* Tangerine, added 1 September 2026 with the legal and compliance seat.
+
+     Their own wordmark from tangerine.africa/images/logo.svg, rendered at 600px
+     wide off the vector so it stays sharp in the pit, and trimmed to its ink.
+     It arrives transparent, so unlike the eighteen marks key-opaque-logos.mjs
+     had to rescue there is nothing to key here.
+
+     ⚠ BOTH NAMES ARE KEYED ON PURPOSE. The group is Tangerine Africa and the
+     insurance business inside it is Tangerine Life. The board row is filed
+     under the group, because that is what the careers address belongs to, but
+     the LinkedIn post signs off as Tangerine Life and a future row could
+     reasonably be entered either way. One mark, both keys, so whichever name is
+     typed the card resolves rather than falling back to initials.
+
+     No EMPLOYER_BALL_BG. The mark is an orange fruit and a near-black wordmark
+     on transparency, which reads on the cream card and in the white ball
+     without a ground. */
+  tangerineafrica: '/employer-logos/tangerine.png',
+  tangerinelife: '/employer-logos/tangerine.png',
+  tangerine: '/employer-logos/tangerine.png',
+
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',
   mtnnigeria: '/employer-logos/mtn.png',
