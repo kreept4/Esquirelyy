@@ -53,7 +53,33 @@ export default async function HomePage() {
   // 'Open right now' must mean it. Anything past its deadline is excluded;
   // rolling roles and roles with no stated deadline stay.
   const today = new Date().toISOString().slice(0, 10)
-  const openRoles = listings.filter((j: any) => j.is_rolling || !j.deadline || j.deadline >= today)
+  const open = listings.filter((j: any) => j.is_rolling || !j.deadline || j.deadline >= today)
+
+  /**
+   * ⚠ THE PIT SHOWS THE EIGHT MOST RECENT, NOT EVERYTHING OPEN.
+   *
+   * It used to take every open role, which was fine at nine and stopped being
+   * fine the moment the twelve Aluko rows were made publicly visible: the pit
+   * went to twenty three balls, most of them one employer, and it read as a
+   * crowd rather than as a selection. Reported as overpopulated, and it was.
+   *
+   * EIGHT, AND MOST RECENTLY ADDED FIRST. `listings` is already ordered by
+   * created_at descending, so this is a slice rather than a re-sort, and the
+   * property that matters is that the pit turns over on its own as rows are
+   * added. Nobody has to curate it.
+   *
+   * ⚠ NOT SORTED BY DEADLINE, and that is a real trade-off worth naming. A role
+   * closing in three days is more useful to a reader than a rolling one added
+   * yesterday, and this ordering can bury it. The pit is not where urgency
+   * lives: ClosingSoon on the board is, the bell raises deadlines inside seven
+   * days, and the announcement email leads with whatever is shutting. The pit's
+   * job is to show the board is alive, and "what went up most recently" is the
+   * honest answer to that.
+   *
+   * The full set is one tap away and the ticker above still reads from the
+   * unsliced list, so nothing is hidden, only unstacked.
+   */
+  const openRoles = open.slice(0, 8)
   const tickerItems = listings.slice(0, 8).map((j: any) => j.employer + ', ' + j.title)
 
   return (

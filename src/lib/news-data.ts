@@ -219,8 +219,15 @@ const ITEMS: NewsItem[] = [
     title: 'Greenberg Traurig is taking 2029 trainees now',
     summary:
       'Their London office has opened applications for training contracts starting in 2029, so this one is aimed at students still at university. Two years, four six-month rotations, starting on 55,000 pounds. You need ABB at A-level and to be on track for a 2:1. It closes on 30 November 2026.',
-    href: 'https://www.gtlaw.com/en/general/careers/law-students/europe-law-students/london-trainee-recruiting',
-    cta: 'Check the entry requirements',
+    /* ⚠ POINTS AT THE LISTING, NOT AT GTLAW.COM, SINCE 1 SEPTEMBER.
+       It went up linking to the firm's careers page because there was no
+       listing to link to. There is now, at /jobs, with the entry requirements
+       on the card and the Workday posting behind the apply button. Sending a
+       reader off-site when we hold the same facts is the thing the LBVIP slide
+       was careful not to do: the eligibility and the deadline are read here
+       first, and the application is one tap from there. */
+    href: '/jobs/greenberg-traurig-2029-training-contract',
+    cta: 'See the requirements',
     media: { type: 'logos', slugs: ['greenberg-traurig'] },
   },
   /* THE TWO NBA SLIDES CAME OFF ON 1 SEPTEMBER, and both had earned it.

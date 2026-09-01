@@ -97,6 +97,17 @@ const OPEN_JOB_SLUGS = new Set<string>([
   'ava-law-practice-associate-entry-level',
   'tangerine-africa-legal-and-compliance-officer',
 
+  /* 1 September, added after the drop had already gone out, and open for a
+     reason the other two do not share.
+     It is a public Workday posting on the firm's own careers system, so there
+     is nothing here to gate. More to the point, the announcement email that
+     went to ninety members carries this programme as a "For students" card
+     pointing at gtlaw.com, and anybody who followed that and then came looking
+     for it on the board would have been bounced to /auth/login for a listing
+     they had just been told about. The email is unrecallable; the redirect it
+     would have caused was not. */
+  'greenberg-traurig-2029-training-contract',
+
   /* ⚠ THE TWELVE ALUKO ROWS, PUBLIC FROM 1 SEPTEMBER, AND THIS IS A FIX RATHER
      THAN AN ADDITION.
 
