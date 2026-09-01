@@ -2824,6 +2824,37 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   tangerinelife: '/employer-logos/tangerine.png',
   tangerine: '/employer-logos/tangerine.png',
 
+  /* Greenberg Traurig, added 1 September 2026 for the carousel rather than for
+     the board. It is not and will not be a listing: a London training contract
+     gated on A-levels and the SQE does not belong among roles a Nigerian
+     reader can actually take. The key exists so the news slide can resolve a
+     mark through logoForEmployer like every other slide does.
+
+     ⚠ THE MONOGRAM, NOT THE FULL LOCKUP, AND THAT IS FORCED BY THE SPLASH.
+     `.news-splash` is a 6.4rem blob with 1rem of padding, so the artwork lands
+     in about 70px square. The published lockup is the GT block plus the
+     wordmark at roughly 6:1, which `object-fit: contain` renders as a 70px by
+     11px strip: present, and completely unreadable. The monogram is square, so
+     it fills the same box at full height and can actually be read. Both were
+     rendered at the real size before choosing.
+
+     Cropping to the monogram is not altering the mark. It is an existing
+     element of their own lockup, used the way a favicon is, which is the same
+     nominative basis every other employer mark on this board sits on. Building
+     a new stacked lockup out of their parts WOULD be altering it, and that is
+     why this is a crop and not a redraw.
+
+     Source is Wikimedia Commons, where the file is recorded as public domain:
+     a wordmark below the threshold of originality, credited to Greenberg
+     Traurig, marked trademarked but not copyrighted. gtlaw.com answers 403 to
+     anything without a browser fingerprint, so their own copy is unreachable.
+
+     No EMPLOYER_BALL_BG, and it would do nothing if there were: the monogram is
+     a solid near-black block, so it carries its own ground. */
+  greenbergtraurig: '/employer-logos/greenberg-traurig.png',
+  greenbergtrauriglondon: '/employer-logos/greenberg-traurig.png',
+  gtlaw: '/employer-logos/greenberg-traurig.png',
+
   zenithbankplc: '/employer-logos/zenith-bank.png',
   zenithbank: '/employer-logos/zenith-bank.png',
   mtnnigeria: '/employer-logos/mtn.png',

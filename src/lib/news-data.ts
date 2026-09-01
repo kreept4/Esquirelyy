@@ -192,27 +192,26 @@ const ITEMS: NewsItem[] = [
      * and it is the thing a reader is least likely to work out unaided, which
      * is why the first sentence carries it.
      *
-     * ⚠ THE MARK IS `image` RATHER THAN `logos`, AND NOT BY DEFAULT.
-     * The `logos` branch resolves through logoForEmployer, which would work:
-     * add a greenbergtraurig key to EMPLOYER_LOGOS and the slug resolves. It is
-     * the wrong branch anyway. That branch clips each mark into an irregular
-     * paint splash about 6.4rem square, which suits a roughly square firm mark
-     * and destroys this one. The GT lockup is a monogram plus wordmark at about
-     * 6:1, so inside a splash it renders as a thin illegible strip.
-     * `.news-illustration` is a 20rem-wide slot with the aspect left alone,
-     * which is the shape this artwork actually needs.
+     * ⚠ THE MARK IS `logos`, SO IT GETS THE SAME PAINT SPLASH AS EVERY OTHER
+     * SLIDE, AND GETTING THERE TOOK A CROP RATHER THAN A CSS EXCEPTION.
      *
-     * It is also not an employer on the board, and EMPLOYER_LOGOS is keyed for
-     * board rows. Adding a key there for something that will never be a listing
-     * would leave a mark behind for an employer the board cannot show.
+     * This was `image` first, which renders into `.news-illustration`, a 20rem
+     * slot with the aspect left alone. That was the right slot for the full
+     * lockup and the wrong answer for the carousel: the LBVIP slide beside it
+     * uses `logos` and gets a splash, so one slide sat in a plain wide box
+     * while its neighbour had artwork, and the row stopped reading as one set.
      *
-     * SOURCED FROM WIKIMEDIA COMMONS, where the file is recorded as public
-     * domain: a wordmark below the threshold of originality, credited to
-     * Greenberg Traurig, marked trademarked but not copyrighted. gtlaw.com
-     * answers 403 to anything without a browser fingerprint, so their own copy
-     * is not reachable. Trademark is not copyright and this is nominative use,
-     * naming the firm whose programme the slide is about, which is the same
-     * basis every employer mark on the board sits on.
+     * The reason `image` was reached for is real. The splash is a 6.4rem blob
+     * with 1rem of padding, so the artwork lands in roughly 70px square, and
+     * the published GT lockup is the monogram plus wordmark at about 6:1. In a
+     * splash that is a 70 by 11 pixel strip, technically present and entirely
+     * unreadable. Both were rendered at the real size before this was decided.
+     *
+     * The fix is the artwork, not the rule: EMPLOYER_LOGOS carries the GT
+     * monogram alone, which is square, fills the same box at full height, and
+     * is legible. See the note beside that key in firms-data.ts for why a crop
+     * to their own monogram is nominative use while building a new stacked
+     * lockup out of their parts would not be.
      */
     slug: 'greenberg-traurig-london-trainee-2029',
     kind: 'update',
@@ -222,11 +221,7 @@ const ITEMS: NewsItem[] = [
       'Their London office has opened applications for training contracts starting in 2029, so this one is aimed at students still at university. Two years, four six-month rotations, starting on 55,000 pounds. You need ABB at A-level and to be on track for a 2:1. It closes on 30 November 2026.',
     href: 'https://www.gtlaw.com/en/general/careers/law-students/europe-law-students/london-trainee-recruiting',
     cta: 'Check the entry requirements',
-    media: {
-      type: 'image',
-      src: '/news/greenberg-traurig.png',
-      alt: 'Greenberg Traurig',
-    },
+    media: { type: 'logos', slugs: ['greenberg-traurig'] },
   },
   /* THE TWO NBA SLIDES CAME OFF ON 1 SEPTEMBER, and both had earned it.
 

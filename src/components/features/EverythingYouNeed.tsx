@@ -336,9 +336,15 @@ function Preview({ kind }: { kind: string }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.6rem' }}>
           {cols.map(([label, items]) => (
             <div key={label}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
+              {/* ⚠ NO COUNT BESIDE THE LABEL. It used to print items.length, so
+                  the columns read "Applied 3", "Interview 2", "Offer 1". At
+                  0.6rem it was too small to read as data and just close enough
+                  to the heading to look like part of it, and on a preview whose
+                  contents are illustrative the number was quietly making a claim
+                  about a fictional pipeline. The cards are visible and countable
+                  on their own. */}
+              <div style={{ marginBottom: '0.6rem' }}>
                 <span className="grotesk-bold" style={{ fontSize: '0.72rem', color: tone.fg }}>{label}</span>
-                <span className="grotesk-regular" style={{ fontSize: '0.6rem', color: tone.soft }}>{items.length}</span>
               </div>
               {items.map((n) => (
                 // Logo above the name rather than beside it: three columns inside
