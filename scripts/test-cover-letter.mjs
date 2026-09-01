@@ -73,6 +73,22 @@ const CASES = [
     },
   },
   {
+    /* The real one. This is the input behind the letters that were rejected on
+       1 September, kept here verbatim so the fix can be checked against the
+       case that produced the failure rather than against a case invented to
+       pass. If this reads well, the tool reads well. */
+    name: 'templars ADR (the reported failure)',
+    input: {
+      firstName: 'Boluwatife',
+      targetRole: 'Associate, ADR',
+      employer: 'Templars',
+      careerStage: 'Recently called to bar',
+      tone: 'formal and confident',
+      cvSummary:
+        'Called to the Nigerian Bar July 2026. LL.B Adekunle Ajasin University, B.L Nigerian Law School. Chartered arbitrator (NICARB) and chartered mediator and conciliator (ICMC). ADR Unit Head at the Adekunle Ajasin University Law Clinic: ran 13 mediations across community and student disputes, binding settlement agreements in 10, built the Mediation Centre from scratch, trained and accredited a panel of 15 student neutrals through ICMC, coordinated a cross-border negotiation exercise with the University of California College of the Law, San Francisco. Litigation across three chambers in Lagos, Ondo and Abuja: drafted motions, affidavits, settlement agreements and letters of adjournment; attended National Industrial Court hearings on wrongful termination claims; researched live matters at Okon N. Efut (SAN) & Associates. Currently advises a United States healthcare operator on governance and regulatory compliance.',
+    },
+  },
+  {
     name: 'switcher (practice area change)',
     input: {
       firstName: 'Segun',
@@ -105,11 +121,39 @@ const BANNED_OPENERS = [
   'i was excited to see', 'i am excited to',
 ]
 
+/* ⚠ THE PATTERNS THAT SURVIVE A WORD LIST.
+   Every phrase in BANNED_WORDS is a word somebody can grep for. These are
+   constructions, built from ordinary words, and they are what the letters
+   rejected on 1 September were actually made of. A scan that only checks
+   vocabulary reported "tells: none" on all three of them. */
+const REFLECTIVE_TAIL = [
+  /,\s*(which|and it|an experience that)\s+(taught|gave|showed|required|strengthened|helped|forced|made)\b/i,
+  /\bi came away with\b/i,
+  /\bwhich (is where|required more|has required)\b/i,
+  /\bwhere i learned\b/i,
+  /\bthat (taught|showed) me\b/i,
+]
+const META = [
+  /\bthe more useful thing to say\b/i,
+  /\bwhat is worth noting\b/i,
+  /\bbears most directly\b/i,
+  /\bi should say (at the outset|that)\b/i,
+  /\b(to put it plainly|more importantly)\b/i,
+  /\bthe part of my background\b/i,
+  /\bmade no sense\b/i,
+]
+const HEDGES = [/\bi think\b/i, /\bi believe\b/i, /\barguably\b/i, /\bi would say\b/i, /\bperhaps\b/i]
+const NEGATION = [/\bwas not (ceremonial|merely|just)\b/i, /\bnot just (a|an)\b/i, /\bmore than (just|merely)\b/i]
+
 function scan(letter) {
   const low = letter.toLowerCase()
   const hits = []
   for (const w of BANNED_WORDS) if (low.includes(w.toLowerCase())) hits.push(w)
   for (const o of BANNED_OPENERS) if (low.includes(o)) hits.push('OPENER: ' + o)
+  for (const r of REFLECTIVE_TAIL) if (r.test(letter)) hits.push('REFLECTIVE TAIL: ' + r.source.slice(0, 38))
+  for (const r of META) if (r.test(letter)) hits.push('META: ' + r.source.slice(0, 34))
+  for (const r of HEDGES) if (r.test(letter)) hits.push('HEDGE: ' + r.source.slice(0, 22))
+  for (const r of NEGATION) if (r.test(letter)) hits.push('NEGATION: ' + r.source.slice(0, 30))
   if (letter.includes('—') || letter.includes('–')) hits.push('DASH')
   if (/[‘’“”…]/.test(letter)) hits.push('SMART PUNCTUATION')
   if (/\?/.test(letter)) hits.push('QUESTION MARK')
@@ -171,6 +215,16 @@ for (const c of CASES) {
   console.log('tips    :')
   for (const t of parsed.tipsForSending || []) console.log('   - ' + t)
   console.log('-'.repeat(74))
+  /* The longest paragraph, because a letter can sit inside the word ceiling and
+     still arrive as one wall in the middle. That is what the rejected Templars
+     letter did: 198 words total, 200 of them in one block. */
+  const paras = letter
+    .split(/\n+/)
+    .map(l => l.trim())
+    .filter(l => l && !/^(dear|yours|sincerely|faithfully|regards)/i.test(l))
+  const longest = Math.max(0, ...paras.map(p => p.split(/\s+/).filter(Boolean).length))
+
   console.log(`body words : ${words} ${words > 250 ? '  <== OVER THE 250 CEILING' : '(within ceiling)'}`)
+  console.log(`longest para: ${longest} ${longest > 90 ? '  <== OVER THE 90 WORD PARAGRAPH CAP' : '(within cap)'}`)
   console.log(`tells      : ${hits.length ? hits.join(', ') : 'none'}`)
 }
