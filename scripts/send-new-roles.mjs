@@ -99,6 +99,31 @@ const ALL = flag('--all')
 const PLAIN = flag('--plain')
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://esquirely.com.ng'
 
+/**
+ * ⚠ --plain CANNOT REACH THE LIST. IT IS A DIAGNOSTIC, AND THE GUARD IS THE
+ * DIFFERENCE BETWEEN THOSE TWO THINGS.
+ *
+ * The experiment it exists for is done and its answer was no: a text-only send
+ * landed in Promotions exactly like the designed one, so there is no version of
+ * this where stripping the HTML is the right thing to broadcast. What is left
+ * is a flag that silently downgrades the email, sitting one forgotten word away
+ * from the command that writes to every confirmed account.
+ *
+ * The designed mail is the product. It carries the closing card, the role
+ * cards, the button and the brand, and a plain-text broadcast would be a worse
+ * email sent to a hundred people who cannot be sent a correction.
+ *
+ * So --plain is refused unless --only is present, the same shape as the
+ * --as-of guard in send-wbg-ypp.mjs and for the same reason: a flag that is
+ * safe on a test send to yourself is not automatically safe on a broadcast, and
+ * the place to encode that is here rather than in somebody's memory at 2am.
+ */
+if (PLAIN && !ONLY) {
+  console.error('--plain is a diagnostic and only works with --only <address>.')
+  console.error('The broadcast sends the designed HTML mail. Drop --plain.')
+  process.exit(1)
+}
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY,
