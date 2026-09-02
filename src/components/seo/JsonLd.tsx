@@ -332,3 +332,74 @@ export function jobListSchema(jobs: { slug: string; title: string; employer: str
     })),
   }
 }
+
+/**
+ * The two co-founders, as linked-data entities.
+ *
+ * ============================================================
+ * WHY THIS EXISTS AND WHY IT IS HERE RATHER THAN ON THE ABOUT PAGE
+ * ============================================================
+ *
+ * The about page has carried both names and the words "Co-founder" since it was
+ * built, and that was not enough. The name and the role sit in two separate DOM
+ * nodes inside a card, so a machine reading the page sees a string that looks
+ * like a name near a string that says Co-founder, and has to guess they are
+ * related. The Organization block in layout.tsx, meanwhile, described the
+ * company at length and named nobody: it had no `founder` property at all.
+ *
+ * Nothing on the site ever asserted "this person founded this organisation" in
+ * a form a machine could read. That assertion is what this file adds, and it is
+ * the whole of what search engines and answer engines act on.
+ *
+ * ⚠ DEFINED ONCE, CONSUMED TWICE, ON PURPOSE. layout.tsx puts these in
+ * `Organization.founder`, so the claim is on EVERY page of the site including
+ * the homepage, which is the one an answer engine is most likely to fetch on
+ * its own. The about page emits the same nodes again as top-level entities, so
+ * `${SITE_URL}/about` is a page that genuinely defines them rather than a URL
+ * the homepage points at and never substantiates. The shared `@id` is what
+ * makes those two the same entity rather than four.
+ *
+ * ⚠ NATURAL CASE HERE, ALL CAPS ON SCREEN. The cards render
+ * "OGUNLEYE BOLUWATIFE, ESQ." because that is the house style for a name on
+ * that page. Feeding a shouted, comma-suffixed, surname-first string to an
+ * entity resolver is a worse match for "who founded Esquirely" than the plain
+ * form, so the schema carries the plain form and `alternateName` carries the
+ * variants: surname first, which is how the name is ordered in Nigeria and on
+ * the card, and the short form both founders actually go by and sign emails
+ * with.
+ *
+ * ⚠ NO `sameAs`, DELIBERATELY, and this is the same call people.ts already
+ * made about LinkedIn URLs at length: a `sameAs` pointing at the wrong
+ * Boluwatife Ogunleye publishes a stranger as a co-founder of this company,
+ * which is worse than an entity with no external profiles attached. Add the
+ * real profile URLs here when somebody has confirmed them, and the entities get
+ * substantially stronger, because `sameAs` is how a resolver merges this Person
+ * with the one it already knows from LinkedIn.
+ */
+export const FOUNDERS = [
+  {
+    '@type': 'Person',
+    '@id': `${SITE_URL}/about#boluwatife-ogunleye`,
+    name: 'Boluwatife Ogunleye',
+    alternateName: ['Ogunleye Boluwatife', 'Bolu Ogunleye'],
+    jobTitle: 'Co-founder',
+    worksFor: { '@id': `${SITE_URL}/#organization` },
+    url: `${SITE_URL}/about`,
+  },
+  {
+    '@type': 'Person',
+    '@id': `${SITE_URL}/about#ipinuoluwa-ogunleye`,
+    name: 'Ipinuoluwa Ogunleye',
+    alternateName: ['Ogunleye Ipinuoluwa', 'Ipinu Ogunleye'],
+    jobTitle: 'Co-founder',
+    worksFor: { '@id': `${SITE_URL}/#organization` },
+    url: `${SITE_URL}/about`,
+  },
+]
+
+/** The same people as standalone nodes, for the page that describes them.
+ *  `@context` is added because these are emitted as top-level entities on
+ *  /about rather than nested inside the Organization the way layout.tsx uses
+ *  them. */
+export const founderEntities = () =>
+  FOUNDERS.map(f => ({ '@context': 'https://schema.org', ...f }))

@@ -1,4 +1,4 @@
-import JsonLd, { breadcrumb, openGraph, webPageSchema } from '@/components/seo/JsonLd'
+import JsonLd, { breadcrumb, founderEntities, openGraph, webPageSchema } from '@/components/seo/JsonLd'
 import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { TEAM, AMBASSADORS, type Person } from './people'
@@ -128,6 +128,11 @@ export default function AboutPage() {
             { name: 'Esquirely', path: '/' },
             { name: 'About us', path: '/about' },
           ]),
+          /* The founders as entities this page actually defines, rather than
+             ones the homepage merely points at. Same `@id`s as the `founder`
+             property in layout.tsx, which is what makes them one entity each
+             instead of two. See FOUNDERS in components/seo/JsonLd. */
+          ...founderEntities(),
         ]}
       />
       <main className="page-main doc-page">
@@ -164,6 +169,20 @@ export default function AboutPage() {
         <div className="shell about-body">
           <section className="about-section">
             <p className="grotesk-bold about-section-title">The team</p>
+
+            {/* ⚠ THE FOUNDING SENTENCE, IN PROSE, AND IT IS NOT DECORATION.
+                The cards below carry the same two names, but a name in one
+                element and "Co-founder" in the element under it is a layout, not
+                a statement: the relationship only exists once a reader joins
+                them up. Structured data now asserts it for machines that parse
+                JSON-LD, and this asserts it for the ones that read the page as
+                text, which is most of what answers a question like "who founded
+                Esquirely". One sentence, and it is the only place on the site
+                that says the thing outright. */}
+            <p className="grotesk-regular about-section-note">
+              Esquirely was founded in 2026 by Boluwatife Ogunleye and Ipinuoluwa
+              Ogunleye, and is built with Oreoluwa Adeyemi.
+            </p>
 
             <svg width="0" height="0" aria-hidden style={{ position: 'absolute' }}>
               <ArrowDefs id="aboutHeadH" />

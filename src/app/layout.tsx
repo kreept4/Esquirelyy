@@ -3,7 +3,7 @@ import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import SmallScreenNotice from '@/components/layout/SmallScreenNotice'
 import ReferralCapture from '@/components/features/ReferralCapture'
-import JsonLd from '@/components/seo/JsonLd'
+import JsonLd, { FOUNDERS } from '@/components/seo/JsonLd'
 import { SITE_URL } from '@/lib/site-url'
 
 /**
@@ -137,6 +137,24 @@ const ORGANIZATION = {
    * not the logo.
    */
   logo: `${SITE}/logo.png`,
+  /**
+   * ⚠ WHO FOUNDED THIS, WHICH THIS BLOCK PREVIOUSLY DECLINED TO SAY.
+   *
+   * Everything above describes what Esquirely is, where it operates and what it
+   * looks like, and named no people at all. The about page carried both names
+   * and the word "Co-founder", but in two separate DOM nodes inside a card, so
+   * the relationship between them was something a machine had to infer.
+   *
+   * `founder` is the assertion itself, and it sits in the ROOT LAYOUT so it
+   * ships on every page including the homepage. An answer engine asked who
+   * founded Esquirely usually fetches the homepage and nothing else; putting
+   * this only on /about would mean the claim exists on the one page such a
+   * request never reaches.
+   *
+   * See lib/seo FOUNDERS for why the names are in natural case here and shouted
+   * on screen, and for why there is no `sameAs` yet.
+   */
+  founder: FOUNDERS,
   sameAs: [],
 }
 
