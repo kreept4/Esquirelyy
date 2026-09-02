@@ -74,6 +74,29 @@ const ONLY = value('--only')
 /* --all ignores the new_listings opt-out. It exists for a genuine emergency
    and should essentially never be used for an announcement like this. */
 const ALL = flag('--all')
+/**
+ * ⚠ --plain SENDS THE TEXT PART ONLY, AS AN EXPERIMENT, NOT AS A SETTING.
+ *
+ * The domain is authenticated and the broadcast still landed in Gmail's
+ * Promotions tab. Authentication was the half that was objectively broken;
+ * Gmail also tabs on how a message looks, and this one looks like a newsletter:
+ * a 52px wordmark banner, a coloured call to action, a footer nav row, and
+ * whatever open-tracking pixel and rewritten links Brevo adds on top.
+ *
+ * Guessing which of those is decisive is a waste of a send. A message with no
+ * HTML part at all has none of them, and Gmail files plain text in Primary
+ * almost without exception. So this is the control: send the same words with
+ * --plain, and where it lands tells you whether the problem is the design or
+ * something else entirely.
+ *
+ * If plain lands in Primary, the fix is to cut the template down until it stops
+ * reading as a newsletter. If plain ALSO lands in Promotions, the design is not
+ * the cause and the next suspects are Brevo's link rewriting and the
+ * List-Unsubscribe header it attaches to every send.
+ *
+ * NOT A FLAG TO SHIP THE REAL BROADCAST WITH, unless the experiment says so.
+ */
+const PLAIN = flag('--plain')
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://esquirely.com.ng'
 
 const supabase = createClient(
@@ -152,7 +175,10 @@ for (const u of recipients) {
       },
       to: [{ email: u.email, name: name || undefined }],
       subject,
-      htmlContent: html,
+      /* Omitting htmlContent entirely rather than sending an empty string:
+         Brevo treats a present-but-empty part as a part, and the point of the
+         control is a message that is genuinely text/plain only. */
+      ...(PLAIN ? {} : { htmlContent: html }),
       textContent: text,
     }),
   })
