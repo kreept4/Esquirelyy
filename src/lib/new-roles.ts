@@ -68,7 +68,23 @@ export const ROLE_ENTRIES = [
     employer: 'World Bank Group',
     employerShort: 'World Bank',
     title: 'Young Professionals Program 2027',
-    line: 'Washington DC, on a two year term that becomes a five year contract on performance. The Bank asks for two to six years post-call and a graduate degree, which in Nigerian terms means an LL.M or another master\'s: an LL.B with Law School does not clear it. There is no longer an age limit whatever older write-ups say, and Nigeria qualifies on nationality. The legal stream is the Legal Vice Presidency: drafting and negotiating the Bank\'s project loan agreements and advising country teams on legal and policy risk. ICSID, investment treaty arbitration, is the other one, and the form lets you name two alternative streams so a single application covers both. Apply on the World Bank site. Closes 30 September, 23:59 UTC, which is 00:59 on 1 October in Lagos.',
+    /* ⚠ 55 WORDS, AND IT WAS 110. The card sits directly under the Heirs
+       Holdings closing card, which runs to about 55, so at twice the length it
+       read as the email losing its shape rather than as the more important
+       role. Reported as too long, and the comparison on the page is what makes
+       it obvious.
+
+       WHAT WENT: the five year follow-on contract, the age limit correction,
+       what the Legal Vice Presidency does day to day, ICSID, and the two
+       alternative streams. Every one of them is on the listing, which is one
+       tap away, and none of them decides whether somebody opens the link.
+
+       WHAT STAYED is the four facts that do decide it: where, the post-call
+       band, the master's floor, and the closing date. The LL.B sentence is the
+       one piece of length worth paying for anywhere in this drop, for the
+       reason the seed script sets out: the Bank's phrase reads differently in
+       Nigeria and most of this list would otherwise assume they qualify. */
+    line: 'Washington DC, on a two year term. Two to six years post-call, and an LL.M or another master\'s: an LL.B with Law School does not clear it. The seat is in the Bank\'s own Legal Vice Presidency. Apply on the World Bank site. Closes 30 September, 00:59 on 1 October in Lagos.',
     short: 'a World Bank term in Washington DC, if you are two to six years post-call',
     blurb:
       'The World Bank Group has opened its 2027 Young Professionals Program. Two years in Washington DC on a GF term, Nigeria qualifies on nationality, and the legal stream sits in the Bank\'s own Legal Vice Presidency.',

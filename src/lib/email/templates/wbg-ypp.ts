@@ -112,6 +112,13 @@ export function wbgYppEmail({
   /* "2 days left", "1 day left", "Closes today". One function, shared with the
      board and the bell. */
   const left = daysLeftWords(days)
+  /* ⚠ THE COUNTDOWN IS ONLY RED WHEN IT IS ACTUALLY URGENT.
+     It was CORAL at every distance, so a send at 28 days shouted in red about a
+     deadline four weeks out. Reported, and right: red is a signal, and a signal
+     spent on "28 days left" is not available for "2 days left". Seven days is
+     the same threshold the bell uses for its closing rows, so the site agrees
+     with itself about when a deadline becomes urgent. */
+  const countdownColour = days <= 7 ? CORAL : INK
   const first = (name || '').trim().split(/\s+/)[0]
   /* ⚠ THE GREETING TRACKS THE COUNT TOO, AND DID NOT USED TO.
      It was a fixed "the World Bank shuts this one soon", which is right on the
@@ -222,7 +229,7 @@ export function wbgYppEmail({
                     Two years in Washington DC on a GF term, then a five year contract if you
                     perform. Three eight month rotations, one of them in a country office.
                     Nigeria qualifies on nationality.
-                    <strong style="color:${CORAL};">${left}, closing ${WBG_YPP.closes},</strong>
+                    <strong style="color:${countdownColour};">${left}, closing ${WBG_YPP.closes},</strong>
                     which is ${WBG_YPP.closesLagos}.
                   </p>
                 </td>
