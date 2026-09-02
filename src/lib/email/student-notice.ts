@@ -53,15 +53,32 @@ export type StudentNotice = {
   until: string
 }
 
-const NOTICE: StudentNotice | null = {
-  kicker: 'For students',
-  title: 'Greenberg Traurig is taking 2029 trainees',
-  body:
-    'Their London office has opened applications for training contracts that start in 2029, which is why this is worth reading if you are still at university. Two years, four six-month rotations, starting on 55,000 pounds. You need ABB at A-level and to be on track for a 2:1, and non-law graduates do the PGDL before the SQE. It closes on 30 November 2026.',
-  href: 'https://www.gtlaw.com/en/general/careers/law-students/europe-law-students/london-trainee-recruiting',
-  cta: 'Check the entry requirements',
-  until: '2026-11-30',
-}
+/**
+ * ⚠ NULL SINCE 2 SEPTEMBER 2026, ON INSTRUCTION, AND THE BLOCK IS THE THING
+ * THAT WENT RATHER THAN THE LABEL ON IT.
+ *
+ * This carried Greenberg Traurig's 2029 London training contract under a "For
+ * students" kicker. The first instruction was to drop the label; the second was
+ * that the notice need not be there at all, which is the cleaner of the two and
+ * is what this does.
+ *
+ * Dropping only the kicker would have been the worse edit. The block's whole
+ * justification, written at length above, is that it is information for a
+ * SUBSET of the list: a London seat gated on A-levels and the SQE that most
+ * readers cannot apply for. The kicker is what told the other readers to skip
+ * it in three seconds. An unlabelled card sitting between two Nigerian roles
+ * reads as a third Nigerian role until you are four lines in.
+ *
+ * The listing itself is unaffected. Greenberg Traurig went onto the board on
+ * 1 September and is still there, still public, still in open-jobs.ts. This
+ * only stops it taking a block in the broadcast.
+ *
+ * ⚠ THE MODULE STAYS, and so does everything above. The expiry guard is the
+ * reason it is a module at all, and the next notice worth a block should be
+ * dropped in here rather than typed into the template. Setting this to null is
+ * how the file was designed to be switched off.
+ */
+const NOTICE: StudentNotice | null = null
 
 /**
  * The notice, or null when there is none or it has expired.
