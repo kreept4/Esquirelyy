@@ -113,16 +113,35 @@ export function markSeen() {
 }
 
 /**
- * TWO KINDS OF READ, AND WHY THE WELCOME NEEDS THE SECOND ONE
+ * TWO KINDS OF READ, AND A THIRD STORE THAT ONLY EXISTS TO BE OVERRIDDEN
  *
  * The timestamp above answers "have you looked at the list", which is the right
  * question for a new role or a moved deadline: seeing the headline in the panel
  * IS reading it, and there is nothing further to open.
  *
- * The welcome note is not like that. Its whole content is behind a second
- * click, so clearing it when the panel opens marks as read the one
- * notification the reader definitely has not read. It is tracked by id instead
- * and only goes quiet once the note itself has been opened.
+ * An ack-kind note is richer than that. Its whole content is behind a second
+ * click, so opening the note itself is worth recording separately, and
+ * `READ_KEY` is where that goes.
+ *
+ * ⚠ WHAT CHANGED, 2 September 2026, AND WHY. Opening the note used to be the
+ * ONLY thing that cleared one. The timestamp was ignored for these kinds
+ * entirely, so a reader who had seen the welcome in the panel a dozen times and
+ * never opened the modal carried its badge forever. Reported by Bolu, who had
+ * read it many times over.
+ *
+ * The old reasoning was sound and its conclusion was too strong. It is true
+ * that listing a note is not reading it, and that is why opening the modal is
+ * still recorded and still wins. It does not follow that a reader who has had
+ * the panel open repeatedly has not seen the thing, and a badge that cannot be
+ * cleared by any amount of ordinary use stops carrying information: the reader
+ * learns to ignore it, which costs the next real notification its only signal.
+ *
+ * So an ack-kind note now falls back to the same timestamp rule as everything
+ * else, and the explicit "Mark as unread" gets its own store, `UNREAD_KEY`,
+ * which outranks both. Deleting the id from `READ_KEY` was enough when nothing
+ * else could clear the note; under the fallback the `seen` timestamp would undo
+ * it on the next render, so the intent has to be recorded rather than inferred
+ * from an absence.
  *
  * `ACK_KINDS` is the set that works this way. Nothing below branches on
  * 'welcome' by name, so anything added to the set gets the same treatment
@@ -130,9 +149,12 @@ export function markSeen() {
  */
 export const READ_KEY = 'esquirely:notifications-read'
 
+/** Ack-kind notes the reader has deliberately put back on the unread list.
+ *  Outranks both READ_KEY and the seen timestamp. */
+export const UNREAD_KEY = 'esquirely:notifications-unread'
+
 /* 'drop' joins 'welcome' for exactly the reason above: its content is behind a
-   second click, so clearing it when the panel opens would mark as read the one
-   notification the reader has demonstrably not read yet. */
+   second click, so opening it is worth recording in its own right. */
 export const ACK_KINDS: ReadonlySet<NotificationKind> = new Set<NotificationKind>(['welcome', 'drop', 'team'])
 
 export function readReadIds(): Set<string> {
@@ -145,27 +167,62 @@ export function readReadIds(): Set<string> {
   }
 }
 
-/** Records one notification as opened. Returns the new set so a caller can put
- *  it straight into state without re-reading storage. */
+/** The ids someone has deliberately marked unread again. */
+export function readUnreadIds(): Set<string> {
+  if (typeof window === 'undefined') return new Set()
+  try {
+    const raw = JSON.parse(localStorage.getItem(UNREAD_KEY) || '[]')
+    return new Set(Array.isArray(raw) ? raw.filter((x): x is string => typeof x === 'string') : [])
+  } catch {
+    return new Set()
+  }
+}
+
+/**
+ * Records one notification as opened. Returns the new set so a caller can put
+ * it straight into state without re-reading storage.
+ *
+ * Also clears any deliberate unread mark. Opening the note is the reader
+ * saying they have dealt with it, which is the opposite of the "later" that put
+ * it back on the list, and leaving the override in place would have the note
+ * reappear unread the moment the dialog closed.
+ */
 export function markRead(id: string): Set<string> {
   const next = readReadIds()
   next.add(id)
   try {
     localStorage.setItem(READ_KEY, JSON.stringify([...next]))
+    const unread = readUnreadIds()
+    if (unread.delete(id)) localStorage.setItem(UNREAD_KEY, JSON.stringify([...unread]))
   } catch {
     // Private browsing. The note reopens unread next time, which is harmless.
   }
   return next
 }
 
-/** The other direction, for an ack-kind notification someone wants back on
- *  their unread list on purpose (the welcome note's "Mark as unread"). Only
- *  meaningful for kinds in ACK_KINDS — nothing else reads readIds. */
+/**
+ * The other direction, for an ack-kind notification someone wants back on their
+ * unread list on purpose (the welcome note's "Mark as unread"). Only meaningful
+ * for kinds in ACK_KINDS, since nothing else consults either store.
+ *
+ * ⚠ IT WRITES A MARK RATHER THAN DELETING ONE. Removing the id from READ_KEY
+ * used to be enough, because nothing except opening the note could clear it.
+ * Now that an ack-kind note also goes quiet once the panel has been seen, an
+ * absence says nothing: the seen timestamp would re-read it immediately and the
+ * button would look broken. The id is recorded in UNREAD_KEY, which outranks
+ * both, and the read mark is dropped so reopening the note is what clears it.
+ *
+ * Returns the READ ids, matching markRead, so the two are interchangeable at a
+ * call site holding readIds in state.
+ */
 export function markUnread(id: string): Set<string> {
   const next = readReadIds()
   next.delete(id)
   try {
     localStorage.setItem(READ_KEY, JSON.stringify([...next]))
+    const unread = readUnreadIds()
+    unread.add(id)
+    localStorage.setItem(UNREAD_KEY, JSON.stringify([...unread]))
   } catch {
     // Private browsing. Already unread every time, which is harmless.
   }
@@ -270,10 +327,34 @@ export function restoreDismissed(): Set<string> {
   return new Set()
 }
 
-/** The single definition of unread, used by both the badge and the row styling
- *  so the two can never disagree about what is still waiting. */
-export function isUnread(n: Notification, seen: number, readIds: Set<string>) {
-  if (ACK_KINDS.has(n.kind)) return !readIds.has(n.id)
+/**
+ * The single definition of unread, used by both the badge and the row styling
+ * so the two can never disagree about what is still waiting.
+ *
+ * Three rules for an ack kind, in strict priority order:
+ *
+ *   1. Marked unread on purpose. Stays unread until the note is opened.
+ *   2. The note itself has been opened. Read.
+ *   3. Otherwise the ordinary timestamp rule: has the panel been looked at
+ *      since this arrived.
+ *
+ * Rule 3 is the fix described at UNREAD_KEY above. Without it these kinds had
+ * no route to read except rule 2, and the welcome badge was permanent for
+ * anyone who closed the panel rather than the modal.
+ *
+ * `unreadIds` is defaulted so the one call site that deliberately passes
+ * neither set, the markSeen effect in NotificationBell, keeps working.
+ */
+export function isUnread(
+  n: Notification,
+  seen: number,
+  readIds: Set<string>,
+  unreadIds: Set<string> = new Set()
+) {
+  if (ACK_KINDS.has(n.kind)) {
+    if (unreadIds.has(n.id)) return true
+    if (readIds.has(n.id)) return false
+  }
   return Date.parse(n.at) > seen
 }
 
@@ -548,8 +629,13 @@ export function buildFeed(
     .slice(0, 20)
 }
 
-export function unreadCount(feed: Notification[], seen: number, readIds: Set<string> = new Set()) {
-  return feed.filter(n => isUnread(n, seen, readIds)).length
+export function unreadCount(
+  feed: Notification[],
+  seen: number,
+  readIds: Set<string> = new Set(),
+  unreadIds: Set<string> = new Set()
+) {
+  return feed.filter(n => isUnread(n, seen, readIds, unreadIds)).length
 }
 
 /** "3h", "2d". Absolute dates in a notification list are noise; what a reader

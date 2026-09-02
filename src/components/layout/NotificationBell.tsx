@@ -15,6 +15,7 @@ import {
   readPrefs,
   readReadIds,
   readSeen,
+  readUnreadIds,
   readWelcomedAt,
   restoreDismissed,
   timeAgo,
@@ -128,6 +129,10 @@ export default function NotificationBell({
   const [feed, setFeed] = useState<Notification[]>([])
   const [seen, setSeen] = useState(0)
   const [readIds, setReadIds] = useState<Set<string>>(() => new Set())
+  /* The deliberate "later" marks. Separate from readIds because it outranks
+     both that and the seen timestamp: see the note on UNREAD_KEY. Hydrated in
+     the same effect below, for the same hydration reason as dismissedIds. */
+  const [unreadIds, setUnreadIds] = useState<Set<string>>(() => new Set())
   /* Initialised empty rather than from storage, and hydrated in the effect
      below with everything else. Reading localStorage in a useState initialiser
      runs during render, which on the server is a crash and on the client is a
@@ -214,6 +219,7 @@ export default function NotificationBell({
   useEffect(() => {
     setSeen(readSeen())
     setReadIds(readReadIds())
+    setUnreadIds(readUnreadIds())
     setDismissedIds(readDismissedIds())
     load()
   }, [load])
@@ -272,11 +278,13 @@ export default function NotificationBell({
     setOpen(false)
     setShowDrop(true)
     setReadIds(markRead(NEW_ROLES.id))
+    setUnreadIds(readUnreadIds())
   }
 
   function closeWelcome() {
     setShowWelcome(false)
     setReadIds(markRead('welcome'))
+    setUnreadIds(readUnreadIds())
   }
 
   /* The opposite of closeWelcome, for someone who wants the badge back —
@@ -286,6 +294,7 @@ export default function NotificationBell({
   function markWelcomeUnread() {
     setShowWelcome(false)
     setReadIds(markUnread('welcome'))
+    setUnreadIds(readUnreadIds())
   }
 
   // Close on outside click and on Escape, the two ways anyone expects to
@@ -315,7 +324,7 @@ export default function NotificationBell({
     if (!open) setJustCleared(0)
   }, [open])
 
-  const unread = unreadCount(feed, seen, readIds)
+  const unread = unreadCount(feed, seen, readIds, unreadIds)
 
   function toggle() {
     setOpen(o => !o)
@@ -334,9 +343,20 @@ export default function NotificationBell({
      changes catches that case instead of only checking once at the click. */
   useEffect(() => {
     if (!open) return
-    /* Deliberately unaware of `readIds`. This clears the timestamp kinds only,
-       so the badge can legitimately still read 1 after the panel has been
-       looked at — that 1 is the unopened welcome note, and it is correct. */
+    /* Deliberately unaware of both id stores, and what that means changed on
+       2 September 2026. It used to leave the badge reading 1 after the panel
+       had been looked at, that 1 being the unopened welcome, which was then
+       described as correct. It is not any more: an ack-kind note now clears on
+       the timestamp like everything else, so the badge goes to nought here and
+       stays there unless something new arrives or the reader marks a note
+       unread on purpose.
+
+       Passing neither set is still right, because the question this asks is
+       narrower than the badge's. It is "is there anything at all this stamp
+       has not covered", and the answer decides only whether to write a new
+       stamp. Feeding it `unreadIds` would make a deliberately-unread note
+       block the stamp from ever advancing, so genuinely new arrivals would
+       keep being counted against a frozen timestamp. */
     if (unreadCount(feed, seen) > 0) {
       markSeen()
       setSeen(Date.now())
@@ -402,7 +422,7 @@ export default function NotificationBell({
           ) : (
             <ul className="notif-list">
               {feed.map(n => {
-                const isNew = isUnread(n, seen, readIds)
+                const isNew = isUnread(n, seen, readIds, unreadIds)
                 return (
                   /* The row and its delete are siblings inside this li, not
                      nested. See DismissButton for why they cannot be nested. */

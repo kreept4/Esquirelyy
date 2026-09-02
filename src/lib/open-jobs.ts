@@ -86,7 +86,19 @@
  * rows, so neither produces anything on the board.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
-  /* 1 September, and both in the current drop.
+  /* 2 September, and the whole of the current drop on its own.
+     Public on its own merits before anything else: the World Bank posts this
+     programme openly on its Cornerstone career site and writes it up on
+     worldbank.org, so there is no application route here that gating protects.
+
+     ⚠ AND IT CARRIES A COUNTDOWN, unlike the two below it, which is what makes
+     the entry load-bearing rather than tidy. A deadline email goes out on
+     28 September pointing at /jobs?roles=<this slug>. A slug in a broadcast and
+     outside this set renders an empty board, and it would do it two days before
+     applications shut, to the readers most likely to act. */
+  'world-bank-group-young-professionals-programme-2027',
+
+  /* 1 September, and both in the drop before this one.
      Same rule as every drop before this one: the broadcast points recipients at
      /jobs?roles=<these slugs>, which renders openJobs() for anyone without a
      session, so a slug in the announcement and outside this set sends the

@@ -45,58 +45,43 @@
  */
 export const ROLE_ENTRIES = [
   {
-    /* AVA leads, and it leads on eligibility rather than on prestige.
-       This is the only seat in either drop that a member who was called this
-       year can take, because the flier says NYSC members may apply and puts the
-       floor at zero years post-call. Everything else currently on the board at
-       junior level still wants a year or two. For the share of this list that
-       finished Law School in July, this is the row, so it goes first.
+    /* THE WHOLE DROP IS ONE ROLE, 2 September 2026, and the count helpers below
+       are what make that safe: dropSubject, dropVerb, noticePhrase,
+       publishedNouns and newRolesCta all branch at one, so nothing in the bell,
+       the modal, the carousel or the email says "roles" about a single seat.
+       This is the first drop to actually exercise that path since the helpers
+       were written, so it is the one to check the surfaces on.
 
-       ⚠ THE LINE NAMES THE HYBRID SPLIT, because "hybrid" on its own tells a
-       reader nothing and the flier is specific: remote, plus court and
-       regulatory visits. Somebody deciding whether they can take a Lagos seat
-       from outside Lagos needs the second half of that sentence. */
-    slug: 'ava-law-practice-associate-entry-level',
-    employer: 'AVA Law Practice',
-    employerShort: 'AVA Law Practice',
-    title: 'Associate (Entry-Level)',
-    line: 'Lagos, hybrid: remote plus court and regulatory visits. LL.B and BL, called to the Nigerian Bar, nought to three years post-call, and the firm says NYSC members may apply. Legal research, drafting, court filings and regulatory compliance. Apply to recruitments@avalawpractice.com, titled "Application for Associate – [Your Name]". No closing date.',
-    short: 'an entry-level role at AVA that NYSC members can take',
-    blurb:
-      'AVA Law Practice are taking an entry-level associate in Lagos. It is open from nought years post-call and the firm says NYSC members may apply.',
-  },
-  {
-    /* ⚠ THIS LINE WAS REWRITTEN ONCE AND THE REASON IS WORTH KEEPING.
-       It first read "the post publishes no requirements and no closing date, so
-       the address is the whole route in", which was true of the LinkedIn post
-       it was drafted from and false of the role. Tangerine's own listing for
-       the same seat on MyJobMag carries the qualifications the LinkedIn post
-       omits, and the board row was completed from it. See
-       scripts/2026-09-01-complete-tangerine-listing.mjs, which also records
-       what the missing requirements broke on the detail page.
+       ⚠ THE LINE LEADS ON THE EXPERIENCE FLOOR, NOT ON THE INSTITUTION.
+       "World Bank" sells itself and needs no help from us. The fact a reader
+       needs in the first clause is that the Bank asks for two to six years,
+       because the largest group on this list finished Law School in July and
+       this is not their row. The previous drop led with AVA for the mirror
+       image of the same reason: it was the one seat a fresh call could take.
 
-       The original instinct, not to invent requirements, was right. The mistake
-       was stopping at the first source and then writing the absence into the
-       copy as though it were a fact about the job. Check the employer's other
-       postings before describing a listing as thin. */
-    slug: 'tangerine-africa-legal-and-compliance-officer',
-    employer: 'Tangerine Africa',
-    employerShort: 'Tangerine',
-    title: 'Legal and Compliance Officer',
-    line: 'In-house at an insurance and financial services group in Surulere, Lagos, supporting the Legal and Compliance Manager on regulatory and statutory obligations and internal corporate governance. Wants a Second Class LL.B, call to the Nigerian Bar, and two to five years in a similar role. Send your credentials to careers@tangerine.africa. No closing date published.',
-    short: 'an in-house legal and compliance role at Tangerine',
+       ⚠ AND IT SAYS THE AGE LIMIT IS GONE. The YPP had one for most of its
+       history, the Bank has removed it, and nearly every Nigerian write-up of
+       this programme still carries the old rule. A reader who has met this
+       programme before is holding a disqualifier that has stopped being true,
+       and the line is the only place they will see that corrected. */
+    slug: 'world-bank-group-young-professionals-programme-2027',
+    employer: 'World Bank Group',
+    employerShort: 'World Bank',
+    title: 'Young Professionals Program 2027',
+    line: 'Washington DC, on a two year term that becomes a five year contract on performance. The Bank asks for two to six years of experience and a graduate degree, so it is not a route for a fresh call, and there is no longer an age limit whatever older write-ups say. Nigeria qualifies on nationality. The legal stream is the Legal Vice Presidency: drafting and negotiating the Bank\'s project loan agreements and advising country teams on legal and policy risk. ICSID, investment treaty arbitration, is the other one, and the form lets you name two alternative streams so a single application covers both. Apply on the World Bank site. Closes 30 September, 23:59 UTC, which is 00:59 on 1 October in Lagos.',
+    short: 'a World Bank term in Washington DC, if you have two to six years',
     blurb:
-      'Tangerine Africa are hiring a legal and compliance officer in Lagos, in-house at an insurance and financial services group.',
+      'The World Bank Group has opened its 2027 Young Professionals Program. Two years in Washington DC on a GF term, Nigeria qualifies on nationality, and the legal stream sits in the Bank\'s own Legal Vice Presidency.',
   },
 ] as const
 
 export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
-   *  somebody who read the 10 August note has not seen this one. */
-  id: 'roles-2026-09-01',
+   *  somebody who read the 1 September note has not seen this one. */
+  id: 'roles-2026-09-02',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-09-01T09:00:00.000Z',
+  at: '2026-09-02T09:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   employers: ROLE_ENTRIES.map(r => r.employer),
   /** The same firms without the parenthetical network names. Read by the bell. */
@@ -111,11 +96,12 @@ export const NEW_ROLES = {
    argument for getting it right before pressing send, not after. */
 
 /* Annotated `number` on purpose. ROLE_ENTRIES is `as const`, so without this
-   TypeScript narrows the length to the literal 2 and then rejects every
-   `count === 1` branch below as a comparison with no overlap — which is true of
-   today's drop and false of the next one. The literal type describes this
-   week's data, not the shape of the constant, and the whole point of these
-   helpers is that the count changes when the array is replaced. */
+   TypeScript narrows the length to a literal and then rejects every branch
+   below that compares against a different one, as a comparison with no
+   overlap. It bit at 2, where `count === 1` was the dead branch; this drop is
+   1, so it is now every `!== 1` branch that would go. The literal type
+   describes this week's data, not the shape of the constant, and the whole
+   point of these helpers is that the count changes when the array is replaced. */
 export const NEW_ROLES_COUNT: number = ROLE_ENTRIES.length
 
 /**
@@ -215,7 +201,19 @@ export function checkedSentence(): string {
  * it was assembled rather than written. Two firms have two notices, so say two.
  */
 export function noticePhrase(): string {
-  return NEW_ROLES_COUNT === 1 ? 'the employer’s own notice' : 'the employers’ own notices'
+  /* ⚠ ASCII APOSTROPHES, NOT TYPOGRAPHIC ONES. These two strings were the only
+     non-ASCII characters in the whole rendered announcement email, and they were
+     in the TEXT branch, where there is no entity to hide behind: the HTML branch
+     writes &rsquo; and renders correctly everywhere. A U+2019 in a plain text
+     part survives a well-behaved client and turns into a black diamond, or into
+     the three-character mess a UTF-8 apostrophe makes when it is read back as
+     Latin-1, the moment anything in the chain re-encodes it. That is the
+     "garbled words" failure lib/house-style.ts bans in its last paragraph.
+     Straight quotes cannot garble.
+
+     The rendered email is now clean ASCII in all three of subject, text and
+     html, and it is worth keeping it that way: this was the only offender. */
+  return NEW_ROLES_COUNT === 1 ? "the employer's own notice" : "the employers' own notices"
 }
 
 /**
