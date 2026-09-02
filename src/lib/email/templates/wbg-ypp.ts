@@ -123,9 +123,11 @@ export function wbgYppEmail({
     `which is ${WBG_YPP.closesLagos}.`,
     '',
     'Who it is not for, first. The Bank asks for two to six years of relevant',
-    'experience and a graduate degree finished before the September start. If you',
-    'were called this year, this is not your round. Doctoral research counts',
-    'towards the experience if you are in the middle of one.',
+    'experience, and a graduate degree finished before the September start. That',
+    'second one catches people out here: the floor is a master\'s, so an LL.B with',
+    'Law School does not clear it on its own and you need an LL.M or equivalent.',
+    'If you were called this year, this is not your round. A full time doctorate',
+    'can stand in for the experience.',
     '',
     'And one correction, because it costs people this application every cycle:',
     'there is no age limit any more. The Bank removed it. Most Nigerian write-ups',
@@ -210,10 +212,12 @@ export function wbgYppEmail({
                 <td style="padding:14px 16px;background-color:${CREAM};border:2px solid ${CORAL};">
                   <p style="margin:0 0 6px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${CORAL};">Who it is not for, first</p>
                   <p style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:${INK};">
-                    The Bank asks for two to six years of relevant experience and a graduate
-                    degree finished before the September start. If you were called this year,
-                    this is not your round. Doctoral research counts towards the experience if
-                    you are in the middle of one.
+                    The Bank asks for two to six years of relevant experience, and a graduate
+                    degree finished before the September start. That second one catches people
+                    out here: <strong>the floor is a master's</strong>, so an LL.B with Law
+                    School does not clear it on its own and you need an LL.M or equivalent. If
+                    you were called this year, this is not your round. A full time doctorate can
+                    stand in for the experience.
                   </p>
                   <p style="margin:0;font-size:14px;line-height:1.6;color:${INK};">
                     One correction the other way, because it costs people this application every
