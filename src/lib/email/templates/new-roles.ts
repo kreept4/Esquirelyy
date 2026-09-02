@@ -124,8 +124,59 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
      mistaken for a continuation of a list. This holds however many firms the
      next drop names, which the comma version did not.
      Do not move the name back to the front. */
-  const greeting = first ? `${firms} are hiring, ${first}.` : `${firms} are hiring.`
-  const subject = `${roleCountLabel()}: ${firms}`
+  /**
+   * ⚠ THE HEADER HAS TO NAME WHAT THE PAGE ACTUALLY LEADS WITH.
+   *
+   * Subject and headline were built from the drop alone: "1 new role: World
+   * Bank" over "World Bank are hiring", while the first thing on the page was
+   * the Heirs Holdings card closing in two days. A reader opens an email about
+   * the World Bank and the first block is a different employer's deadline.
+   * Reported, and it is the header that is wrong rather than the order.
+   *
+   * THE ORDER IS RIGHT AND STAYS. closing-notice.ts sets out why at length: a
+   * role that shuts on Friday cannot be applied for next week, and ordering by
+   * what we did rather than by what costs the reader something to miss is a
+   * decision made once and paid for by every recipient. The closing card keeps
+   * the top.
+   *
+   * So the header follows the page instead of the page following the header.
+   * With a notice live, the subject leads on the deadline and still counts the
+   * drop, and the headline names the thing sitting directly beneath it. With no
+   * notice, both fall back to exactly what they said before, which is the
+   * normal case and the one every previous send used.
+   */
+  const closing = activeClosingNotice()
+
+  /* Vocative last, for the reason set out above. It holds in both branches:
+     neither clause ends in a list of proper nouns. */
+  /* ⚠ THE COUNT COMES FROM `label`, NOT FROM `days`. Writing "closes in
+     ${days} days" reads correctly at 2 and produces "closes in 1 days" the
+     next morning and "closes in 0 days" the morning after that, which is the
+     one send anybody actually needs to get right. `label` is closesInWords(),
+     the same function the board and the bell use, and it already handles today
+     and tomorrow as words. Lowercased because it opens mid-sentence here and
+     the helper capitalises for standalone use. */
+  const closes = closing
+    ? `${closing.label.charAt(0).toLowerCase()}${closing.label.slice(1)}`
+    : ''
+
+  /* ⚠ BOTH HALVES GET NAMED, and the first draft of this fix named only the
+     deadline. That produced "Heirs Holdings closes in 2 days" as the headline,
+     sitting directly on top of a card whose kicker reads CLOSES IN 2 DAYS and
+     whose title is Heirs Holdings: the same sentence twice, and the World Bank,
+     the thing that is actually new, gone from the headline and the subject
+     alike. Trading one incoherence for another.
+
+     Naming both fixes the duplication as a side effect. The line now says
+     something the cards underneath it do not, which is what a headline is for:
+     there are two things in here, one shuts this week and one just opened. */
+  const headline = closing ? `${closing.employer} ${closes} and ${firms} are hiring` : `${firms} are hiring`
+  const greeting = first ? `${headline}, ${first}.` : `${headline}.`
+  /* Kept under the ~70 characters most clients show. "Heirs Holdings closes in
+     2 days, and World Bank are hiring" is 57. */
+  const subject = closing
+    ? `${closing.employer} ${closes}, and ${firms} are hiring`
+    : `${roleCountLabel()}: ${firms}`
   const link = `${siteUrl}${NEW_ROLES_HREF}`
 
   /**
@@ -155,8 +206,14 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
      announcing a deadline that has passed. See lib/email/student-notice.ts. */
   const studentNotice = activeStudentNotice()
   /* Null once the deadline passes, so a reused template cannot announce a
-     role that has closed. See lib/email/closing-notice.ts. */
-  const closingNotice = activeClosingNotice()
+     role that has closed. See lib/email/closing-notice.ts.
+
+     ⚠ THE SAME OBJECT THE HEADER USED, not a second call. activeClosingNotice()
+     derives its day count from `now`, so calling it twice in one render is two
+     readings of the clock: a send crossing midnight in Lagos could put "closes
+     in 2 days" in the subject and "Closes tomorrow" on the card. One call, one
+     answer, every surface of this email agreeing. */
+  const closingNotice = closing
   const scholarshipDays = closingScholarship ? daysUntilDeadline(closingScholarship) : null
 
   const text = [
