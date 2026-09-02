@@ -124,9 +124,28 @@ if (daysLeft === null) {
   process.exit(1)
 }
 
-/** One message. Returns null on success, the error text on failure. */
+/**
+ * One message. Returns null on success, the error text on failure.
+ *
+ * ⚠ A PINNED RENDER LABELS ITSELF IN THE SUBJECT, AND THIS WAS ADDED AFTER IT
+ * CAUSED EXACTLY THE CONFUSION IT NOW PREVENTS.
+ *
+ * A proof send pinned to 28 September arrives saying "2 days left: World Bank
+ * Group Young Professionals", with nothing anywhere in it to say that is a
+ * render of a future day. It landed in an inbox next to the roles broadcast,
+ * which correctly says Heirs Holdings closes in 2 days, and the reasonable
+ * reading of the pair is that the World Bank shuts on Friday too. It does not;
+ * it shuts on 30 September. Reported, and fair.
+ *
+ * The prefix only ever appears when --as-of is passed, and --as-of is refused
+ * unless --test is passed too, so a real broadcast can never carry it.
+ */
 async function deliver({ email, name }) {
-  const { subject, text, html } = wbgYppEmail({ name, siteUrl: SITE_URL, now: NOW })
+  const rendered = wbgYppEmail({ name, siteUrl: SITE_URL, now: NOW })
+  const { text, html } = rendered
+  const subject = AS_OF
+    ? `[Preview of ${NOW.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })}] ${rendered.subject}`
+    : rendered.subject
   const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: {
@@ -161,9 +180,14 @@ if (AS_OF) console.log('  (date pinned by --as-of, copy only)')
 /* The proof copy. Short-circuits before any Supabase call, so it works whether
    or not the address belongs to a member. */
 if (TEST) {
+  /* Echoes the subject as DELIVERED, preview prefix and all, so what the
+     console reports and what arrives cannot differ. */
   const { subject } = wbgYppEmail({ name: '', siteUrl: SITE_URL, now: NOW })
+  const shown = AS_OF
+    ? `[Preview of ${NOW.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })}] ${subject}`
+    : subject
   console.log(`test send to ${TEST}`)
-  console.log(`subject: ${subject}`)
+  console.log(`subject: ${shown}`)
   if (!SEND) {
     console.log('\nDry run. Nothing was sent. Add --send to actually send.')
   } else {

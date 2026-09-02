@@ -19,6 +19,13 @@
  * wbg-deadline.ts gives: with days left, routing somebody through a login page
  * to reach a link we do not control is a way of losing them the application.
  *
+ * ⚠ THE BLOCK IS HEADED "BEFORE YOU APPLY", AND IT WAS "WHO IT IS NOT FOR,
+ * FIRST". That was reported as reading oddly and it does: it is a construction
+ * nobody says out loud, it puts a negative in the reader's face before they
+ * know what the thing is, and the block underneath it is not purely negative
+ * anyway, since half of it is the age limit being LIFTED. "Before you apply"
+ * covers a disqualifier and an enabler equally and sounds like a person.
+ *
  * ⚠ THE DISQUALIFIER IS THE EXPERIENCE FLOOR AND IT GOES HIGH UP. The Bank
  * wants two to six years. The largest single group on this list finished Law
  * School in July and cannot apply, and they should learn that from the second
@@ -106,7 +113,22 @@ export function wbgYppEmail({
      board and the bell. */
   const left = daysLeftWords(days)
   const first = (name || '').trim().split(/\s+/)[0]
-  const greeting = first ? `${first}, the World Bank shuts this one soon.` : 'The World Bank shuts this one soon.'
+  /* ⚠ THE GREETING TRACKS THE COUNT TOO, AND DID NOT USED TO.
+     It was a fixed "the World Bank shuts this one soon", which is right on the
+     28th and false on the 2nd: 28 days is not soon, and a headline that
+     overstates urgency on the first send is how a reader learns to discount the
+     one that matters. Same rule as the countdown itself, one line further up
+     the page. Three bands, because the honest sentence genuinely differs:
+     an opening, a warning, and a last call. */
+  const headline =
+    days === 0
+      ? 'this one closes today.'
+      : days <= 7
+        ? 'the World Bank shuts this one this week.'
+        : 'the World Bank has opened its 2027 intake.'
+  const greeting = first
+    ? `${first}, ${headline}`
+    : headline.charAt(0).toUpperCase() + headline.slice(1)
   /* Names the institution and leads with the count. Whose programme it is
      decides whether this gets opened; the count decides whether it gets opened
      today. */
@@ -122,7 +144,7 @@ export function wbgYppEmail({
     `Nigeria qualifies on nationality. ${left}, closing ${WBG_YPP.closes},`,
     `which is ${WBG_YPP.closesLagos}.`,
     '',
-    'Who it is not for, first. The Bank asks for two to six years of relevant',
+    'Before you apply. The Bank asks for two to six years of relevant',
     'experience, and a graduate degree finished before the September start. That',
     'second one catches people out here: the floor is a master\'s, so an LL.B with',
     'Law School does not clear it on its own and you need an LL.M or equivalent.',
@@ -210,7 +232,7 @@ export function wbgYppEmail({
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 18px 0;">
               <tr>
                 <td style="padding:14px 16px;background-color:${CREAM};border:2px solid ${CORAL};">
-                  <p style="margin:0 0 6px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${CORAL};">Who it is not for, first</p>
+                  <p style="margin:0 0 6px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${CORAL};">Before you apply</p>
                   <p style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:${INK};">
                     The Bank asks for two to six years of relevant experience, and a graduate
                     degree finished before the September start. That second one catches people
