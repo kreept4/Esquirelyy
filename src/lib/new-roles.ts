@@ -68,8 +68,8 @@ export const ROLE_ENTRIES = [
     employer: 'World Bank Group',
     employerShort: 'World Bank',
     title: 'Young Professionals Program 2027',
-    line: 'Washington DC, on a two year term that becomes a five year contract on performance. The Bank asks for two to six years of experience and a graduate degree, which in Nigerian terms means an LL.M or another master\'s: an LL.B with Law School does not clear it. There is no longer an age limit whatever older write-ups say, and Nigeria qualifies on nationality. The legal stream is the Legal Vice Presidency: drafting and negotiating the Bank\'s project loan agreements and advising country teams on legal and policy risk. ICSID, investment treaty arbitration, is the other one, and the form lets you name two alternative streams so a single application covers both. Apply on the World Bank site. Closes 30 September, 23:59 UTC, which is 00:59 on 1 October in Lagos.',
-    short: 'a World Bank term in Washington DC, if you have two to six years',
+    line: 'Washington DC, on a two year term that becomes a five year contract on performance. The Bank asks for two to six years post-call and a graduate degree, which in Nigerian terms means an LL.M or another master\'s: an LL.B with Law School does not clear it. There is no longer an age limit whatever older write-ups say, and Nigeria qualifies on nationality. The legal stream is the Legal Vice Presidency: drafting and negotiating the Bank\'s project loan agreements and advising country teams on legal and policy risk. ICSID, investment treaty arbitration, is the other one, and the form lets you name two alternative streams so a single application covers both. Apply on the World Bank site. Closes 30 September, 23:59 UTC, which is 00:59 on 1 October in Lagos.',
+    short: 'a World Bank term in Washington DC, if you are two to six years post-call',
     blurb:
       'The World Bank Group has opened its 2027 Young Professionals Program. Two years in Washington DC on a GF term, Nigeria qualifies on nationality, and the legal stream sits in the Bank\'s own Legal Vice Presidency.',
   },
