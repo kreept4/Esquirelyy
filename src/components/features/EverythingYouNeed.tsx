@@ -101,7 +101,7 @@ function Panel({ children, pad = '1.1rem' }: { children: React.ReactNode; pad?: 
     // Solid carton stock, no backdrop blur. The glass finish read as generic and
     // fought the bright stops behind it; a flat card with a hard black rule holds
     // its own against every colour in the sequence.
-    <div style={{ backgroundColor: CARTON, border: `1.5px solid ${CARTON_RULE}`, borderRadius: '10px', padding: pad, boxShadow: '6px 8px 0 rgba(0,0,0,0.85)' }}>
+    <div style={{ backgroundColor: CARTON, border: `1.5px solid ${CARTON_RULE}`, borderRadius: 'var(--radius-panel)', padding: pad, boxShadow: '6px 8px 0 rgba(0,0,0,0.85)' }}>
       {children}
     </div>
   )
@@ -350,7 +350,7 @@ function Preview({ kind }: { kind: string }) {
                 // Logo above the name rather than beside it: three columns inside
                 // the panel leaves no horizontal room, and an inline mark shrank
                 // to about 13px, which is why it was barely visible.
-                <div key={n} style={{ border: `1px solid ${tone.line}`, borderRadius: '10px', padding: '0.6rem', marginBottom: '6px', backgroundColor: tone.fill }}>
+                <div key={n} style={{ border: `1px solid ${tone.line}`, borderRadius: 'var(--radius-mark)', padding: '0.6rem', marginBottom: '6px', backgroundColor: tone.fill }}>
                   <Mark employer={n} tone={tone} size={30} />
                   <p className="grotesk-regular" style={{ fontSize: '0.64rem', color: tone.fg, lineHeight: 1.25, marginTop: '0.45rem' }}>{n}</p>
                 </div>

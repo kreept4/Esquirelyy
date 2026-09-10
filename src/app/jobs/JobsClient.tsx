@@ -172,7 +172,7 @@ function EmployerMark({ employer, logoUrl }: { employer: string; logoUrl?: strin
     )
   }
   return (
-    <span className="job-mark" style={brand ? { background: brand, borderRadius: '8px' } : undefined}>
+    <span className="job-mark" style={brand ? { background: brand, borderRadius: 'var(--radius-mark)' } : undefined}>
       <img src={url} alt="" />
     </span>
   )

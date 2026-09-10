@@ -380,7 +380,7 @@ export default function RolePit({ listings }: { listings: any[] }) {
         {/* The carton card keeps its light ground: a lit panel against black is
             the point. Its drop shadow was pure black, which is now invisible,
             so the lift comes from a cream edge instead. */}
-        <div className="role-pit-card" style={{ backgroundColor: active ? CARTON : 'transparent', border: active ? `1.5px solid ${CARTON}` : `1px dashed ${ON_BLACK_LINE}`, borderRadius: '10px', boxShadow: active ? '6px 8px 0 rgba(250,247,242,0.22)' : 'none' }}>
+        <div className="role-pit-card" style={{ backgroundColor: active ? CARTON : 'transparent', border: active ? `1.5px solid ${CARTON}` : `1px dashed ${ON_BLACK_LINE}`, borderRadius: 'var(--radius-panel)', boxShadow: active ? '6px 8px 0 rgba(250,247,242,0.22)' : 'none' }}>
           {active ? (
             <>
               <button onClick={() => setOpen(null)} aria-label="Close" className="role-pit-close">×</button>

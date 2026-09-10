@@ -40,7 +40,7 @@ export default function TrackerBoard() {
           minWidth: '260px',
           background: '#FAF7F2',
           border: '1px solid #E7DED3',
-          borderRadius: '8px',
+          borderRadius: 'var(--radius-panel)',
           padding: '12px',
         }}>
           <h3 style={{ fontSize: '14px', marginBottom: '12px' }}>

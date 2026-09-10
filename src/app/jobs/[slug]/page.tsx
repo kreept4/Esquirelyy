@@ -307,7 +307,7 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
             </Link>
 
             <div className="job-detail-id">
-              <span className="job-mark job-detail-mark" style={brand ? { background: brand, borderRadius: '10px' } : undefined}>
+              <span className="job-mark job-detail-mark" style={brand ? { background: brand, borderRadius: 'var(--radius-mark)' } : undefined}>
                 {logo ? <img src={logo} alt="" /> : <span className="grotesk-bold">{initials(job.employer)}</span>}
               </span>
               <div>

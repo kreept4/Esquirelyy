@@ -802,7 +802,10 @@ const FIRMS_UNSORTED: Firm[] = [
        itself as distributed and says it does not rely on physical offices, so
        treat this as the registered address rather than as somewhere to turn up
        unannounced. */
-    offices: [{ city: 'Lagos', address: '214B Eti Osa Way, Dolphin Estate, Ikoyi, Lagos' }],
+    offices: [
+      { city: 'Lagos', address: '214B Eti Osa Way, Dolphin Estate, Ikoyi, Lagos' },
+      { city: 'Abuja', address: 'Plot 391 Katampe Road, Jahi, Abuja' },
+    ],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Employment', 'Intellectual Property', 'Tax'],
     description: 'A pan-African commercial firm, relaunched from Famsville Solicitors in October 2025 as a digital-first practice built on its own cloud platform rather than on a network of offices. Corporate, employment, IP and dispute resolution across African jurisdictions.',
     foundedYear: 2012,
@@ -861,6 +864,7 @@ const FIRMS_UNSORTED: Firm[] = [
     offices: [
       { city: 'Lagos', address: '1B Tiramiyu Belo-Osagie Street, Parkview Estate, Ikoyi, Lagos' },
       { city: 'Port Harcourt', address: '11 Finima Street, Old GRA, Port Harcourt' },
+      { city: 'Abuja', address: 'Plot 740 Aminu Kano Crescent, Wuse 2, Abuja' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Dispute Resolution', 'Banking & Finance'],
     description: 'A full-service commercial law firm with deep expertise in energy, corporate transactions, and dispute resolution.',
@@ -887,6 +891,7 @@ const FIRMS_UNSORTED: Firm[] = [
       { city: 'Abuja', address: '42 Moses Majekodunmi Crescent, Utako, Abuja' },
       { city: 'Accra', address: '3 Emmause, 2nd Close, Akosombo House, Labone, Accra, Ghana' },
       { city: 'Yaoundé', address: '3rd Floor, Viccui Building, Apartment 15-16, Carr Street, New Town, Yaoundé, Cameroon' },
+      { city: 'Harare', address: 'Harare, Zimbabwe' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Employment', 'Intellectual Property', 'Real Estate'],
     description: 'A well-established firm with broad commercial expertise, particularly recognised for its employment law and intellectual property practice.',
@@ -1118,7 +1123,10 @@ const FIRMS_UNSORTED: Firm[] = [
     email: 'info@primeraal.com',
     website: 'https://primeraal.com',
     linkedin: 'https://www.linkedin.com/company/primera-africa-legal',
-    offices: [{ city: 'Lagos', address: '1B Utomi Aire Avenue, Off Fola Osibo, Lekki Phase 1, Lagos' }],
+    offices: [
+      { city: 'Lagos', address: '1B Utomi Aire Avenue, Off Fola Osibo, Lekki Phase 1, Lagos' },
+      { city: 'Abuja', address: "No. 3 Andrew's Court, Sadiya Memorial, Kpaduma 1, Asokoro New Extension, Abuja" },
+    ],
     practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Capital Markets', 'Energy & Natural Resources'],
     description: 'A leading commercial law firm with a strong focus on banking, finance, capital markets, and energy transactions.',
     foundedYear: 2008,
@@ -1363,6 +1371,7 @@ const FIRMS_UNSORTED: Firm[] = [
     offices: [
       { city: 'Lagos', address: 'Alliance House, 71 Ademola Street, Off Awolowo Road, South-West Ikoyi, Lagos' },
       { city: 'Abuja', address: '63 Mississippi Street, Off Alvan Ikoku Way, Maitama, Abuja' },
+      { city: 'Port Harcourt', address: 'Plot 60A Circular Road, Federal Housing Estate, Amadi, Off Dr Peter Odili Road, Port Harcourt' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Capital Markets', 'Dispute Resolution', 'Telecommunications & ICT'],
     description: 'A full service commercial firm founded by Uche Val Obi SAN and Olusoji Toki, working across energy, capital markets, infrastructure and technology from three offices.',
@@ -1423,6 +1432,7 @@ const FIRMS_UNSORTED: Firm[] = [
     linkedin: 'https://www.linkedin.com/company/giwa-osagie-co',
     offices: [
       { city: 'Lagos', address: '2nd Floor, Wing A, Sapetro Towers, 1 Adeola Odeku Street, Victoria Island, Lagos' },
+      { city: 'Abuja', address: '2nd Floor, Oakland Centre, Plot 2490 Aguiyi Ironsi Street, Maitama, Abuja' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Shipping & Maritime', 'Foreign Investment'],
     description: 'A long established Victoria Island commercial practice known for foreign investment, energy and maritime work, and a member of the Primerus international network.',

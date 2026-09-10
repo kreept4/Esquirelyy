@@ -65,6 +65,28 @@
   --font-serif: 'Hanken Grotesk', sans-serif;
   --font-sans: 'Schibsted Grotesk', sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Corner radius.
+     The vocabulary is deliberately two-poled and neither pole is a token: 2px
+     for crisp cards and 999px for pills, both of which read as intent wherever
+     they appear. What was NOT intentional was the middle. Eleven elements sat
+     between those poles on four different values, 8, 10, 12 and 14px, chosen
+     one at a time, and no rule said which belonged where.
+
+     Two tokens rather than one, because a single value cannot serve both. The
+     same absolute radius reads far rounder on a 2.75rem logo tile than on a
+     full-width card, so collapsing all eleven to one number would have made the
+     marks look soft and the panels look sharp. Split by what the element is:
+
+       --radius-mark   small square tiles, 2.75rem to 6rem: logo marks
+       --radius-panel  surfaces with padding: cards, photos, the ball pit
+
+     Concentricity is NOT the rule here and was considered and rejected. It
+     applies when a rounded box is inset inside another with padding between,
+     and this UI has almost none of that: .news-photo carries its own border and
+     shadow and sits in the card as a separate framed object, not as a lining. */
+  --radius-mark: 8px;
+  --radius-panel: 12px;
 }
 
 * {
@@ -354,10 +376,23 @@ body {
 }
 
 /* Filter control. Pill, per the design system: buttons round, cards square. */
-.filter-pill {
-  padding: 0.65rem 1rem;
+/* ONE filter control, under two names.
+
+   .filter-pill (firms, scholarships) and .jobs-select (the job board) were
+   written separately and were the same control: same cream fill, same hairline
+   border, same 999px radius, same cursor. They disagreed only on padding, by
+   half a step, and on font-size, by two hundredths of a rem. Nobody could name
+   the difference, but the two directories did not quite match, and a filter row
+   is the one component a reader meets on every listing page.
+
+   Merged rather than renamed: both class names still work, so no markup moves
+   and nothing downstream breaks. The job board's slightly larger metrics win,
+   because the bigger tap target is the better default on a phone. */
+.filter-pill,
+.jobs-select {
+  padding: 0.7rem 1.1rem;
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--ink);
   background-color: #FFF8E5;
   border: 1px solid rgba(36, 31, 22, 0.3);
@@ -370,7 +405,8 @@ body {
    grey system chevron that matches nothing else and ignores the palette. Strip
    it and paint our own hairline chevron, sized to the type around it. The
    right padding reserves the space so a long option never runs under it. */
-select.filter-pill {
+select.filter-pill,
+select.jobs-select {
   appearance: none;
   -webkit-appearance: none;
   padding-right: 2.25rem;
@@ -405,7 +441,8 @@ select.filter-pill {
    The `.page-header-ink .field` rule further down already carries this warning
    in its own comment. It was never applied here, which is why the two grounds
    behaved differently for the same reason. */
-.filter-pill[data-active='true'] {
+.filter-pill[data-active='true'],
+.jobs-select[data-active='true'] {
   color: var(--on-mint);
   background-color: var(--mint);
   border-color: var(--mint);
@@ -413,7 +450,8 @@ select.filter-pill {
 /* Restated rather than relied upon. These are the two declarations the bug
    above turned out to hinge on, and they are cheap; anything that reaches for
    the shorthand again on an active pill is corrected here instead of shipping. */
-select.filter-pill[data-active='true'] {
+select.filter-pill[data-active='true'],
+select.jobs-select[data-active='true'] {
   background-repeat: no-repeat;
   background-position: right 1rem center;
 }
@@ -1163,26 +1201,8 @@ video:not([controls])::-webkit-media-controls-panel {
 .jobs-search input::placeholder { color: rgba(36, 31, 22, 0.5); }
 .jobs-search input:focus-visible { border-color: var(--on-amber); }
 
-.jobs-select {
-  padding: 0.7rem 1.1rem;
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  color: var(--ink);
-  background-color: #FFF8E5;
-  border: 1px solid rgba(36, 31, 22, 0.3);
-  border-radius: 999px;
-  cursor: pointer;
-  outline: none;
-}
-.jobs-select option { color: var(--ink); background-color: var(--cream); }
-/* An engaged filter should be obvious without reading it. */
-.jobs-select[data-active='true'] {
-  color: var(--on-mint);
-  /* background-color, not the shorthand: see the filter-pill note above. The
-     shorthand resets background-image and would wipe the chevron. */
-  background-color: var(--mint);
-  border-color: var(--mint);
-}
+/* Base, chevron, option colours and active fill all live with .filter-pill
+   now; see the note there. Nothing job-board-specific is left to declare. */
 
 .jobs-clear {
   display: inline-flex;
@@ -1372,7 +1392,7 @@ video:not([controls])::-webkit-media-controls-panel {
 }
 .job-mark-fallback {
   background: var(--ink);
-  border-radius: 8px;
+  border-radius: var(--radius-mark);
   width: 3rem;
 }
 .job-mark-fallback span { font-size: 0.7rem; color: var(--cream); }
@@ -1440,7 +1460,7 @@ video:not([controls])::-webkit-media-controls-panel {
 .news-card {
   position: relative;
   border: 1.5px solid #241F16;
-  border-radius: 14px;
+  border-radius: var(--radius-panel);
   background: var(--bg);
   color: var(--fg);
   box-shadow: 7px 9px 0 rgba(36, 31, 22, 0.9);
@@ -1743,7 +1763,7 @@ video:not([controls])::-webkit-media-controls-panel {
   object-fit: cover;
   object-position: center 18%;
   display: block;
-  border-radius: 12px;
+  border-radius: var(--radius-panel);
   border: 1.5px solid #241F16;
   box-shadow: 4px 5px 0 rgba(36, 31, 22, 0.55);
 }
@@ -1962,7 +1982,7 @@ video:not([controls])::-webkit-media-controls-panel {
      86% of it, sitting in two black bands. The card is the whole point of the
      band, so it takes the shell's measure and nothing further. */
   .news-carousel-inner { padding: 0; }
-  .news-card { border-radius: 12px; box-shadow: 5px 6px 0 rgba(36, 31, 22, 0.9); }
+  .news-card { border-radius: var(--radius-panel); box-shadow: 5px 6px 0 rgba(36, 31, 22, 0.9); }
   .news-copy { padding: 1.1rem 1.25rem 1.2rem; }
   .news-kind { margin-bottom: 0.55rem; }
   .news-title { font-size: 1.2rem; margin-bottom: 0.5rem; max-width: none; }
@@ -4079,7 +4099,7 @@ video:not([controls])::-webkit-media-controls-panel {
   margin-top: 4rem;
   background: #FFF8E5;
   border: 1.5px solid #241F16;
-  border-radius: 10px;
+  border-radius: var(--radius-panel);
   box-shadow: 6px 8px 0 rgba(36, 31, 22, 0.85);
   padding: 3rem;
 }
@@ -4692,7 +4712,7 @@ video:not([controls])::-webkit-media-controls-panel {
   width: 6rem;
   height: 4rem;
   background: var(--cream);
-  border-radius: 10px;
+  border-radius: var(--radius-mark);
   flex-shrink: 0;
 }
 .job-detail-mark img { max-height: 68%; max-width: 82%; }
@@ -4832,7 +4852,7 @@ video:not([controls])::-webkit-media-controls-panel {
 .apply-card {
   background: #FFF8E5;
   border: 1.5px solid #241F16;
-  border-radius: 10px;
+  border-radius: var(--radius-panel);
   box-shadow: 5px 6px 0 rgba(36, 31, 22, 0.82);
   padding: 1.6rem;
 }
@@ -5273,7 +5293,7 @@ video:not([controls])::-webkit-media-controls-panel {
      should look full of what the board has, not short of it. */
   height: clamp(260px, 32vh, 360px);
   border: 0.5px solid rgba(250, 247, 242, 0.14);
-  border-radius: 14px;
+  border-radius: var(--radius-panel);
   background: rgba(250, 247, 242, 0.04);
   overflow: hidden;
   touch-action: none;
@@ -5549,7 +5569,7 @@ video:not([controls])::-webkit-media-controls-panel {
 .legal-summary {
   background: #FFF8E5;
   border: 1.5px solid #241F16;
-  border-radius: 10px;
+  border-radius: var(--radius-panel);
   box-shadow: 5px 6px 0 rgba(36, 31, 22, 0.82);
   padding: 1.4rem;
 }
@@ -5943,7 +5963,7 @@ video::-webkit-media-controls { display: none !important; }
   margin-top: 2.25rem;
   padding: 1.5rem 1.6rem;
   background: var(--cream);
-  border-radius: 10px;
+  border-radius: var(--radius-panel);
   border: 0.5px solid #EDE9E2;
 }
 .jobs-empty-steps > .grotesk-bold {
@@ -7638,7 +7658,7 @@ video::-webkit-media-controls { display: none !important; }
   place-items: center;
   width: 2.75rem;
   height: 2.75rem;
-  border-radius: 8px;
+  border-radius: var(--radius-mark);
 }
 /* The slot for a real mark, as opposed to the initials chip below.
    WIDER THAN THE FALLBACK ON PURPOSE, exactly as .job-mark is wider than
