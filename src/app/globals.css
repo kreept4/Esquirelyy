@@ -1174,11 +1174,13 @@ video:not([controls])::-webkit-media-controls-panel {
   cursor: pointer;
   outline: none;
 }
-.jobs-select option { color: var(--ink); background: var(--cream); }
+.jobs-select option { color: var(--ink); background-color: var(--cream); }
 /* An engaged filter should be obvious without reading it. */
 .jobs-select[data-active='true'] {
   color: var(--on-mint);
-  background: var(--mint);
+  /* background-color, not the shorthand: see the filter-pill note above. The
+     shorthand resets background-image and would wipe the chevron. */
+  background-color: var(--mint);
   border-color: var(--mint);
 }
 
@@ -3165,7 +3167,7 @@ video:not([controls])::-webkit-media-controls-panel {
   font-family: var(--font-sans);
   font-size: 0.92rem;
   color: var(--ink);
-  background: transparent;
+  background-color: transparent;
   border: none;
   border-bottom: 1.5px solid rgba(36, 31, 22, 0.3);
   outline: none;
@@ -6967,7 +6969,7 @@ video::-webkit-media-controls { display: none !important; }
 .auth-input {
   width: 100%;
   padding: 0.7rem 0.9rem;
-  background: #FFFFFF;
+  background-color: #FFFFFF;
   border: 1.5px solid rgba(36, 31, 22, 0.35);
   border-radius: 2px;
   font-family: var(--font-sans);
@@ -7699,3 +7701,57 @@ video::-webkit-media-controls { display: none !important; }
   min-height: 100vh;
   min-height: 100dvh;
 }
+
+
+/* ═══ Dropdowns, one treatment ═════════════════════════════════════════════
+
+   select.filter-pill has stripped the OS chevron and painted our own since the
+   job board shipped. Nothing else did. .jobs-select, .tool-select and the auth
+   forms each drew Chrome's grey system arrow, which is drawn from the OS
+   palette and therefore matches no other mark on the page: three treatments
+   for one control, and the two unstyled ones were the tell.
+
+   Stripping the native chrome is done here on the ELEMENT rather than on each
+   class, so a select added next month arrives themed instead of arriving bare.
+   The chevron is the same 10x7 hairline filter-pill already paints; only its
+   inset changes per control, because a pill is padded on both sides and a
+   ruled tool field is padded on neither.
+
+   Specificity does the rest: `select` is one element selector, so every
+   existing `select.filter-pill` rule still outranks it and the job board's
+   controls are untouched. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 1L5 5.5L9 1' stroke='%234A4A4A' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+}
+
+/* Each of these sets `padding` as a shorthand in its own rule, which resets
+   the right padding this element rule cannot reserve from here. Reserving it
+   per control is the only way a long option never runs under the chevron. */
+select.jobs-select,
+select.auth-input,
+select.sch-region { padding-right: 2.25rem; }
+
+/* The ruled field has no side padding by design, so the chevron sits at the
+   end of the rule rather than inside a box that is not drawn. */
+select.tool-select {
+  padding-right: 1.5rem;
+  background-position: right 0.15rem center;
+}
+
+/* An engaged jobs filter flips to a mint fill and the grey chevron goes muddy
+   on it, so the mark inverts with the ground the way filter-pill's already
+   does. */
+select.jobs-select[data-active='true'] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7' fill='none'%3E%3Cpath d='M1 1L5 5.5L9 1' stroke='%2304211E' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+}
+
+/* Native popups still paint from the OS palette on some platforms, so the list
+   is set back to ink-on-cream wherever it was not already. */
+select.tool-select option,
+select.auth-input option { color: var(--ink); background-color: var(--cream); }

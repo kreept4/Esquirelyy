@@ -208,6 +208,22 @@ export interface Firm {
   tier: FirmTier
   email: string
   /**
+   * A SECOND inbox, for student internships only, where the firm runs one apart
+   * from its trainee and lateral recruitment.
+   *
+   * Two firms do, and both would misroute a student otherwise. G. Elias takes
+   * career applications at careers@ and says plainly that "all applications for
+   * internships should be sent to internships@gelias.com". Detail runs an
+   * internship programme on its own calendar, applications open 1 January to 30
+   * April for placements running June to November, and it does not share an inbox
+   * with the NYSC route.
+   *
+   * Absent is the normal case and means one inbox takes everything. It is not a
+   * fallback to `email`: where it is set, sending an internship application to
+   * `email` is the wrong address, which is the whole reason the field exists.
+   */
+  internEmail?: string
+  /**
    * The firm's own site.
    *
    * OPTIONAL, AND IT WAS REQUIRED UNTIL A FIRM HAD NONE THAT WORKED. Ninewells
@@ -509,7 +525,13 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'ALP NG & Co',
     shortName: 'ALP',
     tier: 'Established',
-    email: 'info@alp.company',
+    /*
+     * Their careers page: "Should you wish to be considered for an internship or NYSC
+     * placement with the firm, kindly send your resume and application letter to
+     * careers@alp.company. Only applications sent to this e-mail address will be
+     * acknowledged and considered." info@ was the switchboard, not the route in.
+     */
+    email: 'careers@alp.company',
     website: 'https://alp.company',
     linkedin: 'https://www.linkedin.com/company/africa-law-practice-alp',
     offices: [
@@ -588,7 +610,12 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'AELEX',
     shortName: 'AELEX',
     tier: 'Leading',
-    email: 'info@aelex.com',
+    /*
+     * Their careers page states it outright: "To apply for a position, send a copy of
+     * your CV to employment@aelex.com." info@aelex.com is the general line and is what
+     * students were being sent to.
+     */
+    email: 'employment@aelex.com',
     website: 'https://aelex.com',
     linkedin: 'https://www.linkedin.com/company/507546',
     offices: [
@@ -719,8 +746,12 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'DealHQ Partners',
     shortName: 'DealHQ',
     tier: 'Boutique',
-    email: 'info@dealhqpartner.com',
-    website: 'https://dealhqpartner.com',
+    /*
+     * The stored domain was singular, dealhqpartner.com, which holds no MX record. The
+     * firm is dealhqpartners.com, plural, and that domain does receive mail.
+     */
+    email: 'info@dealhqpartners.com',
+    website: 'https://dealhqpartners.com',
     linkedin: 'https://www.linkedin.com/company/dealhq-partners',
     offices: [{ city: 'Lagos', address: '3B Dr. Omon Ebhomenye Street, Lekki Phase 1, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Capital Markets'],
@@ -735,6 +766,7 @@ const FIRMS_UNSORTED: Firm[] = [
     shortName: 'Detail',
     tier: 'Established',
     email: 'nysc@detailsolicitors.com',
+    internEmail: 'internship@detailsolicitors.com',
     website: 'https://detailsolicitors.com',
     linkedin: 'https://www.linkedin.com/company/detail-commercial-solicitors',
     offices: [{ city: 'Lagos', address: 'DCS Place, 8 DCS Street, Off Remi Olowude Way, Lekki Phase 1, Lagos' }],
@@ -784,7 +816,14 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'G Elias & Co',
     shortName: 'G Elias',
     tier: 'Leading',
-    email: 'info@gelias.com',
+    /*
+     * "If you seek a career with us, please write and send your transcript to
+     * careers@gelias.com." Internships go somewhere else entirely, see internEmail.
+     * info@gelias.com does not appear anywhere on their site; gelias@gelias.com is the
+     * general line.
+     */
+    email: 'careers@gelias.com',
+    internEmail: 'internships@gelias.com',
     website: 'https://gelias.com',
     linkedin: 'https://www.linkedin.com/company/gelias',
     offices: [
@@ -834,7 +873,12 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Jackson, Etti & Edu',
     shortName: 'JEE',
     tier: 'Leading',
-    email: 'jee@jee.africa',
+    /*
+     * The trainee associate route, which is not the address on jee.africa. The firm kept
+     * jacksonettiandedu.com live for mail after moving the site to jee.africa, and that
+     * is where applications go. jee@jee.africa is the general line.
+     */
+    email: 'jacksonettiedu@jacksonettiandedu.com',
     website: 'https://jee.africa',
     linkedin: 'https://www.linkedin.com/company/jackson-etti-and-edu',
     offices: [
@@ -1047,7 +1091,12 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Perchstone & Graeys LP',
     shortName: 'Perchstone & Graeys',
     tier: 'Established',
-    email: 'perchstone@perchstoneandgraeys.com',
+    /*
+     * perchstone@perchstoneandgraeys.com appears nowhere on their site. info@ is the
+     * address on the careers page itself; applications otherwise go through the upload
+     * form there.
+     */
+    email: 'info@perchstoneandgraeys.com',
     website: 'https://perchstoneandgraeys.com',
     linkedin: 'https://www.linkedin.com/company/perchstone-%26-graeys',
     offices: [
@@ -1157,7 +1206,11 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Stren & Blan Partners',
     shortName: 'Stren & Blan',
     tier: 'Established',
-    email: 'Careers@strenandblan.com',
+    /*
+     * Lowercased. The local part was stored capitalised, which is legal but is not how
+     * the firm writes it and reads as a typo on the card.
+     */
+    email: 'careers@strenandblan.com',
     website: 'https://strenandblan.com',
     linkedin: 'https://www.linkedin.com/company/strenandblan',
     offices: [
@@ -1175,8 +1228,13 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Streamsowers & Kohn',
     shortName: 'Streamsowers',
     tier: 'Established',
-    email: 'info@streamsowers.com',
-    website: 'https://streamsowers.com',
+    /*
+     * streamsowers.com no longer resolves and holds no MX record, so every application
+     * sent to the old address was undeliverable. The firm now trades online as sskohn.com.
+     * ssk@sskohn.com is the address on their own NYSC Associate advert.
+     */
+    email: 'ssk@sskohn.com',
+    website: 'https://sskohn.com',
     linkedin: 'https://www.linkedin.com/company/sskohnng',
     offices: [
       { city: 'Lagos', address: '852B Bishop Aboyade Cole Street, Victoria Island, Lagos' },
@@ -1233,7 +1291,12 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Udo Udoma & Belo-Osagie',
     shortName: 'UUBO',
     tier: 'Leading',
-    email: 'careers@uubo.org',
+    /*
+     * Their careers page: "please submit a typed cover letter, resume or transcript to:
+     * recruitment@uubo.org." careers@uubo.org appears nowhere on the site, and this was
+     * the address users wrote in about.
+     */
+    email: 'recruitment@uubo.org',
     website: 'https://uubo.org',
     linkedin: 'https://www.linkedin.com/company/uubolaw',
     offices: [
@@ -1331,7 +1394,11 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Duale, Ovia & Alex-Adedipe',
     shortName: 'DOA',
     tier: 'Established',
-    email: 'info@doa-law.com',
+    /*
+     * Their careers page: "Please feel free to submit your resume and cover letter to
+     * careers@doa-law.com, as we are always interested in meeting great people!"
+     */
+    email: 'careers@doa-law.com',
     website: 'https://www.doa-law.com',
     linkedin: 'https://www.linkedin.com/company/duale-ovia-%26-alex-adedipe',
     offices: [
@@ -1347,7 +1414,11 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Giwa-Osagie & Co',
     shortName: 'Giwa-Osagie',
     tier: 'Established',
-    email: 'giwa-osagie@giwa-osagie.com',
+    /*
+     * Their careers page: "If you wish to join our team, kindly forward your application
+     * to career@giwa-osagie.com." Singular "career", not "careers".
+     */
+    email: 'career@giwa-osagie.com',
     website: 'https://www.giwa-osagie.com',
     linkedin: 'https://www.linkedin.com/company/giwa-osagie-co',
     offices: [
@@ -1435,7 +1506,11 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Paul Usoro & Co',
     shortName: 'Paul Usoro',
     tier: 'Established',
-    email: 'info@paulusoro.com',
+    /*
+     * Their careers page: "Interested individuals should send their application letter
+     * and CV to careers@paulusoro.com."
+     */
+    email: 'careers@paulusoro.com',
     website: 'https://paulusoro.com',
     linkedin: 'https://www.linkedin.com/company/paul-usoro-%26-co',
     offices: [
@@ -1704,7 +1779,11 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Femi Atoyebi & Co',
     shortName: 'Femi Atoyebi',
     tier: 'Boutique',
-    email: 'careers@femiatoyebi.com.ng',
+    /*
+     * Their site: "Send your CV and cover letter to career@femiatoyebi.com.ng."
+     * Singular "career". The stored plural was one letter off and would have bounced.
+     */
+    email: 'career@femiatoyebi.com.ng',
     /* Was faandco.click, on the note that the .click site and the .com.ng email
        were an odd pair but both live. Rechecked later the same day and the
        .click domain no longer resolves at all: NXDOMAIN on a public resolver,
@@ -1930,7 +2009,10 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'The Law Crest LLP',
     shortName: 'The Law Crest',
     tier: 'Established',
-    email: 'info@thelawcrest.com',
+    /*
+     * Their careers page: "you can email an updated CV to us at careers@thelawcrest.com".
+     */
+    email: 'careers@thelawcrest.com',
     website: 'https://thelawcrest.com',
     linkedin: 'https://www.linkedin.com/company/the-law-crest-llp',
     /* Both from thelawcrest.com on 2026-08-08. The Lagos address is in the
@@ -2033,7 +2115,12 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Aekley Solicitors',
     shortName: 'Aekley',
     tier: 'Boutique',
-    email: 'info@aekleysolicitors.com',
+    /*
+     * Their careers page: "If you are interested in joining our team, kindly send your
+     * resume to careers@aekleysolicitors.com." info@ is the footer address on every
+     * page, which is how it got picked up.
+     */
+    email: 'careers@aekleysolicitors.com',
     website: 'https://aekleysolicitors.com',
     linkedin: 'https://www.linkedin.com/company/aekleysolicitors',
     /* Both from the footer of every page on aekleysolicitors.com, read

@@ -456,8 +456,20 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
                   <p className="grotesk-regular apply-card-note">
                     Nigerian firms take speculative applications year round. Send your CV and a
                     short cover letter to{' '}
-                    <a href={'mailto:' + firm.email} className="apply-card-mail">{firm.email}</a>.
+                    <a href={'mailto:' + firm.email} className="apply-card-mail">{firm.email}</a>
+                    {firm.internEmail ? ' for a trainee or lateral role.' : '.'}
                   </p>
+                  {/* Two firms route student internships to a different inbox
+                      entirely, so the address above is the wrong one for a
+                      student. Naming both beats naming the more senior one and
+                      letting the reader guess. */}
+                  {firm.internEmail && (
+                    <p className="grotesk-regular apply-card-note">
+                      Still a student? Internships go to{' '}
+                      <a href={'mailto:' + firm.internEmail} className="apply-card-mail">{firm.internEmail}</a>
+                      {' '}instead.
+                    </p>
+                  )}
                 </>
               )}
               </>
