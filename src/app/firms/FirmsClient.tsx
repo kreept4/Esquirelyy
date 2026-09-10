@@ -91,6 +91,24 @@ const VIEW_KEY = 'esquirely.firms.view'
  *  directory that will not go back to the beginning. Session storage forgets it
  *  when the tab closes, which is exactly the life of the browse it belongs to. */
 const BROWSE_KEY = 'esquirely.firms.browse'
+
+/** Where in the list the reader was standing when they tapped a firm.
+ *
+ *  A SEPARATE KEY FROM THE BROWSE STATE ABOVE, and it has to be. The browse
+ *  payload is rewritten on every filter change, and an offset folded into it
+ *  would be stale by the time it was written: the reader scrolls without
+ *  changing any filter, so the effect that writes the payload never runs, and
+ *  the number saved would be wherever they happened to be the last time they
+ *  touched a select.
+ *
+ *  Written on the way out rather than on every scroll event, because the click
+ *  is the only moment the offset actually matters and a scroll listener writing
+ *  to storage on every frame is a cost paid continuously for one read.
+ *
+ *  READ ONCE AND CLEARED, so this restores a return journey and nothing else.
+ *  Arriving at the directory fresh from the nav should land at the top, which
+ *  is what an uncleared offset would quietly stop happening. */
+const SCROLL_KEY = 'esquirely.firms.scroll'
 const VIEWS: View[] = ['detailed', 'grid', 'list']
 
 /** The switch is desktop only.
@@ -407,6 +425,10 @@ export default function FirmsClient() {
      effect is never reached until a commit that already carries the restored
      values. */
   const [restored, setRestored] = useState(false)
+  /* Read with the rest of the session state, applied a couple of frames later.
+     A ref rather than state: nothing renders differently because of it, and a
+     setState here would cost a commit to carry a number to an effect. */
+  const pendingScrollRef = useRef<number | null>(null)
 
   useEffect(() => {
     try {
@@ -427,10 +449,48 @@ export default function FirmsClient() {
           setVisible(Math.min(Math.max(PAGE_SIZE, Math.floor(v)), ALL_FIRMS.length))
         }
       }
+      const rawY = window.sessionStorage.getItem(SCROLL_KEY)
+      window.sessionStorage.removeItem(SCROLL_KEY)
+      if (rawY !== null) {
+        const y = Number(rawY)
+        /* Finite and forward only. This has been out of the app's hands, and a
+           stale or hostile value here would throw the reader somewhere the
+           document does not go. */
+        if (Number.isFinite(y) && y > 0) pendingScrollRef.current = y
+      }
     } catch { /* Private mode, or something else wrote nonsense here. The
                  defaults are a fine place to land. */ }
     setRestored(true)
   }, [])
+
+  /* THE BACK BUTTON BUG THIS EXISTS TO FIX.
+     The reader scrolls the directory, loads a page or two more, taps a firm,
+     and comes back to the header. Not to where they were: to the very top, past
+     everything they had already read.
+
+     The cause is an ordering one, and it is why restoring the filters above was
+     not enough on its own. On the way back the client mounts with its defaults,
+     twelve cards and no filters, so the document is a fraction of the height it
+     was. The browser then does its own scroll restoration against that short
+     document, cannot honour an offset the page no longer reaches, and clamps to
+     zero. The effect above restores the twenty four cards a frame later, the
+     page grows back, and by then the scroll has already been thrown away.
+
+     So the offset is reapplied after the restored list is on screen. Two frames
+     rather than one: the first carries the commit that renders the extra cards,
+     the second lets layout settle so the document is tall enough for the offset
+     to land instead of being clamped a second time. */
+  useEffect(() => {
+    if (!restored) return
+    const y = pendingScrollRef.current
+    if (y === null) return
+    pendingScrollRef.current = null
+    let inner = 0
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => window.scrollTo(0, y))
+    })
+    return () => { cancelAnimationFrame(outer); cancelAnimationFrame(inner) }
+  }, [restored])
 
   /* Written on every change, so whatever the reader is looking at when they tap
      a firm is what comes back when they return. Gated on the restore having
@@ -656,7 +716,17 @@ export default function FirmsClient() {
           ) : (
             <div className="card-grid" data-view={activeView} ref={gridRef}>
               {shown.map(firm => (
-                <Link key={firm.slug} href={`/firms/${firm.slug}`}>
+                <Link
+                  key={firm.slug}
+                  href={`/firms/${firm.slug}`}
+                  onClick={() => {
+                    try {
+                      window.sessionStorage.setItem(SCROLL_KEY, String(window.scrollY))
+                    } catch { /* Private mode. The reader lands at the top on the
+                                 way back, which is the behaviour they had before
+                                 this existed. */ }
+                  }}
+                >
 
                   {/* Name first, tier as a quiet line beneath it.
                       This replaces two stacked uppercase micro-labels above the
