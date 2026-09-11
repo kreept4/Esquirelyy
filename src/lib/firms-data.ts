@@ -584,11 +584,29 @@ const FIRMS_UNSORTED: Firm[] = [
   {
     slug: 'acas-law',
     logoFile: 'ACAS.jpg',
-    name: 'ACAS-Law',
-    shortName: 'ACAS',
+    /* Dentons ACAS-Law, not ACAS-Law. The 2021 combination is part of the name
+       the firm trades under today, and the bare old name reads as a different,
+       smaller firm than the one an applicant is actually writing to.
+
+       `slug` stays 'acas-law' on purpose. It is the published URL for this
+       profile and renaming it would break every link already pointing here;
+       `formerName` carries the old name for search instead. */
+    name: 'Dentons ACAS-Law',
+    shortName: 'Dentons ACAS',
+    formerName: 'ACAS-Law',
     tier: 'Leading',
-    email: 'recruit@acas-law.com',
-    website: 'https://acas-law.com',
+    /* Recruitment runs through Dentons' Nigeria inbox, NOT through anything on
+       the legacy acas-law.com domain, and DNS corroborates it both ways:
+       dentonsacaslaw.com publishes no MX record at all, so no address on the
+       firm's own site domain is deliverable, while acas-law.com and dentons.com
+       answer on the same Mimecast mail infrastructure. */
+    email: 'recruitment.nigeria@dentons.com',
+    /* acas-law.com is recorded nowhere here because its TLS certificate has
+       EXPIRED: every browser puts a full-page security interstitial in front of
+       it, which is a worse landing than no link. It redirects to
+       dentonsacaslaw.com, which serves 200 on a valid certificate, so the
+       destination is recorded rather than the broken hop. */
+    website: 'https://www.dentonsacaslaw.com',
     linkedin: 'https://www.linkedin.com/company/acas-law',
     /* Three offices, not one. The Abuja address was supplied by hand: the firm's
        own office-details page returns 403 to every automated request, and Legal
@@ -635,7 +653,9 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Aina Blankson LP',
     shortName: 'Aina Blankson',
     tier: 'Established',
-    email: 'info@ainablankson.com',
+    // Careers page: applicants "send a mail directly to Recruitment@ainablankson.com
+    // indicating the position of interest". Lowercased; the mailbox is not case sensitive.
+    email: 'recruitment@ainablankson.com',
     website: 'https://ainablankson.com',
     linkedin: 'https://www.linkedin.com/company/103737330',
     offices: [
@@ -654,6 +674,12 @@ const FIRMS_UNSORTED: Firm[] = [
     shortName: 'A&O Nigeria',
     tier: 'Established',
     email: 'ao@ajumogobiaokeke.com',
+    /* ⚠ CHECKED 2026-09-11 AND THE SERVER WAS REFUSING CONNECTIONS, on both
+       :80 and :443, with certificate checking disabled, across repeated probes.
+       The domain itself is fine: it resolves, and it holds live MX, so the
+       address above still delivers. Left in place because one afternoon of
+       probes from one location is not proof a site is gone; if it is still
+       refusing connections on a later check, drop the field. */
     website: 'https://ajumogobiaokeke.com',
     linkedin: 'https://www.linkedin.com/company/ajumogobia-%26-okeke',
     offices: [
@@ -765,7 +791,11 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Detail Solicitors',
     shortName: 'Detail',
     tier: 'Established',
-    email: 'nysc@detailsolicitors.com',
+    /* careers@, not the nysc@ address this record used to carry. Confirmed
+       directly by Bolu, and the firm's own /vacancies page agrees: "send your
+       professional profile, cover letter and CV to careers@detailsolicitors.com".
+       nysc@detailsolicitors.com appears nowhere on the firm's site. */
+    email: 'careers@detailsolicitors.com',
     internEmail: 'internship@detailsolicitors.com',
     website: 'https://detailsolicitors.com',
     linkedin: 'https://www.linkedin.com/company/detail-commercial-solicitors',
@@ -1365,7 +1395,11 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Alliance Law Firm',
     shortName: 'Alliance',
     tier: 'Established',
-    email: 'info@alliancelf.com',
+    /* alliancelf.com now redirects to alliancelawfirm.ng, which is where the
+       firm's careers page lives and where it names this inbox as the route for
+       a CV when the on-page form fails. Both domains hold MX, so the old
+       address is not dead, just no longer the one the firm points people at. */
+    email: 'careers@alliancelawfirm.ng',
     website: 'https://alliancelawfirm.ng',
     linkedin: 'https://www.linkedin.com/company/alliancelawfirm',
     offices: [
@@ -1815,13 +1849,18 @@ const FIRMS_UNSORTED: Firm[] = [
     shortName: 'Idowu Sofola',
     tier: 'Established',
     email: 'contact@idowusofola.com',
-    /* ⚠ Serving an EXPIRED TLS certificate as of 2026-08-08. Every browser puts
-       a full-page "your connection is not private" interstitial in front of it,
-       so the Visit website link on this firm's profile lands a student on a
-       security warning. The site itself is fine behind it and the firm is
-       plainly still practising, so the link stays rather than being removed;
-       the fix belongs to them, not to us. Recheck before assuming it is still
-       true, since a renewal clears it in an afternoon. */
+    /* ⚠ Serving an EXPIRED TLS certificate. First recorded 2026-08-08, STILL
+       expired on 2026-09-11 on both the apex and www. Every browser puts a
+       full-page "your connection is not private" interstitial in front of it,
+       so the Visit website link on this profile lands a student on a security
+       warning.
+
+       The original note said to recheck because "a renewal clears it in an
+       afternoon". It has now been over a month, so that is no longer the right
+       assumption: treat this as the firm's settled state rather than a blip.
+       The site is genuinely up behind the warning and the firm is plainly still
+       practising, so the link stays for now, but if a third check finds it
+       expired, drop the field. Mail is unaffected: the domain is on Zoho. */
     website: 'https://idowusofola.com',
     linkedin: 'https://www.linkedin.com/company/idowu-sofola-co',
     offices: [
@@ -2167,7 +2206,9 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'J-K Gadzama LLP',
     shortName: 'J-K Gadzama',
     tier: 'Established',
-    email: 'info@j-kgadzamallp.com',
+    // Careers page: "send your curriculum vitae with a covering letter to
+    // careers@j-kgadzamallp.com".
+    email: 'careers@j-kgadzamallp.com',
     website: 'https://j-kgadzamallp.com',
     linkedin: 'https://www.linkedin.com/company/j-k-gadzama-llp',
     offices: [
