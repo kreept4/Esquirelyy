@@ -99,3 +99,38 @@ if (dupes.length) {
 } else {
   console.log('\nNo listing produces more than one row.')
 }
+
+/* ============================================================
+   STABILITY: the same inputs, twice, minutes apart.
+   ============================================================
+
+   Reported as the bell showing something after clicking through to another
+   page. Client-side navigation re-runs load(), which calls buildFeed with a
+   fresh `new Date()`. So any row whose stamp is derived from `now` rather than
+   from its own data gets a NEW stamp on every navigation, and a stamp newer
+   than the moment the panel was last marked seen is, by definition, unread
+   again.
+
+   That is exactly the bug 3dd6936 fixed for closing rows. This checks whether
+   any other row in the feed still has it, by building the identical feed at two
+   instants on the same day and diffing every id and stamp. Anything that moves
+   is a row that will re-alert on navigation for ever. */
+const later = new Date(now.getTime() + 5 * 60 * 1000)
+const feedLater = buildFeed(jobs, [], prefs, '', later, new Set(), opps)
+
+const byId = Object.fromEntries(feed.map(n => [n.id, n.at]))
+const moved = feedLater.filter(n => byId[n.id] && byId[n.id] !== n.at)
+const appeared = feedLater.filter(n => !byId[n.id])
+
+console.log(`
+--- stability across a simulated navigation (5 minutes later) ---`)
+console.log(`rows now: ${feed.length}   rows later: ${feedLater.length}`)
+if (moved.length === 0 && appeared.length === 0) {
+  console.log('PASS  every stamp held still, and no row appeared from nowhere')
+} else {
+  for (const n of moved) {
+    console.log(`FAIL  ${n.kind} ${n.id}`)
+    console.log(`        ${byId[n.id]}  ->  ${n.at}   <== RESTAMPED`)
+  }
+  for (const n of appeared) console.log(`FAIL  ${n.kind} ${n.id} appeared only in the later build`)
+}
