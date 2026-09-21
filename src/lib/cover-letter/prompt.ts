@@ -122,30 +122,67 @@ it in order.`
  */
 const QUESTIONS = `## The four questions the letter must answer
 
-A cover letter that does not answer these is a covering note. Every one of them
-gets an answer, and none of them gets more than two sentences.
+A cover letter that leaves these unanswered is a covering note.
 
   1  WHY THIS EMPLOYER
   2  WHY THIS TEAM, AND THIS KIND OF PRACTICE
   3  WHY THIS CANDIDATE'S EXPERIENCE FITS IT
   4  WHY THIS IS THE RIGHT MOVE FOR THIS CANDIDATE
 
-⚠ THE RULE THAT MAKES QUESTIONS 1 AND 2 SURVIVABLE. Every sentence answering
-them must contain a fact about the employer AND a fact about the candidate, in
-the same sentence. Both halves, every time.
+⚠ THESE ARE FOUR THINGS THE READER MUST FINISH THE LETTER KNOWING. THEY ARE
+NOT FOUR THINGS THE LETTER SAYS. The difference is the whole of how this reads.
 
-A sentence carrying only employer facts is either flattery or reading their own
-file back to them. A sentence carrying only candidate facts has not answered the
-question. The join is the answer, and it is also the thing no other applicant
-can copy.
+A letter that works through them in order, discharging one and moving to the
+next, announces its own structure on the first pass. Nobody writes that way. A
+recruiter cannot say what is wrong with such a letter and does not need to: it
+arrives feeling handled rather than written, and that is enough to put it down.
 
-  Answers the question:
-    "Chambers ranks your dispute resolution practice Band 1 and arbitration is
-     what I spent my final year writing about."
+So the answers are carried, not delivered. Question 1 is usually answered by
+which team the candidate is writing to and what they lead with. Question 4 is
+often already answered by questions 1 and 3 before any sentence addresses it.
+An answer the reader assembles for themselves is stronger than one handed over,
+and it is the only version that reads as though a person wrote it.
+
+⚠ THE JOIN, AND WHY IT MUST NOT BE WELDED. Questions 1 and 2 are answered by
+connecting something true about the employer to something true about the
+candidate. A sentence carrying only employer facts is flattery or their own file
+read back to them. A sentence carrying only candidate facts has not answered
+anything.
+
+But the connection does NOT have to happen inside one sentence, and a letter
+where it always does is the most obvious machine tell this prompt produces. Two
+facts bolted together with "and" is a seam, and every seam in the same place in
+every letter is a template. Let the join run across a sentence break, or sit in
+the order of what is mentioned, or go unstated where the reader will make it
+anyway. Stating a connection the reader can already see is the thing that reads
+as overbearing.
+
+  Answers the question, because the fact is about the WORK:
     "You act for distribution companies. I have spent four years arguing with
      them in court, on the other side."
     "Your Port Harcourt office does the upstream work, which is where I did my
      NYSC."
+
+  Answers it without saying so, which is usually better:
+    "I am applying for the trainee role in your dispute resolution team.
+     International arbitration is what I have spent my final year on."
+
+⚠ A RATING IS NOT A FACT YOU CAN JOIN TO. Chambers bands, IFLR1000 and Legal
+500 tiers tell you which of the candidate's experience to lead with. They do not
+go in the letter. A candidate can stand in a real relation to the work a firm
+does, to its clients, its forum, its sector or its city, and cannot stand in any
+relation at all to its ranking, so the sentence that tries always comes out
+welded:
+
+  Never write:
+    "Chambers ranks your dispute resolution practice Band 1, and arbitration is
+     what I spent my final year writing about."
+    "Your Band 1 banking practice is why I am applying."
+
+The recruiter works there. They know their band, they know it better than the
+directory does, and reading it back spends one of 200 words on something they
+already knew. Use the ranking to decide what the letter leads with, then leave
+it out.
 
   Does not answer the question, and must never appear:
     "Your firm has an outstanding reputation in dispute resolution."
@@ -161,10 +198,10 @@ candidate, not the most impressive one.
 
 2. WHY THIS TEAM. The candidate is applying to a division, not to a building.
 Name it, and show you know what it does rather than what it is called. The
-strongest version names the work: the kind of matter, the forum, the counterparty,
-the regulator. If a directory band is recorded for that division specifically,
-that is the fact to use, stated flat, with no adjective attached and never more
-than once in the letter.
+strongest version names the work: the kind of matter, the forum, the
+counterparty, the regulator. Where a directory band is recorded for that
+division, it decides which of the candidate's experience leads and then stays
+out of the letter, for the reason given above.
 
 3. WHY THE EXPERIENCE FITS. This is the longest part of the letter and it is
 where the specifics live. Two or three things, each with what the matter was,
@@ -202,26 +239,48 @@ pad the fourth.
 
 Four short paragraphs, and the questions map onto them:
 
-  Paragraph one    The role and the division applied for, and the one fact that
-                   joins this employer to this candidate. Two sentences. No
+  Paragraph one    The role and the division applied for, and the one fact
+                   that joins this employer to this candidate. Two sentences. No
                    hook, no scene setting, no announcing that a letter is being
-                   written. Questions 1 and 2.
+                   written.
 
   Paragraph two    The experience that bears on this division, with the
                    specifics attached. This is the letter and it is the longest
-                   paragraph. Question 3.
+                   paragraph.
 
   Paragraph three  One or two sentences on direction: what the candidate wants
-                   to be doing, following from what they have done. Question 4.
-                   Where the candidate is changing practice area, this is also
-                   where the change is named, plainly.
+                   to be doing, following from what they have done. Where the
+                   candidate is changing practice area, this is also where the
+                   change is named, plainly. Cut this paragraph entirely where
+                   the letter has already made the direction obvious. A sentence
+                   spelling out a conclusion the reader reached two paragraphs
+                   ago is the most common way this letter turns overbearing.
 
   Paragraph four   The close. Availability, or the call to the Bar, or a plain
                    request for a conversation. One or two sentences.
 
-Three paragraphs is acceptable where questions 3 and 4 genuinely belong
-together, for instance a candidate whose reason for moving is the same fact as
-their strongest experience. Never fewer than three.
+Three of these is often the better letter: merge where the direction is already
+plain from what the candidate has done, or where the reason for moving is the
+same fact as their strongest experience. Never fewer than three.
+
+⚠ BUT MERGING NEVER MEANS A LONGER PARAGRAPH TWO. Dropping the direction
+paragraph removes a sentence from the letter. It does not move that sentence
+into the experience paragraph, and it is not a licence to run the experience
+past the cap because a slot came free. If merging makes paragraph two longer,
+you have not merged, you have concatenated.
+
+⚠ FOUR IS NOT A CEILING ON PARAGRAPHS. The list above names four kinds of
+material, not four blocks of text. A candidate with a lot of relevant
+experience writes FIVE paragraphs, because the experience takes two: the ADR
+work in one, the litigation in the next. That is the normal shape for a strong
+mid-level candidate and it is always better than one 120 word block. Split on
+the subject change and do not apologise for the extra break.
+
+⚠ THE PARAGRAPHS ARE NOT ONE QUESTION EACH. The list above describes where
+material tends to sit, not an allocation to be filled. A letter whose four
+paragraphs answer the four questions one for one, in order, is the exact thing
+the section above warns about, and it is what this shape produces if you read it
+as a form.
 
 ⚠ NO PARAGRAPH RUNS PAST 90 WORDS OR ABOUT SIX SENTENCES, WHICHEVER COMES
 FIRST. A letter can sit comfortably inside 200 words and still arrive as a
@@ -384,9 +443,8 @@ EXAMPLE ONE, a final year student, applying to a dispute resolution team.
 
 Dear Hiring Manager,
 
-I am applying for the trainee role in your dispute resolution team. Chambers
-ranks that practice Band 1, and international arbitration is what I have spent
-my final year on.
+I am applying for the trainee role in your dispute resolution team.
+International arbitration is what I have spent my final year on.
 
 I interned for six weeks in litigation at a Lagos firm. I wrote research notes
 on two Federal High Court matters and drafted a witness statement that went on
@@ -427,10 +485,19 @@ Yours sincerely,
 Chidi Okonkwo
 
 ⚠ NOTE WHAT NEITHER EXAMPLE DOES. Neither one praises the firm. Neither one
-explains what any of it taught them. Neither one comments on its own argument.
-Each names one employer fact and joins it to the candidate in the same sentence,
-then spends the rest of the letter on work. That restraint is the whole lesson,
-and it is the thing most often lost.
+quotes a ranking. Neither one explains what any of it taught them. Neither one
+comments on its own argument. Both spend almost every word on work.
+
+⚠ AND NOTE THAT THEY JOIN DIFFERENTLY, WHICH IS THE POINT. Example two states
+the connection, because it is one the reader would not otherwise make: that four
+years against distribution companies is preparation for acting for them is worth
+a sentence. Example one states nothing. It names the team and says what the
+candidate spent the year on, and the reader does the rest, because a final year
+on arbitration and a dispute resolution team need no help connecting.
+
+Ask which of those two a given letter is before writing the first paragraph. The
+second is more common than it looks, and choosing it is most of what keeps a
+letter from reading as though it were filled in.
 
 ## And here is the same job done badly
 
@@ -616,10 +683,16 @@ Read the draft back once and fix it.
   1  Check all four questions are answered: why this employer, why this team,
      why this experience fits, why this move is right. Any that is missing gets
      one sentence. Any that got three sentences loses one.
-  2  Read every sentence that answers question 1 or 2. If it does not contain a
-     fact about the employer AND a fact about the candidate, rewrite it so it
-     does, or cut it. A sentence of pure admiration is always cut, never
-     rewritten.
+  2  Read every sentence that answers question 1 or 2. A sentence of pure
+     admiration is cut, never rewritten. A sentence carrying only candidate
+     facts is fine if the employer half is somewhere nearby or the reader will
+     make the connection unaided. What you are looking for is the opposite
+     fault: two facts welded with "and" where the reader needed no help. If the
+     connection is obvious once both facts are on the page, delete the half of
+     the sentence that states it.
+  2b Check that no directory band, tier or ranking appears anywhere in the
+     letter. If one does, cut it and keep whatever experience it made you lead
+     with. The recruiter works there.
   3  Read every sentence that ends in a subordinate clause. If that clause
      explains what an experience taught, gave, showed or required of you, DELETE
      THE CLAUSE and keep the fact.
@@ -634,8 +707,12 @@ Read the draft back once and fix it.
   7  Read the opening sentence on its own. If it announces that a letter is
      being written, or restates the job title back at the employer, replace it
      with the plain version naming the role and the division.
-  8  Look at the longest paragraph. If it runs past about six sentences, split
-     it where the subject changes.
+  8  COUNT THE WORDS IN THE LONGEST PARAGRAPH. Not the sentences, the words.
+     Over 90, split it where the subject changes, even where it is only five
+     sentences long. This is the step most often skipped, because a paragraph
+     of 100 words reads fine to the writer who just wrote it and arrives as a
+     wall to the recruiter reading it on a phone. Six sentences is the softer
+     half of the test and 90 words is the half that catches it.
   9  Count the words between the salutation and the sign off. Over 200, cut a
      sentence. Not an adjective, a sentence. Cut from question 3, which has the
      most, never from questions 1, 2 or 4, which have one each.

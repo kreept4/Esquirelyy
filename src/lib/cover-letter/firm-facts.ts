@@ -204,8 +204,14 @@ export function buildFirmFacts(
       if (rankedHere.length) {
         lines.push(
           `That practice specifically holds: ${rankedHere.join('; ')}.` +
-          ' This is the single most useful fact you have for the "why this team"' +
-          ' sentence. Use it once, as a fact, with no adjective attached to it.'
+          ' ⚠ THIS IS A SELECTION SIGNAL AND NOT A SENTENCE. It tells you the' +
+          ' team is serious about this work, so lead with whatever the candidate' +
+          ' has done that sits closest to it and let the match speak for itself.' +
+          ' Do NOT write the band into the letter. The recruiter works there and' +
+          ' knows their own ranking, so quoting it back spends a line of 200' +
+          ' telling the reader something they already knew, and it is the' +
+          ' clearest single sign that a tool assembled the letter rather than a' +
+          ' candidate writing one.'
         )
       } else {
         lines.push(
