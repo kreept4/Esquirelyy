@@ -68,13 +68,23 @@ try {
       title: `zz-migration-probe-${Date.now()}`,
       organization: 'probe',
       type: 'competition',
-      /* NOT NULL, and the first version of this probe left it out and got a
-         23502 back, which reads like the constraint passing when it never got
-         that far. A probe that can fail for a reason other than the one it is
-         testing is not a probe. */
+      /* ⚠ EVERY OTHER COLUMN HERE IS CHOSEN TO GET OUT OF THE WAY, and this
+         probe got both of them wrong before it got them right.
+
+         `target` is NOT NULL and was omitted, so the insert came back 23502 and
+         never reached the type constraint at all.
+
+         `status` was then set to 'draft', which is not in that column's own
+         check constraint, so the insert came back 23514 from
+         opportunities_status_check. 23514 is the same code a type-vocabulary
+         failure returns, so the probe reported the type migration as still
+         pending on the day it had actually been applied, and said so with
+         complete confidence. 'rejected' is a real status and, unlike
+         'published', is filtered out of every read, so the row is invisible for
+         the instant it exists. */
       target: 'all',
       link: 'https://example.invalid',
-      status: 'draft',
+      status: 'rejected',
     }),
   })
   if (r2.ok) {
@@ -83,9 +93,15 @@ try {
     typeDetail = "'competition' accepted"
   } else {
     const e = JSON.parse(await r2.text())
-    typeDetail = e.code === '23514'
+    /* ⚠ THE CONSTRAINT NAME, NOT JUST THE CODE. Reading 23514 as "the type
+       vocabulary rejected this" is what made the earlier version lie: every
+       check constraint on the table answers 23514, so a probe that trips a
+       different one reports a false PENDING. Only a failure naming
+       opportunities_type_check is evidence about this migration. */
+    const named = /violates check constraint "([^"]+)"/.exec(e.message || '')?.[1]
+    typeDetail = named === 'opportunities_type_check'
       ? "'competition' rejected by opportunities_type_check"
-      : `unexpected: ${e.code} ${(e.message || '').slice(0, 50)}`
+      : `INCONCLUSIVE: the probe tripped ${named || e.code} instead, so this says nothing about the type vocabulary`
   }
 } finally {
   if (probeId) {
