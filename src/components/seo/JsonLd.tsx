@@ -368,13 +368,22 @@ export function jobListSchema(jobs: { slug: string; title: string; employer: str
  * the card, and the short form both founders actually go by and sign emails
  * with.
  *
- * ⚠ NO `sameAs`, DELIBERATELY, and this is the same call people.ts already
- * made about LinkedIn URLs at length: a `sameAs` pointing at the wrong
- * Boluwatife Ogunleye publishes a stranger as a co-founder of this company,
- * which is worse than an entity with no external profiles attached. Add the
- * real profile URLs here when somebody has confirmed them, and the entities get
- * substantially stronger, because `sameAs` is how a resolver merges this Person
- * with the one it already knows from LinkedIn.
+ * ⚠ `sameAs` IS NOW SET, AND THE CONDITION THIS FILE SET FOR IT WAS MET.
+ * It used to read: add the real profile URLs "when somebody has confirmed
+ * them", because a `sameAs` pointing at the wrong Boluwatife Ogunleye publishes
+ * a stranger as a co-founder of this company. The two URLs below came from the
+ * founders themselves, which is the only confirmation that was ever going to
+ * count. They were not searched for and they were not guessed.
+ *
+ * This is the property that does the actual work. Everything else in this block
+ * describes a person; `sameAs` says this person and that profile are one, and
+ * that is what lets a resolver attach "co-founder of Esquirely" to a name it
+ * already knows from somewhere with far more authority than this domain.
+ *
+ * Corroborating detail worth keeping, because it is what a careful reader would
+ * check: the two slugs are ordered differently, surname first for one and given
+ * name first for the other, and each matches the way that founder's own name is
+ * written. Both carry the same post-nominals as the alternateName below.
  */
 /**
  * ⚠ THE POST-NOMINAL FORM IS IN alternateName BECAUSE IT IS HOW THEY ARE
@@ -413,6 +422,7 @@ export const FOUNDERS = [
     ],
     jobTitle: 'Co-founder',
     hasCredential: CREDENTIALS,
+    sameAs: ['https://www.linkedin.com/in/ogunleye-boluwatife-aicmc-acarb-8437051a9/'],
     worksFor: { '@id': `${SITE_URL}/#organization` },
     url: `${SITE_URL}/about`,
   },
@@ -427,6 +437,7 @@ export const FOUNDERS = [
     ],
     jobTitle: 'Co-founder',
     hasCredential: CREDENTIALS,
+    sameAs: ['https://www.linkedin.com/in/ipinuoluwa-ogunleye-aicmc-acarb-2064ba22b/'],
     worksFor: { '@id': `${SITE_URL}/#organization` },
     url: `${SITE_URL}/about`,
   },
