@@ -3,10 +3,28 @@ import Link from 'next/link'
 import Footer from '@/components/layout/Footer'
 import { TEAM, AMBASSADORS, type Person } from './people'
 
+/**
+ * ⚠ THE FOUNDERS ARE NAMED IN THE DESCRIPTION, AND THEY WERE NOT BEFORE.
+ *
+ * The structured data added on 2 September asserts who founded Esquirely in a
+ * form a resolver can read, and that work is sound. What it could not do is
+ * make the site MATCH a search for one of those names, because until now no
+ * page on esquirely.com.ng carried either name in its title or its
+ * description. This one said "two co-founders" and named neither.
+ *
+ * Those two fields are what a query for a person's name is matched against
+ * first. A JSON-LD Person node is how an entity is described once a page has
+ * been retrieved; it is not what gets the page retrieved.
+ *
+ * Both orderings are not repeated here on purpose. `alternateName` in the
+ * schema already carries the surname-first form, and a description that reads
+ * like a list of spellings reads as spam to a person, who is the one actually
+ * choosing whether to click it.
+ */
 export const metadata = {
   title: 'About us',
   description:
-    'Who builds Esquirely: two co-founders, a creative designer, and the honorary ambassadors who shaped it.',
+    'Who builds Esquirely: co-founders Boluwatife Ogunleye and Ipinuoluwa Ogunleye, a creative designer, and the honorary ambassadors who shaped it.',
   alternates: { canonical: '/about' },
   openGraph: openGraph({ path: '/about' }),
 }
