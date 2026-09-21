@@ -39,14 +39,33 @@ const env = Object.fromEntries(
 const KEY = env.ANTHROPIC_API_KEY
 if (!KEY) throw new Error('ANTHROPIC_API_KEY missing from .env.local')
 
-/* Bundle the TS prompt module so this script reads the same source the route
-   does. Testing a copy of the prompt would defeat the point. */
-const out = join(mkdtempSync(join(tmpdir(), 'cl-')), 'prompt.mjs')
-execSync(
-  `npx --yes esbuild "src/lib/cover-letter/prompt.ts" --bundle --platform=node --format=esm --log-level=error "--outfile=${out}"`,
-  { stdio: 'inherit' }
-)
-const { buildSystemPrompt, buildUserPrompt } = await import('file://' + out.replace(/\\/g, '/'))
+/* Bundle the TS modules so this script reads the same source the route does.
+   Testing a copy of the prompt would defeat the point.
+
+   ⚠ THREE MODULES NOW, NOT ONE. firm-facts.ts is what answers "why this firm",
+   and it reads the whole researched firm directory, so a test that skipped it
+   would be testing the prompt against an employer the model knows nothing
+   about: exactly the condition that produced the letters this rewrite exists to
+   fix. word-count.ts comes along because the ceiling has to be measured the way
+   the route measures it, not by a second counter that disagrees with it.
+
+   Three esbuild calls rather than one entry file that re-exports all three,
+   because an entry file would have to live in src/ for the @/ path alias to
+   resolve, and a module that exists only to be bundled by a test does not
+   belong in the app. */
+const dir = mkdtempSync(join(tmpdir(), 'cl-'))
+const bundle = async name => {
+  const out = join(dir, name + '.mjs')
+  execSync(
+    `npx --yes esbuild "src/lib/cover-letter/${name}.ts" --bundle --platform=node --format=esm --log-level=error "--outfile=${out}"`,
+    { stdio: 'inherit' }
+  )
+  return import('file://' + out.replace(/\\/g, '/'))
+}
+
+const { buildSystemPrompt, buildUserPrompt } = await bundle('prompt')
+const { buildFirmFacts } = await bundle('firm-facts')
+const { countBodyWords, WORD_CEILING } = await bundle('word-count')
 
 const CASES = [
   {
@@ -55,6 +74,7 @@ const CASES = [
       firstName: 'Tobi',
       targetRole: 'Associate, Dispute Resolution',
       employer: 'Olajide Oyewole LLP',
+      division: 'Dispute Resolution',
       careerStage: '1-3 years post-call',
       tone: 'formal and confident',
     },
@@ -65,6 +85,7 @@ const CASES = [
       firstName: 'Amaka',
       targetRole: 'Associate (Entry-Level)',
       employer: 'AVA Law Practice',
+      division: 'Litigation',
       careerStage: 'Final year law student',
       tone: 'warm and professional',
       cvSummary:
@@ -82,6 +103,7 @@ const CASES = [
       firstName: 'Boluwatife',
       targetRole: 'Associate, ADR',
       employer: 'Templars',
+      division: 'Dispute Resolution',
       careerStage: 'Recently called to bar',
       tone: 'formal and confident',
       cvSummary:
@@ -94,6 +116,7 @@ const CASES = [
       firstName: 'Segun',
       targetRole: 'Legal and Compliance Officer',
       employer: 'Tangerine Africa',
+      division: 'Legal and Compliance',
       careerStage: '3-6 years post-call',
       tone: 'direct and concise',
       cvSummary:
@@ -116,6 +139,35 @@ const BANNED_WORDS = [
   'valuable asset', 'hit the ground running', 'esteemed', 'prestigious',
   'renowned', 'align with', 'I am confident that',
 ]
+/* ⚠ THE FAILURE MODE THE FOUR QUESTIONS CREATE.
+   The letter is now required to say why this employer and why this team. Asked
+   that, a model reaches for adjectives, and every phrase below is what the
+   instruction turns into when it is followed lazily. None of these was possible
+   under the previous prompt, because the previous prompt forbade the question
+   outright. They are why this scan exists in its current form. */
+const ADMIRATION = [
+  /\byour (firm|practice|team)'?s? (reputation|standing|commitment|track record|calibre)\b/i,
+  /\b(i have )?long admired\b/i,
+  /\b(i was|i am) (drawn to|impressed by|attracted to)\b/i,
+  /\bwhat (attracts|draws) me\b/i,
+  /\b(leading|top[- ]tier|foremost|market[- ]leading|highly regarded|well regarded|reputable) (firm|practice|team)\b/i,
+  /\bone of the (best|leading|foremost)\b/i,
+  /\bknown for (its|their)\b/i,
+  /\brenowned for\b/i,
+  /\bi have followed your\b/i,
+]
+
+/* Question 4 answered with a phrase that fits every candidate alive. */
+const EMPTY_DIRECTION = [
+  /\bnatural (next step|progression)\b/i,
+  /\blogical (next step|progression)\b/i,
+  /\bnext level\b/i,
+  /\b(grow|develop) professionally\b/i,
+  /\bbroaden my horizons\b/i,
+  /\bchallenging environment\b/i,
+  /\bwhere i can (grow|develop|contribute)\b/i,
+]
+
 const BANNED_OPENERS = [
   'i am writing to express', 'i am writing to apply', 'it is with great',
   'i was excited to see', 'i am excited to',
@@ -143,7 +195,25 @@ const META = [
   /\bmade no sense\b/i,
 ]
 const HEDGES = [/\bi think\b/i, /\bi believe\b/i, /\barguably\b/i, /\bi would say\b/i, /\bperhaps\b/i]
-const NEGATION = [/\bwas not (ceremonial|merely|just)\b/i, /\bnot just (a|an)\b/i, /\bmore than (just|merely)\b/i]
+const NEGATION = [
+  /\bwas not (ceremonial|merely|just)\b/i,
+  /\bnot just (a|an)\b/i,
+  /\bmore than (just|merely)\b/i,
+  /\bnot (as|an?) [a-z ]{3,20} but \w/i,
+  /\bnot merely [a-z ]{3,20} but \b/i,
+  /\brather than simply\b/i,
+]
+
+/* Claims about where the employer sits in the market that read as fact and are
+   opinion. This is what question 1 decays into once the adjectives are banned:
+   the praise survives, wearing the grammar of a statement. */
+const UNCHECKABLE_CLAIM = [
+  /\bis where (that|it) happens\b/i,
+  /\bthe firm doing the\b/i,
+  /\bfew (firms|practices) (operate|do|handle)\b/i,
+  /\bat (that|this) level in nigeria\b/i,
+  /\bwhere (the )?(serious|real|best) [a-z]+ work\b/i,
+]
 
 function scan(letter) {
   const low = letter.toLowerCase()
@@ -154,24 +224,33 @@ function scan(letter) {
   for (const r of META) if (r.test(letter)) hits.push('META: ' + r.source.slice(0, 34))
   for (const r of HEDGES) if (r.test(letter)) hits.push('HEDGE: ' + r.source.slice(0, 22))
   for (const r of NEGATION) if (r.test(letter)) hits.push('NEGATION: ' + r.source.slice(0, 30))
+  for (const r of ADMIRATION) if (r.test(letter)) hits.push('ADMIRATION: ' + r.source.slice(0, 34))
+  for (const r of EMPTY_DIRECTION) if (r.test(letter)) hits.push('EMPTY DIRECTION: ' + r.source.slice(0, 30))
+  for (const r of UNCHECKABLE_CLAIM) if (r.test(letter)) hits.push('UNCHECKABLE CLAIM: ' + r.source.slice(0, 30))
   if (letter.includes('—') || letter.includes('–')) hits.push('DASH')
   if (/[‘’“”…]/.test(letter)) hits.push('SMART PUNCTUATION')
   if (/\?/.test(letter)) hits.push('QUESTION MARK')
   return hits
 }
 
-/** The body only: salutation and sign off do not count against the ceiling. */
-function bodyWords(letter) {
-  return letter
-    .split(/\r?\n/)
-    .filter(l => !/^\s*(dear|yours|sincerely|faithfully|regards)/i.test(l.trim()))
-    .filter(l => l.trim() && l.trim().split(/\s+/).length > 3)
-    .join(' ')
-    .split(/\s+/)
-    .filter(Boolean).length
-}
+/* bodyWords used to live here as a local heuristic. It is gone:
+   countBodyWords from lib/cover-letter/word-count.ts is what the route
+   enforces with and what the tool page displays, and a test that measures
+   the ceiling differently from the code enforcing it reports a pass on
+   letters the route would have trimmed. One counter, three callers. */
 
 for (const c of CASES) {
+  /* ⚠ BUILT HERE, NOT HARDCODED IN THE CASE. The route calls buildFirmFacts on
+     whatever the candidate typed in the employer box, so the test does too: a
+     case carrying a handwritten facts block would pass while the real lookup
+     silently matched nothing. Templars and Olajide Oyewole are in the directory
+     and resolve to real research. AVA Law Practice and Tangerine Africa are
+     not, which is the point of leaving them in: they exercise the path where
+     the model is told plainly that it has no facts and must not invent any. */
+  const input = { ...c.input, firmFacts: buildFirmFacts(c.input.employer, c.input.division) }
+  console.log(`
+[${c.name}] firm facts: ${input.firmFacts ? 'found in directory' : 'none on file'}`)
+
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -183,7 +262,7 @@ for (const c of CASES) {
       model: 'claude-sonnet-4-6',
       max_tokens: 2048,
       system: buildSystemPrompt(),
-      messages: [{ role: 'user', content: buildUserPrompt(c.input) }],
+      messages: [{ role: 'user', content: buildUserPrompt(input) }],
     }),
   })
 
@@ -204,7 +283,7 @@ for (const c of CASES) {
 
   const letter = parsed.coverLetter || ''
   const hits = scan(letter)
-  const words = bodyWords(letter)
+  const words = countBodyWords(letter)
 
   console.log('\n' + '='.repeat(74))
   console.log('### ' + c.name)
@@ -224,7 +303,18 @@ for (const c of CASES) {
     .filter(l => l && !/^(dear|yours|sincerely|faithfully|regards)/i.test(l))
   const longest = Math.max(0, ...paras.map(p => p.split(/\s+/).filter(Boolean).length))
 
-  console.log(`body words : ${words} ${words > 250 ? '  <== OVER THE 250 CEILING' : '(within ceiling)'}`)
+  console.log(`body words : ${words} ${words > WORD_CEILING ? `  <== OVER THE ${WORD_CEILING} CEILING` : '(within ceiling)'}`)
   console.log(`longest para: ${longest} ${longest > 90 ? '  <== OVER THE 90 WORD PARAGRAPH CAP' : '(within cap)'}`)
   console.log(`tells      : ${hits.length ? hits.join(', ') : 'none'}`)
+
+  /* Coverage is what this rewrite is for, so it is reported even though most of
+     it can only be checked by eye. A letter passes every scan above by saying
+     nothing, which is exactly what the previous prompt produced: clean prose
+     that answered none of the four questions. The division is the one part that
+     automates, because the team either gets named or it does not. */
+  if (c.input.division) {
+    const named = new RegExp(c.input.division.split(' ')[0], 'i').test(letter)
+    console.log(`division   : ${named ? 'named' : 'NOT NAMED  <== question 2 unanswered'}`)
+  }
+  console.log('read for   : why this employer / why this team / why the experience fits / why the move')
 }

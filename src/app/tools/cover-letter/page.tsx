@@ -4,6 +4,7 @@ import { Copy, Check, AlertCircle, ArrowRight, X, Loader2, Pencil, FileDown, Fil
 import { useRequireAuth } from '../useRequireAuth'
 import { createClient } from '@/lib/supabase/client'
 import ToolShell from '../ToolShell'
+import { countBodyWords, WORD_CEILING } from '@/lib/cover-letter/word-count'
 import BrandLoader from '@/components/ui/BrandLoader'
 
 type Result = {
@@ -16,8 +17,11 @@ type HistoryItem = {
   id: string
   target_role: string
   employer: string
+  division: string | null
   career_stage: string
   tone: string
+  advert: string | null
+  employer_knowledge: string | null
   result: Result
   created_at: string
 }
@@ -30,6 +34,40 @@ const CAREER_STAGES = [
   { value: '1-3 years post-call', label: '1-3 years post-call' },
   { value: '3-6 years post-call', label: '3-6 years post-call' },
   { value: '6+ years post-call', label: '6+ years post-call' },
+]
+
+/**
+ * Suggestions for the division box.
+ *
+ * ⚠ A PLAIN LIST RATHER THAN THE PRACTICE AREAS OF THE MATCHED FIRM, and the
+ * reason is the client bundle. firms-data.ts is three thousand lines; pulling
+ * it into this page to populate a datalist would ship the whole directory to
+ * anybody who opens the cover letter tool, for a dropdown. These are the areas
+ * the directory itself uses most, so a candidate typing from this list produces
+ * a string that matches a firm's published practice area on the server anyway.
+ *
+ * It is a datalist, not a select. Divisions are named inconsistently across
+ * firms, half of them are hyphenated differently, and a candidate applying to a
+ * team we have not thought of must be able to type it.
+ */
+const DIVISIONS = [
+  'Dispute Resolution',
+  'Corporate & Commercial',
+  'Banking & Finance',
+  'Capital Markets',
+  'Energy & Natural Resources',
+  'Projects & Infrastructure',
+  'Real Estate',
+  'Intellectual Property',
+  'Tax',
+  'Employment & Labour',
+  'Shipping & Maritime',
+  'Aviation',
+  'Technology, Media & Telecommunications',
+  'Arbitration',
+  'Public Law & Regulatory',
+  'Compliance',
+  'Private Client & Wealth',
 ]
 
 const TONES = [
@@ -53,10 +91,13 @@ export default function CoverLetterPage() {
     firstName: '',
     targetRole: '',
     employer: '',
+    division: '',
     careerStage: '',
     tone: 'formal and confident',
     cvSummary: '',
     highlights: '',
+    advert: '',
+    employerKnowledge: '',
   })
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<Result | null>(null)
@@ -154,7 +195,20 @@ export default function CoverLetterPage() {
        draft's edited text over the top of it. `letter` prefers `edited`. */
     setEdited(null)
     setEditing(false)
-    setForm(f => ({ ...f, targetRole: item.target_role || '', employer: item.employer || '', careerStage: item.career_stage || '', tone: item.tone || 'formal and confident' }))
+    /* Every input that shaped the draft comes back, not just the two that
+       used to. Reopening a letter whose division and advert had been dropped
+       and pressing Write again produced a different letter from the one on the
+       screen, which is the thing a history drawer exists to prevent. */
+    setForm(f => ({
+      ...f,
+      targetRole: item.target_role || '',
+      employer: item.employer || '',
+      division: item.division || '',
+      careerStage: item.career_stage || '',
+      tone: item.tone || 'formal and confident',
+      advert: item.advert || '',
+      employerKnowledge: item.employer_knowledge || '',
+    }))
     setShowHistory(false)
   }
 
@@ -178,9 +232,12 @@ export default function CoverLetterPage() {
         fd.append('firstName', form.firstName)
         fd.append('targetRole', form.targetRole)
         fd.append('employer', form.employer)
+        if (form.division) fd.append('division', form.division)
         if (form.careerStage) fd.append('careerStage', form.careerStage)
         fd.append('tone', form.tone)
         if (form.highlights) fd.append('highlights', form.highlights)
+        if (form.advert) fd.append('advert', form.advert)
+        if (form.employerKnowledge) fd.append('employerKnowledge', form.employerKnowledge)
         res = await fetch('/api/cover-letter', { method: 'POST', body: fd })
       } else {
         res = await fetch('/api/cover-letter', {
@@ -199,8 +256,11 @@ export default function CoverLetterPage() {
           user_id: userId,
           target_role: form.targetRole,
           employer: form.employer,
+          division: form.division || null,
           career_stage: form.careerStage || null,
           tone: form.tone,
+          advert: form.advert || null,
+          employer_knowledge: form.employerKnowledge || null,
           result: data,
         })
       }
@@ -284,7 +344,7 @@ export default function CoverLetterPage() {
     setResult(null)
     setEdited(null)
     setEditing(false)
-    setForm({ firstName: '', targetRole: '', employer: '', careerStage: '', tone: 'formal and confident', cvSummary: '', highlights: '' })
+    setForm({ firstName: '', targetRole: '', employer: '', division: '', careerStage: '', tone: 'formal and confident', cvSummary: '', highlights: '', advert: '', employerKnowledge: '' })
     setCvFile(null)
     setMode('manual')
     setError('')
@@ -304,7 +364,7 @@ export default function CoverLetterPage() {
     <>
       <ToolShell
         title="Cover letter."
-        lede="Tell us about the role and your background, and we will draft a letter that does not read like every other application in the pile."
+        lede="Tell us the role, the team and your background. We will draft a letter that answers why this firm, why this team, why you fit and why it is the right move, in under 200 words."
         onHistory={openHistory}
       >
         {!result && (
@@ -312,8 +372,9 @@ export default function CoverLetterPage() {
             <div className="doc-section-label">
               <p className="grotesk-bold doc-section-title">The application</p>
               <p className="grotesk-regular doc-section-note">
-                Role and employer are the only required fields. The background boxes are optional
-                and they are what make the difference.
+                Role and employer are the only required fields. The team, the advert and your
+                background are optional, and they are what stop the letter reading like everyone
+                else&rsquo;s.
               </p>
             </div>
 
@@ -321,7 +382,7 @@ export default function CoverLetterPage() {
               <div className="tool-card">
                 <BrandLoader
                   label="Writing your letter"
-                  note="This takes about half a minute. The draft is written against the role, the employer and whatever background you gave us."
+                  note="This takes about half a minute. The draft is written against the role, the team, our research on the employer and whatever background you gave us."
                 />
               </div>
             ) : (
@@ -343,6 +404,22 @@ export default function CoverLetterPage() {
                     <label htmlFor="cl-employer" className="tool-label">Employer</label>
                     <input id="cl-employer" type="text" className="tool-input grotesk-regular"
                       value={form.employer} onChange={e => set('employer', e.target.value)} placeholder="e.g. Aluko &amp; Oyebode" />
+                  </div>
+                  <div>
+                    <label htmlFor="cl-division" className="tool-label">
+                      Team or division <span className="tool-label-hint">(optional)</span>
+                    </label>
+                    {/* The letter has to say why this team, and a letter written
+                        to a firm without knowing which team can only say why the
+                        firm. Type anything: the list is a shortcut, not a set of
+                        allowed answers. */}
+                    <input id="cl-division" type="text" className="tool-input grotesk-regular"
+                      list="cl-division-list"
+                      value={form.division} onChange={e => set('division', e.target.value)}
+                      placeholder="e.g. Dispute Resolution" />
+                    <datalist id="cl-division-list">
+                      {DIVISIONS.map(d => <option key={d} value={d} />)}
+                    </datalist>
                   </div>
                   <div>
                     <label htmlFor="cl-stage" className="tool-label">Career stage</label>
@@ -442,6 +519,37 @@ export default function CoverLetterPage() {
                     placeholder="e.g. led the moot court team, published research on capital markets regulation" />
                 </div>
 
+                {/* ---- The two boxes that answer "why them" ------------------
+                    Both optional, both last, and both worth more than anything
+                    above them. The advert is the only text in the form the
+                    employer wrote themselves, so it is what the letter answers
+                    when it says why this experience fits. The box under it is
+                    the only place a reason can come from that no other applicant
+                    has. Where neither is filled, the letter falls back to our
+                    own research on the firm, which is better than nothing and
+                    thinner than either of these. */}
+                <div className="tool-row">
+                  <label htmlFor="cl-advert" className="tool-label">
+                    Paste the job advert <span className="tool-label-hint">(optional, and it makes the biggest difference)</span>
+                  </label>
+                  <textarea id="cl-advert" className="tool-textarea grotesk-regular" rows={4}
+                    value={form.advert} onChange={e => set('advert', e.target.value)}
+                    placeholder="Paste the listing exactly as published. The letter answers what they actually asked for, in their order of priority." />
+                </div>
+
+                <div className="tool-row">
+                  <label htmlFor="cl-knowledge" className="tool-label">
+                    What you know about them <span className="tool-label-hint">(optional)</span>
+                  </label>
+                  <textarea id="cl-knowledge" className="tool-textarea grotesk-regular" rows={2}
+                    value={form.employerKnowledge} onChange={e => set('employerKnowledge', e.target.value)}
+                    placeholder="e.g. a partner taught my arbitration module, or you acted on a deal I wrote about" />
+                  <p className="grotesk-regular tool-note" style={{ marginTop: '0.5rem' }}>
+                    Something real and specific beats praise. We already know the firm&rsquo;s
+                    offices, practice areas and directory rankings, and the letter uses those.
+                  </p>
+                </div>
+
                 {error && (
                   <div className="grotesk-regular tool-error" role="alert">
                     <AlertCircle size={15} aria-hidden />
@@ -464,8 +572,16 @@ export default function CoverLetterPage() {
         {result && (() => {
           /* Counts the draft in hand, not the one that came back, so the number
              tracks an edit as it is typed. It is the only signal that a letter
-             has drifted past the 250 word brief after somebody added to it. */
-          const wordCount = letter.trim().split(/\s+/).filter(Boolean).length
+             has drifted past the brief after somebody added to it.
+
+             ⚠ THE SAME COUNTER THE ROUTE ENFORCES WITH, imported rather than
+             reimplemented. It counts the body only, between the salutation and
+             the sign off, and a local one-liner counting the whole string
+             showed a number twelve words higher than the one the server had
+             just trimmed to. Two counts of the same letter that disagree is
+             worse than no count at all. */
+          const wordCount = countBodyWords(letter)
+          const overCeiling = wordCount > WORD_CEILING
           return (
           <section className="doc-section">
             <div className="doc-section-label">
@@ -487,7 +603,14 @@ export default function CoverLetterPage() {
                     the one thing a reader can check at a glance, and seeing it
                     is how anyone would notice the model drifting past the brief. */}
                 <p className="grotesk-bold tool-section-heading" style={{ marginBottom: 0 }}>
-                  Your cover letter <span className="grotesk-regular tool-label-hint">{wordCount} words</span>
+                  Your cover letter{' '}
+                  {/* The ceiling is named next to the count rather than left
+                      implied. A reader who sees "212 words" alone has no way to
+                      know whether that is fine; the number only means something
+                      beside the brief it is being held to. */}
+                  <span className="grotesk-regular tool-label-hint">
+                    {wordCount} words{overCeiling ? ` (over the ${WORD_CEILING} word brief)` : ''}
+                  </span>
                 </p>
                 <div className="tool-letter-actions">
                   <button
