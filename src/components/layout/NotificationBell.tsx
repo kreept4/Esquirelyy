@@ -406,8 +406,32 @@ export default function NotificationBell({
         <div className="notif-panel" role="dialog" aria-label="Notifications">
           <div className="notif-panel-head">
             <p className="grotesk-bold notif-panel-title">Notifications</p>
+            {/* ⚠ THIS COUNTED THE WHOLE FEED AND CALLED IT "recent", which is
+                how the panel came to announce twenty two notifications to
+                somebody who had nothing new. The badge outside was already
+                correct and said nothing; opening it to "22 recent" contradicted
+                that, and it was reported, accurately, as the bell showing a
+                notification when there was no new notification.
+
+                The list below has always held the last twenty rows whether or
+                not they have been read, which is right: somebody who opens a
+                bell wants to find the thing they half-remember from Tuesday as
+                well as the thing that arrived this morning. What was wrong was
+                describing that backlog with a number that reads as a count of
+                what is waiting.
+
+                So the number is the unread count, which is the same number the
+                badge shows, and the two can no longer disagree. With nothing
+                new it says so plainly and then says how much history is
+                underneath, because a panel that says only "nothing new" over a
+                list of twenty rows raises the same question from the other
+                side. */}
             <p className="grotesk-regular notif-panel-note">
-              {feed.length === 0 ? 'Nothing yet' : `${feed.length} recent`}
+              {feed.length === 0
+                ? 'Nothing yet'
+                : unread > 0
+                  ? `${unread} new`
+                  : `Nothing new · ${feed.length} earlier`}
             </p>
           </div>
 
