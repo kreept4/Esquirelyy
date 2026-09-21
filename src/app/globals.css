@@ -4970,50 +4970,6 @@ video:not([controls])::-webkit-media-controls-panel {
   animation-play-state: paused;
 }
 
-/* The marks used to be sliced mid-letter at both ends, because the rail is an
-   overflow-hidden box and nothing softened the cut. A logo cut in half at the
-   edge of a credibility strip reads as a layout fault, which is the opposite of
-   what the strip is there to do.
-
-   ⚠ A MASK RATHER THAN A BLUR, and the difference matters on this element.
-   These are high contrast wordmarks: blurring one does not make it recede, it
-   makes it look like the page failed to focus, and it costs a filter pass on
-   the one element repainting every frame. The mask fades the mark out instead,
-   which is what the eye reads as "the row continues past the edge".
-
-   ⚠ WHICH ELEMENT CARRIES THIS IS THE WHOLE TRICK, and page.tsx has the note.
-   Put it on the band and you fade the band's own black away with the logos,
-   which opens two bright notches onto the page behind. Put it on the track and
-   the fade animates along with it. It belongs on a static layer that paints
-   nothing.
-
-   6% is a little over half a plate at this width. The first version used 8%,
-   which was tuned while the mask was on the wrong element and doing two jobs;
-   now that the band holds its own edge this only has to take a mark from solid
-   to gone, and it wants to be the smaller of the two numbers. */
-.ticker-mask {
-  -webkit-mask-image: linear-gradient(
-    to right, transparent, #000 6%, #000 94%, transparent
-  );
-  mask-image: linear-gradient(
-    to right, transparent, #000 6%, #000 94%, transparent
-  );
-}
-
-/* On a phone the rail is barely wider than three plates, so a proportional fade
-   eats most of the visible row. Held to a fixed 28px there instead. */
-@media (max-width: 640px) {
-  .ticker-mask {
-    -webkit-mask-image: linear-gradient(
-      to right, transparent, #000 28px, #000 calc(100% - 28px), transparent
-    );
-    mask-image: linear-gradient(
-      to right, transparent, #000 28px, #000 calc(100% - 28px), transparent
-    );
-  }
-}
-
-
 /* Staggered fade-up for cards */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }

@@ -96,21 +96,30 @@ export default async function HomePage() {
           The dark run is now continuous from the hero to EverythingYouNeed, so
           there is one deliberate transition into the light instead of two. */}
       <div className="overflow-hidden" style={{ backgroundColor: INK_BLACK, borderBottom: '0.5px solid rgba(250,246,240,0.10)' }}>
-        {/* ⚠ THE MASK IS ON THIS LAYER AND NOT ON EITHER OF ITS NEIGHBOURS, AND
-            BOTH OF THE OBVIOUS PLACEMENTS ARE WRONG.
+        {/* ⚠ THERE IS NO FADE AT THE ENDS OF THIS RAIL, AND ONE WAS TRIED
+            TWICE. Do not add a third.
 
-            On the band above, a mask fades the band's own black out at the ends
-            along with the logos, because a mask applies to an element's
-            background as much as its content. The page behind then shows
-            through and the ends read as two bright notches.
+            The marks are not marks on this row, they are LogoFrame `plate`
+            chips: a near-white #FAF7F2 panel with the logo inset, sitting on
+            the ink-black band. Fading a chip like that to transparent means
+            interpolating near-white to black, and the middle of that ramp is
+            grey. The result reads as a whitish smear at both ends, which is
+            what got reported, and it is not a tuning problem: every fade of a
+            light chip on a dark ground passes through grey. Painting a black
+            gradient over the chips instead gives the identical ramp from the
+            other direction.
 
-            On the track below, the mask travels with it: that element is what
-            translateX animates, a mask is positioned against its own box, so
-            the fade would slide across the rail rather than sit at the edges.
+            The first attempt put the mask on the band itself, which also faded
+            the band's own black and opened two bright notches onto the page
+            behind. The second moved it to a static inner layer, which was the
+            correct element and still produced the grey ramp, because the
+            element was never the problem.
 
-            This layer is static, full width and paints nothing, which is all a
-            mask needs to be correct. */}
-        <div className="ticker-mask">
+            So the rail hard-cuts, which is what a plated marquee normally does:
+            a chip clipped at the edge reads as a row continuing past it, not as
+            a fault. If this is revisited, the thing to change is the artwork,
+            not the edge. Chips that matched the band would make a fade
+            possible. */}
         <div className="flex animate-ticker whitespace-nowrap py-6 items-center" style={{ width: 'max-content' }}>
           {[...FIRMS_WITH_LOGOS, ...FIRMS_WITH_LOGOS].map((firm, i) => (
             <LogoFrame
@@ -123,7 +132,6 @@ export default async function HomePage() {
               className="ticker-logo"
             />
           ))}
-        </div>
         </div>
       </div>
 
