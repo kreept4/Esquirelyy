@@ -2649,27 +2649,41 @@ video:not([controls])::-webkit-media-controls-panel {
 .notif-row:has(.notif-item[data-unread]) { background: rgba(251, 191, 36, 0.12); }
 .notif-row:has(.notif-item[data-unread]):hover { background: rgba(251, 191, 36, 0.2); }
 
-.notif-dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; margin-top: 0.42rem; flex-shrink: 0; }
+/* The one state mark. Transparent until the row is unread: see the note in
+   NotificationBell for why the element stays in the grid either way. */
+.notif-dot {
+  width: 0.5rem; height: 0.5rem; border-radius: 999px;
+  margin-top: 0.42rem; flex-shrink: 0;
+  background: transparent;
+}
+.notif-dot-unread { background: #EF4444; }
 .notif-item-main { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .notif-item-kind { font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted); }
 .notif-item-title { font-size: 0.84rem; line-height: 1.3; color: #1A1A1A; }
 .notif-item-detail { font-size: 0.76rem; line-height: 1.4; color: var(--ink-muted); }
 .notif-item-time { font-size: 0.7rem; color: var(--ink-muted); white-space: nowrap; padding-top: 0.15rem; }
 
-/* Unread. The kind dot on the left is a category colour and says nothing about
-   state, so unread needs its own mark: an amber pip on the right, plus a
-   full-weight title and a faint amber wash on the row. */
+/* ⚠ THE AMBER PIP IS GONE, NOT RESTYLED. It was the right hand half of the two
+   mark problem: a category dot on the left saying one thing in one palette and
+   a state pip on the right saying another in a second. The dot carries state
+   now and it is the only mark on the row.
+   The element survives as a screen reader label only, because .notif-dot is
+   aria-hidden and something has to say the word "Unread". */
 .notif-item-new {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-  background: #FBBF24;
-  border: 1px solid #241F16;
-  margin-top: 0.42rem;
-  flex-shrink: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
-.notif-item[data-unread] { background: rgba(251, 191, 36, 0.12); }
-.notif-item[data-unread]:hover { background: rgba(251, 191, 36, 0.2); }
+
+/* The wash goes red with the dot. Left amber it would have been the last
+   yellow on a row whose mark is now red, which is the mix this set out to
+   remove, only quieter. Weaker than the amber was: a red at the same alpha
+   reads as an error state, and an unread notification is not one. */
+.notif-item[data-unread] { background: rgba(239, 68, 68, 0.07); }
+.notif-item[data-unread]:hover { background: rgba(239, 68, 68, 0.13); }
 .notif-item[data-unread] .notif-item-title { color: #241F16; }
 .notif-item[data-unread] .notif-item-detail { color: rgba(36, 31, 22, 0.75); }
 

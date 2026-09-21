@@ -46,31 +46,44 @@ import {
  * See src/lib/notifications.ts for why there is no table behind this.
  */
 
-const KIND_DOT: Record<Notification['kind'], string> = {
-  role: '#14B8A6',
-  deadline: '#EF4444',
-  tracker: '#8B5CF6',
-  welcome: '#FBBF24',
-  /* Amber, like the welcome note, because both are announcements that open a
-     note rather than navigating. The teal of a single role would say "this is
-     one more listing", which is the one thing it is not. */
-  drop: '#FBBF24',
-  /* Mint, not amber. The two amber rows are things we have done for the reader;
-     this is the one row asking something of them, and it should not look like
-     another announcement. */
-  team: '#14B8A6',
-}
+/* ⚠ THE KIND COLOURS ARE GONE AND THIS IS WHY, so nobody reinstates them.
+   Every row used to carry two marks. A dot on the left coloured by category
+   (teal for a role, red for a deadline, purple for tracker, amber for the two
+   announcement kinds) and, when the row was unread, a second amber pip on the
+   right. An unread deadline therefore showed a red dot AND a yellow pip, which
+   is what "a mix of yellow and red" means and it was on the screen the whole
+   time.
+
+   Neither mark was doing the job a reader needs. The category is already in the
+   row's words; what they are scanning for is what they have not read yet. Two
+   marks competing, one of which says nothing about state, is worse than one
+   that does.
+
+   So: one mark, red, present only when the row is unread. Red because unread is
+   the only state here worth a colour, and because it is the one signal that
+   should not need a legend. */
 
 function NotifRow({ n, unread }: { n: Notification; unread: boolean }) {
   return (
     <>
-      <span className="notif-dot" style={{ background: KIND_DOT[n.kind] }} aria-hidden />
+      {/* ⚠ ALWAYS RENDERED, COLOURED ONLY WHEN UNREAD, rather than rendered
+          conditionally. The row is a three column grid and this is the first
+          column, so dropping the element collapses that column and the read
+          rows would sit a few pixels left of the unread ones. In a list whose
+          whole job is to be scanned, titles that do not share a left edge read
+          as a rendering fault. Transparent keeps the column and shows nothing,
+          which is what "no mark when read" means on screen. */}
+      <span className={`notif-dot${unread ? ' notif-dot-unread' : ''}`} aria-hidden />
       <span className="notif-item-main">
         <span className="grotesk-bold notif-item-title">{n.title}</span>
         <span className="grotesk-regular notif-item-detail">{n.detail}</span>
       </span>
       {/* Two signals, one meaning. The word is for a screen reader, which
           cannot see a bolder row; the pip is for everyone else. */}
+      {/* The pip that used to sit here was the second half of the two mark
+          problem described above. The dot on the left carries the state now,
+          and this stays only as the accessible name for it, which the dot
+          cannot provide while it is aria-hidden. */}
       {unread && <span className="notif-item-new" aria-label="Unread" />}
       <span className="grotesk-regular notif-item-time">{timeAgo(n.at)}</span>
     </>
