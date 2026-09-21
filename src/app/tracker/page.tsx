@@ -410,7 +410,7 @@ function AddModal({ onClose, onAdd }: {
             {/* The shared state list, same as the board and the account page.
                 Typed locations drifted into four spellings of one place, and
                 nothing downstream could group them. */}
-            <select id="f-loc" className="tool-input" value={form.location} onChange={e => set('location', e.target.value)}>
+            <select id="f-loc" className="tool-select" value={form.location} onChange={e => set('location', e.target.value)}>
               {stateOptions('Pick a state').map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </div>
