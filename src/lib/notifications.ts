@@ -589,18 +589,54 @@ export function buildFeed(
     if (!o?.deadline || !o?.slug || o.is_rolling) continue
     const days = daysUntilDay(o.deadline, now)
     if (days === null || days < 0 || days > CLOSING_WINDOW_DAYS) continue
+
+    /**
+     * ⚠ STAMPED FROM THE DEADLINE, NOT FROM `now`, AND THE COMMENT THAT USED TO
+     * SIT HERE IS THE BUG REPORT.
+     *
+     * It read: "Dated to the moment it entered the window, so it surfaces once
+     * and then ages out of unread rather than re-alerting on every panel open.
+     * Derived from `days` rather than from a parsed deadline, so this cannot
+     * drift from the number printed above it." The second sentence is what
+     * caused the first to be false.
+     *
+     *   at = now - (CLOSING_WINDOW_DAYS - days) * one day
+     *
+     * is only a fixed point if `days` moves continuously with `now`. It does
+     * not. daysUntilDay counts WHOLE Lagos calendar days, so it holds still for
+     * twenty-four hours while `now` advances every millisecond, and the stamp
+     * slides forward all day with it.
+     *
+     * At the boundary it is total. A listing closing in exactly
+     * CLOSING_WINDOW_DAYS days has an offset of zero, so `at` is literally the
+     * current instant, recomputed on every render. Unread is `at > seen`, and
+     * opening the panel writes seen = Date.now(), so the row is newer than the
+     * stamp that was just written and comes straight back as unread. For ever.
+     * Reading it cannot help: it is younger every time you look.
+     *
+     * That is both halves of what was reported from the outside, a note that
+     * "still appears unread even after being read" and a bell announcing
+     * something new when nothing new had arrived. One row, one cause.
+     *
+     * The deadline does not move, so the stamp derived from it does not either.
+     * This is what the scholarship branch above has always done.
+     *
+     * scripts/test-notification-restamp.mjs builds the same feed twice five
+     * minutes apart and fails if the stamp differs.
+     */
+    const entered = Date.parse(`${o.deadline}T00:00:00Z`)
+    /* daysUntilDay already parsed this to get here, so NaN is unreachable in
+       practice. Skipped rather than fallen back to `now`, because a fallback to
+       `now` is exactly the behaviour being removed. */
+    if (Number.isNaN(entered)) continue
+
     out.push({
       id: `closing-${o.slug}`,
       kind: 'deadline',
       title: o.title || '',
       detail: closesInWords(days),
       href: `/jobs/${o.slug}`,
-      /* Dated to the moment it entered the window, so it surfaces once and then
-         ages out of unread rather than re-alerting on every panel open.
-         Derived from `days` rather than from a parsed deadline, so this cannot
-         drift from the number printed above it: the row is stamped exactly
-         CLOSING_WINDOW_DAYS before the deadline, counted the same way. */
-      at: new Date(now.getTime() - (CLOSING_WINDOW_DAYS - days) * 86_400_000).toISOString(),
+      at: new Date(entered - CLOSING_WINDOW_DAYS * 86_400_000).toISOString(),
     })
   }
 
