@@ -376,13 +376,43 @@ export function jobListSchema(jobs: { slug: string; title: string; employer: str
  * substantially stronger, because `sameAs` is how a resolver merges this Person
  * with the one it already knows from LinkedIn.
  */
+/**
+ * ⚠ THE POST-NOMINAL FORM IS IN alternateName BECAUSE IT IS HOW THEY ARE
+ * WRITTEN ELSEWHERE. Both founders carry "AICMC, ACArb" after the name on
+ * their professional profiles, and a resolver deciding whether the person it
+ * already knows is the person this page describes is matching strings. Giving
+ * it the exact string those profiles display is the cheapest help it can get,
+ * and it costs nothing here.
+ *
+ * ⚠ IT IS NOT A SUBSTITUTE FOR sameAs AND SHOULD NOT BE MISTAKEN FOR ONE. A
+ * matching display name is evidence; a URL is an assertion. Until the profile
+ * URLs are confirmed and added below, these entities remain unlinked to the
+ * profiles they describe, and that is still the single largest gap in this
+ * block.
+ *
+ * The credentials are recorded as names only, with no `recognizedBy`. AICMC and
+ * ACArb each have a plausible awarding body and more than one institute uses
+ * similar post-nominals in Nigeria, so naming the wrong one would be inventing
+ * a fact about a real person in order to fill a field. The post-nominals
+ * themselves came from the founders.
+ */
+const CREDENTIALS = [
+  { '@type': 'EducationalOccupationalCredential', name: 'AICMC' },
+  { '@type': 'EducationalOccupationalCredential', name: 'ACArb' },
+]
+
 export const FOUNDERS = [
   {
     '@type': 'Person',
     '@id': `${SITE_URL}/about#boluwatife-ogunleye`,
     name: 'Boluwatife Ogunleye',
-    alternateName: ['Ogunleye Boluwatife', 'Bolu Ogunleye'],
+    alternateName: [
+      'Ogunleye Boluwatife',
+      'Bolu Ogunleye',
+      'Ogunleye Boluwatife, AICMC, ACArb',
+    ],
     jobTitle: 'Co-founder',
+    hasCredential: CREDENTIALS,
     worksFor: { '@id': `${SITE_URL}/#organization` },
     url: `${SITE_URL}/about`,
   },
@@ -390,8 +420,13 @@ export const FOUNDERS = [
     '@type': 'Person',
     '@id': `${SITE_URL}/about#ipinuoluwa-ogunleye`,
     name: 'Ipinuoluwa Ogunleye',
-    alternateName: ['Ogunleye Ipinuoluwa', 'Ipinu Ogunleye'],
+    alternateName: [
+      'Ogunleye Ipinuoluwa',
+      'Ipinu Ogunleye',
+      'Ogunleye Ipinuoluwa, AICMC, ACArb',
+    ],
     jobTitle: 'Co-founder',
+    hasCredential: CREDENTIALS,
     worksFor: { '@id': `${SITE_URL}/#organization` },
     url: `${SITE_URL}/about`,
   },
