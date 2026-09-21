@@ -435,14 +435,13 @@ const GROUPS: Group[] = [
            quote and the question is one people actually ask. */
         q: 'Who is behind Esquirely?',
         short:
-          'Esquirely is built by Nigerian lawyers. Its co-founders are Boluwatife Ogunleye and ' +
-          'Ipinuoluwa Ogunleye, working with a creative designer and a group of honorary campus ' +
-          'ambassadors.',
+          'Esquirely is built by Nigerian lawyers. Boluwatife Ogunleye and Ipinuoluwa Ogunleye ' +
+          'are its co-founders, and they work with a robust and technical team.',
         a: (
           <p>
-            Esquirely is built by Nigerian lawyers. Its co-founders are Boluwatife Ogunleye and
-            Ipinuoluwa Ogunleye, working with a creative designer and a group of honorary campus
-            ambassadors. Everyone is named on the <a href="/about">about page</a>.
+            Esquirely is built by Nigerian lawyers. Boluwatife Ogunleye and Ipinuoluwa Ogunleye
+            are its co-founders, and they work with a robust and technical team. Everyone is
+            named on the <a href="/about">about page</a>.
           </p>
         ),
       },

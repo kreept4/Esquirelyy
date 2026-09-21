@@ -139,7 +139,7 @@ export default function AboutPage() {
             path: '/about',
             name: 'About Esquirely',
             description:
-              'Esquirely is a careers platform for Nigerian lawyers and law students, indexing legal vacancies, scholarships and law firm information in one place. Built by two co-founders with a creative designer and a group of honorary campus ambassadors.',
+              'Esquirely is a careers platform for Nigerian lawyers and law students, indexing legal vacancies, scholarships and law firm information in one place. Built by two co-founders with a creative designer and a group of honorary ambassadors.',
             type: 'AboutPage',
           }),
           breadcrumb([
