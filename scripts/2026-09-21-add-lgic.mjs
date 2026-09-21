@@ -74,6 +74,23 @@
  * rather than a quotation of an instruction to applicants. The prize figure,
  * the dates, the address and the form link are reproduced exactly.
  *
+ * ⚠ NEITHER THE FORM URL NOR THE ENQUIRY ADDRESS IS WRITTEN INTO THESE STEPS,
+ * AND THE FIRST VERSION OF THIS FILE PUT BOTH THERE. jobs/[slug] nulls
+ * `applyHref` for a signed-out reader on purpose, and its own note says why:
+ * the account exists for the application route, and hiding an address in the
+ * markup "is not a gate", so it is nulled at the source and there is nothing to
+ * find. Printing the same form link and mailbox in the description handed both
+ * straight back to every signed-out reader and to Googlebot, on the one listing
+ * that is deliberately public. The gate held; the copy walked around it.
+ *
+ * LBVIP's steps were right about this from the start: "Complete the application
+ * form", no URL. Same here now.
+ *
+ * ⚠ AND IT LEAVES A REAL GAP: toBoardRow sets `apply_email` to null for every
+ * opportunity, so unlike a job, an opportunity has no gated mailbox line to put
+ * an enquiry address in. A signed-in reader cannot see it either. Worth fixing
+ * in the adapter rather than by putting the address back in prose.
+ *
  * ⚠ THE WINDOW IS 14 TO 28 SEPTEMBER 2026 AND TODAY IS THE 21ST. Seven days.
  * `deadline` is the 28th, which is what the countdown and the closing-soon flag
  * read, and hasPassed treats the 28th itself as still open.
@@ -134,19 +151,19 @@ const row = {
       step: 2,
       title: 'Register on the form',
       detail:
-        'The firm takes entries at https://forms.gle/x5r7FNuGLns2FUNc7, which is ' +
-        'what the QR code on the flier points at. Have your class of degree and ' +
-        'your university to hand.',
+        "Apply opens the firm's registration form, the same one the QR code on " +
+        'the flier points at. Have your class of degree and your university to ' +
+        'hand.',
       off_platform: true,
     },
     {
       step: 3,
       title: 'Send questions to the firm, not to the form',
       detail:
-        'The flier gives lgic@jofsolicitors.ng for enquiries, an address on the ' +
-        "firm's own domain. It is the right place to confirm anything the flier " +
-        'does not say, including what the NGN 3,000,000 covers and when the ' +
-        'internship itself runs.',
+        "The flier carries an enquiry address on the firm's own domain, and it " +
+        'is the right place to confirm what the flier does not say: what the ' +
+        'NGN 3,000,000 covers, and when the internship itself runs. Ask there ' +
+        'rather than in the form.',
       off_platform: true,
     },
   ],
