@@ -86,6 +86,25 @@
  * rows, so neither produces anything on the board.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
+  /* 21 September, and the second opportunity on the board.
+
+     Open on the same grounds as LBVIP below: the firm published the flier for
+     anyone to read, so gating it would be withholding something that was never
+     ours to withhold. There is no application route here that a gate protects
+     either, because entries go to a Google form the flier prints in full and
+     puts a QR code beside.
+
+     ⚠ AND IT IS ON THE HOME PAGE, which is the half that makes this line
+     load-bearing rather than tidy. A carousel card on a page most of whose
+     readers are signed out, pointing at a slug outside this set, is a card that
+     bounces every one of them to /auth/login. Seven days to the deadline.
+
+     This is the exact failure the Andersen note at the bottom of this list
+     records: the row was inserted, published and correct, and the board simply
+     did not draw it for a signed-out reader. It was caught here only because
+     the listing was fetched with curl rather than from a logged-in browser. */
+  '6th-annual-professor-j-o-fabunmi-internship-competition-lgic',
+
   /* 2 September, and the whole of the current drop on its own.
      Public on its own merits before anything else: the World Bank posts this
      programme openly on its Cornerstone career site and writes it up on

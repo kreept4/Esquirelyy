@@ -51,7 +51,15 @@ import { daysUntilDay, hasPassed } from './day'
  */
 
 /** The kinds that genuinely are internships for filtering purposes. */
-const INTERNSHIP_KINDS = new Set(['internship', 'virtual_internship'])
+const INTERNSHIP_KINDS = new Set(['internship', 'virtual_internship', 'competition'])
+
+/* ⚠ WHY 'competition' FILES UNDER INTERNSHIP. The LGIC is a competition whose
+   prize is an internship, and the board's type filter offers two options. A law
+   student narrowing to Internship is looking for exactly this and would not
+   find it under Full-time, which is where boardType sends everything else. The
+   precise word is not lost: `opportunity_type` still says competition and the
+   detail page prints it, which is the same split the header above describes for
+   virtual_internship. */
 
 /** What the board's type filter should match this on. */
 function boardType(opportunityType: string): 'internship' | 'job' {
@@ -62,6 +70,7 @@ function boardType(opportunityType: string): 'internship' | 'job' {
 export const OPPORTUNITY_TYPE_LABELS: Record<string, string> = {
   internship: 'Internship',
   virtual_internship: 'Virtual internship',
+  competition: 'Competition',
   webinar: 'Webinar',
   workshop: 'Workshop',
   event: 'Event',

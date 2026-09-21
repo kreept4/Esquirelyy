@@ -2759,6 +2759,20 @@ export function logoForEmployer(employer?: string | null): string | null {
  *  so their marks live in /public/employer-logos. Drop a file in that folder
  *  and add the key here; the key is the normalised employer name. */
 const EMPLOYER_LOGOS: Record<string, string> = {
+  /* J.O Fabunmi & Co, the firm behind the LGIC competition. Same reasoning as
+     every entry here for why it is not in ALL_FIRMS: on the board because it is
+     running something, not in the directory because nobody has researched it.
+
+     THE MONOGRAM ONLY, which is the Ovie Obobolo and Greenberg Traurig call
+     again. Their panel is a circle over a wordmark over a tagline; at the 37px
+     the board gives a mark, and inside the carousel's 70px splash, the type is
+     unreadable and the circle is not. See
+     scripts/2026-09-21-extract-jo-fabunmi-logo.mjs, which also records why that
+     file is masked to a circle rather than keyed like the others: the figure
+     inside this mark is white negative space, so keying white punches it out. */
+  jofabunmiandco: '/employer-logos/jo-fabunmi.png',
+  jofabunmi: '/employer-logos/jo-fabunmi.png',
+
   /* A law firm, and still here rather than in ALL_FIRMS. The directory is a
      researched list with offices, practice areas and directory standing behind
      every entry; Zyph is on the board because it is hiring, and inventing a

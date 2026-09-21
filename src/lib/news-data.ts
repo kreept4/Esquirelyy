@@ -96,74 +96,45 @@ const ITEMS: NewsItem[] = [
 
   {
     /**
-     * The swearing-in, and NOT the election result that used to sit here.
+     * The LGIC, in the Badejo-Okusanya swearing-in's slot.
      *
-     * ⚠ THIS IS THE SECOND BADEJO-OKUSANYA SLIDE AND IT IS NOT THE SAME STORY.
-     * The first, nba-president-elect-2026, was the 6 August vote and it came off
-     * the same day this went on, because by then it was a month-old result about
-     * a swearing-in that had already happened. This is the swearing-in itself
-     * and, more to the point, the agenda she set out at it. That agenda names
-     * welfare and access to opportunities, which is this platform's subject.
-     * A result is a fact; a stated intention about what lawyers get paid is
-     * something a reader here has a stake in.
+     * ⚠ WHY THAT SLIDE CAME OFF. It was a 28 August ceremony, and by now the
+     * thing it reported is a month old. The note that used to sit here said the
+     * slide was fair "until it is either delivered on or clearly not", and that
+     * a promise with a two year term attached should be revisited rather than
+     * left to sit. It was also the last `type: 'photo'` entry on the carousel,
+     * so the row now reads as one set of splashes with nothing sitting in a
+     * different kind of box. The `.news-photo` rules stay in globals.css for
+     * the reason the note further down already gives.
      *
-     * ⚠ IT WILL GO STALE, JUST SLOWLY. The address is a promise with a two-year
-     * term attached, so this is fair until it is either delivered on or clearly
-     * not. Revisit it rather than leaving it to sit: the failure mode this file
-     * keeps repeating is a slide that was true when it was written.
+     * More to the point: a carousel slot is worth what a reader can do with it,
+     * and this one closes in seven days.
      *
-     * THE PHOTOGRAPH IS THE NBA'S OWN, of the NBA's own ceremony, and it is
-     * credited to them. See the note on NewsMedia: fair dealing for reporting
-     * current events under the Copyright Act 2022 is what carries a press
-     * photograph here, and it expects sufficient acknowledgement, which is why
-     * `credit` is a required field rather than an optional one.
+     * ⚠ IT POINTS AT THE LISTING, NOT AT THE GOOGLE FORM, which is the same
+     * call the LBVIP slide made. The eligibility, the window and the three
+     * steps are read here first and the form is one tap from there. Sending a
+     * reader straight to forms.gle would skip the only page that tells them
+     * they must be awaiting law school admission to be eligible at all.
      *
-     * ⚠ THE ASSET IS PRE-CROPPED AND THE CSS IS UNTOUCHED, which is the same
-     * call scripts/2026-08-25-agc-card-both-slots.mjs made and for the reason
-     * recorded there. `.news-photo` is `cover` at three different ratios:
-     * 4/3.4 on desktop, 16/9 under 900px and 3/2 under 640px. All three crop
-     * the SIDES of a landscape photo, so a frame only works here if its subject
-     * is CENTRED. The file is cut to 16/9 from the NBA's own gallery and
-     * checked at all three ratios before it went in. Retuning object-position
-     * for one card would make the next card added inherit values chosen for
-     * this one.
+     * ⚠ AND THE SLUG IS IN lib/open-jobs.ts, which is the half of this that
+     * does not look like work. Most of the people who see this carousel are
+     * signed out. A card pointing at a slug outside that set sends every one of
+     * them to /auth/login instead of to the listing.
      *
-     * ⚠ WHICH FRAME, AND THE TWO THAT WERE REJECTED. Three were tried, and the
-     * reasons are worth keeping because the next photo slide meets the same
-     * constraints.
-     *
-     * The oath itself, her repeating it at the microphone, is the obvious
-     * choice and it fails this slot. The administering officer is at the far
-     * left and she is at the far right, so the pair spans more of the frame
-     * than the narrowest crop keeps, and the 4/3.4 desktop slot cut her. No
-     * crop of that frame holds both.
-     *
-     * The handshake afterwards, both facing the camera, survives every ratio
-     * and was rejected on how it reads rather than on geometry: cropped to two
-     * people filling the frame it looks like a photograph taken on a phone, not
-     * like coverage of a ceremony.
-     *
-     * This one is the instrument of office being handed over. It keeps the
-     * microphone, the seal on the folder, the presidential medal and a third
-     * official in shot, so the room is legible as a ceremony, and its subjects
-     * sit near the middle, so all three ratios hold them whole. Centred subject
-     * AND visible context is the bar; a frame that clears only one of those is
-     * not good enough.
+     * THE MARK IS `logos` AND IT IS THE MONOGRAM. The full panel is a circle
+     * over a wordmark over a tagline, which is a grey smear in a 70px splash;
+     * the circle alone fills it. Same decision as Greenberg Traurig above, and
+     * the extractor records it.
      */
-    slug: 'nba-president-sworn-in-2026',
-    kind: 'news',
-    date: '2026-08-28',
-    title: 'Badejo-Okusanya sworn in as NBA president',
+    slug: 'jo-fabunmi-internship-competition-2026',
+    kind: 'update',
+    date: '2026-09-21',
+    title: 'A firm is putting 3 million naira behind an internship',
     summary:
-      'She was sworn in at Port Harcourt on 28 August, the second woman to lead the association in its 66 years. In her inaugural address she named welfare, access to opportunities and new areas of practice as her priorities for the next two years.',
-    href: 'https://blog.nigerianbar.org.ng/2026/08/29/33rd-nba-president-oyinkansola-badejo-okusanya-san-delivers-inaugural-address-sets-out-vision-for-a-bolder-bar/',
-    cta: 'Read the address',
-    media: {
-      type: 'photo',
-      src: '/news/badejo-okusanya-sworn-in-2026.jpg',
-      alt: 'Oyinkansola Badejo-Okusanya SAN receiving the instrument of office as 33rd President of the Nigerian Bar Association',
-      credit: 'Nigerian Bar Association',
-    },
+      'J.O Fabunmi & Co are running the sixth edition of their internship competition, and it is open to Nigerians waiting to start law school. You need a 2:1 from an accredited university, here or abroad. Registration closes on 28 September.',
+    href: '/jobs/6th-annual-professor-j-o-fabunmi-internship-competition-lgic',
+    cta: 'Read the criteria',
+    media: { type: 'logos', slugs: ['J.O Fabunmi & Co'] },
   },
 
   {
