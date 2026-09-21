@@ -7789,3 +7789,85 @@ select.jobs-select[data-active='true'] {
    is set back to ink-on-cream wherever it was not already. */
 select.tool-select option,
 select.auth-input option { color: var(--ink); background-color: var(--cream); }
+
+/* ============================================================
+   THE OPEN LIST, WHICH THE RULE ABOVE NEVER ACTUALLY FIXED
+   ============================================================
+
+   The rule above says native popups "still paint from the OS palette on some
+   platforms, so the list is set back to ink-on-cream". That was optimistic, and
+   it is worth writing down plainly: on Windows Chrome an open <select> popup is
+   drawn by the browser from the OS theme, and `option { background-color }` has
+   not reliably applied there for several versions. appearance:none styles the
+   CLOSED control and stops at the edge of the popup. So every dropdown on this
+   site was a themed box that opened a grey Windows list, which is the exact
+   mismatch c66cb65 set out to remove, one layer further in than it looked.
+
+   ⚠ THE ONLY REAL FIX SHORT OF REBUILDING select OUT OF DIVS. Opting into the
+   customizable select takes the control away from the OS and makes the popup a
+   real element CSS can reach. The alternative is a button plus a listbox with
+   roles, keyboard handling and focus management, which is a great deal of
+   surface to get wrong on twelve controls for the sake of a colour.
+
+   ⚠ WHY THIS IS WRITTEN WITHOUT A DESCENDANT SELECTOR, which matters more than
+   it looks. The first attempt wrote `select::picker(select) option { }` and
+   took the whole site down with a build error: this project is on Tailwind 3,
+   and its PostCSS selector parser rejects anything following a pseudo-element
+   with "Pseudo-elements like '::before' can't be followed by selectors". It
+   parses `::picker(select)` alone perfectly well. The options are therefore
+   styled as `select option`, which they still are in the DOM, and the picker
+   box is styled on its own. Same result, and it compiles. Do not "tidy" these
+   into a descendant chain.
+
+   ⚠ BEHIND @supports, AND THAT IS NOT DECORATION. Opting in changes how the
+   closed control renders too, so a browser that understood half of this would
+   be worse off than one that understood none. Where the feature is absent every
+   rule here is skipped and the dropdowns are exactly what they were: themed
+   closed, native open. Nothing regresses, and Safari and Firefox get the old
+   behaviour until they ship it.
+
+   On the element rather than per class, for the reason the block above gives:
+   a select added next month should arrive themed rather than arrive bare. */
+@supports (appearance: base-select) {
+  select { appearance: base-select; }
+
+  /* The UA draws its own arrow on an opted-in select and we already paint a
+     chevron as a background image above. One mark, drawn one way. */
+  select::picker-icon { display: none; }
+
+  select::picker(select) {
+    appearance: base-select;
+    background-color: var(--cream);
+    color: var(--ink);
+    border: 0.5px solid var(--cream-border);
+    border-radius: 2px;
+    padding: 0.25rem;
+    /* Low and wide rather than the tight drop shadow a menu usually gets. The
+       cards on this site sit on their ground without one, and a hard shadow
+       here would be the only element on the page wearing it. Enough to say the
+       list floats, not enough to make it a different material. */
+    box-shadow: 0 10px 24px rgba(36, 31, 22, 0.12);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+  }
+
+  select option {
+    padding: 0.42rem 0.55rem;
+    border-radius: 2px;
+    color: var(--ink);
+  }
+
+  /* One treatment for pointer and for keyboard. A list where arrowing down
+     looks different from pointing at it is two lists. */
+  select option:hover,
+  select option:focus {
+    background-color: rgba(20, 184, 166, 0.13);
+    color: var(--ink);
+  }
+
+  /* The UA checkmark is its own glyph at its own size and it pushes every label
+     off the left edge the rest of the rows are aligned to. The selected row is
+     marked by weight instead, which is how the rest of the site marks state. */
+  select option::checkmark { display: none; }
+  select option:checked { font-weight: 600; }
+}
