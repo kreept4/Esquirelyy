@@ -96,6 +96,21 @@ export default async function HomePage() {
           The dark run is now continuous from the hero to EverythingYouNeed, so
           there is one deliberate transition into the light instead of two. */}
       <div className="overflow-hidden" style={{ backgroundColor: INK_BLACK, borderBottom: '0.5px solid rgba(250,246,240,0.10)' }}>
+        {/* ⚠ THE MASK IS ON THIS LAYER AND NOT ON EITHER OF ITS NEIGHBOURS, AND
+            BOTH OF THE OBVIOUS PLACEMENTS ARE WRONG.
+
+            On the band above, a mask fades the band's own black out at the ends
+            along with the logos, because a mask applies to an element's
+            background as much as its content. The page behind then shows
+            through and the ends read as two bright notches.
+
+            On the track below, the mask travels with it: that element is what
+            translateX animates, a mask is positioned against its own box, so
+            the fade would slide across the rail rather than sit at the edges.
+
+            This layer is static, full width and paints nothing, which is all a
+            mask needs to be correct. */}
+        <div className="ticker-mask">
         <div className="flex animate-ticker whitespace-nowrap py-6 items-center" style={{ width: 'max-content' }}>
           {[...FIRMS_WITH_LOGOS, ...FIRMS_WITH_LOGOS].map((firm, i) => (
             <LogoFrame
@@ -108,6 +123,7 @@ export default async function HomePage() {
               className="ticker-logo"
             />
           ))}
+        </div>
         </div>
       </div>
 
