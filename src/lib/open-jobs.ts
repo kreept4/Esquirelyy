@@ -86,6 +86,17 @@
  * rows, so neither produces anything on the board.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
+  /* 21 September, and the third opportunity. Open for the reason the two
+     opportunities below are: the firm published the flier for anyone to read,
+     and entries go to a Google form whose link the flier carries as a QR code,
+     so there is no application route here that a gate protects.
+
+     It is also the only route a reader HAS. The flier prints no URL at all, so
+     somebody who saw the graphic without a camera to hand cannot reach the form
+     except through a listing. Bouncing them to /auth/login is the difference
+     between that and nothing. */
+  'omaplex-virtual-internship-2026',
+
   /* 21 September, and the second opportunity on the board.
 
      Open on the same grounds as LBVIP below: the firm published the flier for

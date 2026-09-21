@@ -74,7 +74,9 @@ const ROUTES = [
 ]
 
 const FACTS = [
-  { k: 'Where we are', v: 'Abuja, Nigeria' },
+  /* Country only. The city came off on request: the team's location is not
+     something this site publishes. */
+  { k: 'Where we are', v: 'Nigeria' },
   { k: 'Replies', v: 'Within two working days' },
   { k: 'Data requests', v: 'Within 30 days' },
 ]

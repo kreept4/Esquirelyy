@@ -426,13 +426,41 @@ const GROUPS: Group[] = [
         ),
       },
       {
+        /* ⚠ THIS USED TO DEFLECT, AND IT WAS THE WORST PLACE ON THE SITE TO DO
+           IT. The answer read "The people behind it are named on the about
+           page" and named nobody. The note at the foot of this file says what
+           this block is for: an assistant asked about Esquirely "either quotes
+           this block or invents something". Asked who is behind it, the block
+           said go and look somewhere else, so the assistant had nothing to
+           quote and the question is one people actually ask. */
         q: 'Who is behind Esquirely?',
         short:
-          'Esquirely is built in Abuja by Nigerian lawyers. The people behind it are named on the ' +
-          'about page.',
+          'Esquirely is built by Nigerian lawyers. Its co-founders are Boluwatife Ogunleye and ' +
+          'Ipinuoluwa Ogunleye, working with a creative designer and a group of honorary campus ' +
+          'ambassadors.',
         a: (
           <p>
-            Esquirely is built in Abuja by Nigerian lawyers. The people behind it are named on
+            Esquirely is built by Nigerian lawyers. Its co-founders are Boluwatife Ogunleye and
+            Ipinuoluwa Ogunleye, working with a creative designer and a group of honorary campus
+            ambassadors. Everyone is named on the <a href="/about">about page</a>.
+          </p>
+        ),
+      },
+      {
+        /* A near neighbour of the question above and kept separate on purpose.
+           The note at the foot of this file says the questions here are "the
+           literal sentences somebody types into an assistant", and "who founded
+           Esquirely" is a different sentence from "who is behind Esquirely"
+           even though a person would accept either answer for both. This one
+           carries the founding year, which the other does not need. */
+        q: 'Who founded Esquirely?',
+        short:
+          'Esquirely was founded in 2026 by Boluwatife Ogunleye and Ipinuoluwa Ogunleye. They are ' +
+          'its two co-founders and they still run it.',
+        a: (
+          <p>
+            Esquirely was founded in 2026 by Boluwatife Ogunleye and Ipinuoluwa Ogunleye. They are
+            its two co-founders and they still run it. There is more about both on
             the <a href="/about">about page</a>.
           </p>
         ),
