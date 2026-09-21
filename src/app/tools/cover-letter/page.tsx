@@ -103,6 +103,9 @@ export default function CoverLetterPage() {
   const [result, setResult] = useState<Result | null>(null)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
+  /* The optional fields are folded away by default. See the note beside the
+     toggle for why these six and not the other four. */
+  const [more, setMore] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
@@ -389,13 +392,6 @@ export default function CoverLetterPage() {
               <div className="tool-card">
                 <div className="tool-grid">
                   <div>
-                    <label htmlFor="cl-name" className="tool-label">
-                      First name <span className="tool-label-hint">(optional)</span>
-                    </label>
-                    <input id="cl-name" type="text" className="tool-input grotesk-regular"
-                      value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="e.g. Damian" />
-                  </div>
-                  <div>
                     <label htmlFor="cl-role" className="tool-label">Target role</label>
                     <input id="cl-role" type="text" className="tool-input grotesk-regular"
                       value={form.targetRole} onChange={e => set('targetRole', e.target.value)} placeholder="e.g. Associate, Banking and Finance" />
@@ -404,36 +400,6 @@ export default function CoverLetterPage() {
                     <label htmlFor="cl-employer" className="tool-label">Employer</label>
                     <input id="cl-employer" type="text" className="tool-input grotesk-regular"
                       value={form.employer} onChange={e => set('employer', e.target.value)} placeholder="e.g. Aluko &amp; Oyebode" />
-                  </div>
-                  <div>
-                    <label htmlFor="cl-division" className="tool-label">
-                      Team or division <span className="tool-label-hint">(optional)</span>
-                    </label>
-                    {/* The letter has to say why this team, and a letter written
-                        to a firm without knowing which team can only say why the
-                        firm. Type anything: the list is a shortcut, not a set of
-                        allowed answers. */}
-                    <input id="cl-division" type="text" className="tool-input grotesk-regular"
-                      list="cl-division-list"
-                      value={form.division} onChange={e => set('division', e.target.value)}
-                      placeholder="e.g. Dispute Resolution" />
-                    <datalist id="cl-division-list">
-                      {DIVISIONS.map(d => <option key={d} value={d} />)}
-                    </datalist>
-                  </div>
-                  <div>
-                    <label htmlFor="cl-stage" className="tool-label">Career stage</label>
-                    <select id="cl-stage" className="tool-select grotesk-regular"
-                      value={form.careerStage} onChange={e => set('careerStage', e.target.value)}>
-                      {CAREER_STAGES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="cl-tone" className="tool-label">Tone</label>
-                    <select id="cl-tone" className="tool-select grotesk-regular"
-                      value={form.tone} onChange={e => set('tone', e.target.value)}>
-                      {TONES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                    </select>
                   </div>
                 </div>
 
@@ -510,15 +476,6 @@ export default function CoverLetterPage() {
                   )}
                 </div>
 
-                <div className="tool-row">
-                  <label htmlFor="cl-highlights" className="tool-label">
-                    Highlights to emphasise <span className="tool-label-hint">(optional)</span>
-                  </label>
-                  <textarea id="cl-highlights" className="tool-textarea grotesk-regular" rows={2}
-                    value={form.highlights} onChange={e => set('highlights', e.target.value)}
-                    placeholder="e.g. led the moot court team, published research on capital markets regulation" />
-                </div>
-
                 {/* ---- The two boxes that answer "why them" ------------------
                     Both optional, both last, and both worth more than anything
                     above them. The advert is the only text in the form the
@@ -537,6 +494,90 @@ export default function CoverLetterPage() {
                     placeholder="Paste the listing exactly as published. The letter answers what they actually asked for, in their order of priority." />
                 </div>
 
+                {/* ---- Everything that is optional, behind one fold -------
+                    ⚠ WHY THIS IS FOLDED AND THE FOUR ABOVE IT ARE NOT.
+                    The form grew to eleven inputs, and only two of them are
+                    required. Nobody reads eleven boxes as "two required and
+                    nine that help"; they read it as eleven boxes, and the
+                    cover letter tool is the least used of the four despite
+                    being the one that saves the most work. A form that looks
+                    like an application form to write an application is the
+                    wrong first impression.
+
+                    ⚠ THE ADVERT AND THE BACKGROUND STAY IN THE OPEN, which is
+                    the whole judgement here. The advert's own label says it
+                    makes the biggest difference, and hiding the field that
+                    matters most to prove the form is short would be trading
+                    the output for the impression. What goes behind the fold is
+                    the six that refine a letter rather than make one.
+
+                    Open state is not persisted on purpose. Somebody who opened
+                    it once is not thereby a person who wants eleven boxes
+                    every time. */}
+                <div className="tool-row">
+                  <button type="button" className="tool-drop-swap" onClick={() => setMore(v => !v)}
+                    aria-expanded={more} aria-controls="cl-more">
+                    {more ? 'Hide the extra detail' : 'Add more detail (optional)'}
+                  </button>
+                  {!more && (
+                    <p className="grotesk-regular tool-note" style={{ marginTop: '0.4rem' }}>
+                      The team you are applying to, what you already know about them, and what to
+                      lead with. Each one makes the letter more specific.
+                    </p>
+                  )}
+                </div>
+
+                {more && (
+                  <div id="cl-more">
+                    <div className="tool-grid">
+                  <div>
+                    <label htmlFor="cl-name" className="tool-label">
+                      First name <span className="tool-label-hint">(optional)</span>
+                    </label>
+                    <input id="cl-name" type="text" className="tool-input grotesk-regular"
+                      value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="e.g. Damian" />
+                  </div>
+                  <div>
+                    <label htmlFor="cl-division" className="tool-label">
+                      Team or division <span className="tool-label-hint">(optional)</span>
+                    </label>
+                    {/* The letter has to say why this team, and a letter written
+                        to a firm without knowing which team can only say why the
+                        firm. Type anything: the list is a shortcut, not a set of
+                        allowed answers. */}
+                    <input id="cl-division" type="text" className="tool-input grotesk-regular"
+                      list="cl-division-list"
+                      value={form.division} onChange={e => set('division', e.target.value)}
+                      placeholder="e.g. Dispute Resolution" />
+                    <datalist id="cl-division-list">
+                      {DIVISIONS.map(d => <option key={d} value={d} />)}
+                    </datalist>
+                  </div>
+                  <div>
+                    <label htmlFor="cl-stage" className="tool-label">Career stage</label>
+                    <select id="cl-stage" className="tool-select grotesk-regular"
+                      value={form.careerStage} onChange={e => set('careerStage', e.target.value)}>
+                      {CAREER_STAGES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="cl-tone" className="tool-label">Tone</label>
+                    <select id="cl-tone" className="tool-select grotesk-regular"
+                      value={form.tone} onChange={e => set('tone', e.target.value)}>
+                      {TONES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                    </select>
+                  </div>
+                    </div>
+
+                <div className="tool-row">
+                  <label htmlFor="cl-highlights" className="tool-label">
+                    Highlights to emphasise <span className="tool-label-hint">(optional)</span>
+                  </label>
+                  <textarea id="cl-highlights" className="tool-textarea grotesk-regular" rows={2}
+                    value={form.highlights} onChange={e => set('highlights', e.target.value)}
+                    placeholder="e.g. led the moot court team, published research on capital markets regulation" />
+                </div>
+
                 <div className="tool-row">
                   <label htmlFor="cl-knowledge" className="tool-label">
                     What you know about them <span className="tool-label-hint">(optional)</span>
@@ -549,6 +590,9 @@ export default function CoverLetterPage() {
                     offices, practice areas and directory rankings, and the letter uses those.
                   </p>
                 </div>
+
+                  </div>
+                )}
 
                 {error && (
                   <div className="grotesk-regular tool-error" role="alert">
