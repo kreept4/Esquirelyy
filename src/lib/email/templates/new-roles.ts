@@ -258,6 +258,35 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<!--
+  ⚠ THIS EMAIL OPTS OUT OF AUTOMATIC DARK MODE, AND WITHOUT IT THE DESIGN
+  COMES APART ON A PHONE.
+
+  Reported as the mail looking "dark and weird" on mobile while desktop was
+  exactly right, which is the signature of client-side inversion rather than of
+  anything in the layout. iOS Mail, Apple Mail and the Gmail apps invert an
+  email that does not declare a colour scheme. This design is cream ground with
+  ink type and one deliberately dark masthead, so inversion is not a recolour,
+  it is a demolition: the cream flips to near-black while the masthead, already
+  dark and set with a bgcolor attribute, does not move. The page ends up dark on
+  dark with the one element that was supposed to be dark now indistinguishable
+  from the ground, and half the type inverted against backgrounds that did not.
+
+  The meta pair is what Apple Mail reads, and it stops the inversion outright
+  there. The style block repeats it for clients that read the CSS property
+  instead; Gmail strips style blocks in some contexts, which is why the metas
+  carry the weight and the block is the belt to their braces.
+
+  Light only, deliberately. A genuine dark variant of this design is a real
+  piece of work: every bgcolor, the amber, the mint button and the contour
+  background would each need a dark counterpart, and a half-built one looks
+  worse than no dark mode at all.
+-->
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<style>
+  :root { color-scheme: light; supported-color-schemes: light; }
+</style>
 <title>${subject}</title>
 </head>
 <body style="margin:0;padding:0;background-color:${CREAM};">
