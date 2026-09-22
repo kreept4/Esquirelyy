@@ -7890,3 +7890,29 @@ select option:focus {
    marked by weight instead, which is how the rest of the site marks state. */
 select option::checkmark { display: none; }
 select option:checked { font-weight: 600; }
+
+/* ⚠ PIN THE CLOSED CONTROL'S WIDTH, BECAUSE OPTING IN CHANGED HOW IT SIZES.
+
+   A native select clips its label to whatever box it is given. An opted-in
+   base-select control sizes itself from its content instead, and on the board's
+   filter row that matters: each control is `flex: 1 1 calc(50% - 0.25rem)` with
+   min-width 0 under 640px, so choosing something long like "Energy & Natural
+   Resources" pushed that select's own width out and squeezed its neighbours on
+   the row. Reported as the writeup shrinking once an area of law was picked,
+   and it is the boxes moving rather than the type resizing.
+
+   So the label is clipped rather than allowed to set the width. The ellipsis is
+   the honest end of that: a filter showing "Energy & Natural Re..." still tells
+   a reader what is selected, and the full string is one tap away in the list
+   this same block now themes.
+
+   On the controls themselves rather than on the flex parent, because the parent
+   already says what width it wants and was being overruled from below. */
+select.jobs-select,
+select.filter-pill,
+select.sch-region {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
