@@ -267,14 +267,43 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${CREAM}" style="border-collapse:collapse;background-color:${CREAM};background-image:${CONTOUR};background-repeat:repeat;">
   <tr>
     <td style="padding:10px;">
+      <!--
+        THE MASTHEAD.
+
+        ⚠ WHAT CAME OFF AND WHY. This was ESQUIRELY set at 52px, weight 900,
+        letter-spacing -2.4px, centred on a full-bleed amber panel with a 5px
+        ink offset behind it. Three separate devices all turned up to maximum at
+        once: the size, the negative tracking and the hard shadow. At 52px in a
+        560px email that is most of the first screen spent shouting the sender's
+        own name at somebody who already knows who we are, because they signed
+        up. A masthead is a signature, not a headline.
+
+        ⚠ THE MARK IS BULLETPROOF, WHICH IS THE ONLY WAY TO PUT A LOGO IN AN
+        EMAIL. Remote images are blocked by default in most clients, so an
+        <img> alone means the brand disappears for a large share of the list.
+        The cell carries the amber as a bgcolor ATTRIBUTE as well as in CSS, and
+        the alt text is styled ink, bold and centred at the cell's own line
+        height. Images on, the real logo.png renders. Images off, the cell is
+        still an amber square with an ink E in it, which is the same mark drawn
+        a different way. Neither state is the degraded one.
+
+        Left aligned, because a masthead sits where the eye starts rather than
+        in the middle of a line, and the wordmark now takes positive tracking
+        instead of negative: letters that lean away from each other read as
+        composed, letters jammed together read as a logo being compressed to
+        fit somewhere it does not.
+      -->
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${INK}" style="border-collapse:collapse;background-color:${INK};">
         <tr>
-          <td style="padding:0 5px 5px 0;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${AMBER}" style="border-collapse:collapse;background-color:${AMBER};border:2px solid ${INK};">
+          <td style="padding:24px 22px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
               <tr>
-                <td align="center" bgcolor="${AMBER}" style="background-color:${AMBER};padding:30px 18px;">
-                  <p style="margin:0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:52px;line-height:0.9;font-weight:900;letter-spacing:-2.4px;color:${INK};">ESQUIRELY</p>
-                  <p style="margin:10px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.4;letter-spacing:1.6px;text-transform:uppercase;color:${INK};">Nigeria&rsquo;s legal career platform</p>
+                <td width="46" height="46" bgcolor="${AMBER}" align="center" valign="middle" style="background-color:${AMBER};width:46px;height:46px;">
+                  <img src="${siteUrl}/logo.png" width="46" height="46" alt="E" style="display:block;width:46px;height:46px;border:0;outline:none;text-decoration:none;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:27px;font-weight:900;line-height:46px;text-align:center;color:${INK};" />
+                </td>
+                <td valign="middle" style="padding-left:14px;">
+                  <p style="margin:0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:22px;line-height:1;font-weight:900;letter-spacing:1.6px;color:${CREAM};">ESQUIRELY</p>
+                  <p style="margin:7px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:9px;line-height:1;letter-spacing:1.9px;text-transform:uppercase;color:${MUTED};">Nigeria&rsquo;s legal career platform</p>
                 </td>
               </tr>
             </table>
@@ -397,11 +426,50 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
               </tr>
             </table>
 
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 4px 0;">
+            <!--
+              THE SIGN-OFF.
+
+              ⚠ IT WAS TWO LINES OF TEXT AND NOTHING ELSE: "from Bolu & Ipinu"
+              in bold over a muted uppercase role line. Nothing wrong with it
+              and nothing to it either, which is the problem at the end of a
+              message that has just asked somebody to go and apply for
+              something. The last block a reader sees is the one that says who
+              is behind this, and it was doing less work than the footer nav
+              underneath it.
+
+              The amber chip is the same mark as the masthead at half the size,
+              so the message opens and closes on the same object. It is drawn in
+              a table cell rather than fetched, with no image at all: this one
+              can afford to be pure HTML because a 24px square with a letter in
+              it is exactly what the logo is, and at the foot of an email it is
+              not worth a second remote request that half of the list will block
+              anyway.
+
+              ⚠ FULL NAMES, NOT THE SHORT FORMS, matching the decision taken for
+              the site. A signature is where a reader looks to find out who
+              actually wrote to them, and "Bolu & Ipinu" answers that only for
+              somebody who already knows. The warmth is carried by the sentence
+              above it instead, which is where warmth belongs.
+
+              A hairline in amber rather than a rule in ink, because the footer
+              below already opens with a 2px ink rule and two hard rules a
+              centimetre apart reads as a table, not as a close.
+            -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:26px 0 4px 0;">
               <tr>
-                <td style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;font-weight:700;color:${INK};">
-                  from Bolu &amp; Ipinu
-                  <span style="display:block;font-size:11px;line-height:1.6;letter-spacing:1px;text-transform:uppercase;font-weight:400;color:${MUTED};padding-top:3px;">Co-founders, Esquirely</span>
+                <td height="2" bgcolor="${AMBER}" style="background-color:${AMBER};height:2px;line-height:2px;font-size:0;">&nbsp;</td>
+              </tr>
+              <tr>
+                <td style="padding:16px 0 0 0;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                    <tr>
+                      <td width="24" height="24" bgcolor="${AMBER}" align="center" valign="middle" style="background-color:${AMBER};width:24px;height:24px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;font-weight:900;color:${INK};text-align:center;">E</td>
+                      <td valign="middle" style="padding-left:12px;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;font-weight:700;color:${INK};">
+                        Boluwatife Ogunleye &amp; Ipinuoluwa Ogunleye
+                        <span style="display:block;font-size:10px;line-height:1.6;letter-spacing:1.2px;text-transform:uppercase;font-weight:400;color:${MUTED};padding-top:2px;">Co-founders, Esquirely</span>
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
             </table>

@@ -45,49 +45,45 @@
  */
 export const ROLE_ENTRIES = [
   {
-    /* THE WHOLE DROP IS ONE ROLE, 2 September 2026, and the count helpers below
-       are what make that safe: dropSubject, dropVerb, noticePhrase,
-       publishedNouns and newRolesCta all branch at one, so nothing in the bell,
-       the modal, the carousel or the email says "roles" about a single seat.
-       This is the first drop to actually exercise that path since the helpers
-       were written, so it is the one to check the surfaces on.
+    /* THE DROP LEADS ON FABUNMI, AND THE REASON IS THE CALENDAR RATHER THAN
+       THE PRIZE. It closes on 28 September and the Omaplex internship below it
+       on 5 October, so the one a reader can still miss goes first. The three
+       million naira is the thing that gets the email opened and it is not the
+       thing that decides the order.
 
-       ⚠ THE LINE LEADS ON THE EXPERIENCE FLOOR, NOT ON THE INSTITUTION.
-       "World Bank" sells itself and needs no help from us. The fact a reader
-       needs in the first clause is that the Bank asks for two to six years,
-       because the largest group on this list finished Law School in July and
-       this is not their row. The previous drop led with AVA for the mirror
-       image of the same reason: it was the one seat a fresh call could take.
-
-       ⚠ AND IT SAYS THE AGE LIMIT IS GONE. The YPP had one for most of its
-       history, the Bank has removed it, and nearly every Nigerian write-up of
-       this programme still carries the old rule. A reader who has met this
-       programme before is holding a disqualifier that has stopped being true,
-       and the line is the only place they will see that corrected. */
-    slug: 'world-bank-group-young-professionals-programme-2027',
-    employer: 'World Bank Group',
-    employerShort: 'World Bank',
-    title: 'Young Professionals Program 2027',
-    /* ⚠ 55 WORDS, AND IT WAS 110. The card sits directly under the Heirs
-       Holdings closing card, which runs to about 55, so at twice the length it
-       read as the email losing its shape rather than as the more important
-       role. Reported as too long, and the comparison on the page is what makes
-       it obvious.
-
-       WHAT WENT: the five year follow-on contract, the age limit correction,
-       what the Legal Vice Presidency does day to day, ICSID, and the two
-       alternative streams. Every one of them is on the listing, which is one
-       tap away, and none of them decides whether somebody opens the link.
-
-       WHAT STAYED is the four facts that do decide it: where, the post-call
-       band, the master's floor, and the closing date. The LL.B sentence is the
-       one piece of length worth paying for anywhere in this drop, for the
-       reason the seed script sets out: the Bank's phrase reads differently in
-       Nigeria and most of this list would otherwise assume they qualify. */
-    line: 'Washington DC, on a two year term. Two to six years post-call, and an LL.M or another master\'s: an LL.B with Law School does not clear it. The seat is in the Bank\'s own Legal Vice Presidency. Apply on the World Bank site. Closes 30 September, 00:59 on 1 October in Lagos.',
-    short: 'a World Bank term in Washington DC, if you are two to six years post-call',
+       ⚠ THE FIRST CLAUSE IS THE ELIGIBILITY, NOT THE MONEY, and that is
+       deliberate in the same way the World Bank line led on the post-call band.
+       This competition is open to exactly one group, people waiting to start
+       Law School, and it is closed to everybody else on this list. Leading with
+       the prize would have most of the readership working out for themselves,
+       two sentences later, that it was never their row. */
+    slug: '6th-annual-professor-j-o-fabunmi-internship-competition-lgic',
+    employer: 'J.O Fabunmi & Co',
+    employerShort: 'J.O Fabunmi & Co',
+    title: '6th Professor J.O. Fabunmi Internship Competition',
+    line: 'For Nigerians waiting to start Law School, with a Second Class Upper from an accredited university here or abroad. The firm has put 3,000,000 naira behind it. Registration is by form and the window is two weeks. Closes 28 September.',
+    short: 'a 3 million naira internship competition, if you are waiting to start Law School',
     blurb:
-      'The World Bank Group has opened its 2027 Young Professionals Program. Two years in Washington DC on a GF term, Nigeria qualifies on nationality, and the legal stream sits in the Bank\'s own Legal Vice Presidency.',
+      'J.O Fabunmi & Co are running the sixth edition of their internship competition. It is open to Nigerians waiting to start Law School who hold a Second Class Upper, and the firm has put 3,000,000 naira behind it.',
+  },
+  {
+    /* ⚠ THE LINE LEADS ON "VIRTUAL", which is the only fact on it that changes
+       who can apply. Everything else about this internship is open: no class of
+       degree, no year of study, no call requirement. What it actually removes
+       is the geography, and that is the thing worth the first clause for a list
+       whose readers are not all in Lagos or Abuja.
+
+       The seven subjects are named as a range rather than listed. The full
+       seven are on the listing, and a reader deciding whether to open a link
+       needs to know the spread, not to read a table in an email. */
+    slug: 'omaplex-virtual-internship-2026',
+    employer: 'Omaplex Law Firm',
+    employerShort: 'Omaplex',
+    title: 'Virtual Internship 2026',
+    line: 'Virtual, so it does not matter where in Nigeria you are. Open to law students and aspiring lawyers, with no class of degree and no year of study set. Seven subjects, from technology and data protection through to sport arbitration. Closes 5 October.',
+    short: 'a virtual internship at Omaplex, open to law students anywhere',
+    blurb:
+      'Omaplex are running the 2026 edition of their virtual internship. It is open to law students and aspiring lawyers, it runs remotely wherever you are in Nigeria, and the firm names seven subjects it will cover.',
   },
 ] as const
 
@@ -95,9 +91,9 @@ export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
    *  somebody who read the 1 September note has not seen this one. */
-  id: 'roles-2026-09-02',
+  id: 'roles-2026-09-22',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-09-02T09:00:00.000Z',
+  at: '2026-09-22T09:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   employers: ROLE_ENTRIES.map(r => r.employer),
   /** The same firms without the parenthetical network names. Read by the bell. */
@@ -130,8 +126,23 @@ export const NEW_ROLES_COUNT: number = ROLE_ENTRIES.length
  * which is not somewhere you want to discover a grammar bug. Derived once here
  * instead.
  */
+/**
+ * ⚠ THE NOUN IS PART OF THE DROP, AND IT USED TO BE WELDED TO "role".
+ *
+ * Every drop until now was law firm seats, so "2 new roles" was simply true and
+ * the word was hardcoded in two places. This drop is a competition and a
+ * virtual internship. Neither is a role, and a competition especially is not:
+ * nobody is employed at the end of it by right.
+ *
+ * Getting that wrong would have been wrong in four places at once, which is the
+ * exact failure this file exists to prevent, so the noun is named here beside
+ * the slugs rather than assumed downstream. Drops that are genuinely seats set
+ * it back to 'role' and every surface follows.
+ */
+export const DROP_NOUN: string = 'listing'
+
 export function roleCountLabel(): string {
-  return `${NEW_ROLES_COUNT} new role${NEW_ROLES_COUNT === 1 ? '' : 's'}`
+  return `${NEW_ROLES_COUNT} new ${DROP_NOUN}${NEW_ROLES_COUNT === 1 ? '' : 's'}`
 }
 
 /** The board, filtered to exactly these listings. Read by JobsClient. */
@@ -315,5 +326,5 @@ export function dropPronoun(): string {
  * drop of one is not a hypothetical: this is what the 21 August drop is.
  */
 export function newRolesCta(): string {
-  return `Show me the new role${NEW_ROLES_COUNT === 1 ? '' : 's'}`
+  return `Show me the new ${DROP_NOUN}${NEW_ROLES_COUNT === 1 ? '' : 's'}`
 }
