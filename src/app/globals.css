@@ -7828,46 +7828,65 @@ select.auth-input option { color: var(--ink); background-color: var(--cream); }
 
    On the element rather than per class, for the reason the block above gives:
    a select added next month should arrive themed rather than arrive bare. */
-@supports (appearance: base-select) {
-  select { appearance: base-select; }
+/* ⚠ NOT WRAPPED IN @supports, AND IT WAS, AND THAT IS WHY IT DID NOTHING.
 
-  /* The UA draws its own arrow on an opted-in select and we already paint a
-     chevron as a background image above. One mark, drawn one way. */
-  select::picker-icon { display: none; }
+   The first version of this guarded the whole block with
+   `@supports (appearance: base-select)`. Reported as the dropdown still
+   rendering the OS list on Chrome 153, eighteen versions past the one that
+   shipped customizable select, with the rules verified present in the
+   production CSS. A feature that is implemented but not reported by
+   CSS.supports() fails that query, and the entire block is then skipped while
+   looking perfectly correct in the stylesheet.
 
-  select::picker(select) {
-    appearance: base-select;
-    background-color: var(--cream);
-    color: var(--ink);
-    border: 0.5px solid var(--cream-border);
-    border-radius: 2px;
-    padding: 0.25rem;
-    /* Low and wide rather than the tight drop shadow a menu usually gets. The
-       cards on this site sit on their ground without one, and a hard shadow
-       here would be the only element on the page wearing it. Enough to say the
-       list floats, not enough to make it a different material. */
-    box-shadow: 0 10px 24px rgba(36, 31, 22, 0.12);
-    font-family: var(--font-sans);
-    font-size: 0.9rem;
-  }
+   The guard was never load-bearing anyway, which is the part worth
+   remembering. CSS already does this job: a browser that does not know
+   `base-select` drops that declaration as an invalid value, and one that does
+   not know `::picker(select)` drops those rules as an unknown selector. The
+   fallback is automatic and per-declaration, which is better than the
+   all-or-nothing the @supports gave. Safari and Firefox still get exactly the
+   native control they had.
 
-  select option {
-    padding: 0.42rem 0.55rem;
-    border-radius: 2px;
-    color: var(--ink);
-  }
+   The risk the guard was meant to cover, a client that implements half of
+   this, is one Chrome is the only implementer of, so it was protection against
+   nothing at the cost of the whole feature. */
+select { appearance: base-select; }
 
-  /* One treatment for pointer and for keyboard. A list where arrowing down
-     looks different from pointing at it is two lists. */
-  select option:hover,
-  select option:focus {
-    background-color: rgba(20, 184, 166, 0.13);
-    color: var(--ink);
-  }
+/* The UA draws its own arrow on an opted-in select and we already paint a
+   chevron as a background image above. One mark, drawn one way. */
+select::picker-icon { display: none; }
 
-  /* The UA checkmark is its own glyph at its own size and it pushes every label
-     off the left edge the rest of the rows are aligned to. The selected row is
-     marked by weight instead, which is how the rest of the site marks state. */
-  select option::checkmark { display: none; }
-  select option:checked { font-weight: 600; }
+select::picker(select) {
+  appearance: base-select;
+  background-color: var(--cream);
+  color: var(--ink);
+  border: 0.5px solid var(--cream-border);
+  border-radius: 2px;
+  padding: 0.25rem;
+  /* Low and wide rather than the tight drop shadow a menu usually gets. The
+     cards on this site sit on their ground without one, and a hard shadow
+     here would be the only element on the page wearing it. Enough to say the
+     list floats, not enough to make it a different material. */
+  box-shadow: 0 10px 24px rgba(36, 31, 22, 0.12);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
 }
+
+select option {
+  padding: 0.42rem 0.55rem;
+  border-radius: 2px;
+  color: var(--ink);
+}
+
+/* One treatment for pointer and for keyboard. A list where arrowing down
+   looks different from pointing at it is two lists. */
+select option:hover,
+select option:focus {
+  background-color: rgba(20, 184, 166, 0.13);
+  color: var(--ink);
+}
+
+/* The UA checkmark is its own glyph at its own size and it pushes every label
+   off the left edge the rest of the rows are aligned to. The selected row is
+   marked by weight instead, which is how the rest of the site marks state. */
+select option::checkmark { display: none; }
+select option:checked { font-weight: 600; }
