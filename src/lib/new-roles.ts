@@ -48,8 +48,16 @@ export const ROLE_ENTRIES = [
     /* THE DROP LEADS ON FABUNMI, AND THE REASON IS THE CALENDAR RATHER THAN
        THE PRIZE. It closes on 28 September and the Omaplex internship below it
        on 5 October, so the one a reader can still miss goes first. The three
-       million naira is the thing that gets the email opened and it is not the
+       prize money is the thing that gets the email opened and it is not the
        thing that decides the order.
+
+       ⚠ IT IS CALLED PRIZE MONEY, PLAINLY, AND THEN LEFT ALONE. The flier says
+       "3,000,000 NAIRA UP FOR GRABS" inside a medal, so what the money is is
+       not in doubt. An earlier draft said the firm had "put 3 million naira
+       behind it", which reads as funding rather than a prize and told a reader
+       nothing they could act on; a later one added that the split was not
+       published, which raised a doubt the flier never raised. The amount, and
+       what it is. Anyone who needs the breakdown asks the firm.
 
        ⚠ THE FIRST CLAUSE IS THE ELIGIBILITY, NOT THE MONEY, and that is
        deliberate in the same way the World Bank line led on the post-call band.
@@ -61,15 +69,15 @@ export const ROLE_ENTRIES = [
     employer: 'J.O Fabunmi & Co',
     employerShort: 'J.O Fabunmi & Co',
     title: '6th Professor J.O. Fabunmi Internship Competition',
-    line: 'For Nigerians waiting to start Law School, with a Second Class Upper from an accredited university here or abroad. The firm has put 3,000,000 naira behind it. Registration is by form and the window is two weeks. Closes 28 September.',
+    line: 'For Nigerians waiting to start Law School, with a Second Class Upper from an accredited university here or abroad. The prize money is 3 million naira. Registration is by form. Closes 28 September.',
     /* ⚠ NO COMMA CLAUSE. These shorts are joined with "and" by roleSummary, so
        one ending in ", if you are waiting to start Law School" produced "...Law
        School and a virtual internship...", where the "and" reads as though it
        is still inside the qualifier. Both shorts are single clauses now and the
        join is unambiguous. */
-    short: 'a 3 million naira competition for people waiting to start Law School',
+    short: 'a competition with 3 million naira in prize money for people waiting to start Law School',
     blurb:
-      'J.O Fabunmi & Co are running the sixth edition of their internship competition. It is open to Nigerians waiting to start Law School who hold a Second Class Upper, and the firm has put 3,000,000 naira behind it.',
+      'J.O Fabunmi & Co are running the sixth edition of their internship competition. It is open to Nigerians waiting to start Law School who hold a Second Class Upper, and there is 3 million naira in prize money on it.',
   },
   {
     /* ⚠ THE LINE LEADS ON "VIRTUAL", which is the only fact on it that changes

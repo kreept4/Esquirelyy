@@ -129,9 +129,20 @@ const ITEMS: NewsItem[] = [
     slug: 'jo-fabunmi-internship-competition-2026',
     kind: 'update',
     date: '2026-09-21',
-    title: 'A firm is putting 3 million naira behind an internship',
+    /* ⚠ "PUTTING 3 MILLION BEHIND AN INTERNSHIP" IS WHAT THIS SAID, and it
+       told a reader nothing. Behind it how? Funding it, paying the intern,
+       awarding it? The flier is not vague about this and the card was: inside a
+       gold medal it reads "₦3,000,000 NAIRA UP FOR GRABS", which is prize
+       money and says so.
+
+       So the card says the amount and calls it what it is. It does not go on
+       to discuss how the prize is split: the flier does not say, and raising
+       the question only to leave it open reads as doubt about the listing
+       rather than as care. A reader who needs the breakdown asks the firm,
+       which is what the third application step on the listing is for. */
+    title: 'A competition with 3 million naira in prize money',
     summary:
-      'J.O Fabunmi & Co are running the sixth edition of their internship competition, and it is open to Nigerians waiting to start law school. You need a 2:1 from an accredited university, here or abroad. Registration closes on 28 September.',
+      'J.O Fabunmi & Co are running the sixth edition of their internship competition. It is open to Nigerians waiting to start law school, and you need a 2:1 from an accredited university, here or abroad. Registration closes on 28 September.',
     href: '/jobs/6th-annual-professor-j-o-fabunmi-internship-competition-lgic',
     cta: 'Read the criteria',
     media: { type: 'logos', slugs: ['J.O Fabunmi & Co'] },
