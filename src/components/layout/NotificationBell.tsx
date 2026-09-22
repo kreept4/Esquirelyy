@@ -158,6 +158,25 @@ export default function NotificationBell({
   const [justCleared, setJustCleared] = useState(0)
   const [showWelcome, setShowWelcome] = useState(false)
   const [showDrop, setShowDrop] = useState(false)
+  /**
+   * ⚠ WHICH ROWS WERE NEW WHEN THE PANEL OPENED, FROZEN.
+   *
+   * Reported as the new note arriving without a red marker on it, and the
+   * marker was never missing: it was being erased by the act of looking.
+   *
+   * The badge and the row dots both read `seen`, and the effect below advances
+   * `seen` the instant the panel opens, which is right for the badge and fatal
+   * for the dots. A reader opens the bell to find out what is new, and the
+   * thing that answers that question is cleared on the same render by their
+   * having asked it.
+   *
+   * So the two are separated. The stamp still moves on open, so the badge
+   * clears the moment the list is on screen. The ids that were unread at that
+   * moment are held here, and the dots render from this instead, which keeps
+   * them marked for as long as the panel is open. Cleared on close, because the
+   * next time the bell is opened is a new question.
+   */
+  const [newAtOpen, setNewAtOpen] = useState<Set<string>>(() => new Set())
   const rootRef = useRef<HTMLDivElement>(null)
   const checkedWelcomeParam = useRef(false)
 
@@ -334,7 +353,11 @@ export default function NotificationBell({
      outside click, Escape, and following a link — and only this catches all of
      them. */
   useEffect(() => {
-    if (!open) setJustCleared(0)
+    if (!open) {
+      setJustCleared(0)
+      /* See newAtOpen: the next opening asks the question again. */
+      setNewAtOpen(new Set())
+    }
   }, [open])
 
   const unread = unreadCount(feed, seen, readIds, unreadIds)
@@ -370,11 +393,18 @@ export default function NotificationBell({
        stamp. Feeding it `unreadIds` would make a deliberately-unread note
        block the stamp from ever advancing, so genuinely new arrivals would
        keep being counted against a frozen timestamp. */
+    /* Captured BEFORE markSeen, because after it there is nothing to capture.
+       Unioned rather than replaced: `feed` loads over the network and can
+       arrive after the panel is already open, and a second pass must not wipe
+       what the first one recorded. */
+    const wasNew = feed.filter(n => isUnread(n, seen, readIds, unreadIds)).map(n => n.id)
+    if (wasNew.length) setNewAtOpen(prev => new Set([...prev, ...wasNew]))
+
     if (unreadCount(feed, seen) > 0) {
       markSeen()
       setSeen(Date.now())
     }
-  }, [open, feed, seen])
+  }, [open, feed, seen, readIds, unreadIds])
 
   // Nothing to notify a signed-out visitor about, and a bell that opens onto
   // "sign in to see this" is a control that does nothing.
@@ -459,7 +489,11 @@ export default function NotificationBell({
           ) : (
             <ul className="notif-list">
               {feed.map(n => {
-                const isNew = isUnread(n, seen, readIds, unreadIds)
+                /* The union, not either alone. `newAtOpen` keeps a row marked
+                   for this viewing after the stamp has moved past it; the live
+                   check still catches anything genuinely unread that the stamp
+                   does not cover, such as a note deliberately marked unread. */
+                const isNew = newAtOpen.has(n.id) || isUnread(n, seen, readIds, unreadIds)
                 return (
                   /* The row and its delete are siblings inside this li, not
                      nested. See DismissButton for why they cannot be nested. */
