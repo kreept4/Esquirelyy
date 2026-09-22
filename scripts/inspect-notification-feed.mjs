@@ -83,11 +83,20 @@ for (const n of feed) {
   console.log('')
 }
 
-/* Would a reader who opened the bell an hour ago see any of these as new? */
-const seenAnHourAgo = now.getTime() - 36e5
-const stillNew = feed.filter(n => isUnread(n, seenAnHourAgo, new Set(), new Set()))
-console.log(`Unread for somebody who opened the panel an hour ago: ${stillNew.length}`)
-for (const n of stillNew) console.log(`  ${n.kind}  ${n.title.slice(0, 60)}`)
+/* Unread against a REAL reader's stamp. Pass one as the first argument, copied
+   out of localStorage['esquirely:notifications-seen'], and this answers what
+   that specific person's bell is showing rather than what a hypothetical one
+   would see. Defaults to an hour ago. */
+const seenArg = process.argv[2]
+const seenAt = seenArg ? Date.parse(seenArg) : now.getTime() - 36e5
+console.log(`
+seen stamp under test: ${new Date(seenAt).toISOString()}${seenArg ? '  (supplied)' : '  (default: an hour ago)'}`)
+const stillNew = feed.filter(n => isUnread(n, seenAt, new Set(), new Set()))
+console.log(`Unread against that stamp: ${stillNew.length}`)
+for (const n of stillNew) {
+  console.log(`  ${n.kind.padEnd(9)} ${n.at}  ${n.title.slice(0, 56)}`)
+  console.log(`  ${''.padEnd(9)} id=${n.id}`)
+}
 
 /* Same listing appearing more than once. */
 const byTitle = {}
