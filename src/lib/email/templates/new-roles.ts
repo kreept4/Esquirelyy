@@ -1,4 +1,5 @@
 import {
+  DROP_ACTION,
   NEW_ROLES,
   NEW_ROLES_HREF,
   ROLE_ENTRIES,
@@ -170,12 +171,12 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
      Naming both fixes the duplication as a side effect. The line now says
      something the cards underneath it do not, which is what a headline is for:
      there are two things in here, one shuts this week and one just opened. */
-  const headline = closing ? `${closing.employer} ${closes} and ${firms} are hiring` : `${firms} are hiring`
+  const headline = closing ? `${closing.employer} ${closes} and ${firms} ${DROP_ACTION}` : `${firms} ${DROP_ACTION}`
   const greeting = first ? `${headline}, ${first}.` : `${headline}.`
   /* Kept under the ~70 characters most clients show. "Heirs Holdings closes in
      2 days, and World Bank are hiring" is 57. */
   const subject = closing
-    ? `${closing.employer} ${closes}, and ${firms} are hiring`
+    ? `${closing.employer} ${closes}, and ${firms} ${DROP_ACTION}`
     : `${roleCountLabel()}: ${firms}`
   const link = `${siteUrl}${NEW_ROLES_HREF}`
 
@@ -437,13 +438,15 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
               is behind this, and it was doing less work than the footer nav
               underneath it.
 
-              The amber chip is the same mark as the masthead at half the size,
-              so the message opens and closes on the same object. It is drawn in
-              a table cell rather than fetched, with no image at all: this one
-              can afford to be pure HTML because a 24px square with a letter in
-              it is exactly what the logo is, and at the foot of an email it is
-              not worth a second remote request that half of the list will block
-              anyway.
+              ⚠ NO MARK BESIDE THE NAMES. A first version put the amber E
+              there at half size, on the theory that the message should open and
+              close on the same object. It should not. The masthead has already
+              said whose email this is; repeating the logo against two people's
+              names makes their signature look like a second letterhead, and a
+              sign-off is the one place in a branded email that should read as
+              though a person wrote it rather than a company. The amber rule
+              above carries the brand here, which is as much as this block
+              needs.
 
               ⚠ FULL NAMES, NOT THE SHORT FORMS, matching the decision taken for
               the site. A signature is where a reader looks to find out who
@@ -461,15 +464,10 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
               </tr>
               <tr>
                 <td style="padding:16px 0 0 0;">
-                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-                    <tr>
-                      <td width="24" height="24" bgcolor="${AMBER}" align="center" valign="middle" style="background-color:${AMBER};width:24px;height:24px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;font-weight:900;color:${INK};text-align:center;">E</td>
-                      <td valign="middle" style="padding-left:12px;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;font-weight:700;color:${INK};">
-                        Boluwatife Ogunleye &amp; Ipinuoluwa Ogunleye
-                        <span style="display:block;font-size:10px;line-height:1.6;letter-spacing:1.2px;text-transform:uppercase;font-weight:400;color:${MUTED};padding-top:2px;">Co-founders, Esquirely</span>
-                      </td>
-                    </tr>
-                  </table>
+                  <p style="margin:0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;font-weight:700;color:${INK};">
+                    Boluwatife Ogunleye &amp; Ipinuoluwa Ogunleye
+                    <span style="display:block;font-size:10px;line-height:1.6;letter-spacing:1.2px;text-transform:uppercase;font-weight:400;color:${MUTED};padding-top:2px;">Co-founders, Esquirely</span>
+                  </p>
                 </td>
               </tr>
             </table>

@@ -29,7 +29,7 @@ import {
   NEW_ROLES,
   NEW_ROLES_HREF,
   checkedSentence,
-  hiringSentence,
+  dropSentence,
   roleCountLabel,
   seatsSentence,
 } from '@/lib/new-roles'
@@ -558,7 +558,7 @@ export default function NotificationBell({
                     lines of markup with conditional whitespace between them.
                     Sentences that have to be grammatical should be written
                     somewhere you can read them as sentences. */}
-                <p className="grotesk-regular">{hiringSentence()}</p>
+                <p className="grotesk-regular">{dropSentence()}</p>
                 <p className="grotesk-regular">{seatsSentence()}</p>
                 <p className="grotesk-regular">{checkedSentence()}</p>
               </div>

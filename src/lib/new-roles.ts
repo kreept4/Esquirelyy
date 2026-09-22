@@ -62,7 +62,12 @@ export const ROLE_ENTRIES = [
     employerShort: 'J.O Fabunmi & Co',
     title: '6th Professor J.O. Fabunmi Internship Competition',
     line: 'For Nigerians waiting to start Law School, with a Second Class Upper from an accredited university here or abroad. The firm has put 3,000,000 naira behind it. Registration is by form and the window is two weeks. Closes 28 September.',
-    short: 'a 3 million naira internship competition, if you are waiting to start Law School',
+    /* ⚠ NO COMMA CLAUSE. These shorts are joined with "and" by roleSummary, so
+       one ending in ", if you are waiting to start Law School" produced "...Law
+       School and a virtual internship...", where the "and" reads as though it
+       is still inside the qualifier. Both shorts are single clauses now and the
+       join is unambiguous. */
+    short: 'a 3 million naira competition for people waiting to start Law School',
     blurb:
       'J.O Fabunmi & Co are running the sixth edition of their internship competition. It is open to Nigerians waiting to start Law School who hold a Second Class Upper, and the firm has put 3,000,000 naira behind it.',
   },
@@ -81,7 +86,7 @@ export const ROLE_ENTRIES = [
     employerShort: 'Omaplex',
     title: 'Virtual Internship 2026',
     line: 'Virtual, so it does not matter where in Nigeria you are. Open to law students and aspiring lawyers, with no class of degree and no year of study set. Seven subjects, from technology and data protection through to sport arbitration. Closes 5 October.',
-    short: 'a virtual internship at Omaplex, open to law students anywhere',
+    short: 'a virtual internship at Omaplex open to law students anywhere',
     blurb:
       'Omaplex are running the 2026 edition of their virtual internship. It is open to law students and aspiring lawyers, it runs remotely wherever you are in Nigeria, and the firm names seven subjects it will cover.',
   },
@@ -258,15 +263,37 @@ export function seatsSentence(): string {
 }
 
 /**
- * "X and Y are hiring."
+ * ⚠ WHAT THE DROP IS ACTUALLY DOING, AND IT WAS HARDCODED TO "are hiring".
+ *
+ * Every drop until now was firm seats, so that was true and the words sat in
+ * three places: this sentence, the email headline and the email subject. This
+ * drop is a competition and a virtual internship. Neither employer is hiring.
+ * Nobody gets a job at the end of the competition by right, and an internship
+ * is not a seat either, so telling a hundred and seven people that two firms
+ * are hiring would be telling them something that is not true, in the subject
+ * line, where it cannot be taken back.
+ *
+ * "taking applications" is what both are actually doing, and it stays true of
+ * real seats, so a drop of firm vacancies can set this back to 'are hiring'
+ * for the sharper line or leave it alone and still be correct. Named here
+ * beside DROP_NOUN, because a drop should describe itself in one place.
+ */
+export const DROP_ACTION: string = 'are taking applications'
+
+/**
+ * "X and Y are taking applications."
+ *
+ * ⚠ RENAMED FROM hiringSentence, and the rename is the point rather than
+ * tidiness. A function called hiringSentence invites the next person to reach
+ * for it on a drop that has nothing to do with hiring, which is exactly how
+ * the word survived into a competition announcement in the first place.
  *
  * Always plural, including when the drop holds one firm. That is the house
- * voice and it is consistent across the site — "Zyph Legal are hiring",
- * "Pentagon Partners are taking associates" — so this deliberately does NOT
- * branch on the count. British usage takes an organisation as a collective.
+ * voice and it is consistent across the site, and British usage takes an
+ * organisation as a collective.
  */
-export function hiringSentence(): string {
-  return `${employerSentence()} are hiring.`
+export function dropSentence(): string {
+  return `${employerSentence()} ${DROP_ACTION}.`
 }
 
 /**
