@@ -11,6 +11,7 @@ import EverythingYouNeed from '@/components/features/EverythingYouNeed'
 import NewsCarousel from '@/components/features/NewsCarousel'
 import { getNewsItems } from '@/lib/news-data'
 import { FIRMS_WITH_LOGOS, firmLogo } from '@/lib/firms-data'
+import { fetchOpportunities, toBoardRow, hasClosed } from '@/lib/opportunities'
 import LogoFrame from '@/components/ui/LogoFrame'
 
 export const revalidate = 3600
@@ -49,7 +50,43 @@ export default async function HomePage() {
     .select('*')
     .eq('is_active', true)
     .order('created_at', { ascending: false })
-  const listings = jobs || []
+  /**
+   * ⚠ OPPORTUNITIES REACH THE PIT TOO, AND UNTIL NOW THEY DID NOT.
+   *
+   * This page read `jobs` and nothing else, so an opportunity could be the
+   * newest thing on the whole board and still be the one thing the home page
+   * could not show. On the day this was written that was both of the two most
+   * recent listings: the Fabunmi competition and the Omaplex internship, each
+   * added the day before and neither in the pit.
+   *
+   * It is the same mistake lib/opportunities.ts was written to prevent, made on
+   * a different surface. Its header sets out the rule: an opportunity is
+   * adapted into the shape a board row already has, and the consumer does not
+   * special-case it. /jobs has done that since Phase 0. The home page was never
+   * given the same treatment, so the adapter existed and this page did not call
+   * it.
+   *
+   * ⚠ IT MATTERS MORE HERE THAN ON THE BOARD, because of what the pit is for.
+   * The note below says its job is to show the board is alive and that "what
+   * went up most recently is the honest answer to that". A pit that silently
+   * cannot contain the two most recent things is not answering that question,
+   * it is answering a narrower one nobody asked.
+   *
+   * Closed opportunities are dropped by hasClosed before the shared open-role
+   * filter runs, for the reason that file gives: unlike a job, an opportunity
+   * whose form has stopped accepting entries has nothing left to offer.
+   */
+  const opportunities = (await fetchOpportunities())
+    .filter(o => !hasClosed(o.deadline))
+    .map(toBoardRow)
+
+  /* Newest first across both sources, so the slice below stays "what went up
+     most recently" rather than "the most recent job, plus whatever". The jobs
+     query is already ordered, but merging two ordered lists needs a re-sort. */
+  const listings = [...(jobs || []), ...opportunities].sort(
+    (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  )
+
   // 'Open right now' must mean it. Anything past its deadline is excluded;
   // rolling roles and roles with no stated deadline stay.
   const today = new Date().toISOString().slice(0, 10)

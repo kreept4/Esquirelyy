@@ -224,18 +224,44 @@ const ITEMS: NewsItem[] = [
      alone rather than tidying them away: the next photo slide will want them,
      and rederiving those numbers costs more than the dead CSS does. */
   {
-    slug: 'virtual-internships',
-    kind: 'tip',
-    date: '2026-08-06',
-    /* Supplied by the Esquirely team from direct knowledge of both firms. It
-     * names two firms and students outside Lagos will act on it, so if either
-     * arrangement changes this is the first slide to pull. */
-    title: 'Distance is not a barrier',
+    /**
+     * The Omaplex internship, in the slot the general version of this point
+     * used to hold.
+     *
+     * ⚠ WHAT CAME OFF, AND WHY IT HAD TO. The old slide was a tip titled
+     * "Distance is not a barrier", naming Omaplex and Lekan Bamidele & Co as
+     * two firms that run virtual internships, pointing at /firms. Its own note
+     * said it named two firms students outside Lagos would act on, so if either
+     * arrangement changed it was the first slide to pull. One had: LBVIP closed
+     * on 30 August, so half the card was advertising something that no longer
+     * existed, to exactly the readers most likely to chase it.
+     *
+     * ⚠ AND A TIP BECOMES AN UPDATE, which is the more useful half of this
+     * change. The old card was true all year and actionable on no particular
+     * day: a reader who saw it could go and look at two firm profiles. This one
+     * has a form and a date on it. The carousel's job is to show somebody
+     * something they can act on, and a live listing with a fortnight left beats
+     * a standing observation about geography.
+     *
+     * The observation is not lost, it is just carried by a real example now.
+     * The reason this listing is worth a slot is the same reason the old tip
+     * was worth one: it is virtual, so where a reader lives does not decide
+     * whether they can take it, which is not true of anything else on the
+     * board.
+     *
+     * Points at the listing rather than at the firm's site or the form, the
+     * same call the LBVIP and Greenberg slides made. The eligibility and the
+     * closing date are read here first, and the form is one tap from there.
+     */
+    slug: 'omaplex-virtual-internship-2026',
+    kind: 'update',
+    date: '2026-09-22',
+    title: 'Intern at Omaplex from anywhere in Nigeria',
     summary:
-      'Omaplex and Lekan Bamidele & Co both run virtual internships, so you can intern from anywhere in Nigeria. If you are not in Lagos or Abuja, start there.',
-    href: '/firms',
-    cta: 'See both firms',
-    media: { type: 'logos', slugs: ['omaplex', 'lekan-bamidele'] }
+      'Omaplex are running the 2026 edition of their virtual internship, so where you live does not decide whether you can take it. It is open to law students and aspiring lawyers, and the firm lists seven subjects it will cover, from data protection to sport arbitration. Registration closes on 5 October.',
+    href: '/jobs/omaplex-virtual-internship-2026',
+    cta: 'Read the criteria',
+    media: { type: 'logos', slugs: ['Omaplex Law Firm'] }
   },
   {
     /* Slug no longer carries the count. It was 'directory-at-44', which meant
