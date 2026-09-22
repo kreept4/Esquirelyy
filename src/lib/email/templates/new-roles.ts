@@ -286,15 +286,88 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
 <meta name="supported-color-schemes" content="light">
 <style>
   :root { color-scheme: light; supported-color-schemes: light; }
+
+  /* ⚠ THE PALETTE, RE-ASSERTED FOR CLIENTS THAT INVERT ANYWAY.
+
+     The meta pair above stops Apple Mail, and it does not stop the Gmail apps,
+     which dark-mode an email whatever it declares. Most of this list reads mail
+     on Android, so the metas alone left the majority seeing the inverted
+     version: cream flipped to near-black under a masthead that did not move.
+
+     Inline styles beat a stylesheet, which is why every rule here carries
+     !important: that is the one thing that outranks a style attribute, and in
+     an email every colour is in a style attribute. Each element carrying a
+     colour was given a class for exactly this, so the values below are the same
+     ones the inline styles set. Nothing here changes the design. It insists on
+     it.
+
+     The [data-ogsc] and [data-ogsb] copies are Outlook.com's dark mode, which
+     rewrites colours and marks the elements it touched with those attributes
+     instead of honouring prefers-color-scheme. Same rules, different hook. */
+
+  @media (prefers-color-scheme: dark) {
+  .es-t-ink { color: #241F16 !important; }
+  .es-t-cream { color: #FAF7F2 !important; }
+  .es-t-muted { color: #8A8378 !important; }
+  .es-t-amber { color: #FBBF24 !important; }
+  .es-t-urgent { color: #FF6B5B !important; }
+  .es-t-mint { color: #14B8A6 !important; }
+  .es-t-white { color: #FFFFFF !important; }
+  .es-t-pale { color: #FFF8E5 !important; }
+  .es-t-gold { color: #F0C030 !important; }
+  .es-b-ink { background-color: #241F16 !important; }
+  .es-b-cream { background-color: #FAF7F2 !important; }
+  .es-b-amber { background-color: #FBBF24 !important; }
+  .es-b-urgent { background-color: #FF6B5B !important; }
+  .es-b-mint { background-color: #14B8A6 !important; }
+  .es-b-white { background-color: #FFFFFF !important; }
+  .es-b-pale { background-color: #FFF8E5 !important; }
+  body { background-color: #FAF7F2 !important; }
+  }
+
+  [data-ogsc] .es-t-ink { color: #241F16 !important; }
+  [data-ogsc] .es-t-cream { color: #FAF7F2 !important; }
+  [data-ogsc] .es-t-muted { color: #8A8378 !important; }
+  [data-ogsc] .es-t-amber { color: #FBBF24 !important; }
+  [data-ogsc] .es-t-urgent { color: #FF6B5B !important; }
+  [data-ogsc] .es-t-mint { color: #14B8A6 !important; }
+  [data-ogsc] .es-t-white { color: #FFFFFF !important; }
+  [data-ogsc] .es-t-pale { color: #FFF8E5 !important; }
+  [data-ogsc] .es-t-gold { color: #F0C030 !important; }
+  [data-ogsc] .es-b-ink { background-color: #241F16 !important; }
+  [data-ogsc] .es-b-cream { background-color: #FAF7F2 !important; }
+  [data-ogsc] .es-b-amber { background-color: #FBBF24 !important; }
+  [data-ogsc] .es-b-urgent { background-color: #FF6B5B !important; }
+  [data-ogsc] .es-b-mint { background-color: #14B8A6 !important; }
+  [data-ogsc] .es-b-white { background-color: #FFFFFF !important; }
+  [data-ogsc] .es-b-pale { background-color: #FFF8E5 !important; }
+  [data-ogsc] body { background-color: #FAF7F2 !important; }
+  [data-ogsb] .es-t-ink { color: #241F16 !important; }
+  [data-ogsb] .es-t-cream { color: #FAF7F2 !important; }
+  [data-ogsb] .es-t-muted { color: #8A8378 !important; }
+  [data-ogsb] .es-t-amber { color: #FBBF24 !important; }
+  [data-ogsb] .es-t-urgent { color: #FF6B5B !important; }
+  [data-ogsb] .es-t-mint { color: #14B8A6 !important; }
+  [data-ogsb] .es-t-white { color: #FFFFFF !important; }
+  [data-ogsb] .es-t-pale { color: #FFF8E5 !important; }
+  [data-ogsb] .es-t-gold { color: #F0C030 !important; }
+  [data-ogsb] .es-b-ink { background-color: #241F16 !important; }
+  [data-ogsb] .es-b-cream { background-color: #FAF7F2 !important; }
+  [data-ogsb] .es-b-amber { background-color: #FBBF24 !important; }
+  [data-ogsb] .es-b-urgent { background-color: #FF6B5B !important; }
+  [data-ogsb] .es-b-mint { background-color: #14B8A6 !important; }
+  [data-ogsb] .es-b-white { background-color: #FFFFFF !important; }
+  [data-ogsb] .es-b-pale { background-color: #FFF8E5 !important; }
+  [data-ogsb] body { background-color: #FAF7F2 !important; }
 </style>
 <title>${subject}</title>
 </head>
 <body style="margin:0;padding:0;background-color:${CREAM};">
-<div style="display:none;font-size:1px;color:${CREAM};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+<div class="es-t-cream" style="display:none;font-size:1px;color:${CREAM};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
   ${roleSummary()}.
 </div>
 
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${CREAM}" style="border-collapse:collapse;background-color:${CREAM};background-image:${CONTOUR};background-repeat:repeat;">
+<table class="es-b-cream" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${CREAM}" style="border-collapse:collapse;background-color:${CREAM};background-image:${CONTOUR};background-repeat:repeat;">
   <tr>
     <td style="padding:10px;">
       <!--
@@ -323,17 +396,17 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
         composed, letters jammed together read as a logo being compressed to
         fit somewhere it does not.
       -->
-      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${INK}" style="border-collapse:collapse;background-color:${INK};">
+      <table class="es-b-ink" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${INK}" style="border-collapse:collapse;background-color:${INK};">
         <tr>
           <td style="padding:24px 22px;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
               <tr>
-                <td width="46" height="46" bgcolor="${AMBER}" align="center" valign="middle" style="background-color:${AMBER};width:46px;height:46px;">
-                  <img src="${siteUrl}/logo.png" width="46" height="46" alt="E" style="display:block;width:46px;height:46px;border:0;outline:none;text-decoration:none;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:27px;font-weight:900;line-height:46px;text-align:center;color:${INK};" />
+                <td class="es-b-amber" width="46" height="46" bgcolor="${AMBER}" align="center" valign="middle" style="background-color:${AMBER};width:46px;height:46px;">
+                  <img class="es-t-ink" src="${siteUrl}/logo.png" width="46" height="46" alt="E" style="display:block;width:46px;height:46px;border:0;outline:none;text-decoration:none;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:27px;font-weight:900;line-height:46px;text-align:center;color:${INK};" />
                 </td>
                 <td valign="middle" style="padding-left:14px;">
-                  <p style="margin:0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:22px;line-height:1;font-weight:900;letter-spacing:1.6px;color:${CREAM};">ESQUIRELY</p>
-                  <p style="margin:7px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:9px;line-height:1;letter-spacing:1.9px;text-transform:uppercase;color:${MUTED};">Nigeria&rsquo;s legal career platform</p>
+                  <p class="es-t-cream" style="margin:0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:22px;line-height:1;font-weight:900;letter-spacing:1.6px;color:${CREAM};">ESQUIRELY</p>
+                  <p class="es-t-muted" style="margin:7px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:9px;line-height:1;letter-spacing:1.9px;text-transform:uppercase;color:${MUTED};">Nigeria&rsquo;s legal career platform</p>
                 </td>
               </tr>
             </table>
@@ -344,14 +417,14 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
   </tr>
 </table>
 
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:${CREAM};">
+<table class="es-b-cream" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;background-color:${CREAM};">
   <tr>
     <td align="center" style="padding:8px 14px 28px 14px;">
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;width:560px;max-width:100%;">
 
         <tr>
           <td style="padding:0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;">
-            <p style="margin:0 0 18px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:-0.6px;color:${INK};">${greeting.replace(/—/g, '&mdash;')}</p>
+            <p class="es-t-ink" style="margin:0 0 18px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:26px;line-height:1.15;font-weight:900;letter-spacing:-0.6px;color:${INK};">${greeting.replace(/—/g, '&mdash;')}</p>
 
             ${
               /* ⚠ ABOVE THE NEW ROLES, DELIBERATELY. See lib/email/
@@ -367,11 +440,11 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
                 ? `
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 18px 0;">
               <tr>
-                <td style="padding:14px 16px;background-color:${INK};border:2px solid ${INK};">
-                  <p style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${URGENT};">${closingNotice.label} &middot; ${closingNotice.employer}</p>
-                  <p style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:#FFF8E5;">${closingNotice.title}</p>
-                  <p style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:#FFF8E5;">${closingNotice.body}</p>
-                  <a href="${siteUrl}/jobs/${closingNotice.slug}" style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${URGENT};text-decoration:underline;">See the role</a>
+                <td class="es-b-ink" style="padding:14px 16px;background-color:${INK};border:2px solid ${INK};">
+                  <p class="es-t-urgent" style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${URGENT};">${closingNotice.label} &middot; ${closingNotice.employer}</p>
+                  <p class="es-t-pale" style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:#FFF8E5;">${closingNotice.title}</p>
+                  <p class="es-t-pale" style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:#FFF8E5;">${closingNotice.body}</p>
+                  <a class="es-t-urgent" href="${siteUrl}/jobs/${closingNotice.slug}" style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${URGENT};text-decoration:underline;">See the role</a>
                 </td>
               </tr>
             </table>`
@@ -382,10 +455,10 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
               r => `
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 14px 0;">
               <tr>
-                <td style="padding:14px 16px;background-color:#FFF8E5;border:2px solid ${INK};">
-                  <p style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${MUTED};">${r.employer}</p>
-                  <p style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:${INK};">${r.title}</p>
-                  <p style="margin:0;font-size:14px;line-height:1.6;color:${INK};">${r.line}</p>
+                <td class="es-b-pale" style="padding:14px 16px;background-color:#FFF8E5;border:2px solid ${INK};">
+                  <p class="es-t-muted" style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${MUTED};">${r.employer}</p>
+                  <p class="es-t-ink" style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:${INK};">${r.title}</p>
+                  <p class="es-t-ink" style="margin:0;font-size:14px;line-height:1.6;color:${INK};">${r.line}</p>
                 </td>
               </tr>
             </table>`
@@ -396,11 +469,11 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
                 ? `
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:18px 0 4px 0;">
               <tr>
-                <td style="padding:14px 16px;background-color:${INK};border:2px solid ${INK};">
-                  <p style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:#F0C030;">Funding &middot; ${closesInWords(scholarshipDays)}</p>
-                  <p style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:#FFF8E5;">${closingScholarship.title}</p>
-                  <p style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:#FFF8E5;">${closingScholarship.funding}. ${closingScholarship.deadline}.</p>
-                  <a href="${siteUrl}/scholarships" style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#F0C030;text-decoration:underline;">See the terms</a>
+                <td class="es-b-ink" style="padding:14px 16px;background-color:${INK};border:2px solid ${INK};">
+                  <p class="es-t-gold" style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:#F0C030;">Funding &middot; ${closesInWords(scholarshipDays)}</p>
+                  <p class="es-t-pale" style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:#FFF8E5;">${closingScholarship.title}</p>
+                  <p class="es-t-pale" style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:#FFF8E5;">${closingScholarship.funding}. ${closingScholarship.deadline}.</p>
+                  <a class="es-t-gold" href="${siteUrl}/scholarships" style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#F0C030;text-decoration:underline;">See the terms</a>
                 </td>
               </tr>
             </table>`
@@ -419,18 +492,18 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
                 ? `
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:18px 0 4px 0;">
               <tr>
-                <td style="padding:14px 16px;background-color:#FFF8E5;border:2px dashed ${INK};">
-                  <p style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${MUTED};">${studentNotice.kicker}</p>
-                  <p style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:${INK};">${studentNotice.title}</p>
-                  <p style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:${INK};">${studentNotice.body}</p>
-                  <a href="${studentNotice.href}" style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${INK};text-decoration:underline;">${studentNotice.cta}</a>
+                <td class="es-b-pale" style="padding:14px 16px;background-color:#FFF8E5;border:2px dashed ${INK};">
+                  <p class="es-t-muted" style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${MUTED};">${studentNotice.kicker}</p>
+                  <p class="es-t-ink" style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:${INK};">${studentNotice.title}</p>
+                  <p class="es-t-ink" style="margin:0 0 10px 0;font-size:14px;line-height:1.6;color:${INK};">${studentNotice.body}</p>
+                  <a class="es-t-ink" href="${studentNotice.href}" style="font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${INK};text-decoration:underline;">${studentNotice.cta}</a>
                 </td>
               </tr>
             </table>`
                 : ''
             }
 
-            <p style="margin:14px 0 20px 0;font-size:15px;line-height:1.7;color:${INK};">
+            <p class="es-t-ink" style="margin:14px 0 20px 0;font-size:15px;line-height:1.7;color:${INK};">
               ${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER.replace(/’/g, '&rsquo;')}, so
               ${publishedNouns()} above are the ones they published rather
               than an aggregator&rsquo;s guess.
@@ -438,14 +511,14 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
 
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 24px 0;">
               <tr>
-                <td bgcolor="${INK}" style="background-color:${INK};">
+                <td class="es-b-ink" bgcolor="${INK}" style="background-color:${INK};">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
                     <tr>
                       <td style="padding:0 3px 3px 0;">
-                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#14B8A6" style="border-collapse:collapse;background-color:#14B8A6;border:2px solid ${INK};">
+                        <table class="es-b-mint" role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#14B8A6" style="border-collapse:collapse;background-color:#14B8A6;border:2px solid ${INK};">
                           <tr>
-                            <td align="center" bgcolor="#14B8A6" style="background-color:#14B8A6;padding:14px 28px;">
-                              <a href="${link}" style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FFFFFF;text-decoration:none;">${newRolesCta()}</a>
+                            <td class="es-b-mint" align="center" bgcolor="#14B8A6" style="background-color:#14B8A6;padding:14px 28px;">
+                              <a class="es-t-white" href="${link}" style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FFFFFF;text-decoration:none;">${newRolesCta()}</a>
                             </td>
                           </tr>
                         </table>
@@ -489,13 +562,13 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
             -->
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:26px 0 4px 0;">
               <tr>
-                <td height="2" bgcolor="${AMBER}" style="background-color:${AMBER};height:2px;line-height:2px;font-size:0;">&nbsp;</td>
+                <td class="es-b-amber" height="2" bgcolor="${AMBER}" style="background-color:${AMBER};height:2px;line-height:2px;font-size:0;">&nbsp;</td>
               </tr>
               <tr>
                 <td style="padding:16px 0 0 0;">
-                  <p style="margin:0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;font-weight:700;color:${INK};">
+                  <p class="es-t-ink" style="margin:0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45;font-weight:700;color:${INK};">
                     Boluwatife Ogunleye &amp; Ipinuoluwa Ogunleye
-                    <span style="display:block;font-size:10px;line-height:1.6;letter-spacing:1.2px;text-transform:uppercase;font-weight:400;color:${MUTED};padding-top:2px;">Co-founders, Esquirely</span>
+                    <span class="es-t-muted" style="display:block;font-size:10px;line-height:1.6;letter-spacing:1.2px;text-transform:uppercase;font-weight:400;color:${MUTED};padding-top:2px;">Co-founders, Esquirely</span>
                   </p>
                 </td>
               </tr>
@@ -507,15 +580,15 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
           <td style="padding:0;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
               <tr>
-                <td style="padding:16px 0 0 0;border-top:2px solid ${INK};font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.7;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:${INK};">
-                  <a href="${siteUrl}/jobs" style="color:${INK};text-decoration:none;">Jobs board</a> &nbsp;&middot;&nbsp;
-                  <a href="${siteUrl}/scholarships" style="color:${INK};text-decoration:none;">Scholarships</a> &nbsp;&middot;&nbsp;
-                  <a href="${siteUrl}/firms" style="color:${INK};text-decoration:none;">Firms</a> &nbsp;&middot;&nbsp;
-                  <a href="${siteUrl}/tracker" style="color:${INK};text-decoration:none;">Tracker</a>
+                <td class="es-t-ink" style="padding:16px 0 0 0;border-top:2px solid ${INK};font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.7;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:${INK};">
+                  <a class="es-t-ink" href="${siteUrl}/jobs" style="color:${INK};text-decoration:none;">Jobs board</a> &nbsp;&middot;&nbsp;
+                  <a class="es-t-ink" href="${siteUrl}/scholarships" style="color:${INK};text-decoration:none;">Scholarships</a> &nbsp;&middot;&nbsp;
+                  <a class="es-t-ink" href="${siteUrl}/firms" style="color:${INK};text-decoration:none;">Firms</a> &nbsp;&middot;&nbsp;
+                  <a class="es-t-ink" href="${siteUrl}/tracker" style="color:${INK};text-decoration:none;">Tracker</a>
                 </td>
               </tr>
               <tr>
-                <td style="padding:12px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.6;color:${MUTED};">
+                <td class="es-t-muted" style="padding:12px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.6;color:${MUTED};">
                   You are getting this because you made an Esquirely account. Turn new-role emails
                   off any time under Your account.
                 </td>
