@@ -44,9 +44,23 @@ import { createServerClient } from '@supabase/ssr'
  *
  * ⚠ Everything else — scholarships, the news page and the tools — is still
  * private, and still carries the same cost.
+ *
+ * Articles is the exception that is public on its own merits rather than on a
+ * cost argument. See the note beside it below.
  */
 const PUBLIC_PATHS = [
   '/auth',
+  /* ⚠ ARTICLES IS PUBLIC AND IT IS THE ONLY PATH HERE THAT HAS TO BE. The
+     others are open because gating them costs more than it protects. This one
+     is open because gating it would remove the entire reason it exists: the
+     point of the section is that a stranger searching for what NYSC posting is
+     actually like finds a piece by a Nigerian law student and arrives at
+     Esquirely having never heard of it. Behind a login that never happens.
+
+     It is also the opposite of /news, which is a members feed of what we
+     changed and is still private and Disallowed. Two content surfaces, two
+     audiences; do not let the similarity of the words merge them. */
+  '/articles',
   '/privacy',
   '/terms',
   '/about',

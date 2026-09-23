@@ -43,6 +43,12 @@ const NAV_ITEMS = [
      survived the takedown by being invisible to everyone checking it.
      The link stays: what the role involves is still worth reading. */
   { label: 'Ambassador', ariaLabel: 'The campus ambassador programme', link: '/ambassador' },
+  /* ⚠ ARTICLES SITS ABOVE NEWS, AND THEY ARE NOT THE SAME THING. News is a
+     members feed of what we changed, behind the login gate and disallowed in
+     robots. Articles is writing by people outside the company, public and
+     indexed, and it is the only entry in this menu that somebody might arrive
+     at Esquirely through rather than find once inside it. */
+  { label: 'Articles', ariaLabel: 'Read articles by Nigerian lawyers and law students', link: '/articles' },
   { label: 'News', ariaLabel: 'Read news and product updates', link: '/news' },
   { label: 'FAQ', ariaLabel: 'Read frequently asked questions', link: '/faq' },
 ]

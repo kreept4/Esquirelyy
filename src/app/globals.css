@@ -740,6 +740,51 @@ select.filter-pill option,
 
    Narrow measure, because prose read at the width of a job board is prose
    nobody finishes. */
+/* Articles. Same narrow measure as a person page, for the same reason: prose
+   read at the width of a job board is prose nobody finishes. */
+.articles-page, .article-page { max-width: 38rem; padding-block: 3.5rem 4.5rem; }
+.articles-title { font-size: clamp(2rem, 6vw, 2.9rem); line-height: 1.02; letter-spacing: -0.02em; color: var(--ink); }
+.articles-lede { font-size: 1rem; line-height: 1.6; color: var(--ink-muted); margin: 1rem 0 2.5rem 0; }
+
+.articles-empty { border-top: 1px solid rgba(36, 31, 22, 0.12); padding-top: 1.6rem; }
+.articles-empty-line { font-size: 0.95rem; line-height: 1.6; color: var(--ink-muted); margin: 0 0 0.9rem 0; }
+.articles-empty-line a { color: var(--mint-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+.articles-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(36, 31, 22, 0.12); }
+.articles-row {
+  display: flex; flex-direction: column; gap: 0.3rem;
+  padding: 1.2rem 0; border-bottom: 1px solid rgba(36, 31, 22, 0.12);
+  text-decoration: none; transition: background-color 0.15s ease;
+}
+.articles-row:hover { background: rgba(36, 31, 22, 0.035); }
+.articles-row-title { font-size: 1.05rem; line-height: 1.3; color: var(--ink); }
+.articles-row-summary { font-size: 0.9rem; line-height: 1.5; color: var(--ink-muted); }
+.articles-row-meta { font-size: 0.76rem; line-height: 1.4; color: var(--ink-muted); }
+
+.article-crumb { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 1.6rem; }
+.article-crumb a { color: var(--ink-muted); text-decoration: none; }
+.article-crumb a:hover { color: var(--ink); }
+.article-title { font-size: clamp(1.8rem, 5.5vw, 2.6rem); line-height: 1.08; letter-spacing: -0.02em; color: var(--ink); }
+.article-byline { font-size: 0.92rem; color: var(--ink); margin: 1.1rem 0 0.2rem 0; }
+.article-byline a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.article-byline-sep { color: var(--ink-muted); }
+.article-meta {
+  font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-muted); margin: 0 0 2.2rem 0;
+}
+.article-body { font-size: 1.02rem; line-height: 1.72; color: var(--ink); margin: 0 0 1.2rem 0; }
+.article-note {
+  margin-top: 2.4rem; padding: 0.9rem 1rem;
+  background: var(--cream-dark); border-left: 2px solid var(--ink);
+  font-size: 0.82rem; line-height: 1.55; color: var(--ink-muted);
+}
+.article-back {
+  margin-top: 2.4rem; padding-top: 1.4rem;
+  border-top: 1px solid rgba(36, 31, 22, 0.12); font-size: 0.82rem;
+}
+.article-back a { color: var(--ink); text-decoration: none; }
+.article-back a:hover { text-decoration: underline; }
+
 .person-page { max-width: 38rem; padding-block: 3.5rem 4.5rem; }
 .person-crumb { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 1.6rem; }
 .person-crumb a { color: var(--ink-muted); text-decoration: none; }

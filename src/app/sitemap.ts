@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { publishedArticles } from '@/lib/articles-data'
 import { createClient } from '@supabase/supabase-js'
 import { ALL_FIRMS, isIndexable, isPubliclyReadable } from '@/lib/firms-data'
 import { openJobs } from '@/lib/open-jobs'
@@ -97,10 +98,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
        a closed vacancy is worth less than one pointing at a firm. */
     { path: '/jobs', priority: 0.8, changeFrequency: 'weekly' },
     ...jobPaths.map(path => ({ path, priority: 0.6, changeFrequency: 'monthly' as const })),
+    /* ⚠ PUBLISHED ONLY, AND publishedArticles ALREADY FILTERS DRAFTS. A draft
+       sitting in articles-data.ts has no page, so listing one here would point
+       a crawler at a 404, which is the exact pattern the note on job slugs
+       above warns about. `changeFrequency` is yearly because an article is
+       finished when it ships: unlike a listing, nothing about it expires. */
+    ...publishedArticles().map(a => ({
+      path: `/articles/${a.slug}`,
+      priority: 0.6,
+      changeFrequency: 'yearly' as const,
+    })),
     { path: '/about', priority: 0.7, changeFrequency: 'monthly' },
     { path: '/advertise', priority: 0.7, changeFrequency: 'monthly' },
     { path: '/ambassador', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/contact', priority: 0.6, changeFrequency: 'monthly' },
+    { path: '/articles', priority: 0.7, changeFrequency: 'weekly' },
     { path: '/faq', priority: 0.6, changeFrequency: 'monthly' },
     { path: '/privacy', priority: 0.3, changeFrequency: 'yearly' },
     { path: '/terms', priority: 0.3, changeFrequency: 'yearly' },
