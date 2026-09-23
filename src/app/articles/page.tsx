@@ -55,11 +55,9 @@ export default function ArticlesPage() {
         </p>
 
         {articles.length === 0 ? (
-          <div className="articles-empty">
-            <p className="grotesk-regular articles-empty-line">
-              Nothing published yet. The first pieces are being written.
-            </p>
-          </div>
+          <p className="grotesk-regular articles-empty-line">
+            Nothing published yet. The first pieces are being written.
+          </p>
         ) : (
           <ul className="articles-list">
             {articles.map(a => (
@@ -77,44 +75,44 @@ export default function ArticlesPage() {
           </ul>
         )}
 
-        {/* ⚠ OUTSIDE THE EMPTY STATE, SO IT IS THERE EITHER WAY. The first
-            version put the invitation inside the "nothing published yet"
-            branch, which means it disappears the day the section starts
-            working. That is precisely backwards: a reader who has just read a
-            piece by somebody at their own stage is far likelier to think they
-            could write one than a reader looking at an empty page.
+        {/* ⚠ THE BRIEF IS ON THE PAGE, WHICH IS WHAT STOPS IT LOOKING EMPTY.
+            The first version was a heading, a lede and a box, and it read as
+            thin because it was: an articles page with no articles has almost
+            nothing to say for itself.
 
-            ⚠ AND THE FIRST DRAFT OF THIS COPY DID NOT SURVIVE READING. It
-            opened "we would rather publish what you already know than
-            commission it", where "it" had nothing to refer to: you cannot
-            commission knowledge. The sentence after it stacked three clauses
-            before reaching the ask. Two shorter sentences, and the referent is
-            a thing that exists.
+            The honest way to fill it is not decoration, it is the brief. These
+            three lines are what we would tell a writer who asked, so putting
+            them where a writer can read them costs nothing and does two jobs at
+            once: the page has substance while it is empty, and somebody
+            deciding whether to pitch can tell in five seconds whether their
+            idea fits. It stays useful after the first articles land, which a
+            placeholder would not. */}
+        <section className="articles-brief">
+          <p className="grotesk-bold articles-brief-title">What we publish</p>
+          <ul className="articles-brief-list">
+            <li className="grotesk-regular">
+              First-hand accounts. How a firm&rsquo;s recruitment actually ran, what a term at Law
+              School cost, what a service year posting involved day to day.
+            </li>
+            <li className="grotesk-regular">
+              Things you had to find out yourself, where writing them down saves the next person
+              the same trouble.
+            </li>
+            <li className="grotesk-regular">
+              Your own name on it, with your faculty or your firm.
+            </li>
+          </ul>
+        </section>
 
-            ⚠ AND IT ASKS FOR A PITCH, NOT A DRAFT. "What you want to cover and
-            why you are the one to write it" is two sentences somebody sends on
-            a phone. Asking for a finished article first means most people who
-            would have written one never start, and it means reading long
-            pieces that were never going to fit. The bar is in the second
-            sentence rather than in a set of rules: only you know it, which is
-            the whole filter this section runs on.
-
-            A plain mailto rather than the contact form. The address is already
-            published on /contact, /faq and /news, so this exposes nothing new,
-            and somebody pitching wants to write in their own words at their own
-            length rather than into a box. */}
-        <div className="articles-pitch">
-          <p className="grotesk-bold articles-pitch-title">Write for Esquirely</p>
+        <section className="articles-pitch">
+          <p className="grotesk-bold articles-pitch-title">Write for us</p>
           <p className="grotesk-regular articles-pitch-body">
-            Most of what is useful about practising here is not written down anywhere. If you
-            learned something the hard way, we would rather publish your account of it than
-            anything we could write ourselves.
+            Email <a href="mailto:hello@esquirely.com.ng">hello@esquirely.com.ng</a> and tell us
+            what you have in mind. A couple of sentences is enough to start, and you do not need
+            to have written anything yet.
           </p>
-          <p className="grotesk-regular articles-pitch-body">
-            Email <a href="mailto:hello@esquirely.com.ng">hello@esquirely.com.ng</a>. Say what you
-            would write about and why it should be you. A couple of sentences is plenty.
-          </p>
-        </div>
+        </section>
+
       </main>
       <Footer />
     </>

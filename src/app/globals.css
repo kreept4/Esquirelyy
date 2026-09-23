@@ -746,9 +746,12 @@ select.filter-pill option,
 .articles-title { font-size: clamp(2rem, 6vw, 2.9rem); line-height: 1.02; letter-spacing: -0.02em; color: var(--ink); }
 .articles-lede { font-size: 1rem; line-height: 1.6; color: var(--ink-muted); margin: 1rem 0 2.5rem 0; }
 
-.articles-empty { border-top: 1px solid rgba(36, 31, 22, 0.12); padding-top: 1.6rem; }
-.articles-empty-line { font-size: 0.95rem; line-height: 1.6; color: var(--ink-muted); margin: 0 0 0.9rem 0; }
-.articles-empty-line a { color: var(--mint-deep); text-decoration: underline; text-underline-offset: 3px; }
+.articles-empty-line {
+  font-size: 0.95rem; line-height: 1.6; color: var(--ink-muted);
+  margin: 0; padding: 1.4rem 0;
+  border-top: 1px solid rgba(36, 31, 22, 0.12);
+  border-bottom: 1px solid rgba(36, 31, 22, 0.12);
+}
 
 .articles-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(36, 31, 22, 0.12); }
 .articles-row {
@@ -761,15 +764,51 @@ select.filter-pill option,
 .articles-row-summary { font-size: 0.9rem; line-height: 1.5; color: var(--ink-muted); }
 .articles-row-meta { font-size: 0.76rem; line-height: 1.4; color: var(--ink-muted); }
 
+/* ⚠ NO LEFT RULE ON THESE PANELS. They carried a 2px ink bar down the left
+   edge, which is a pull-quote mark: it says "this is an aside from the main
+   text", and these are not asides, they are the two things a reader who cannot
+   yet read an article is here to do. A hairline box says the same thing the bar
+   was trying to say, without borrowing a mark that means something else. */
+.articles-brief,
 .articles-pitch {
-  margin-top: 2.6rem;
-  padding: 1.3rem 1.4rem;
+  margin-top: 2.2rem;
+  padding: 1.4rem 1.5rem;
   background: var(--cream-dark);
-  border-left: 2px solid var(--ink);
+  border: 1px solid rgba(36, 31, 22, 0.1);
+  border-radius: 2px;
 }
-.articles-pitch-title { font-size: 0.95rem; color: var(--ink); margin: 0 0 0.45rem 0; }
-.articles-pitch-body { font-size: 0.9rem; line-height: 1.6; color: var(--ink-muted); margin: 0 0 0.7rem 0; }
-.articles-pitch-body:last-child { margin-bottom: 0; }
+.articles-brief-title,
+.articles-pitch-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0 0 0.9rem 0;
+}
+.articles-brief-list { list-style: none; margin: 0; padding: 0; }
+.articles-brief-list li {
+  position: relative;
+  padding-left: 1.05rem;
+  margin-bottom: 0.7rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+.articles-brief-list li:last-child { margin-bottom: 0; }
+/* A small square rather than a bullet, matching the ruled marks used elsewhere
+   on the site instead of introducing a round dot nothing else uses. */
+.articles-brief-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62rem;
+  width: 5px;
+  height: 5px;
+  background: var(--ink);
+}
+.articles-pitch-title { margin-bottom: 0.7rem; }
+.articles-pitch-body { font-size: 0.9rem; line-height: 1.6; color: var(--ink-muted); margin: 0; }
+.articles-pitch-body a { color: var(--mint-deep); text-decoration: underline; text-underline-offset: 3px; }
 .articles-pitch-body a { color: var(--mint-deep); text-decoration: underline; text-underline-offset: 3px; }
 
 .article-crumb { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 1.6rem; }
