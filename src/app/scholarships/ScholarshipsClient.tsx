@@ -181,11 +181,16 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
                 </span>
 
                 <span className="sch-main">
-                  {/* The route to the detail page, the same way a job title is
-                      the route to its listing. The description and the chips
-                      stay on the row: these are compared side by side far more
-                      than jobs are, and stripping the row back to a title would
-                      make the board worse to answer the question it exists for. */}
+                  {/* ⚠ THE ONLY ANCHOR IN THE ROW, AND IT COVERS ALL OF IT.
+                      Its stretched ::after in globals.css makes the whole row
+                      clickable while the accessible name stays just the title;
+                      the long note beside that rule says why this beats
+                      wrapping the row in an <a> or hanging an onClick off it.
+
+                      The description and the chips stay on the row. These are
+                      compared side by side far more than jobs are, and
+                      stripping the row back to a title would make the board
+                      worse at the one question it exists to answer. */}
                   <Link href={'/scholarships/' + s.slug} className="grotesk-bold sch-title sch-title-link">
                     {s.title}
                   </Link>
@@ -220,15 +225,18 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
                     board works and is the structure this page is meant to
                     share. It also keeps the provider's link in one place: two
                     copies of an outbound URL is two things to fix when a
-                    provider moves their page. */}
+                    provider moves their page.
+
+                    ⚠ AND THE CHEVRON IS NOT A LINK, WHICH IS THE POINT OF THE
+                    WHOLE ROW BEING ONE. The title's stretched ::after covers
+                    the row, so everything here is already clickable and a
+                    second anchor to the same slug would just be a duplicate
+                    for anybody tabbing or using a screen reader. It stays as
+                    the affordance that says the row goes somewhere. */}
                 <span className="sch-action">
-                  <Link
-                    href={'/scholarships/' + s.slug}
-                    className="sch-more"
-                    aria-label={`Read about ${s.title}`}
-                  >
+                  <span className="sch-more" aria-hidden>
                     <ChevronRight size={18} />
-                  </Link>
+                  </span>
                 </span>
               </div>
             ))}

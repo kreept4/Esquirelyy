@@ -5962,6 +5962,10 @@ video:not([controls])::-webkit-media-controls-panel {
    -------------------------------------------------------------------------- */
 
 .sch-row {
+  /* The containing block for the title's stretched ::after. Without it the
+     overlay would size itself against the nearest positioned ancestor, which
+     is the page, and one row would swallow every click on the board. */
+  position: relative;
   display: grid;
   grid-template-columns: 6.5rem minmax(0, 1fr) 11rem 13rem 12rem 6rem;
   gap: 1.5rem;
@@ -6219,24 +6223,45 @@ video::-webkit-media-controls { display: none !important; }
   justify-content: center;
   width: 1.9rem;
   height: 1.9rem;
-  border-radius: 999px;
   color: var(--ink-muted);
-  text-decoration: none;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: color 0.15s ease, transform 0.15s ease;
 }
-.sch-more:hover {
-  background: rgba(36, 31, 22, 0.07);
+/* Keyed off the row, not off itself. It sits under the stretched overlay, so it
+   never receives a hover of its own to respond to. */
+.sch-row:not(.sch-row-head):hover .sch-more {
   color: var(--ink);
+  transform: translateX(2px);
 }
 
 /* The title is a link now. It keeps the row's type exactly and takes the
    underline only on hover, the same behaviour .job-link has, so a board of
    these does not turn into a wall of underlines. */
+/* ⚠ THE WHOLE ROW IS THE LINK, VIA ONE STRETCHED PSEUDO-ELEMENT ON THE TITLE.
+   The alternatives are both worse. Wrapping the row in an <a> puts the
+   description, the eligibility chips and the status pill inside the link's
+   accessible name, so a screen reader reads a paragraph where it should read a
+   title. Putting an onClick on the row gives no href, so there is nothing to
+   middle-click, open in a new tab, copy, or focus with a keyboard.
+
+   This keeps exactly one real anchor with the title as its name, and lets the
+   ::after do the hit area. Anything inside the row that must stay clickable
+   needs position: relative and a z-index above this; nothing does today. */
 .sch-title-link {
   text-decoration: none;
   color: var(--ink);
 }
-.sch-title-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.sch-title-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+/* Hovering anywhere on the row is hovering the link now, so the title responds
+   from wherever the pointer actually is. */
+.sch-row:not(.sch-row-head):hover .sch-title-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 /* The status pill on the detail header, where it sits above the title rather
    than in a column of its own. */
