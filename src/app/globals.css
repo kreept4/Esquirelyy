@@ -742,7 +742,25 @@ select.filter-pill option,
    nobody finishes. */
 /* Articles. Same narrow measure as a person page, for the same reason: prose
    read at the width of a job board is prose nobody finishes. */
-.articles-page, .article-page { max-width: 38rem; padding-block: 3.5rem 4.5rem; }
+/* ⚠ dvh, WITH vh UNDER IT AS THE FALLBACK. Same pair as .page-main,
+   .jobs-page and .opp-page, and written for the reason set out at length in
+   StaggeredMenu.css: on iOS Safari 100vh is the LARGE viewport, the height the
+   page would have with the address bar hidden. A 100vh floor is therefore
+   taller than the screen actually is, and the bottom of it sits under the
+   browser chrome. 100dvh tracks the visible area instead. The vh line stays
+   first so a browser without dvh still gets a floor rather than none.
+
+   These two pages needed it where the others did not because an articles index
+   with nothing published, and a short piece, are the only content here that can
+   be shorter than the screen. Without a floor the footer climbs up the page and
+   leaves the section looking half-built, which is the exact impression an empty
+   section can least afford. */
+.articles-page, .article-page {
+  max-width: 38rem;
+  padding-block: 3.5rem 4.5rem;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
 .articles-title { font-size: clamp(2rem, 6vw, 2.9rem); line-height: 1.02; letter-spacing: -0.02em; color: var(--ink); }
 .articles-lede { font-size: 1rem; line-height: 1.6; color: var(--ink-muted); margin: 1rem 0 2.5rem 0; }
 

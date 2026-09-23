@@ -43,8 +43,11 @@ export default async function DevicePreview({
   // hand. Same-origin, so contentWindow.scrollTo is available.
   const scrollTop = Number(top) > 0 ? Math.floor(Number(top)) : 0
 
+  /* vh-min-full rather than an inline minHeight. A style object cannot hold
+     the vh-then-dvh pair the fallback needs, which is the whole reason that
+     class exists; see the viewport-height utilities in globals.css. */
   return (
-    <main style={{ background: '#1A1A1A', minHeight: '100vh', padding: '1.5rem' }}>
+    <main className="vh-min-full" style={{ background: '#1A1A1A', padding: '1.5rem' }}>
       <p
         style={{
           color: '#FAF6F0',
