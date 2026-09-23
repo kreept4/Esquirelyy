@@ -60,11 +60,6 @@ export default function ArticlesPage() {
             <p className="grotesk-regular articles-empty-line">
               Nothing published yet. The first pieces are being written.
             </p>
-            <p className="grotesk-regular articles-empty-line">
-              If you have something worth writing down, from your faculty, your firm or your
-              service year, we would rather read it than commission it.{' '}
-              <Link href="/contact">Tell us what you want to write.</Link>
-            </p>
           </div>
         ) : (
           <ul className="articles-list">
@@ -82,6 +77,36 @@ export default function ArticlesPage() {
             ))}
           </ul>
         )}
+
+        {/* ⚠ OUTSIDE THE EMPTY STATE, SO IT IS THERE EITHER WAY. The first
+            version put the invitation inside the "nothing published yet"
+            branch, which means it disappears the day the section starts
+            working. That is precisely backwards: a reader who has just read a
+            piece by somebody at their own stage is far likelier to think they
+            could write one than a reader looking at an empty page.
+
+            ⚠ AND IT ASKS FOR A PITCH, NOT A DRAFT. "What you want to cover and
+            why you are the one to write it" is two sentences somebody sends on
+            a phone. Asking for a finished article first means most people who
+            would have written one never start, and it means reading long
+            pieces that were never going to fit. The bar is in the second
+            sentence rather than in a set of rules: only you know it, which is
+            the whole filter this section runs on.
+
+            A plain mailto rather than the contact form. The address is already
+            published on /contact, /faq and /news, so this exposes nothing new,
+            and somebody pitching wants to write in their own words at their own
+            length rather than into a box. */}
+        <div className="articles-pitch">
+          <p className="grotesk-bold articles-pitch-title">Write for Esquirely</p>
+          <p className="grotesk-regular articles-pitch-body">
+            We would rather publish what you already know than commission it. If there is
+            something about practice, Law School or your service year that you had to find out
+            the hard way, write to{' '}
+            <a href="mailto:hello@esquirely.com.ng">hello@esquirely.com.ng</a> with what you want
+            to cover and why you are the one to write it. Two sentences is enough to start.
+          </p>
+        </div>
       </main>
       <Footer />
     </>
