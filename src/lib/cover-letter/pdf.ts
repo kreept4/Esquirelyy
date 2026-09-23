@@ -93,10 +93,11 @@ export async function renderLetterPdf(doc: LetterDoc): Promise<Buffer> {
   /* The contact stack, right aligned beside the name.
      ⚠ LINKEDIN IS A REAL LINK, NOT PRINTED AS A URL. pdfkit's `link` option
      draws the annotation over the text it just set, so the label can read
-     "linkedin.com/in/name" while the annotation carries the full https href. A
+     simply "LinkedIn" while the annotation carries the full https href. A
      letterhead that prints the whole URL wastes a line and reads as a form
      field; one that prints nothing clickable wastes the fact that most of these
-     are read on a screen. */
+     are read on a screen. See normaliseLinkedIn for what the short label
+     gives up on paper. */
   const link = normaliseLinkedIn(doc.linkedin)
   const contacts: { text: string; href?: string }[] = []
   if (doc.email) contacts.push({ text: doc.email, href: `mailto:${doc.email}` })

@@ -118,9 +118,22 @@ export function parseLetter(
  *
  * People paste all of these: a full https URL, a bare linkedin.com/in/slug, a
  * www. prefix, or just their handle. All four need to become a working href,
- * because a letterhead link that 404s is worse than no link. Returns the href
- * and the short label to print, which is never the raw URL: "linkedin.com/in/
- * boluwatife-ogunleye" reads as a letterhead, the full https string does not.
+ * because a letterhead link that 404s is worse than no link.
+ *
+ * ⚠ THE LABEL IS THE WORD "LinkedIn", AND IT USED TO BE "linkedin.com/in/slug".
+ * Both are better than printing the raw https URL, which was never on the
+ * table, but the slug version still spent most of a contact line repeating the
+ * platform's own name before saying anything about the candidate, and a slug
+ * like "boluwatife-ogunleye-aicmc-acarb-8437051a9" is longer than the email
+ * address above it. The link is real in both exports, so the address adds
+ * nothing to a reader who can click it.
+ *
+ * ⚠ WHAT THIS COSTS, because it is a genuine trade rather than a free win. On
+ * a letter that gets PRINTED, "LinkedIn" is not actionable: a reader holding
+ * paper cannot type it, where they could have typed the slug. That is the case
+ * this loses, and it loses it knowingly. These letters are emailed, the tool's
+ * own tips say to send the letter in the body of the mail, and a contact line
+ * optimised for the printed minority costs every screen reader a longer line.
  */
 export function normaliseLinkedIn(raw?: string): { href: string; label: string } | null {
   const v = (raw || '').trim()
@@ -141,7 +154,7 @@ export function normaliseLinkedIn(raw?: string): { href: string; label: string }
   const path = /^(company|school|showcase)\//i.test(slug) ? slug : `in/${slug}`
   return {
     href: `https://www.linkedin.com/${path}`,
-    label: `linkedin.com/${path}`,
+    label: 'LinkedIn',
   }
 }
 
