@@ -248,13 +248,24 @@ const ITEMS: NewsItem[] = [
      * The card leads on that constraint rather than on the firm, because "you
      * have to be in Lagos" is the sentence that saves most of this audience a
      * click and earns the rest of them one.
+     *
+     * ⚠ THE TITLE IS BUILT ON THE OMAPLEX ONE NEXT TO IT, deliberately. That
+     * reads "Intern at Omaplex from anywhere in Nigeria"; this reads "Intern at
+     * The Law Crest for a day, in Lagos". Same verb, same shape, and the two
+     * clauses that differ are exactly the two facts that separate the
+     * programmes. Read together they teach the difference in a glance, which is
+     * worth more than either sentence is on its own.
+     *
+     * An earlier version was "One day inside a Lagos firm, on 7 October", which
+     * named neither the firm nor who it was for, and "inside a Lagos firm"
+     * reads like an exposé rather than an internship.
      */
     slug: 'law-crest-one-day-internship-2026',
     kind: 'update',
     date: '2026-09-23',
-    title: 'One day inside a Lagos firm, on 7 October',
+    title: 'Intern at The Law Crest for a day, in Lagos',
     summary:
-      'The Law Crest LLP are running a one-day internship for law graduates who have not yet been called to the Bar. It runs 10am to 4pm at the Continental Re Centre on Victoria Island, and you have to be there in person. No closing date is published, and a one-day programme fills.',
+      'The Law Crest LLP are running a one-day internship on 7 October, for law graduates who have not yet been called to the Bar. It runs from 10am to 4pm at the Continental Re Centre on Victoria Island, and you have to be there in person. No closing date is published, so it is worth registering early.',
     href: '/jobs/the-law-crest-one-day-legal-internship-program-2026',
     cta: 'Read the criteria',
     media: { type: 'logos', slugs: ['The Law Crest LLP'] },
