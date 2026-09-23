@@ -2737,16 +2737,52 @@ export const FIRMS_WITH_LOGOS: Firm[] = ALL_FIRMS.filter(f => !!firmLogo(f))
  *  the same normalisation: lowercased, '&' spelled out, punctuation stripped. */
 const norm = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '')
 
-export function logoForEmployer(employer?: string | null): string | null {
+/**
+ * The directory entry for a free-text employer name, or null.
+ *
+ * ⚠ EXTRACTED FROM logoForEmployer RATHER THAN WRITTEN BESIDE IT. That function
+ * has done this matching privately since it was written, and the cover letter
+ * tool now needs the same answer for a different reason: to offer a firm's real
+ * offices as a dropdown. Two callers wanting "which firm is this string" is the
+ * moment to have one matcher, not the moment to write a second that agrees
+ * today and drifts by December.
+ *
+ * Exact only, and the comment below records why a looser test was rejected.
+ */
+export function firmForEmployer(employer?: string | null): Firm | null {
   if (!employer) return null
   const target = norm(employer)
   if (!target) return null
   // Exact only. A startsWith fallback here once matched the string
   // 'aluko-oyebode.jpg' to a firm, so a passed-in filename silently rendered as
   // a logo; prefix matching is too loose to be worth the extra hits.
-  const hit = ALL_FIRMS.find(
-    f => norm(f.name) === target || norm(f.shortName) === target || norm(f.slug) === target
+  return (
+    ALL_FIRMS.find(
+      f => norm(f.name) === target || norm(f.shortName) === target || norm(f.slug) === target
+    ) || null
   )
+}
+
+/**
+ * A firm's offices, for an employer name typed into a form.
+ *
+ * ⚠ RETURNS NOTHING FOR AN EMPLOYER WE HAVE NOT RESEARCHED, and that is the
+ * feature rather than a gap. These addresses end up printed as the recipient
+ * block on somebody's application. An address we guessed, or one carried over
+ * from a similarly named firm, is worse on a formal letter than no address at
+ * all: it is wrong in a place the reader is certain to look, and it is wrong in
+ * the applicant's name rather than ours. Firms outside the directory therefore
+ * get no office block, not a free-text box to fill one in.
+ */
+export function officesForEmployer(employer?: string | null): FirmOffice[] {
+  return firmForEmployer(employer)?.offices ?? []
+}
+
+export function logoForEmployer(employer?: string | null): string | null {
+  if (!employer) return null
+  const target = norm(employer)
+  if (!target) return null
+  const hit = firmForEmployer(employer)
   // Route through firmLogo, not logoUrl. Going straight to the bucket served the
   // untrimmed original, so a mark with heavy baked-in padding rendered a third
   // of the size it should on the job board and in the ball pit, while the same

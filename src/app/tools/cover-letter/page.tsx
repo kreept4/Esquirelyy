@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Copy, Check, AlertCircle, ArrowRight, X, Loader2, Pencil, FileDown, FileText } from 'lucide-react'
 import { useRequireAuth } from '../useRequireAuth'
 import { createClient } from '@/lib/supabase/client'
+import { officesForEmployer } from '@/lib/firms-data'
 import ToolShell from '../ToolShell'
 import { countBodyWords, WORD_CEILING } from '@/lib/cover-letter/word-count'
 import BrandLoader from '@/components/ui/BrandLoader'
@@ -91,6 +92,7 @@ export default function CoverLetterPage() {
     firstName: '',
     targetRole: '',
     employer: '',
+    office: '',
     division: '',
     careerStage: '',
     tone: 'formal and confident',
@@ -154,7 +156,16 @@ export default function CoverLetterPage() {
     return () => { live = false }
   }, [userId])
 
-  const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
+  const set = (k: string, v: string) =>
+    setForm(f => ({
+      ...f,
+      [k]: v,
+      /* ⚠ CHANGING THE EMPLOYER CLEARS THE OFFICE. Without this, picking
+         Templars' Port Harcourt office and then correcting the employer to
+         Aluko leaves Port Harcourt selected against a firm whose offices were
+         never offered, and it prints on the letter as the recipient address. */
+      ...(k === 'employer' ? { office: '' } : {}),
+    }))
 
   /* Checked here as well as on the server, so a wrong file type or an oversized
      one is said immediately rather than after an upload and a round trip. Same
@@ -206,6 +217,7 @@ export default function CoverLetterPage() {
       ...f,
       targetRole: item.target_role || '',
       employer: item.employer || '',
+      office: '',
       division: item.division || '',
       careerStage: item.career_stage || '',
       tone: item.tone || 'formal and confident',
@@ -307,6 +319,20 @@ export default function CoverLetterPage() {
           location: contact.location,
           linkedin: contact.linkedin,
           employer: form.employer,
+          /* ⚠ THE FULL STREET ADDRESS, NOT THE CITY. `form.office` holds the
+             city because that is what a dropdown of "Lagos / Abuja / Port
+             Harcourt" can usefully show, and a recipient block wants the
+             address that city stands for. Looked up here rather than stored, so
+             a corrected address in firms-data reaches the next letter without
+             anything else changing.
+
+             This is also the line that was missing entirely. LetterDoc has
+             carried `employerLocation` since it was written, the export route
+             accepts it and both the PDF and the DOCX render it; the page simply
+             never sent one, so the recipient block printed the firm name over
+             nothing. */
+          employerLocation:
+            offices.find(o => o.city === form.office)?.address || undefined,
         }),
       })
 
@@ -347,7 +373,7 @@ export default function CoverLetterPage() {
     setResult(null)
     setEdited(null)
     setEditing(false)
-    setForm({ firstName: '', targetRole: '', employer: '', division: '', careerStage: '', tone: 'formal and confident', cvSummary: '', highlights: '', advert: '', employerKnowledge: '' })
+    setForm({ firstName: '', targetRole: '', employer: '', office: '', division: '', careerStage: '', tone: 'formal and confident', cvSummary: '', highlights: '', advert: '', employerKnowledge: '' })
     setCvFile(null)
     setMode('manual')
     setError('')
@@ -360,6 +386,21 @@ export default function CoverLetterPage() {
       </main>
     )
   }
+
+  /**
+   * The typed employer's own offices, if we have researched that firm.
+   *
+   * ⚠ RECOMPUTED FROM `form.employer` ON EVERY RENDER RATHER THAN STORED. The
+   * employer is a free text box somebody is still typing in, so any copy of
+   * this held in state is stale the moment they correct a letter of it, and a
+   * stale office list is one that offers Templars' addresses to somebody who
+   * has since typed Aluko. Deriving it costs one array scan over 75 firms.
+   *
+   * Empty for any employer outside the directory, which is deliberate: see
+   * officesForEmployer for why a firm we have not researched gets no office
+   * block rather than a box to type one into.
+   */
+  const offices = officesForEmployer(form.employer)
 
   const blocked = loading || !form.targetRole || !form.employer || (mode === 'cv' && !cvFile)
 
@@ -401,6 +442,33 @@ export default function CoverLetterPage() {
                     <input id="cl-employer" type="text" className="tool-input grotesk-regular"
                       value={form.employer} onChange={e => set('employer', e.target.value)} placeholder="e.g. Aluko &amp; Oyebode" />
                   </div>
+                  {/* ⚠ ONLY APPEARS ONCE THE EMPLOYER IS ONE WE HAVE RESEARCHED,
+                      and the options are that firm's own addresses rather than
+                      anything typed. This ends up printed as the recipient block
+                      on a formal application, so a free text box here would let
+                      somebody put a wrong address on their own letter in a place
+                      the reader is certain to look. A firm outside the directory
+                      gets no office line at all, which is the honest version.
+
+                      Rendered inside the grid so it takes the same column as
+                      Employer above it and the row does not reflow when it
+                      appears. Visible rather than behind the fold, unlike the
+                      six refinements down there, because this one changes what
+                      is printed rather than how the letter reads. */}
+                  {offices.length > 0 && (
+                    <div>
+                      <label htmlFor="cl-office" className="tool-label">
+                        Which office <span className="tool-label-hint">(optional)</span>
+                      </label>
+                      <select id="cl-office" className="tool-select grotesk-regular"
+                        value={form.office} onChange={e => set('office', e.target.value)}>
+                        <option value="">Not specified</option>
+                        {offices.map(o => (
+                          <option key={o.city} value={o.city}>{o.city}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
 
                 <div className="tool-row">
