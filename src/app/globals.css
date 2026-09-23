@@ -734,6 +734,34 @@ select.filter-pill option,
   gap: 0.4rem;
 }
 
+/* What a firm currently has open, on its own profile.
+
+   Rows rather than cards, and that is the whole decision. A card grid here
+   would compete with the firm's own header for the top of the page and imply
+   these are the page's subject; they are a live footnote to it. A ruled list is
+   what a reader scans in two seconds and leaves alone if nothing applies to
+   them.
+
+   The hairline is the same one the notification list uses, for the same reason:
+   a run of rows needs separating and does not need boxing. */
+.firm-open-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(36, 31, 22, 0.12);
+}
+.firm-open-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid rgba(36, 31, 22, 0.12);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+.firm-open-row:hover { background: rgba(36, 31, 22, 0.035); }
+.firm-open-title { font-size: 0.9rem; line-height: 1.3; color: var(--ink); }
+.firm-open-meta { font-size: 0.76rem; line-height: 1.4; color: var(--ink-muted); }
+
 /* ============================================================
    DIRECTORY RANKING BADGES
    Chambers / IFLR1000 / Legal 500 EMEA.

@@ -3,11 +3,14 @@ import type { Metadata } from 'next'
 import TrackOnApply from '@/components/features/TrackOnApply'
 import { notFound } from 'next/navigation'
 import Footer from '@/components/layout/Footer'
-import { ALL_FIRMS, firmLogo, getMonogram, isIndexable, isPubliclyReadable, type Firm } from '@/lib/firms-data'
+import { ALL_FIRMS, firmForEmployer, firmLogo, getMonogram, isIndexable, isPubliclyReadable, type Firm } from '@/lib/firms-data'
 import LogoFrame from '@/components/ui/LogoFrame'
 import RankingBadges from '@/components/ui/RankingBadges'
 import JsonLd, { SITE_URL, breadcrumb, openGraph } from '@/components/seo/JsonLd'
 import { createClient } from '@/lib/supabase/server'
+import { fetchOpportunities, toBoardRow, hasClosed } from '@/lib/opportunities'
+import { openJobs } from '@/lib/open-jobs'
+import { hasPassed } from '@/lib/day'
 
 /* ⚠ THERE IS NO generateStaticParams HERE, AND IT MUST NOT BE ADDED BACK.
  *
@@ -190,6 +193,15 @@ function firmSchema(firm: Firm, locked: boolean) {
   }
 }
 
+/** "28 September 2026". The board's own format, so a closing date reads the
+ *  same here as it does on the listing it links to. */
+function longDate(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`)
+  return Number.isNaN(d.getTime())
+    ? iso
+    : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+}
+
 export default async function FirmDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const firm = ALL_FIRMS.find(f => f.slug === slug)
@@ -204,10 +216,69 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
    * rendering (see the note above generateMetadata), but it does mean an open
    * page serves without waiting on an auth round trip, which is the part of
    * that saving actually worth keeping. */
-  let locked = false
-  if (!isPubliclyReadable(firm)) {
-    locked = !(await createClient().auth.getUser()).data.user
-  }
+  /* ⚠ READ ONCE AND USED TWICE. The gate on the profile and the gate on the
+     listings below ask the same question, and reading the session twice would
+     cost a second round trip to answer it. It is read unconditionally now
+     rather than only for a gated firm: the listings section needs to know who
+     is looking even on an open profile, and the note above about an open page
+     serving without an auth round trip is worth less than a section that
+     advertises doors a signed-out reader cannot open. */
+  const signedIn = !!(await createClient().auth.getUser()).data.user
+  const locked = !isPubliclyReadable(firm) && !signedIn
+
+  /**
+   * What this firm currently has open, from both tables.
+   *
+   * ⚠ THE DIRECTORY AND THE BOARD NEVER SPOKE TO EACH OTHER UNTIL NOW. A reader
+   * could stand on Omaplex's profile while an Omaplex internship sat on /jobs,
+   * and nothing on the page said so. The two halves of this product are "who
+   * are these firms" and "who is hiring", and a firm page that answers the
+   * first while silently holding the second is the worse half of both.
+   *
+   * ⚠ JOBS AND OPPORTUNITIES TOGETHER, not one or the other. "What does this
+   * firm have open" is one question to a reader and two tables to us, and which
+   * table a thing lives in is our filing problem. lib/opportunities.ts makes
+   * that adaptation for the board already; this calls the same adapter rather
+   * than inventing a second shape.
+   *
+   * ⚠ MATCHED ON THE NORMALISED NAME, NOT ON THE SLUG. `jobs.employer` and
+   * `opportunities.organization` are free text written by whoever added the
+   * row, so "Omaplex Law Firm" has to find the firm whose name is exactly that.
+   * firmForEmployer is the matcher the logo lookup has always used, so a row
+   * that resolves a logo resolves a profile, and the two cannot disagree about
+   * who an employer is.
+   */
+  const openHere = await (async () => {
+    const db = createClient()
+    const [{ data: jobRows }, opps] = await Promise.all([
+      db.from('jobs').select('*').eq('is_active', true).order('created_at', { ascending: false }),
+      fetchOpportunities(),
+    ])
+
+    const mine = (name?: string | null) => {
+      const f = firmForEmployer(name)
+      return !!f && f.slug === firm.slug
+    }
+
+    /* Same open test the board uses: a passed deadline is closed, a rolling row
+       with no deadline is not. Lagos calendar days, per lib/day.ts. */
+    const jobs = (jobRows || []).filter(
+      (j: any) => mine(j.employer) && (j.is_rolling || !j.deadline || !hasPassed(j.deadline))
+    )
+    const adapted = opps
+      .filter(o => mine(o.organization) && !hasClosed(o.deadline))
+      .map(toBoardRow)
+
+    const all = [...jobs, ...adapted].sort(
+      (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    )
+
+    /* ⚠ THE SIGNED-OUT SET, NOT THE WHOLE SET, for the reason openJobs gives:
+       a listing outside OPEN_JOB_SLUGS redirects a signed-out reader to
+       /auth/login, so listing it here would be advertising a door we know is
+       locked. Signed-in readers see everything. */
+    return signedIn ? all : openJobs(all)
+  })()
 
   /* Firms a reader of this page would plausibly want next: same tier, and at
    * least one practice area in common. Ranked by how much practice overlap
@@ -330,6 +401,41 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
                 nothing at all for a firm with no checked entry, so the page
                 shape is unchanged for most of the directory. */}
             <RankingBadges firm={firm} variant="full" />
+
+            {/* ⚠ ABOVE PRACTICE AREAS, DELIBERATELY. Everything else on this
+                page describes what the firm is; this is the only part a reader
+                can act on today, and it expires. A live opening under a
+                paragraph about the firm's standing is the wrong way round, and
+                it is the same argument closing-notice.ts makes for the email:
+                order by what the reader stands to lose, not by what we hold
+                most of.
+
+                Renders nothing when the firm has nothing open, which is most of
+                the directory, so the page shape is unchanged for most firms. */}
+            {openHere.length > 0 && (
+              <section>
+                <p className="firm-profile-section-heading">
+                  {openHere.length === 1 ? 'Open now' : `Open now (${openHere.length})`}
+                </p>
+                <div className="firm-open-list">
+                  {openHere.map((row: any) => (
+                    <Link key={row.slug} href={`/jobs/${row.slug}`} className="firm-open-row">
+                      <span className="grotesk-bold firm-open-title">{row.title}</span>
+                      <span className="grotesk-regular firm-open-meta">
+                        {[
+                          row.location,
+                          row.is_rolling || !row.deadline
+                            ? 'Rolling'
+                            : `Closes ${longDate(row.deadline)}`,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
 
             <section>
               <p className="firm-profile-section-heading">Practice areas</p>
