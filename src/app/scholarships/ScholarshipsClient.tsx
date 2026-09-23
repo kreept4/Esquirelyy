@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { ExternalLink } from 'lucide-react'
+import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import type { Scholarship } from '@/lib/scholarships-data'
 import EmptyState from '@/components/ui/EmptyState'
 
@@ -180,7 +181,14 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
                 </span>
 
                 <span className="sch-main">
-                  <span className="grotesk-bold sch-title">{s.title}</span>
+                  {/* The route to the detail page, the same way a job title is
+                      the route to its listing. The description and the chips
+                      stay on the row: these are compared side by side far more
+                      than jobs are, and stripping the row back to a title would
+                      make the board worse to answer the question it exists for. */}
+                  <Link href={'/scholarships/' + s.slug} className="grotesk-bold sch-title sch-title-link">
+                    {s.title}
+                  </Link>
                   <span className="grotesk-regular sch-provider">{s.provider}</span>
                   <span className="grotesk-regular sch-desc">{s.description}</span>
                   <span className="sch-elig">
@@ -207,16 +215,20 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
                   <span className="grotesk-regular sch-cell sch-deadline">{s.deadline}</span>
                 </span>
 
+                {/* ⚠ NO APPLY BUTTON HERE. The board is an index and applying
+                    happens on the scholarship's own page, which is how the job
+                    board works and is the structure this page is meant to
+                    share. It also keeps the provider's link in one place: two
+                    copies of an outbound URL is two things to fix when a
+                    provider moves their page. */}
                 <span className="sch-action">
-                  <a
-                    href={s.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="grotesk-bold sch-apply"
-                    aria-label={`Apply for ${s.title}`}
+                  <Link
+                    href={'/scholarships/' + s.slug}
+                    className="sch-more"
+                    aria-label={`Read about ${s.title}`}
                   >
-                    Apply <ExternalLink size={13} />
-                  </a>
+                    <ChevronRight size={18} />
+                  </Link>
                 </span>
               </div>
             ))}

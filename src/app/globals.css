@@ -6204,21 +6204,64 @@ video::-webkit-media-controls { display: none !important; }
 .sch-cell { font-size: 0.84rem; line-height: 1.55; color: var(--ink-muted); }
 .sch-deadline { color: var(--ink); }
 
-.sch-action { justify-self: end; }
-.sch-apply {
+.sch-action {
+  justify-self: end;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 0.5rem 0.95rem;
-  font-size: 0.76rem;
-  color: #FFFFFF;
-  background: var(--mint);
-  border-radius: 999px;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: transform 0.18s ease, background-color 0.18s ease;
 }
-.sch-apply:hover { transform: translateY(-1px); background: var(--mint-deep); }
+/* The way in to the scholarship's own page, and the only control on the row.
+   Quiet rather than a filled button, matching the chevron that ends a row on
+   the job board: the title beside it is the primary target and this is the
+   affordance that says the whole row is clickable. */
+.sch-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.sch-more:hover {
+  background: rgba(36, 31, 22, 0.07);
+  color: var(--ink);
+}
+
+/* The title is a link now. It keeps the row's type exactly and takes the
+   underline only on hover, the same behaviour .job-link has, so a board of
+   these does not turn into a wall of underlines. */
+.sch-title-link {
+  text-decoration: none;
+  color: var(--ink);
+}
+.sch-title-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* The status pill on the detail header, where it sits above the title rather
+   than in a column of its own. */
+.sch-status-detail {
+  display: inline-flex;
+  margin-bottom: 0.7rem;
+}
+
+/* "Also open now". A short list of routes onward, deliberately plainer than a
+   card grid: this sits at the bottom of a page the reader has already decided
+   about, so it should be easy to skip. */
+.sch-also { list-style: none; margin: 0; padding: 0; }
+.sch-also li { border-bottom: 1px solid rgba(36, 31, 22, 0.1); }
+.sch-also li:first-child { border-top: 1px solid rgba(36, 31, 22, 0.1); }
+.sch-also-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 0;
+  text-decoration: none;
+  color: var(--ink);
+  transition: background-color 0.15s ease;
+}
+.sch-also-link:hover { background: rgba(36, 31, 22, 0.035); }
+.sch-also-meta { font-size: 0.8rem; color: var(--ink-muted); }
 
 @media (max-width: 1100px) {
   .sch-row {

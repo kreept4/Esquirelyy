@@ -538,3 +538,34 @@ export function statusOf(s: Scholarship, now: Date = new Date()): ScholarshipSta
 export function allScholarships(now: Date = new Date()): Scholarship[] {
   return SCHOLARSHIPS.map(s => ({ ...s, status: statusOf(s, now) }))
 }
+
+/**
+ * One scholarship by slug, with its status resolved for the moment it is asked
+ * for.
+ *
+ * ⚠ GOES THROUGH allScholarships RATHER THAN READING THE ARRAY. The raw
+ * SCHOLARSHIPS array still carries the hand-typed `status`, and a detail page
+ * reading it directly would be the exact regression the note on allScholarships
+ * describes: one page saying "Upcoming" while the board beside it says "Open",
+ * for the same award on the same afternoon. Every reader of this data resolves
+ * status the same way or none of them can be trusted.
+ *
+ * Returns undefined for an unknown slug so the caller can notFound() rather
+ * than render a page about nothing.
+ */
+export function scholarshipBySlug(slug: string, now: Date = new Date()): Scholarship | undefined {
+  return allScholarships(now).find(s => s.slug === slug)
+}
+
+/**
+ * Every slug, for generateStaticParams.
+ *
+ * Reads the raw array deliberately: this answers "what pages exist", which is a
+ * question about the file rather than about today. A closed scholarship still
+ * needs its page built, because a link to it may be years old and a 404 is a
+ * worse answer than "this closed".
+ */
+export function scholarshipSlugs(): string[] {
+  return SCHOLARSHIPS.map(s => s.slug)
+}
+
