@@ -45,58 +45,29 @@
  */
 export const ROLE_ENTRIES = [
   {
-    /* THE DROP LEADS ON FABUNMI, AND THE REASON IS THE CALENDAR RATHER THAN
-       THE PRIZE. It closes on 28 September and the Omaplex internship below it
-       on 5 October, so the one a reader can still miss goes first. The three
-       prize money is the thing that gets the email opened and it is not the
-       thing that decides the order.
+    /* THE WHOLE DROP IS ONE LISTING, 23 September 2026. The count helpers below
+       all branch at one, so nothing in the bell, the modal, the carousel or the
+       email says "listings" about a single thing.
 
-       ⚠ IT IS CALLED PRIZE MONEY, PLAINLY, AND THEN LEFT ALONE. The flier says
-       "3,000,000 NAIRA UP FOR GRABS" inside a medal, so what the money is is
-       not in doubt. An earlier draft said the firm had "put 3 million naira
-       behind it", which reads as funding rather than a prize and told a reader
-       nothing they could act on; a later one added that the split was not
-       published, which raised a doubt the flier never raised. The amount, and
-       what it is. Anyone who needs the breakdown asks the firm.
+       ⚠ THE LINE LEADS ON THE DATE AND THE ROOM, not on the firm. This is six
+       hours in Victoria Island on a fixed day, and the two internships that
+       went out in the last drop were both virtual and open to anyone in the
+       country. A reader who has just learned from us that these things are
+       remote will assume this one is too unless the first clause says
+       otherwise, and they will find out when they cannot get there.
 
-       ⚠ THE FIRST CLAUSE IS THE ELIGIBILITY, NOT THE MONEY, and that is
-       deliberate in the same way the World Bank line led on the post-call band.
-       This competition is open to exactly one group, people waiting to start
-       Law School, and it is closed to everybody else on this list. Leading with
-       the prize would have most of the readership working out for themselves,
-       two sentences later, that it was never their row. */
-    slug: '6th-annual-professor-j-o-fabunmi-internship-competition-lgic',
-    employer: 'J.O Fabunmi & Co',
-    employerShort: 'J.O Fabunmi & Co',
-    title: '6th Professor J.O. Fabunmi Internship Competition',
-    line: 'For Nigerians waiting to start Law School, with a Second Class Upper from an accredited university here or abroad. The prize money is 3 million naira. Registration is by form. Closes 28 September.',
-    /* ⚠ NO COMMA CLAUSE. These shorts are joined with "and" by roleSummary, so
-       one ending in ", if you are waiting to start Law School" produced "...Law
-       School and a virtual internship...", where the "and" reads as though it
-       is still inside the qualifier. Both shorts are single clauses now and the
-       join is unambiguous. */
-    short: 'a competition with 3 million naira in prize money for people waiting to start Law School',
+       The eligibility is narrow in the other direction: graduates who have
+       finished the degree and have NOT been called. Not students, not lawyers.
+       Same window the Fabunmi competition is for, which is the notice at the
+       top of this same email, so the two halves are aimed at one reader. */
+    slug: 'the-law-crest-one-day-legal-internship-program-2026',
+    employer: 'The Law Crest LLP',
+    employerShort: 'The Law Crest',
+    title: 'One-Day Legal Internship Program 2026',
+    line: 'One day in Lagos, on 7 October, 10am to 4pm at the Continental Re Centre on Victoria Island. You have to be there in person. Open to law graduates who have not yet been called to the Bar. No closing date is published and a one-day programme fills.',
+    short: 'a one-day internship at The Law Crest in Lagos, if you are waiting to be called',
     blurb:
-      'J.O Fabunmi & Co are running the sixth edition of their internship competition. It is open to Nigerians waiting to start Law School who hold a Second Class Upper, and there is 3 million naira in prize money on it.',
-  },
-  {
-    /* ⚠ THE LINE LEADS ON "VIRTUAL", which is the only fact on it that changes
-       who can apply. Everything else about this internship is open: no class of
-       degree, no year of study, no call requirement. What it actually removes
-       is the geography, and that is the thing worth the first clause for a list
-       whose readers are not all in Lagos or Abuja.
-
-       The seven subjects are named as a range rather than listed. The full
-       seven are on the listing, and a reader deciding whether to open a link
-       needs to know the spread, not to read a table in an email. */
-    slug: 'omaplex-virtual-internship-2026',
-    employer: 'Omaplex Law Firm',
-    employerShort: 'Omaplex',
-    title: 'Virtual Internship 2026',
-    line: 'Virtual, so it does not matter where in Nigeria you are. Open to law students and aspiring lawyers, with no class of degree and no year of study set. Seven subjects, from technology and data protection through to sport arbitration. Closes 5 October.',
-    short: 'a virtual internship at Omaplex open to law students anywhere',
-    blurb:
-      'Omaplex are running the 2026 edition of their virtual internship. It is open to law students and aspiring lawyers, it runs remotely wherever you are in Nigeria, and the firm names seven subjects it will cover.',
+      'The Law Crest LLP are running a one-day internship on 7 October for law graduates who have not yet been called to the Bar. It runs from 10am to 4pm on Victoria Island, and unlike the last two internships we sent you, this one is in the room rather than online.',
   },
 ] as const
 
@@ -104,9 +75,9 @@ export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
    *  somebody who read the 1 September note has not seen this one. */
-  id: 'roles-2026-09-22',
+  id: 'roles-2026-09-23',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-09-22T09:00:00.000Z',
+  at: '2026-09-23T09:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   employers: ROLE_ENTRIES.map(r => r.employer),
   /** The same firms without the parenthetical network names. Read by the bell. */

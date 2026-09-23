@@ -59,13 +59,20 @@ export type ClosingNotice = {
   slug: string
 }
 
+/* ⚠ THE PREVIOUS NOTICE SAT HERE THREE WEEKS AFTER IT CLOSED. Heirs Holdings
+   shut on 4 September and was still the value of this constant on the 23rd.
+   Nothing broke, because activeClosingNotice returns null once a deadline has
+   passed, so the block simply stopped rendering and no reader saw a closed
+   programme. That is the machinery doing its job and it is also why nobody
+   noticed: a stale notice here is invisible rather than wrong, so it is only
+   found when somebody comes to write the next one. */
 const NOTICE: ClosingNotice | null = {
-  employer: 'Heirs Holdings',
-  title: '2026 Graduate Trainee Programme',
-  deadline: '2026-09-04',
+  employer: 'J.O Fabunmi & Co',
+  title: '6th Professor J.O. Fabunmi Internship Competition',
+  deadline: '2026-09-28',
   body:
-    'Six months split between Heirs Academy training and live work across the group. Open to any degree at a 2:2, so an LL.B counts. You need NYSC finished with your discharge or exemption certificate in hand, no more than two years since, and to be 27 or under.',
-  slug: 'heirs-holdings-graduate-trainee-programme-2026',
+    'For Nigerians waiting to start Law School, with a Second Class Upper from an accredited university here or abroad. The prize money is 3 million naira. Registration is by form and the window shuts on the 28th.',
+  slug: '6th-annual-professor-j-o-fabunmi-internship-competition-lgic',
 }
 
 /**
