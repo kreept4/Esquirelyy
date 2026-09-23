@@ -104,12 +104,29 @@ export const metadata: Metadata = {
  * every profile that also describes it. `WebSite` is the site record, and its
  * `inLanguage` and `publisher` link are what tie individual pages back here.
  *
- * ⚠ `sameAs` IS DELIBERATELY EMPTY AND IS THE NEXT THING TO FILL. Its value
- * comes entirely from corroboration: two or three independent profiles naming
- * the same entity is what turns a claim into a fact. A LinkedIn company page is
- * the highest-value single entry for this audience. Add them as they exist
- * rather than listing profiles that do not, since a `sameAs` pointing at a 404
- * is worse than a short list.
+ * ⚠ `sameAs` NOW CARRIES THE LINKEDIN COMPANY PAGE, which this note called the
+ * highest-value single entry for this audience, and it is the one that does the
+ * work the note describes: "Esquirely" sits one letter from Esquire, and you do
+ * not out-rank a magazine with that much authority on keywords, you
+ * out-identify it. A company page LinkedIn already knows, asserting the same
+ * name, the same site and the same two founders, is what lets a resolver
+ * separate the two.
+ *
+ * ⚠ THE QUERY STRING IS STRIPPED, AND THAT IS NOT TIDYING. The URL was supplied
+ * as .../company/esquirely/?viewAsMember=true, which is LinkedIn's own preview
+ * mode: it describes how the page is being looked at, not which page it is. A
+ * sameAs is an assertion that two URLs are one entity, so pointing it at a
+ * parameterised view asks a resolver to treat a viewing mode as the thing
+ * itself, and weakens the exact link it exists to make.
+ *
+ * ⚠ IT WAS NOT VERIFIED BY FETCHING IT, because it cannot be. LinkedIn answers
+ * automated requests with 999, which is a refusal rather than a 404, so a live
+ * page and a dead one look identical from here. It came from the founders,
+ * which is the same standing the two personal profiles have.
+ *
+ * Still short by design. The note it replaces was right that value comes from
+ * corroboration, so X and Instagram belong here too as they exist. One real
+ * profile beats three invented ones.
  */
 const ORGANIZATION = {
   '@context': 'https://schema.org',
@@ -155,7 +172,7 @@ const ORGANIZATION = {
    * on screen, and for why there is no `sameAs` yet.
    */
   founder: FOUNDERS,
-  sameAs: [],
+  sameAs: ['https://www.linkedin.com/company/esquirely/'],
 }
 
 const WEBSITE = {
