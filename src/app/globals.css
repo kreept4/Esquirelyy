@@ -734,6 +734,43 @@ select.filter-pill option,
   gap: 0.4rem;
 }
 
+/* One person's page. Deliberately plain: a name, a role, a few paragraphs and
+   a link out. Everything this page needs to do is done by the words on it, and
+   a layout with more furniture than that would be dressing up three sentences.
+
+   Narrow measure, because prose read at the width of a job board is prose
+   nobody finishes. */
+.person-page { max-width: 38rem; padding-block: 3.5rem 4.5rem; }
+.person-crumb { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 1.6rem; }
+.person-crumb a { color: var(--ink-muted); text-decoration: none; }
+.person-crumb a:hover { color: var(--ink); }
+.person-photo {
+  display: block;
+  width: 7rem;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: 999px;
+  margin-bottom: 1.4rem;
+  background: var(--cream-dark);
+}
+.person-name { font-size: clamp(2rem, 6vw, 2.9rem); line-height: 1.02; letter-spacing: -0.02em; color: var(--ink); }
+.person-role {
+  font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-muted); margin: 0.6rem 0 2rem 0;
+}
+.person-bio { font-size: 1rem; line-height: 1.65; color: var(--ink); margin: 0 0 1.1rem 0; }
+.person-link {
+  display: inline-block; margin-top: 0.8rem; font-size: 0.82rem;
+  color: var(--mint-deep); text-decoration: underline; text-underline-offset: 3px;
+}
+.person-back {
+  margin-top: 3rem; padding-top: 1.4rem;
+  border-top: 1px solid rgba(36, 31, 22, 0.12);
+  font-size: 0.82rem;
+}
+.person-back a { color: var(--ink); text-decoration: none; }
+.person-back a:hover { text-decoration: underline; }
+
 /* What a firm currently has open, on its own profile.
 
    Rows rather than cards, and that is the whole decision. A card grid here

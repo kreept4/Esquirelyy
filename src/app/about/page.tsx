@@ -110,6 +110,20 @@ function PersonCard({ person, className = '' }: { person: Person; className?: st
     </>
   )
 
+  /* ⚠ A PAGE BEATS A PROFILE, WHERE THERE IS ONE. A card links to this
+     person's own page when they have a bio, and out to LinkedIn when they do
+     not. Sending a reader off the site while we hold a page about the same
+     person would be handing away the visit and the entity signal at once; the
+     page carries the LinkedIn link anyway, so nothing is lost by going through
+     it. Where there is no page, the profile is the best thing we have. */
+  if (person.slug && person.bio?.trim()) {
+    return (
+      <Link href={`/about/${person.slug}`} className={`about-card about-card-link ${className}`}>
+        {body}
+      </Link>
+    )
+  }
+
   if (!person.linkedin) {
     return <div className={`about-card ${className}`}>{body}</div>
   }
