@@ -315,15 +315,22 @@ export default function AboutPage() {
                 contradicts its own title makes a reader work out which one to
                 believe.
 
-                The closure keeps one clause, because somebody who came here
-                looking for the programme still needs telling. What went is the
-                line about terms being published rather than negotiated, which
-                is a detail about how the programme runs and belongs on the
-                programme's own page, not in a paragraph asking for feedback. */}
+                ⚠ AND THE AMBASSADOR CLOSURE IS OUT OF THIS PARAGRAPH ENTIRELY,
+                which the first rewrite kept as a trailing clause and should not
+                have. "Campus ambassador applications are closed, but this is
+                always open" gave "this" nothing to refer to: no thing capable
+                of being open had been named, so a reader had to reverse
+                engineer which of the two halves it meant.
+
+                It was also the third statement of the same fact on one page.
+                The programme's own page says it, the "Joining us" note above
+                says it, and this said it again under a heading about something
+                else. Two ideas under a heading that promises one is what made
+                the paragraph read oddly, and cutting the one the heading does
+                not promise is the fix. */}
             <p className="grotesk-regular about-outro">
-              If something here is wrong, thin or useless for your faculty, that is what we most
-              want to hear. Campus ambassador applications are closed while we get the intake
-              right, but this is always open.
+              If a listing here is wrong, or something your faculty needs is missing, tell us. We
+              read everything that comes in.
             </p>
             <div className="about-actions">
               <Link href="/contact" className="grotesk-bold about-cta">
