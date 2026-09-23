@@ -308,11 +308,22 @@ export default function AboutPage() {
               link because what the role involves is still worth reading. */}
           <section className="about-section">
             <p className="grotesk-bold about-section-title">Tell us what is missing</p>
+            {/* ⚠ THE ASK LEADS NOW, AND IT USED TO BE LAST. The heading above
+                says "Tell us what is missing" and the paragraph under it spent
+                two thirds of itself on a programme being closed before reaching
+                the thing the heading promised. A section whose first sentence
+                contradicts its own title makes a reader work out which one to
+                believe.
+
+                The closure keeps one clause, because somebody who came here
+                looking for the programme still needs telling. What went is the
+                line about terms being published rather than negotiated, which
+                is a detail about how the programme runs and belongs on the
+                programme's own page, not in a paragraph asking for feedback. */}
             <p className="grotesk-regular about-outro">
-              Campus ambassador applications are closed while we get the intake right, and the
-              terms are published rather than negotiated whenever they reopen. What is always open
-              is the other half of it: if something here is wrong, thin or useless for your
-              faculty, that is the thing we most want to hear.
+              If something here is wrong, thin or useless for your faculty, that is what we most
+              want to hear. Campus ambassador applications are closed while we get the intake
+              right, but this is always open.
             </p>
             <div className="about-actions">
               <Link href="/contact" className="grotesk-bold about-cta">
