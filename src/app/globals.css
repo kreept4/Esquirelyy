@@ -755,14 +755,28 @@ select.filter-pill option,
    be shorter than the screen. Without a floor the footer climbs up the page and
    leaves the section looking half-built, which is the exact impression an empty
    section can least afford. */
-.articles-page, .article-page {
+.article-page {
   max-width: 38rem;
   padding-block: 3.5rem 4.5rem;
   min-height: 100vh;
   min-height: 100dvh;
 }
-.articles-title { font-size: clamp(2rem, 6vw, 2.9rem); line-height: 1.02; letter-spacing: -0.02em; color: var(--ink); }
-.articles-lede { font-size: 1rem; line-height: 1.6; color: var(--ink-muted); margin: 1rem 0 2.5rem 0; }
+
+/* The index body, under the amber masthead.
+
+   ⚠ NO HEIGHT FLOOR HERE, UNLIKE .article-page. The index now sits inside
+   .page-main, which already carries the 100vh-then-100dvh pair, and a second
+   100dvh floor nested inside the first would guarantee a page two screens tall
+   with nothing in the second. The reading page keeps its own because it is not
+   wrapped in .page-main.
+
+   Narrow measure all the same: an index read at the width of the job board is
+   an index nobody scans. The side padding is for the phone, where .shell's 94vw
+   gutter alone leaves the type almost touching the edge. */
+.articles-body {
+  max-width: 38rem;
+  padding: 2.5rem 1.25rem 4rem;
+}
 
 /* ⚠ NO RULES ABOVE AND BELOW ANY MORE. They were there to give a lone
    sentence something to sit in, which an illustration now does better. Two

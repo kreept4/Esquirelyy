@@ -15,10 +15,17 @@ import WriterMark from '@/components/features/WriterMark'
  * piece written by a Nigerian lawyer, and arrives here. Gating it would remove
  * the only reason to build it.
  *
- * ⚠ THE COPY IS SHORT BECAUSE THIS IS A PRODUCT SURFACE, NOT AN ESSAY. Earlier
- * versions explained the section in paragraphs. A reader is answering one
- * question, "is this for me", and every sentence they have to get through first
- * is a cost. Four scannable lines and a three-line pitch.
+ * ⚠ THE AMBER MASTHEAD IS THE HOUSE SHELL, AND THIS PAGE WAS BUILT WITHOUT IT
+ * BY MISTAKE. page-main + doc-masthead + doc-body is what about, news, contact,
+ * advertise, the tools and the tracker all use. A section landing page with a
+ * plain heading on cream reads as a page from a different site, which is the
+ * last thing a new section needs. The individual article page deliberately does
+ * NOT take it: that is a detail page, and detail pages here (a job, a firm) are
+ * quiet for the same reason.
+ *
+ * ⚠ THE COPY IS SHORT BECAUSE THIS IS A PRODUCT SURFACE, NOT AN ESSAY. A reader
+ * is answering one question, "is this for me", and every sentence they have to
+ * get through first is a cost. Four scannable lines and a three-line pitch.
  */
 
 export const metadata: Metadata = {
@@ -47,88 +54,95 @@ export default function ArticlesPage() {
         ]),
       ]} />
 
-      <main className="shell articles-page">
-        <h1 className="display-black articles-title">Articles</h1>
-        <p className="grotesk-regular articles-lede">
-          Nigerian lawyers and law students, writing about the areas of law that need more
-          attention.
-        </p>
-
-        {articles.length === 0 ? (
-          /* ⚠ THE ARTWORK CARRIES THE EMPTY STATE, NOT AN APOLOGY. A line of
-             grey text saying nothing is here is the most common way a new
-             section announces that it is abandoned. The illustration says what
-             the page is for in the one second before anybody reads, and it goes
-             when the first piece lands. It is decorative, so it is hidden from
-             a screen reader: the sentence under it already says the same thing. */
-          <div className="articles-empty">
-            <img
-              src="/illustrations/publish-article.svg"
-              alt=""
-              aria-hidden
-              className="articles-empty-art"
-            />
-            <p className="grotesk-regular articles-empty-line">
-              No articles yet. The first ones are being written.
+      <main className="page-main doc-page">
+        <header className="doc-masthead">
+          <div className="shell doc-masthead-inner">
+            <h1 className="display-black doc-title">Articles.</h1>
+            <p className="grotesk-regular doc-lede">
+              Nigerian lawyers and law students, writing about the areas of law that need more
+              attention.
             </p>
           </div>
-        ) : (
-          <ul className="articles-list">
-            {articles.map(a => (
-              <li key={a.slug}>
-                <Link href={`/articles/${a.slug}`} className="articles-row">
-                  <span className="articles-row-head">
-                    <WriterMark author={a.author} size={38} />
-                    <span className="articles-row-head-text">
-                      <span className="grotesk-bold articles-row-title">{a.title}</span>
-                      <span className="grotesk-regular articles-row-meta">
-                        {a.author.name} · {articleDate(a.publishedOn)} · {readingMinutes(a)} min
+        </header>
+
+        <div className="shell articles-body">
+          {articles.length === 0 ? (
+            /* ⚠ THE ARTWORK CARRIES THE EMPTY STATE, NOT AN APOLOGY. A line of
+               grey text saying nothing is here is the most common way a new
+               section announces that it is abandoned. The illustration says
+               what the page is for in the second before anybody reads, and it
+               goes when the first piece lands. It is decorative, so it is
+               hidden from a screen reader: the sentence under it says the same
+               thing. */
+            <div className="articles-empty">
+              <img
+                src="/illustrations/publish-article.svg"
+                alt=""
+                aria-hidden
+                className="articles-empty-art"
+              />
+              <p className="grotesk-regular articles-empty-line">
+                No articles yet. The first ones are being written.
+              </p>
+            </div>
+          ) : (
+            <ul className="articles-list">
+              {articles.map(a => (
+                <li key={a.slug}>
+                  <Link href={`/articles/${a.slug}`} className="articles-row">
+                    <span className="articles-row-head">
+                      <WriterMark author={a.author} size={38} />
+                      <span className="articles-row-head-text">
+                        <span className="grotesk-bold articles-row-title">{a.title}</span>
+                        <span className="grotesk-regular articles-row-meta">
+                          {a.author.name} · {articleDate(a.publishedOn)} · {readingMinutes(a)} min
+                        </span>
                       </span>
                     </span>
-                  </span>
-                  <span className="grotesk-regular articles-row-summary">{a.summary}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+                    <span className="grotesk-regular articles-row-summary">{a.summary}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
 
-        {/* ⚠ THE BRIEF IS ON THE PAGE, WHICH IS WHAT KEEPS IT FROM LOOKING
-            EMPTY. An articles page with no articles has little to say for
-            itself, and the honest way to fill it is the brief rather than
-            decoration. It does two jobs: the page has substance while it is
-            empty, and a writer can tell in five seconds whether their subject
-            fits. Both survive the first pieces landing, which a placeholder
-            article would not.
+          {/* ⚠ THE BRIEF IS ON THE PAGE, WHICH IS WHAT KEEPS IT FROM LOOKING
+              EMPTY. An articles page with no articles has little to say for
+              itself, and the honest way to fill it is the brief rather than
+              decoration. It does two jobs: the page has substance while it is
+              empty, and a writer can tell in five seconds whether their subject
+              fits. Both survive the first pieces landing, which a placeholder
+              article would not.
 
-            ⚠ THE FRAMING IS A VENUE, NOT A COMMISSION. "Write for Esquirely"
-            casts the writer as a contributor to our editorial line. They are
-            not. The piece is theirs, this is where it is published, and the
-            reason to publish it here is the readers. That is also the point
-            commercially: a writer with a link carrying their own name has a
-            reason to send it to their own audience, and that audience lands on
-            Esquirely. */}
-        <section className="articles-brief">
-          <p className="grotesk-bold articles-brief-title">What belongs here</p>
-          <ul className="articles-brief-list">
-            <li className="grotesk-regular">An area of Nigerian law that is not talked about enough</li>
-            <li className="grotesk-regular">A change in the law most people have not caught up with</li>
-            <li className="grotesk-regular">Something you know well, explained plainly</li>
-            <li className="grotesk-regular">Written for a reader who is not a specialist in it</li>
-          </ul>
-        </section>
+              ⚠ THE FRAMING IS A VENUE, NOT A COMMISSION. "Write for Esquirely"
+              casts the writer as a contributor to our editorial line. They are
+              not. The piece is theirs, this is where it is published, and the
+              reason to publish it here is the readers. That is also the point
+              commercially: a writer with a link carrying their own name has a
+              reason to send it to their own audience, and that audience lands
+              on Esquirely. */}
+          <section className="articles-brief">
+            <p className="grotesk-bold articles-brief-title">What belongs here</p>
+            <ul className="articles-brief-list">
+              <li className="grotesk-regular">An area of Nigerian law that is not talked about enough</li>
+              <li className="grotesk-regular">A change in the law most people have not caught up with</li>
+              <li className="grotesk-regular">Something you know well, explained plainly</li>
+              <li className="grotesk-regular">Written for a reader who is not a specialist in it</li>
+            </ul>
+          </section>
 
-        <section className="articles-pitch">
-          <p className="grotesk-bold articles-pitch-title">Publish here</p>
-          <p className="grotesk-regular articles-pitch-body">
-            The piece stays yours. Your name on it, your firm or faculty beside it, and a link you
-            can share anywhere.
-          </p>
-          <p className="grotesk-regular articles-pitch-body">
-            Email <a href="mailto:hello@esquirely.com.ng">hello@esquirely.com.ng</a> with the
-            subject you want to write about. It does not have to be written yet.
-          </p>
-        </section>
+          <section className="articles-pitch">
+            <p className="grotesk-bold articles-pitch-title">Publish here</p>
+            <p className="grotesk-regular articles-pitch-body">
+              The piece stays yours. Your name on it, your firm or faculty beside it, and a link
+              you can share anywhere.
+            </p>
+            <p className="grotesk-regular articles-pitch-body">
+              Email <a href="mailto:hello@esquirely.com.ng">hello@esquirely.com.ng</a> with the
+              subject you want to write about. It does not have to be written yet.
+            </p>
+          </section>
+        </div>
       </main>
       <Footer />
     </>
