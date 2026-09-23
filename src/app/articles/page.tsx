@@ -24,7 +24,7 @@ import { publishedArticles, articleDate, readingMinutes } from '@/lib/articles-d
 export const metadata: Metadata = {
   title: 'Articles',
   description:
-    'Writing by Nigerian law students and lawyers about how legal practice and study actually work here: what a process involved, what it cost, what nobody tells you first.',
+    'Writing by Nigerian law students and lawyers about how legal practice and study actually work in Nigeria: what a process involved, and what it cost.',
   alternates: { canonical: '/articles' },
   openGraph: openGraph({ path: '/articles' }),
 }
@@ -51,8 +51,7 @@ export default function ArticlesPage() {
         <h1 className="display-black articles-title">Articles</h1>
         <p className="grotesk-regular articles-lede">
           Written by Nigerian law students and lawyers, about the parts of practice and study
-          nobody writes down. What a process actually involved, what it cost, what would have been
-          useful to know first.
+          that nobody writes down: what a process actually involved, and what it cost.
         </p>
 
         {articles.length === 0 ? (
@@ -85,6 +84,13 @@ export default function ArticlesPage() {
             piece by somebody at their own stage is far likelier to think they
             could write one than a reader looking at an empty page.
 
+            ⚠ AND THE FIRST DRAFT OF THIS COPY DID NOT SURVIVE READING. It
+            opened "we would rather publish what you already know than
+            commission it", where "it" had nothing to refer to: you cannot
+            commission knowledge. The sentence after it stacked three clauses
+            before reaching the ask. Two shorter sentences, and the referent is
+            a thing that exists.
+
             ⚠ AND IT ASKS FOR A PITCH, NOT A DRAFT. "What you want to cover and
             why you are the one to write it" is two sentences somebody sends on
             a phone. Asking for a finished article first means most people who
@@ -100,11 +106,13 @@ export default function ArticlesPage() {
         <div className="articles-pitch">
           <p className="grotesk-bold articles-pitch-title">Write for Esquirely</p>
           <p className="grotesk-regular articles-pitch-body">
-            We would rather publish what you already know than commission it. If there is
-            something about practice, Law School or your service year that you had to find out
-            the hard way, write to{' '}
-            <a href="mailto:hello@esquirely.com.ng">hello@esquirely.com.ng</a> with what you want
-            to cover and why you are the one to write it. Two sentences is enough to start.
+            Most of what is useful about practising here is not written down anywhere. If you
+            learned something the hard way, we would rather publish your account of it than
+            anything we could write ourselves.
+          </p>
+          <p className="grotesk-regular articles-pitch-body">
+            Email <a href="mailto:hello@esquirely.com.ng">hello@esquirely.com.ng</a>. Say what you
+            would write about and why it should be you. A couple of sentences is plenty.
           </p>
         </div>
       </main>
