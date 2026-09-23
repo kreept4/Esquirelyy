@@ -82,6 +82,11 @@ const TONES = [
  *  and a CV. */
 type Mode = 'manual' | 'cv'
 
+/** The dropdown value that means "none of these, let me type it". A string
+ *  nobody's city could collide with, rather than an empty option that would be
+ *  indistinguishable from "not specified". */
+const OTHER_OFFICE = '__other__'
+
 export default function CoverLetterPage() {
   const { checking, userId } = useRequireAuth()
   const [mode, setMode] = useState<Mode>('manual')
@@ -93,6 +98,7 @@ export default function CoverLetterPage() {
     targetRole: '',
     employer: '',
     office: '',
+    officeAddress: '',
     division: '',
     careerStage: '',
     tone: 'formal and confident',
@@ -164,7 +170,7 @@ export default function CoverLetterPage() {
          Templars' Port Harcourt office and then correcting the employer to
          Aluko leaves Port Harcourt selected against a firm whose offices were
          never offered, and it prints on the letter as the recipient address. */
-      ...(k === 'employer' ? { office: '' } : {}),
+      ...(k === 'employer' ? { office: '', officeAddress: '' } : {}),
     }))
 
   /* Checked here as well as on the server, so a wrong file type or an oversized
@@ -218,6 +224,7 @@ export default function CoverLetterPage() {
       targetRole: item.target_role || '',
       employer: item.employer || '',
       office: '',
+      officeAddress: '',
       division: item.division || '',
       careerStage: item.career_stage || '',
       tone: item.tone || 'formal and confident',
@@ -332,7 +339,9 @@ export default function CoverLetterPage() {
              never sent one, so the recipient block printed the firm name over
              nothing. */
           employerLocation:
-            offices.find(o => o.city === form.office)?.address || undefined,
+            (form.office && form.office !== OTHER_OFFICE
+              ? offices.find(o => o.city === form.office)?.address
+              : form.officeAddress.trim()) || undefined,
         }),
       })
 
@@ -373,7 +382,7 @@ export default function CoverLetterPage() {
     setResult(null)
     setEdited(null)
     setEditing(false)
-    setForm({ firstName: '', targetRole: '', employer: '', office: '', division: '', careerStage: '', tone: 'formal and confident', cvSummary: '', highlights: '', advert: '', employerKnowledge: '' })
+    setForm({ firstName: '', targetRole: '', employer: '', office: '', officeAddress: '', division: '', careerStage: '', tone: 'formal and confident', cvSummary: '', highlights: '', advert: '', employerKnowledge: '' })
     setCvFile(null)
     setMode('manual')
     setError('')
@@ -455,7 +464,7 @@ export default function CoverLetterPage() {
                       appears. Visible rather than behind the fold, unlike the
                       six refinements down there, because this one changes what
                       is printed rather than how the letter reads. */}
-                  {offices.length > 0 && (
+                  {offices.length > 0 ? (
                     <div>
                       <label htmlFor="cl-office" className="tool-label">
                         Which office <span className="tool-label-hint">(optional)</span>
@@ -466,10 +475,47 @@ export default function CoverLetterPage() {
                         {offices.map(o => (
                           <option key={o.city} value={o.city}>{o.city}</option>
                         ))}
+                        {/* ⚠ A FIRM CAN HAVE AN OFFICE WE HAVE NOT RECORDED, and
+                            the directory is a researched list rather than a
+                            complete one. Six missing offices were found and added
+                            in one pass on 10 September alone. Without this the
+                            dropdown quietly asserts that a firm has only the
+                            offices we happen to hold, to the one person who
+                            knows otherwise because they are applying to the
+                            other one. */}
+                        <option value={OTHER_OFFICE}>Another address</option>
                       </select>
                     </div>
-                  )}
+                  ) : null}
                 </div>
+
+                {/* ⚠ THE CANDIDATE MAY TYPE AN ADDRESS, AND AN EARLIER VERSION
+                    OF THIS REFUSED TO LET THEM. The argument against was that a
+                    wrong address prints on a formal letter, which is true and
+                    is not the whole of it: the question is WHO is asserting it.
+                    An address we supply from the directory is Esquirely's claim
+                    and has to be researched. An address the candidate types is
+                    their own claim, on their own letter, to a firm they are
+                    applying to with the advert in front of them. They are
+                    frequently the better source.
+
+                    Refusing it also left most letters without a recipient block
+                    at all, because most employers on the board are not
+                    directory firms: the World Bank, Tangerine, Greenberg
+                    Traurig, the banks. A formal letter missing the one element
+                    that makes it formal, to protect against a mistake only the
+                    writer can make about their own application. */}
+                {(offices.length === 0 || form.office === OTHER_OFFICE) && (
+                  <div className="tool-row">
+                    <label htmlFor="cl-office-address" className="tool-label">
+                      Recipient address <span className="tool-label-hint">(optional)</span>
+                    </label>
+                    <textarea id="cl-office-address" className="tool-textarea grotesk-regular" rows={2}
+                      value={form.officeAddress}
+                      onChange={e => set('officeAddress', e.target.value)}
+                      placeholder="e.g. The Octagon, 13A A. J. Marinho Drive, Victoria Island, Lagos" />
+                  </div>
+                )}
 
                 <div className="tool-row">
                   <label className="tool-label">
