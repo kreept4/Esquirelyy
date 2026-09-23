@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation'
 import Footer from '@/components/layout/Footer'
 import JsonLd, { SITE_URL, breadcrumb, openGraph } from '@/components/seo/JsonLd'
 import { publishedArticles, articleBySlug, articleDate, readingMinutes } from '@/lib/articles-data'
+import { firmForEmployer } from '@/lib/firms-data'
+import WriterMark from '@/components/features/WriterMark'
 
 /**
  * One article.
@@ -51,6 +53,8 @@ export default async function ArticlePage(
   const a = articleBySlug(slug)
   if (!a) notFound()
 
+  const authorFirm = firmForEmployer(a.author.firm)
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -63,6 +67,16 @@ export default async function ArticlePage(
       name: a.author.name,
       description: a.author.affiliation,
       ...(a.author.linkedin ? { sameAs: [a.author.linkedin] } : {}),
+      /* ⚠ POINTS AT THE FIRM'S OWN @id, WHICH ALREADY EXISTS on its directory
+         page, rather than repeating the firm as a loose name. That is what
+         makes it one entity to a search engine instead of two things that
+         happen to share a spelling, and it is the same consolidation the
+         founder pages use. Only for firms in the directory: an employer we do
+         not have a page for gets nothing, because an @id we do not serve is a
+         dangling reference. */
+      ...(authorFirm
+        ? { worksFor: { '@id': `${SITE_URL}/firms/${authorFirm.slug}#firm` } }
+        : {}),
     },
     publisher: { '@id': `${SITE_URL}/#organization` },
     mainEntityOfPage: `${SITE_URL}/articles/${a.slug}`,
@@ -84,20 +98,30 @@ export default async function ArticlePage(
 
         <h1 className="display-black article-title">{a.title}</h1>
 
-        <p className="grotesk-regular article-byline">
-          {a.author.linkedin ? (
-            <a href={a.author.linkedin} target="_blank" rel="noopener noreferrer">
-              {a.author.name}
-            </a>
-          ) : (
-            a.author.name
-          )}
-          <span className="article-byline-sep"> · </span>
-          {a.author.affiliation}
-        </p>
-        <p className="grotesk-regular article-meta">
-          {articleDate(a.publishedOn)} · {readingMinutes(a)} min read
-        </p>
+        {/* ⚠ THE FIRM'S MARK SITS ON THE WRITER'S FACE, NOT IN THE TEXT. See
+            WriterMark for why that is worth building: the reader places the
+            writer instantly, and a firm whose associate is on a well-written
+            piece is visibly attached to it. It degrades to the photograph
+            alone, or to an initial, so no writer is blocked on having both. */}
+        <div className="article-byline-row">
+          <WriterMark author={a.author} size={46} />
+          <div>
+            <p className="grotesk-regular article-byline">
+              {a.author.linkedin ? (
+                <a href={a.author.linkedin} target="_blank" rel="noopener noreferrer">
+                  {a.author.name}
+                </a>
+              ) : (
+                a.author.name
+              )}
+              <span className="article-byline-sep"> · </span>
+              {a.author.affiliation}
+            </p>
+            <p className="grotesk-regular article-meta">
+              {articleDate(a.publishedOn)} · {readingMinutes(a)} min read
+            </p>
+          </div>
+        </div>
 
         {a.body.filter(p => p.trim()).map((para, i) => (
           <p key={i} className="grotesk-regular article-body">{para.trim()}</p>

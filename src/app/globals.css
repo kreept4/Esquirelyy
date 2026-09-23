@@ -746,11 +746,12 @@ select.filter-pill option,
 .articles-title { font-size: clamp(2rem, 6vw, 2.9rem); line-height: 1.02; letter-spacing: -0.02em; color: var(--ink); }
 .articles-lede { font-size: 1rem; line-height: 1.6; color: var(--ink-muted); margin: 1rem 0 2.5rem 0; }
 
+/* ⚠ NO RULES ABOVE AND BELOW ANY MORE. They were there to give a lone
+   sentence something to sit in, which an illustration now does better. Two
+   full-width hairlines around one line of text read as an empty table. */
 .articles-empty-line {
   font-size: 0.95rem; line-height: 1.6; color: var(--ink-muted);
-  margin: 0; padding: 1.4rem 0;
-  border-top: 1px solid rgba(36, 31, 22, 0.12);
-  border-bottom: 1px solid rgba(36, 31, 22, 0.12);
+  margin: 0.4rem 0 0 0;
 }
 
 .articles-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(36, 31, 22, 0.12); }
@@ -807,8 +808,8 @@ select.filter-pill option,
   background: var(--ink);
 }
 .articles-pitch-title { margin-bottom: 0.7rem; }
-.articles-pitch-body { font-size: 0.9rem; line-height: 1.6; color: var(--ink-muted); margin: 0; }
-.articles-pitch-body a { color: var(--mint-deep); text-decoration: underline; text-underline-offset: 3px; }
+.articles-pitch-body { font-size: 0.9rem; line-height: 1.6; color: var(--ink-muted); margin: 0 0 0.8rem 0; }
+.articles-pitch-body:last-child { margin-bottom: 0; }
 .articles-pitch-body a { color: var(--mint-deep); text-decoration: underline; text-underline-offset: 3px; }
 
 .article-crumb { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 1.6rem; }
@@ -834,6 +835,112 @@ select.filter-pill option,
 }
 .article-back a { color: var(--ink); text-decoration: none; }
 .article-back a:hover { text-decoration: underline; }
+
+/* The writer's face with their firm's mark on it. Used on the articles index
+   and on the byline of a piece.
+
+   ⚠ THE BADGE OVERLAPS THE PHOTOGRAPH RATHER THAN SITTING BESIDE IT. Beside it
+   reads as two logos in a row, and the reader has to work out which belongs to
+   whom. Overlapped at the corner it reads the way a verified mark does, as one
+   fact about one person, and it costs no horizontal space in a list row.
+
+   The ring is the page ground rather than white, so the mark reads as cut out
+   of the photograph on both the cream and the panel backgrounds. */
+.writer-mark {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--cream-dark);
+  overflow: visible;
+}
+.writer-mark-face {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 999px;
+  display: block;
+}
+/* No photograph yet. An initial on the panel ground, which is quieter than a
+   silhouette icon and does not pretend to be a picture of anybody. */
+.writer-mark-initial {
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--ink-muted);
+  letter-spacing: 0.02em;
+}
+.writer-mark-badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 44%;
+  height: 44%;
+  min-width: 15px;
+  min-height: 15px;
+  border-radius: 999px;
+  background: var(--cream);
+  box-shadow: 0 0 0 1.5px var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+/* contain, not cover. A firm's mark is artwork with its own whitespace, and
+   cropping it to fill a disc is how a wordmark ends up showing two letters. */
+.writer-mark-badge img {
+  width: 82%;
+  height: 82%;
+  object-fit: contain;
+  display: block;
+}
+
+/* An index row is now a face, a title and a meta line, then the summary under
+   the full width rather than indented to the text column. Indenting it would
+   line the summary up with the title and make the row look like a comment
+   thread. */
+.articles-row-head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.articles-row-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.article-byline-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 1.4rem 0 2.2rem 0;
+}
+/* Margins move to the row, so the two lines sit tight beside the face. */
+.article-byline-row .article-byline { margin: 0; }
+.article-byline-row .article-meta { margin: 0.15rem 0 0 0; }
+
+/* The articles empty state. The illustration does the work here, so it is
+   allowed to be larger than the one in EmptyState, which sits under a heading
+   and has to stay out of its way. This one has nothing above it to defer to. */
+.articles-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0 2rem 0;
+}
+.articles-empty-art {
+  display: block;
+  width: 100%;
+  max-width: 21rem;
+  height: auto;
+  /* Held back slightly so it reads as a mood behind the sentence rather than
+     as a graphic the page is about. */
+  opacity: 0.92;
+}
 
 .person-page { max-width: 38rem; padding-block: 3.5rem 4.5rem; }
 .person-crumb { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 1.6rem; }

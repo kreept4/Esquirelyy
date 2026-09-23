@@ -44,22 +44,28 @@
  * WHAT BELONGS HERE
  * ============================================================
  *
- * Things only the writer knows. What the NYSC posting process is actually like,
- * how a particular firm's assessment centre runs, what a Law School term really
- * costs this year, what a clerkship at a particular court involves day to day.
+ * Substantive writing about Nigerian law. An area that is not getting enough
+ * attention, a change most people have not caught up with, a subject the writer
+ * knows well set out plainly for somebody who does not.
  *
- * NOT general legal commentary. There is a great deal of that already, it
- * competes with established Nigerian legal blogs on their own ground, and
- * nobody arrives at a careers platform looking for a case note. The test is the
- * same one the job board uses: could a reader act differently tomorrow having
- * read it.
+ * ⚠ THIS REPLACES AN EARLIER RULE THAT SAID THE OPPOSITE, so ignore any copy
+ * still written to it. The section was first built for first-hand careers
+ * accounts, how a firm's assessment centre runs and what a Law School term
+ * costs, with general legal commentary explicitly excluded. Bolu overruled that
+ * on 2026-09-23: this is for lawyers and law students writing about the areas of
+ * law that need to be talked about. A careers account is not banned, but it is
+ * no longer the brief.
  *
- * ⚠ AND NOTHING THAT READS AS LEGAL ADVICE. Everything here is written by law
- * students and junior lawyers under Esquirely's masthead, which is exactly the
- * combination that turns a confident paragraph into a liability. An article
- * describing what a process was like is reporting. An article telling a reader
- * what they should do about their own legal situation is not, and does not go
- * up whatever else is good about it.
+ * The test that survives the change is the reader's. Could somebody who is not
+ * a specialist in the subject come away understanding it. A piece written for
+ * the approval of people who already agree fails that however correct it is.
+ *
+ * ⚠ AND NOTHING THAT READS AS LEGAL ADVICE, WHICH MATTERS MORE UNDER THIS
+ * BRIEF THAN THE OLD ONE. An account of what a process felt like could hardly
+ * be mistaken for advice. Writing about what the law is can be, and it goes up
+ * under Esquirely's masthead written by law students and junior lawyers.
+ * Explaining a rule is commentary. Telling a reader what to do about their own
+ * situation is not, and does not publish whatever else is good about it.
  */
 
 export type ArticleAuthor = {
@@ -73,6 +79,33 @@ export type ArticleAuthor = {
   affiliation: string
   /** Optional, and only ever a URL the author supplied themselves. */
   linkedin?: string
+  /**
+   * The writer's photograph, served from our own domain.
+   *
+   * ⚠ NOT A LINKEDIN URL, for the reason recorded on the same field in
+   * about/people.ts: LinkedIn answers automated requests with 999 so the image
+   * address cannot be read off a profile, and the CDN URLs it hands a browser
+   * are signed and expire. A photograph on a page about a real person that
+   * works today and breaks in a month is worse than none. Save it, put it in
+   * public/writers/, point at it here.
+   */
+  image?: string
+  /**
+   * Where they work, as free text, matched against the directory.
+   *
+   * ⚠ THE FIRM'S OWN MARK IS THE POINT OF THIS FIELD. A piece by an associate
+   * at a firm in our directory carries that firm's logo beside the byline, and
+   * that is worth more to both sides than the firm name in text: the reader
+   * places the writer instantly, and the writer's employer is visibly attached
+   * to something they wrote well.
+   *
+   * ⚠ RESOLVED THROUGH firmForEmployer, NOT STORED AS A SLUG OR A PATH. That
+   * is the same matcher the logo lookup, the job board and the firm pages use,
+   * so a writer's firm resolves exactly as an employer on a listing does and
+   * the two cannot disagree. A firm outside the directory simply gets no mark,
+   * which is the honest outcome rather than a broken image.
+   */
+  firm?: string
 }
 
 export type Article = {
