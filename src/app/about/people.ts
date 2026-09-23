@@ -4,7 +4,8 @@
  * `linkedin` is optional and holds a full profile URL. A card renders the
  * LinkedIn mark and becomes clickable only when one is present.
  *
- * The rest are left empty deliberately rather than filled from a web search.
+ * Only the creative designer is left empty now. The rest were supplied by the
+ * founders rather than found, which is the bar this file has always set.
  * Every name here belongs to a real person, and the searches returned several
  * plausible profiles for each without a way to tell them apart: a Boluwatife
  * Ogunleye who is a student at Babcock, an Oreoluwa Adeyemi at Lagos State
@@ -34,10 +35,31 @@ export const TEAM: Person[] = [
   { name: 'ADEYEMI OREOLUWA, ESQ.', role: 'Creative designer', linkedin: '' },
 ]
 
+/**
+ * ⚠ THREE OF THESE FIVE URLS MATCH THE STORED NAME EXACTLY AND TWO DO NOT.
+ * All five were supplied by Bolu, which is the confirmation this file asks for,
+ * so all five are in. The two variances are written down rather than quietly
+ * absorbed, because the next person to notice them should not have to work out
+ * whether the name or the link is the wrong half.
+ *
+ * OFOMIYONWON is the one worth a second look. The stored given name is
+ * Ayotomide and the profile reads Oluwatimileyin. The surname is distinctive
+ * and the account on the mailing list for this person is timofomiyonwon@, where
+ * "tim" is Oluwatimileyin, so the profile is corroborated twice over and it is
+ * the STORED NAME that is most likely wrong or incomplete. Left as supplied
+ * until somebody asks them, because correcting a real person's name on their
+ * own say-so is not something to guess at either.
+ *
+ * ADEPOYIGI is a spelling variance only: MofeYintoluwa here, mofeHintoluwa in
+ * the profile slug. Same person, one letter.
+ *
+ * OLUWATENIOLA resolves cleanly once you know "Teni" is the short form, and the
+ * mailing list carries tenioluwatumise@ for the same person.
+ */
 export const AMBASSADORS: Person[] = [
-  { name: 'OFOMIYONWON AYOTOMIDE, ESQ.', role: 'Honorary ambassador', linkedin: '' },
-  { name: 'ADEPOYIGI MOFEYINTOLUWA, ESQ.', role: 'Honorary ambassador', linkedin: '' },
-  { name: 'ENIKUOMEHIN FADERERA, ESQ.', role: 'Honorary ambassador', linkedin: '' },
-  { name: 'FOWOWE ADETOMIWA, ESQ.', role: 'Honorary ambassador', linkedin: '' },
-  { name: 'OLUWATENIOLA OLUWATUNMISE, ESQ.', role: 'Honorary ambassador', linkedin: '' },
+  { name: 'OFOMIYONWON AYOTOMIDE, ESQ.', role: 'Honorary ambassador', linkedin: 'https://www.linkedin.com/in/oluwatimileyin-ofomiyonwon-o-o-a-acarb-897165304/' },
+  { name: 'ADEPOYIGI MOFEYINTOLUWA, ESQ.', role: 'Honorary ambassador', linkedin: 'https://www.linkedin.com/in/mofehintoluwaadepoyigi/' },
+  { name: 'ENIKUOMEHIN FADERERA, ESQ.', role: 'Honorary ambassador', linkedin: 'https://www.linkedin.com/in/fadereraenikuomehin/' },
+  { name: 'FOWOWE ADETOMIWA, ESQ.', role: 'Honorary ambassador', linkedin: 'https://www.linkedin.com/in/fowowe-adetomiwa/' },
+  { name: 'OLUWATENIOLA OLUWATUNMISE, ESQ.', role: 'Honorary ambassador', linkedin: 'https://www.linkedin.com/in/teni-oluwatumise-b574611a9/' },
 ]
