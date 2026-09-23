@@ -86,6 +86,19 @@
  * rows, so neither produces anything on the board.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
+  /* 23 September. A one-day programme on 7 October, in a room in Victoria
+     Island, for graduates who have not yet been called.
+
+     Open for the reason the three below it are: the firm posted the flier
+     publicly and entries go to a form whose link is printed on it, so there is
+     no application route here a gate protects.
+
+     ⚠ AND THE CLOCK IS SHORTER THAN IT LOOKS. This is not a deadline a reader
+     can meet late: it is a date, a room and six hours. Somebody who finds the
+     listing through a search, signed out, and is bounced to /auth/login has
+     lost time against an event that does not move. */
+  'the-law-crest-one-day-legal-internship-program-2026',
+
   /* 21 September, and the third opportunity. Open for the reason the two
      opportunities below are: the firm published the flier for anyone to read,
      and entries go to a Google form whose link the flier carries as a QR code,

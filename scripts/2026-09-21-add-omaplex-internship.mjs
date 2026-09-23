@@ -135,32 +135,31 @@ const row = {
     'corporate governance, and sport arbitration. Sponsored by O.M D’Law.',
   eligibility:
     'Law students and aspiring lawyers. The firm sets no class of degree, no ' +
-    'year of study and no call requirement on the flier.',
+    'year of study and no call requirement.',
   application_steps: [
     {
       step: 1,
       title: 'Check you are inside the window',
       detail:
-        'Applications close on 5 October 2026. The flier gives one date and no ' +
-        'rolling intake, so that is the end of it.',
+        'Applications close on 5 October 2026. There is one date and no rolling ' +
+        'intake, so that is the end of it.',
     },
     {
       step: 2,
       title: 'Register on the form',
       detail:
-        'Apply opens the firm’s registration form, the same one the QR code on ' +
-        'the flier points at. It may ask you to be signed in to a Google ' +
-        'account before it will accept an entry.',
+        'Apply opens the firm’s registration form. It may ask you to be signed in ' +
+        'to a Google account before it will accept an entry.',
       off_platform: true,
     },
     {
       step: 3,
-      title: 'Ask the firm what the flier does not say',
+      title: 'Ask the firm what is not answered here',
       detail:
-        'The flier does not give the dates the internship itself runs, the time ' +
-        'commitment expected each week, or whether anything is paid. Omaplex ' +
-        'publishes contact details on its own website and posts as ' +
-        '@omaplexlawfirm. Worth settling before you commit.',
+        'The dates the internship itself runs, the time commitment expected each ' +
+        'week and whether anything is paid are all unpublished. Omaplex gives ' +
+        'contact details on its own website and posts as @omaplexlawfirm. ' +
+        'Worth settling before you commit.',
       off_platform: true,
     },
   ],

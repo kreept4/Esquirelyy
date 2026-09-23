@@ -133,7 +133,7 @@ const row = {
     'The sixth edition of the internship competition run by J.O Fabunmi & Co, a ' +
     'full-service firm founded in 1991 and named for its founding partner, ' +
     'Professor J.O. Fabunmi. It is open to Nigerians waiting to enter the ' +
-    'Nigerian Law School, and the firm has put NGN 3,000,000 behind it. ' +
+    'Nigerian Law School. The prize money is 3 million naira. ' +
     'Registration is by form and the window is two weeks.',
   eligibility:
     'Nigerian. Awaiting admission to the Nigerian Law School. A minimum of ' +
@@ -144,26 +144,25 @@ const row = {
       step: 1,
       title: 'Check you are inside the window',
       detail:
-        'Registration runs from 14 to 28 September 2026. The flier gives no ' +
-        'extension and no rolling intake, so the 28th is the end of it.',
+        'Registration runs from 14 to 28 September 2026. There is no extension ' +
+        'and no rolling intake, so the 28th is the end of it.',
     },
     {
       step: 2,
       title: 'Register on the form',
       detail:
-        "Apply opens the firm's registration form, the same one the QR code on " +
-        'the flier points at. Have your class of degree and your university to ' +
-        'hand.',
+        "Apply opens the firm's registration form. Have your class of degree and " +
+        'your university to hand.',
       off_platform: true,
     },
     {
       step: 3,
       title: 'Send questions to the firm, not to the form',
       detail:
-        "The flier carries an enquiry address on the firm's own domain, and it " +
-        'is the right place to confirm what the flier does not say: what the ' +
-        'NGN 3,000,000 covers, and when the internship itself runs. Ask there ' +
-        'rather than in the form.',
+        "The firm publishes an enquiry address on its own domain, and that is the " +
+        'right place to settle anything not answered here: what the prize money ' +
+        'covers, and when the internship itself runs. Ask there rather than in ' +
+        'the form.',
       off_platform: true,
     },
   ],
