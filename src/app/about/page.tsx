@@ -178,19 +178,37 @@ export default function AboutPage() {
                 setup-and-reversal every landing page in the world opens with;
                 the claim underneath it is strong enough to state directly. What
                 is left is what the site does and how it is checked. */}
+            {/* ⚠ THIS LEDE NAMED THINGS THE BOARD NO LONGER CARRIES, which is
+                the one failure a page about checking things cannot afford. It
+                listed "graduate programmes across West Africa", "legal
+                internships at the World Bank and the ECOWAS Commission" and
+                scholarships "in the UK, the Netherlands and Canada". Checked
+                against the live tables: ECOWAS has no active listing, nothing
+                matching a graduate programme is on the board, and there is no
+                Canadian scholarship in the file. One World Bank listing is
+                real, and the UK and Netherlands are.
+
+                A specific list is a promise that has to be re-earned every time
+                the board turns over, and nobody was re-earning it. So the
+                categories are named rather than the instances: those stay true
+                as rows come and go, and the board itself is one tap away for
+                anyone who wants the current list.
+
+                The second paragraph also opened on "Finding opportunities is
+                easy. Telling which are real is not", which is the
+                setup-and-reversal every landing page in the world opens with.
+                The claim under it stands on its own. */}
             <p className="grotesk-regular doc-lede">
               Esquirely is where Nigerian lawyers and law students find what is genuinely open to
-              them. Associate and trainee roles at the firms in our directory, graduate programmes
-              across West Africa, legal internships at the World Bank and the ECOWAS Commission,
-              and postgraduate scholarships in the UK, the Netherlands and Canada.
+              them: roles at the firms in our directory, internships and graduate programmes, and
+              postgraduate scholarships that will actually take a lawyer.
             </p>
             <p className="grotesk-regular doc-lede">
-              Finding opportunities is easy. Telling which are real is not. Most scholarships
-              advertised as open to Africans fund subjects no lawyer can study, and most boards
-              still carry roles that closed weeks ago. So we check every entry against the
-              organisation&rsquo;s own page, record the deadline they publish, and say plainly when
-              something is unpaid, restricted by nationality, or needs a letter from your faculty.
-              What does not survive that check does not go up.
+              Most boards still carry roles that closed weeks ago, and most scholarships advertised
+              as open to Africans fund subjects no lawyer can study. So we check every entry
+              against the organisation&rsquo;s own page, record the deadline they publish, and say
+              plainly when something is unpaid, restricted by nationality, or needs a letter from
+              your faculty. What does not survive that check does not go up.
             </p>
             <p className="grotesk-bold doc-signoff">Stick with us, we are just getting started.</p>
 
@@ -253,11 +271,13 @@ export default function AboutPage() {
                 NO DATE IS PROMISED. "Back in September" is a promise made by
                 whoever writes it and kept by whoever has to. */}
             <p className="grotesk-bold about-note-title">Joining us</p>
+            {/* One sentence. The three that followed it explained at length why
+                we are not taking applications, which is an answer to a question
+                nobody standing here has asked; what they want to know is
+                whether to come back. */}
             <p className="grotesk-regular about-note">
-              We are not taking applications for the team at the moment. The positions are
-              volunteer ones on something Nigerian law students are using right now, and we would
-              rather open them when we can actually read what comes in than collect applications
-              nobody answers. It will be announced here when that changes.
+              We are not taking applications for the team at the moment. It will be announced here
+              when that changes.
             </p>
           </section>
 

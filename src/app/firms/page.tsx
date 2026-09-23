@@ -1,5 +1,9 @@
 import type { Metadata } from 'next'
 import FirmsClient from './FirmsClient'
+import { firmForEmployer } from '@/lib/firms-data'
+import { fetchOpportunities, hasClosed } from '@/lib/opportunities'
+import { createClient } from '@supabase/supabase-js'
+import { hasPassed } from '@/lib/day'
 import JsonLd, { SITE_URL, breadcrumb, openGraph } from '@/components/seo/JsonLd'
 import { ALL_FIRMS, isIndexable } from '@/lib/firms-data'
 
@@ -87,7 +91,55 @@ function directorySchema() {
   }
 }
 
-export default function FirmsPage() {
+export default async function FirmsPage() {
+  /**
+   * How many listings each firm actually has open, counted from the board.
+   *
+   * ⚠ THIS USED TO BE A NUMBER TYPED INTO firms-data.ts, AND ALL FOURTEEN OF
+   * THEM WERE WRONG. `openRoles` was a hand-maintained constant with no
+   * connection to the jobs table, so the directory advertised twenty five roles
+   * that mostly did not exist: ÆLEX showed four and had none, Templars three
+   * and none, Olaniwun Ajayi three and none. Aluko showed four while carrying
+   * twelve. Three firms with live listings, Babalakin, Omaplex and The Law
+   * Crest, showed no badge at all.
+   *
+   * Reported from the outside, which is how a hand-maintained number is always
+   * found: nobody edits a count when they add a listing, because the count
+   * lives in a different file and nothing breaks when it drifts.
+   *
+   * Counted here instead. A number derived from the same rows the board renders
+   * cannot disagree with the board, and there is nothing left to maintain.
+   *
+   * Same open test and the same matcher as everywhere else: firmForEmployer,
+   * so a row that resolves a logo resolves a count.
+   */
+  const openCounts = await (async () => {
+    /* ⚠ THE ANON CLIENT, NOT THE COOKIE-BACKED SERVER ONE. This is a public
+       count of public rows and nothing here depends on who is looking, but
+       lib/supabase/server reads cookies, and one cookie read takes the whole
+       route out of static rendering. The first version of this did exactly
+       that and the build said so. The home page reads the same table the same
+       way for the same reason. */
+    const db = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    )
+    const [{ data: jobs }, opps] = await Promise.all([
+      db.from('jobs').select('employer,deadline,is_rolling').eq('is_active', true),
+      fetchOpportunities(),
+    ])
+    const counts: Record<string, number> = {}
+    const add = (employer?: string | null) => {
+      const f = firmForEmployer(employer)
+      if (f) counts[f.slug] = (counts[f.slug] || 0) + 1
+    }
+    for (const j of jobs || []) {
+      if (j.is_rolling || !j.deadline || !hasPassed(j.deadline)) add(j.employer)
+    }
+    for (const o of opps) if (!hasClosed(o.deadline)) add(o.organization)
+    return counts
+  })()
+
   return (
     <>
       <JsonLd
@@ -110,7 +162,7 @@ export default function FirmsPage() {
         {CITIES.slice(0, 6).join(', ')} and elsewhere, listed by tier, practice area and
         city, including which firms are currently hiring.
       </p>
-      <FirmsClient />
+      <FirmsClient openCounts={openCounts} />
     </>
   )
 }

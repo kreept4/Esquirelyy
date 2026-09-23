@@ -316,7 +316,7 @@ const VIEW_META: Record<View, { label: string; Icon: () => React.JSX.Element }> 
  */
 const PAGE_SIZE = 12
 
-export default function FirmsClient() {
+export default function FirmsClient({ openCounts = {} }: { openCounts?: Record<string, number> }) {
   const [search, setSearch] = useState('')
   const [tier, setTier] = useState('')
   const [city, setCity] = useState('')
@@ -769,9 +769,14 @@ export default function FirmsClient() {
                     <span className="meta-line">
                       <MapPinIcon />{firm.offices.map((o: { city: string; address: string }) => o.city).join(' · ')}
                     </span>
-                    {firm.openRoles > 0 && (
+                    {/* ⚠ FROM THE BOARD, NOT FROM firm.openRoles. That field was
+                        a constant typed into firms-data.ts and every one of the
+                        fourteen firms carrying it was wrong: thirteen advertised
+                        roles they did not have and Aluko under-counted its own
+                        twelve by eight. See the note in firms/page.tsx. */}
+                    {(openCounts[firm.slug] ?? 0) > 0 && (
                       <span className="meta-line firm-card-roles">
-                        <BriefcaseIcon />{firm.openRoles} open role{firm.openRoles !== 1 ? 's' : ''}
+                        <BriefcaseIcon />{openCounts[firm.slug]} open role{openCounts[firm.slug] !== 1 ? 's' : ''}
                       </span>
                     )}
                   </div>

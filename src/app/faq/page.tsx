@@ -454,13 +454,11 @@ const GROUPS: Group[] = [
            carries the founding year, which the other does not need. */
         q: 'Who founded Esquirely?',
         short:
-          'Esquirely was founded in 2026 by Boluwatife Ogunleye and Ipinuoluwa Ogunleye. They are ' +
-          'its two co-founders and they still run it.',
+          'Boluwatife Ogunleye and Ipinuoluwa Ogunleye founded it in 2026, and they still run it.',
         a: (
           <p>
-            Esquirely was founded in 2026 by Boluwatife Ogunleye and Ipinuoluwa Ogunleye. They are
-            its two co-founders and they still run it. There is more about both on
-            the <a href="/about">about page</a>.
+            Boluwatife Ogunleye and Ipinuoluwa Ogunleye founded it in 2026, and they still run it.
+            There is more about both on the <a href="/about">about page</a>.
           </p>
         ),
       },
