@@ -15,6 +15,30 @@
   --cream-dark: #F0EBE3;
   --cream-border: #E8E0D5;
 
+  /* ============================================================
+     HOVER EMPHASIS. One answer for every clickable row and card.
+     ============================================================
+
+     ⚠ THE OLD HOVERS WERE VISIBLE ONLY IF YOU ALREADY KNEW THEY WERE THERE.
+     Jobs and scholarships both went to var(--cream), which is #FAF7F2 sitting
+     on a ground that is either white or cream already: on a laptop at an angle
+     it is not a state change, it is a rumour. The article and firm rows used a
+     3.5% ink wash, which is better and still faint.
+
+     ⚠ AND AN AMBER BAR ON THE LEADING EDGE WAS THE WRONG FIX, TRIED AND
+     REMOVED. It was certainly visible, but a coloured rule down the side of a
+     row is the mark for a selected or a current item, not for the one the
+     pointer happens to be over: on a long board it read as though something had
+     been picked, and against the tint it looked like two states firing at once.
+     A pointer hover is the lightest possible signal and should stay one thing.
+
+     So the emphasis is a single warm tint, and it is cream-dark rather than a
+     transparent ink wash. Ink at any strength greys the row toward disabled;
+     cream-dark is the same warm family as the page and reads as the row lifting
+     rather than dimming. It is visible on both grounds this sits on, white
+     boards and cream pages, which a wash tuned for one never is on the other. */
+  --hover-tint: var(--cream-dark);
+
   /* ⚠ PINNED LIGHT, and it is about the controls rather than the palette.
      Native UI the page does not draw, and cannot style, follows this: the open
      select popup, the scrollbars, the date and file pickers. Left unset it
@@ -352,7 +376,12 @@ body {
 }
 
 /* Hover belonged in CSS, not in onMouseEnter/onMouseLeave handlers writing
-   inline styles on every card. */
+   inline styles on every card.
+
+   White rather than the tint here, because these sit on cream with the grid's
+   own border showing through the 1px gaps: lifting a card toward white is what
+   separates it from its neighbours, where darkening it would sink it into
+   them. The amber edge is the same mark the rows use. */
 .card-grid > *:hover {
   background: #ffffff;
 }
@@ -792,7 +821,7 @@ select.filter-pill option,
   padding: 1.2rem 0; border-bottom: 1px solid rgba(36, 31, 22, 0.12);
   text-decoration: none; transition: background-color 0.15s ease;
 }
-.articles-row:hover { background: rgba(36, 31, 22, 0.035); }
+.articles-row:hover { background: var(--hover-tint); }
 .articles-row-title { font-size: 1.05rem; line-height: 1.3; color: var(--ink); }
 .articles-row-summary { font-size: 0.9rem; line-height: 1.5; color: var(--ink-muted); }
 .articles-row-meta { font-size: 0.76rem; line-height: 1.4; color: var(--ink-muted); }
@@ -1029,7 +1058,7 @@ select.filter-pill option,
   text-decoration: none;
   transition: background-color 0.15s ease;
 }
-.firm-open-row:hover { background: rgba(36, 31, 22, 0.035); }
+.firm-open-row:hover { background: var(--hover-tint); }
 .firm-open-title { font-size: 0.9rem; line-height: 1.3; color: var(--ink); }
 .firm-open-meta { font-size: 0.76rem; line-height: 1.4; color: var(--ink-muted); }
 
@@ -1656,10 +1685,7 @@ video:not([controls])::-webkit-media-controls-panel {
   transition: background-color 0.15s ease;
 }
 
-.job-row:not(.job-row-head):hover {
-  /* Cream demoted from surface to accent. */
-  background: var(--cream);
-}
+.job-row:not(.job-row-head):hover { background: var(--hover-tint); }
 
 .job-row-head {
   font-family: var(--font-sans);
@@ -5974,7 +6000,7 @@ video:not([controls])::-webkit-media-controls-panel {
   border-bottom: 0.5px solid #EDE9E2;
   transition: background-color 0.15s ease;
 }
-.sch-row:not(.sch-row-head):hover { background: var(--cream); }
+.sch-row:not(.sch-row-head):hover { background: var(--hover-tint); }
 
 .sch-row-head {
   font-family: var(--font-sans);

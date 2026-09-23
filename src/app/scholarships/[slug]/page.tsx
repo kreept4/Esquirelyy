@@ -149,13 +149,13 @@ export default async function ScholarshipPage(
         <div className="shell job-detail-body">
           <div className="job-detail-main">
             <section>
-              <h2 className="grotesk-bold job-section-heading">About this scholarship</h2>
+              <h2 className="grotesk-bold job-section-heading">What it covers</h2>
               <p className="grotesk-regular job-prose">{s.description}</p>
             </section>
 
             {s.eligibility.length > 0 && (
               <section>
-                <h2 className="grotesk-bold job-section-heading">Eligibility</h2>
+                <h2 className="grotesk-bold job-section-heading">Who can apply</h2>
                 <ul className="job-reqs">
                   {s.eligibility.map((e, i) => (
                     <li key={i} className="grotesk-regular">{e}</li>
@@ -167,18 +167,19 @@ export default async function ScholarshipPage(
                     eligible; this page is how somebody finds out the award
                     exists at all. */}
                 <p className="grotesk-regular job-note">
-                  Summarised from the provider&rsquo;s own criteria, which change each cycle. Check{' '}
+                  These are the provider&rsquo;s own rules, shortened. They change from one year to
+                  the next, so read{' '}
                   <a href={s.link} target="_blank" rel="noopener noreferrer" className="job-note-link">
-                    the official page
+                    their page
                   </a>{' '}
-                  before applying.
+                  before you apply.
                 </p>
               </section>
             )}
 
             {alsoOpen.length > 0 && (
               <section>
-                <h2 className="grotesk-bold job-section-heading">Also open now</h2>
+                <h2 className="grotesk-bold job-section-heading">Other scholarships open now</h2>
                 <ul className="sch-also">
                   {alsoOpen.map(o => (
                     <li key={o.slug}>
@@ -195,7 +196,7 @@ export default async function ScholarshipPage(
 
           <aside className="job-apply-wrap">
             <div className="apply-card">
-              <p className="grotesk-bold apply-card-title">Apply for this scholarship</p>
+              <p className="grotesk-bold apply-card-title">Applying</p>
 
               {s.status === 'closed' ? (
                 /* No link on a closed award. Sending somebody to a provider's
@@ -204,8 +205,8 @@ export default async function ScholarshipPage(
                    not to be. Most of these run yearly, so the useful answer is
                    when to come back. */
                 <p className="grotesk-regular apply-card-note">
-                  This cycle has closed. Most of these run every year, so it is worth checking the
-                  provider nearer the next one.
+                  This round has closed. Most of these run every year, so it is worth checking back
+                  with the provider before the next one opens.
                 </p>
               ) : (
                 <>
@@ -215,13 +216,13 @@ export default async function ScholarshipPage(
                     rel="noopener noreferrer"
                     className="grotesk-bold apply-card-cta"
                   >
-                    {s.status === 'upcoming' ? 'Read the details' : 'Apply now'}{' '}
+                    {s.status === 'upcoming' ? 'See the details' : 'Apply now'}{' '}
                     <ExternalLink size={14} />
                   </a>
                   <p className="grotesk-regular apply-card-note">
                     {s.status === 'upcoming'
-                      ? 'Applications have not opened yet. The provider’s page is where the dates are published.'
-                      : 'Applications are made on the provider’s own site, not on Esquirely.'}
+                      ? 'This one has not opened yet. The provider posts the dates on their own page.'
+                      : 'You apply on the provider’s own site. Nothing about the application happens here.'}
                   </p>
                 </>
               )}
