@@ -772,8 +772,8 @@ select.filter-pill option,
    was trying to say, without borrowing a mark that means something else. */
 .articles-brief,
 .articles-pitch {
-  margin-top: 2.2rem;
-  padding: 1.4rem 1.5rem;
+  margin-top: 1.5rem;
+  padding: 0.95rem 1.1rem;
   background: var(--cream-dark);
   border: 1px solid rgba(36, 31, 22, 0.1);
   border-radius: 2px;
@@ -784,15 +784,15 @@ select.filter-pill option,
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink);
-  margin: 0 0 0.9rem 0;
+  margin: 0 0 0.55rem 0;
 }
 .articles-brief-list { list-style: none; margin: 0; padding: 0; }
 .articles-brief-list li {
   position: relative;
-  padding-left: 1.05rem;
-  margin-bottom: 0.7rem;
-  font-size: 0.9rem;
-  line-height: 1.6;
+  padding-left: 0.9rem;
+  margin-bottom: 0.38rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
   color: var(--ink-muted);
 }
 .articles-brief-list li:last-child { margin-bottom: 0; }
@@ -802,13 +802,13 @@ select.filter-pill option,
   content: '';
   position: absolute;
   left: 0;
-  top: 0.62rem;
-  width: 5px;
-  height: 5px;
+  top: 0.48rem;
+  width: 4px;
+  height: 4px;
   background: var(--ink);
 }
-.articles-pitch-title { margin-bottom: 0.7rem; }
-.articles-pitch-body { font-size: 0.9rem; line-height: 1.6; color: var(--ink-muted); margin: 0 0 0.8rem 0; }
+.articles-pitch-title { margin-bottom: 0.55rem; }
+.articles-pitch-body { font-size: 0.85rem; line-height: 1.55; color: var(--ink-muted); margin: 0 0 0.5rem 0; }
 .articles-pitch-body:last-child { margin-bottom: 0; }
 .articles-pitch-body a { color: var(--mint-deep); text-decoration: underline; text-underline-offset: 3px; }
 
