@@ -325,6 +325,111 @@ const SCHOLARSHIPS: Scholarship[] = [
     link: 'https://www.maastrichtuniversity.nl/studeren/toelating-inschrijving/financing-your-studies/scholarships/maastricht-university-nl-high',
   },
 
+  {
+    /* Added 23 September 2026.
+     *
+     * ⚠ THE ONLY ENTRY HERE THAT NAMES LAW DEGREES OUTRIGHT. Most schemes on
+     * this list admit a lawyer as a side effect of admitting everybody; Oxford
+     * Law's own page for this one lists the eligible courses as the BCL, the
+     * MJur and the MSc in Law and Finance, which are precisely the three
+     * degrees a Nigerian lawyer goes to Oxford to take. That makes it the
+     * strongest fit on the page, and it is why it was worth verifying properly
+     * rather than taking from an aggregator.
+     *
+     * ⚠ WHAT WAS VERIFIED, AND WHERE, BECAUSE ONE PIECE COULD NOT BE.
+     *   courses + funding  law.ox.ac.uk, the faculty's own page: BCL, MJur,
+     *                      MLF; 100% of course fees and a living grant of at
+     *                      least GBP 20,780.
+     *   deadline           ox.ac.uk and the Trust both say the same thing, and
+     *                      it is not a single date: the scholarship is applied
+     *                      for inside the Oxford graduate application, so the
+     *                      deadline is your COURSE's deadline, which for the
+     *                      law degrees falls in January. That is written as it
+     *                      stands rather than flattened into one date.
+     *   Nigeria            NOT confirmed on an Oxford page. ox.ac.uk answers
+     *                      403 to an automated fetch, so the eligible-country
+     *                      list itself could not be read. Nigeria appears on
+     *                      every secondary listing of it and the programme is
+     *                      for emerging economies, so this goes up, and the
+     *                      eligibility line says plainly that the list is the
+     *                      thing to check.
+     *
+     * ⚠ NO closesOn, DELIBERATELY. "The January deadline for your course" is
+     * not a date this file can hold: the BCL, the MJur and the MLF do not all
+     * close on the same day and the dates move each cycle. Inventing one would
+     * put it in a closing-soon list on the strength of a guess, which the
+     * parser note at the foot of this file exists to prevent. It falls back to
+     * the hand-typed status, and that is the honest cost of a real deadline
+     * nobody publishes as a single date. */
+    slug: 'weidenfeld-hoffmann-scholarship',
+    title: 'Weidenfeld-Hoffmann Scholarships and Leadership Programme',
+    provider: 'Weidenfeld-Hoffmann Trust and the University of Oxford',
+    region: 'United Kingdom',
+    level: 'BCL, MJur or MSc in Law and Finance at Oxford',
+    funding: '100% of course fees and a living grant of at least GBP 20,780 a year, plus a leadership programme',
+    deadline: 'Apply with your Oxford course application. The law deadlines fall in January for entry the following October',
+    status: 'upcoming',
+    description:
+      'The one award on this page that names law degrees rather than admitting a lawyer by accident. Oxford Law lists the BCL, the MJur and the MSc in Law and Finance as eligible, which are the three degrees Nigerian lawyers actually go to Oxford for. It is aimed at people intending to return home and work in public life, so the selection weighs what you plan to do with it as heavily as the transcript.',
+    eligibility: [
+      'A national of an eligible country. Nigeria appears on the published lists, but check the Oxford page for your cycle: the list is revised and it is the only version that counts',
+      'Applying to start the BCL, the MJur or the MSc in Law and Finance',
+      'You intend to return to your country of ordinary residence after the course',
+      'Selected inside the Oxford graduate application, so the course deadline is the real deadline. Missing it costs you the scholarship as well as the place',
+    ],
+    link: 'https://www.ox.ac.uk/admissions/graduate/fees-and-funding/fees-funding-and-scholarship-search/weidenfeld-hoffmann-scholarships-and-leadership-programme',
+  },
+
+  {
+    /* Added 23 September 2026.
+     *
+     * ⚠ THE FIRST NIGERIAN-FUNDED AWARD ON THIS PAGE, and its absence was the
+     * real gap rather than any particular scheme. Every other entry here is a
+     * foreign government or a foreign university deciding to fund a Nigerian.
+     * This is Nigerian money, with a Nigerian eligibility rule, and for a
+     * reader from the nine states it is very likely the shortest queue they
+     * will ever stand in: the field is not the whole country, it is the Niger
+     * Delta.
+     *
+     * ⚠ LAW IS AN APPROVED DISCIPLINE, WHICH IS THE ONLY REASON IT QUALIFIES
+     * FOR THIS FILE. The header's rule is that a scholarship welcoming
+     * Nigerians while funding only STEM does not belong, and NDDC does publish
+     * a closed list of disciplines: agricultural sciences, engineering,
+     * environmental sciences, geosciences, IT, law, management sciences,
+     * medicine, architecture and hospitality. Law is named in it.
+     *
+     * ⚠ AND IT IS RESTRICTED BY STATE OF ORIGIN, WHICH THE ELIGIBILITY SAYS
+     * FIRST. Nine states, and a reader from the other twenty-eight cannot
+     * apply at any academic standard. That is the fact that decides whether
+     * this row is worth a minute, so it leads rather than sitting under the
+     * funding.
+     *
+     * CLOSED, NOT UPCOMING. The 2026/2027 window ran 23 March to 19 April 2026
+     * and shut five months ago. The Commission has run it in that part of the
+     * year repeatedly, but it does not publish next cycle's dates in advance,
+     * so there is no opensOn to derive from and writing one would be inventing
+     * the one fact a reader would act on. It falls back to the hand-typed
+     * status and wants checking each March. */
+    slug: 'nddc-foreign-postgraduate-scholarship',
+    title: 'NDDC Foreign Postgraduate Scholarship',
+    provider: 'Niger Delta Development Commission',
+    region: 'Nigeria, for study abroad',
+    level: "Master's abroad, in an approved discipline",
+    funding: 'Tuition, air travel, a living stipend and study allowances',
+    deadline: 'The 2026/2027 window ran 23 March to 19 April 2026. Next cycle unannounced; the Commission has opened in March in past years',
+    status: 'closed',
+    description:
+      'The Commission funds Niger Delta graduates through postgraduate study abroad, and law is on its published list of approved disciplines. Because eligibility turns on state of origin rather than on nationality alone, the field is a fraction of the size of the open-to-all schemes above, which is the whole point of it for anyone who qualifies.',
+    eligibility: [
+      'Indigene of one of the nine Niger Delta states: Abia, Akwa Ibom, Bayelsa, Cross River, Delta, Edo, Imo, Ondo or Rivers. Nothing else on this list is a substitute',
+      'A first degree from an accredited university, Second Class Upper or better for most routes',
+      'Under 40 at the time of applying',
+      'Admission already held for a postgraduate programme at a foreign university in an approved discipline, law included',
+      'NYSC discharge or exemption certificate, and a local government identification letter',
+    ],
+    link: 'https://scholarship.nddc.gov.ng/',
+  },
+
 ]
 
 /**
