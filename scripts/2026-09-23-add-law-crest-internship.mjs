@@ -79,8 +79,20 @@ const row = {
   logo_url: '/firm-logos/law-crest.png',
   source_url: 'https://www.thelawcrest.com',
   practice_areas: null,
+  /* ⚠ NO LINKEDIN ENTRY, AND THE FIRST VERSION HAD ONE WITHOUT A URL. A handle
+     with no url renders as plain text beside two that are links, which reads as
+     a broken link rather than as a deliberate omission: reported as "the
+     LinkedIn in the TLC listing is not clicking like the other ones", and it
+     was right.
+
+     The note on firm_handles in lib/opportunities.ts says why the URL cannot be
+     built from the @name: a company's LinkedIn vanity is unrelated to its
+     handle and the templated guess answers 404. Instagram and X do template
+     cleanly, so they carry real URLs and stay.
+
+     Omitted rather than guessed. Add the real company URL here and it becomes a
+     link like the other two. */
   firm_handles: {
-    linkedin: { handle: 'thelawcrestllp' },
     instagram: { handle: 'thelawcrestllp', url: 'https://www.instagram.com/thelawcrestllp/' },
     x: { handle: 'thelawcrestllp', url: 'https://x.com/thelawcrestllp' },
   },

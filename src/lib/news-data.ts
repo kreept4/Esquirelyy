@@ -236,6 +236,31 @@ const ITEMS: NewsItem[] = [
      and rederiving those numbers costs more than the dead CSS does. */
   {
     /**
+     * The Law Crest one-day internship.
+     *
+     * ⚠ IT SITS ABOVE THE OMAPLEX SLIDE DESPITE CLOSING TWO DAYS LATER, and
+     * the reason is not the date. The two are near neighbours on the board and
+     * they are opposites in the one respect that decides who can take them:
+     * Omaplex is virtual and open to anyone in Nigeria, this is six hours in a
+     * room in Victoria Island. A reader who has just been told internships are
+     * remote should meet the exception before the rule, not after it.
+     *
+     * The card leads on that constraint rather than on the firm, because "you
+     * have to be in Lagos" is the sentence that saves most of this audience a
+     * click and earns the rest of them one.
+     */
+    slug: 'law-crest-one-day-internship-2026',
+    kind: 'update',
+    date: '2026-09-23',
+    title: 'One day inside a Lagos firm, on 7 October',
+    summary:
+      'The Law Crest LLP are running a one-day internship for law graduates who have not yet been called to the Bar. It runs 10am to 4pm at the Continental Re Centre on Victoria Island, and you have to be there in person. No closing date is published, and a one-day programme fills.',
+    href: '/jobs/the-law-crest-one-day-legal-internship-program-2026',
+    cta: 'Read the criteria',
+    media: { type: 'logos', slugs: ['The Law Crest LLP'] },
+  },
+  {
+    /**
      * The Omaplex internship, in the slot the general version of this point
      * used to hold.
      *
