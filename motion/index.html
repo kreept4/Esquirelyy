@@ -7,297 +7,326 @@
 <!--
   Esquirely motion piece. 1440 × 1440, 14 s, 120 BPM, 7 bars, one shape, no cuts.
 
-  Every style on this page is computed from time inside seek(t). There are no
-  CSS transitions, no timers, and no state carried between frames: render any
-  frame in any order and it comes out the same. Springs are closed-form step
-  responses; a value that changes target many times is the sum of one spring
-  per change, wrapped around the loop so frame 0 and frame 840 are the same
-  frame, cursor position and speed included.
+  Built from the live site's own parts: the "Everything you need" colour scroll
+  (ink → sky → orange → red → green → violet → teal → ink, one stop per bar),
+  its block headlines, its dotted spiral connector, carton panels with the hard
+  black rule, 2px tags, round buttons, and only icons the site ships (lucide
+  0.400 as pinned in package.json, the notification bell, the stopwatch).
 
-  Open the file and click to play with sound, or use ?t=3.5 to freeze a frame.
+  Every style is computed from time inside seek(t). No CSS transitions, no
+  timers, no state carried between frames. Springs are closed-form step
+  responses; a value that changes target many times is the sum of one spring
+  per change, wrapped round the loop, so frame 0 and frame 840 are one frame.
+
+  Open the file and click to play with sound, or add ?t=3.5 to freeze a frame.
 -->
 <style>
 @font-face { font-family: 'Schibsted'; src: url(fonts/schibsted-grotesk-latin-wght-normal.woff2) format('woff2'); font-weight: 400 900; font-style: normal; }
 @font-face { font-family: 'Schibsted'; src: url(fonts/schibsted-grotesk-latin-wght-italic.woff2) format('woff2'); font-weight: 400 900; font-style: italic; }
+@font-face { font-family: 'Hanken'; src: url(fonts/hanken-grotesk-latin-wght-normal.woff2) format('woff2'); font-weight: 100 900; font-style: normal; }
 
+/* Tokens from src/app/globals.css and EverythingYouNeed.tsx */
 :root {
-  --canvas: #ECE7DF;
-  --ink: #1A1A1A;
-  --paper: #FFFFFF;
-  --muted: #6E685F;
-  --line: #E7E1D8;
-  --well: #F4F0EA;
+  --ink: #12100E;
+  --cream: #FAF6F0;
+  --carton: #FFF8E5;
+  --soft: rgba(18,16,14,0.66);
+  --line: rgba(18,16,14,0.16);
+  --fill: rgba(18,16,14,0.04);
   --mint: #14B8A6;
+  --mint-deep: #10A192;
+  --tool-ink: #241F16;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 1440px; height: 1440px; overflow: hidden; background: var(--canvas); }
-body { font-family: 'Schibsted', system-ui, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
-.cnt { font-feature-settings: 'tnum'; }
-#frame { position: relative; width: 1440px; height: 1440px; overflow: hidden; background: var(--canvas); }
-#stage { position: absolute; left: 720px; top: 720px; width: 0; height: 0; transform-origin: 0 0; }
+html, body { width: 1440px; height: 1440px; overflow: hidden; background: #1A1A1A; }
+body { font-family: 'Schibsted', sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+#frame { position: relative; width: 1440px; height: 1440px; overflow: hidden; }
+#stage { position: absolute; left: 720px; top: 800px; width: 0; height: 0; transform-origin: 0 0; z-index: 5; }
 #shape { position: absolute; overflow: hidden; }
 .g { position: absolute; left: 0; top: 0; }
 .abs { position: absolute; }
 .row { display: flex; align-items: center; }
-svg.i { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
-svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
-.chip { height: 60px; padding: 0 26px; border-radius: 30px; font-size: 22px; font-weight: 600; display: flex; align-items: center; white-space: nowrap; }
-.pill { border-radius: 999px; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
-.logo { background: #fff; box-shadow: inset 0 0 0 1.5px var(--line); display: flex; align-items: center; justify-content: center; flex: none; }
-.logo img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
-.label { font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+/* lucide defaults: 24 viewBox, stroke 2, round caps and joins */
+svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; display: block; }
+.display { font-family: 'Hanken', sans-serif; font-weight: 600; letter-spacing: -0.03em; }
+.gb { font-weight: 700; }
+.gr { font-weight: 400; }
+/* Mark: landscape plate, white, hairline border (EverythingYouNeed.tsx) */
+.mark { background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; flex: none; }
+.mark img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* Chip: a tag, not a pill. 2px radius on a filled ground */
+.tag { border-radius: 2px; white-space: nowrap; display: inline-flex; align-items: center; }
+.btn { border-radius: 999px; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+#heads { position: absolute; left: 80px; top: 90px; width: 1280px; height: 240px; z-index: 3; }
+.head { position: absolute; left: 0; top: 0; font-family: 'Hanken', sans-serif; font-weight: 600; letter-spacing: -0.03em; font-size: 76px; line-height: 1.04; color: var(--cream); max-width: 1280px; }
+#conn { position: absolute; left: 20px; top: 0; width: 1400px; height: 182px; z-index: 2; overflow: visible; }
 #cursor { position: absolute; left: 0; top: 0; width: 46px; height: 46px; transform-origin: 6px 4px; z-index: 50; }
-#hint { position: fixed; left: 24px; bottom: 20px; font: 600 16px 'Schibsted'; color: var(--muted); z-index: 60; }
+#hint { position: fixed; left: 24px; bottom: 20px; font: 700 16px 'Schibsted'; color: var(--cream); opacity: .7; z-index: 60; }
 </style>
 </head>
 <body>
 <div id="frame">
+
+  <!-- block headlines, verbatim from EverythingYouNeed.tsx -->
+  <div id="heads">
+    <div class="head">Everything you need, in one place.</div>
+    <div class="head">Every role, one board</div>
+    <div class="head">The whole pipeline, tracked</div>
+    <div class="head">Nothing slips.</div>
+    <div class="head">Funding, deadline-tracked</div>
+    <div class="head">Know the firm before you apply</div>
+    <div class="head">Feedback that says something</div>
+  </div>
+
+  <!-- the connector: the homepage's dotted spiral, same path, same marker -->
+  <svg id="conn" viewBox="0 0 1000 130" fill="none">
+    <defs>
+      <marker id="head" viewBox="0 0 16 16" refX="11" refY="8" markerUnits="userSpaceOnUse" markerWidth="30" markerHeight="30" orient="auto-start-reverse">
+        <path id="headpath" d="M2 1.5 L13 8 L2 14.5" fill="none" stroke="#FAF6F0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+      <mask id="reveal" maskUnits="userSpaceOnUse" x="-50" y="-50" width="1100" height="240">
+        <path id="revealpath" d="M760 2 C762 28 720 46 660 54 C590 63 520 46 470 56 C432 64 428 92 462 96 C492 99 500 74 478 64 C450 51 396 62 356 76 C320 89 292 104 268 120" stroke="#fff" stroke-width="16" fill="none"/>
+      </mask>
+    </defs>
+    <g mask="url(#reveal)">
+      <path id="dots" d="M760 2 C762 28 720 46 660 54 C590 63 520 46 470 56 C432 64 428 92 462 96 C492 99 500 74 478 64 C450 51 396 62 356 76 C320 89 292 104 268 120"
+        stroke="#FAF6F0" stroke-width="4.2" stroke-linecap="round" stroke-dasharray="0 10" shape-rendering="geometricPrecision"/>
+    </g>
+    <path id="conntip" d="M268 120 L267.9 120.07" stroke="none" fill="none" marker-end="url(#head)"/>
+  </svg>
+
   <div id="stage">
     <div id="shape">
 
-      <!-- 0 · Browse roles pill -->
-      <div class="g" id="g-pill" style="width:400px;height:112px">
-        <div class="abs row" style="inset:0;justify-content:center;gap:14px;color:#fff;font-size:34px;font-weight:650;letter-spacing:-0.01em">
+      <!-- 0 · Browse roles: the glide-cta, mint with white type -->
+      <div class="g" id="g-pill" style="width:420px;height:112px">
+        <div class="abs row gb" style="inset:0;justify-content:center;gap:14px;color:#fff;font-size:34px">
           <span>Browse roles</span>
-          <svg class="i" width="30" height="30" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <div style="position:relative;width:32px;height:32px;overflow:hidden">
+            <svg class="lu abs" id="pillarrow" width="32" height="32" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </div>
         </div>
       </div>
 
-      <!-- 1 · loader -->
-      <div class="g" id="g-loader" style="width:112px;height:112px">
-        <svg id="spinner" class="abs" style="left:32px;top:32px" width="48" height="48" viewBox="0 0 48 48">
-          <circle cx="24" cy="24" r="19" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="5"/>
-          <circle id="arc" cx="24" cy="24" r="19" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" transform="rotate(-90 24 24)"/>
-        </svg>
+      <!-- 1 · BrandLoader: the wordmark, pulsing -->
+      <div class="g" id="g-loader" style="width:360px;height:112px">
+        <div class="abs row display" id="wordmark" style="inset:0;justify-content:center;font-size:50px;color:var(--ink)">Esquirely.</div>
       </div>
 
-      <!-- 2 · check -->
-      <div class="g" id="g-check" style="width:112px;height:112px">
-        <svg class="abs" style="left:28px;top:28px" width="56" height="56" viewBox="0 0 56 56">
-          <path id="checkpath" d="M15 29.5 L24.5 39 L42 19" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <!-- 2 · check (lucide Check) -->
+      <div class="g" id="g-check" style="width:112px;height:112px;color:var(--ink)">
+        <svg class="lu abs" style="left:28px;top:28px" width="56" height="56" viewBox="0 0 24 24"><path id="checkpath" d="M20 6 9 17l-5-5" style="stroke-width:2.4"/></svg>
       </div>
 
-      <!-- 3 · filter island -->
-      <div class="g" id="g-island" style="width:1000px;height:120px;color:#fff">
-        <div class="abs row" style="left:34px;top:0;height:120px;gap:16px">
-          <svg class="i" width="30" height="30" viewBox="0 0 24 24" style="opacity:.7"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
-          <span style="font-size:24px;font-weight:600;opacity:.7;margin-right:8px">Roles</span>
-          <div class="chip" id="chip0"><span>Law firm</span></div>
-          <div class="chip" id="chip1"><span>Banking</span></div>
-          <div class="chip" id="chip2"><span>Lagos</span></div>
+      <!-- 3 · the board's filter bar -->
+      <div class="g" id="g-island" style="width:1000px;height:120px">
+        <div class="abs row" style="left:40px;top:0;height:120px;gap:14px">
+          <svg class="lu" width="30" height="30" viewBox="0 0 24 24" style="color:var(--soft)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span class="gr" style="font-size:24px;color:var(--soft);margin-right:10px">Roles</span>
+          <span class="tag gr chip" id="chip0" style="height:50px;padding:0 18px;font-size:22px">Law firm</span>
+          <span class="tag gr chip" id="chip1" style="height:50px;padding:0 18px;font-size:22px">Banking &amp; Finance</span>
+          <span class="tag gr chip" id="chip2" style="height:50px;padding:0 18px;font-size:22px">Lagos</span>
         </div>
-        <div class="abs row" id="count" style="right:34px;top:0;height:120px;gap:10px;font-size:24px;font-weight:650">
-          <div style="position:relative;width:74px;height:32px">
+        <div class="abs row gb" id="count" style="right:40px;top:0;height:120px;gap:10px;font-size:24px">
+          <div style="position:relative;width:34px;height:32px">
             <span class="abs cnt" style="right:0;top:0">24</span>
             <span class="abs cnt" style="right:0;top:0">22</span>
             <span class="abs cnt" style="right:0;top:0">5</span>
             <span class="abs cnt" style="right:0;top:0">3</span>
           </div>
-          <span style="opacity:.6">roles</span>
-          <svg class="i" width="24" height="24" viewBox="0 0 24 24" style="opacity:.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <span class="gr" style="color:var(--soft)">roles</span>
+          <svg class="lu" width="24" height="24" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </div>
       </div>
 
-      <!-- 4 · role card -->
-      <div class="g" id="g-card" style="width:780px;height:480px">
-        <div class="abs row" style="left:48px;top:48px;gap:22px">
-          <div class="logo" style="width:132px;height:84px;border-radius:20px;padding:10px"><img src="logos/aluko-oyebode.png" alt="Aluko &amp; Oyebode"></div>
-          <div>
-            <div style="font-size:22px;font-weight:600;color:var(--muted)">Aluko &amp; Oyebode</div>
-            <div style="font-size:36px;font-weight:750;letter-spacing:-0.02em;margin-top:4px">Associate, Banking &amp; Finance</div>
+      <!-- 4 · role card: a real listing, Aluko & Oyebode (jobs table) -->
+      <div class="g" id="g-card" style="width:800px;height:460px">
+        <div class="abs row" style="left:44px;top:44px;right:44px;gap:22px;align-items:flex-start">
+          <div class="mark" style="width:112px;height:70px"><img src="logos/aluko-oyebode.png" alt=""></div>
+          <div style="flex:1">
+            <div class="gb" style="font-size:34px;line-height:1.2">Associate, Banking &amp; Finance</div>
+            <div class="gr" style="font-size:22px;color:var(--soft);margin-top:4px">Aluko &amp; Oyebode · Lagos</div>
           </div>
+          <span class="gr" style="font-size:19px;color:var(--soft);margin-top:8px">Rolling</span>
         </div>
-        <div class="abs row" style="left:48px;top:172px;gap:12px">
-          <div class="chip" style="background:var(--well);height:52px;font-size:20px">Lagos</div>
-          <div class="chip" style="background:var(--well);height:52px;font-size:20px">Law firm</div>
-          <div class="chip" style="background:var(--well);height:52px;font-size:20px">5+ yrs PQE</div>
+        <div class="abs row" style="left:44px;top:170px;gap:10px">
+          <span class="tag gr" style="height:40px;padding:0 14px;font-size:19px;background:var(--ink);color:var(--carton);border:1px solid var(--ink)">Banking &amp; Finance</span>
+          <span class="tag gr" style="height:40px;padding:0 14px;font-size:19px;background:var(--fill);border:1px solid var(--line)">Mid-level</span>
+          <span class="tag gr" style="height:40px;padding:0 14px;font-size:19px;background:var(--fill);border:1px solid var(--line)">Law firm</span>
         </div>
-        <div class="abs" style="left:48px;right:48px;top:268px;font-size:21px;line-height:1.55;color:var(--muted)">Research, due diligence and transaction support for banking and finance clients, alongside senior lawyers.</div>
-        <div class="abs" style="left:0;right:0;top:360px;height:1px;background:var(--line)"></div>
-        <div class="abs row" style="left:48px;top:361px;height:119px;gap:12px;font-size:21px;font-weight:650">
-          <svg class="i" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
-          <span>Rolling deadline</span>
+        <div class="abs gr" style="left:44px;right:44px;top:240px;font-size:21px;line-height:1.6;color:var(--soft)">Research, due diligence and transaction support, drafting and reviewing documents, alongside senior lawyers.</div>
+        <div class="abs" style="left:0;right:0;top:350px;height:1px;background:var(--line)"></div>
+        <div class="abs row gr" id="tracknote" style="left:44px;top:351px;height:109px;gap:9px;font-size:21px;color:var(--mint-deep)">
+          <svg class="lu" width="21" height="21" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+          <span>Added to your tracker.</span>
         </div>
-        <div class="abs row" style="right:48px;top:361px;height:119px;gap:14px">
-          <div class="pill" style="width:64px;height:64px;border:1.5px solid var(--line)">
-            <svg class="i" width="24" height="24" viewBox="0 0 24 24"><path d="M7 4.5h10v15l-5-3.6-5 3.6z"/></svg>
-          </div>
-          <div class="pill" id="apply" style="position:relative;width:190px;height:64px;font-size:22px;font-weight:700;overflow:hidden">
-            <span class="abs row" id="apply-a" style="inset:0;justify-content:center">Apply</span>
-            <span class="abs row" id="apply-b" style="inset:0;justify-content:center;gap:10px">
-              <svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Tracked
-            </span>
+        <div class="abs row" style="right:44px;top:351px;height:109px;gap:16px">
+          <svg class="lu" width="28" height="28" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+          <div class="btn gb" id="apply" style="width:210px;height:62px;gap:9px;font-size:22px;background:var(--mint);color:#fff">
+            Apply
+            <svg class="lu" width="20" height="20" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
           </div>
         </div>
       </div>
 
-      <!-- 5 · tracker pipeline -->
-      <div class="g" id="g-pipe" style="width:1180px;height:380px">
-        <div class="abs row" style="left:40px;top:34px;gap:14px">
-          <span style="font-size:26px;font-weight:750;letter-spacing:-0.01em">Your applications</span>
+      <!-- 5 · tracker -->
+      <div class="g" id="g-pipe" style="width:1180px;height:400px">
+        <div class="abs display" style="left:40px;top:30px;font-size:32px">Your applications</div>
+        <div class="abs gr" style="right:40px;top:34px;font-size:20px;color:var(--soft)">Tracker</div>
+        <div class="abs" id="stageind" style="top:100px;height:56px;border-radius:999px;background:var(--ink)"></div>
+        <div class="abs row" style="left:40px;top:100px;width:1100px;height:56px">
+          <div class="stage gb" style="flex:1;text-align:center;font-size:21px">Saved</div>
+          <div class="stage gb" style="flex:1;text-align:center;font-size:21px">Applied</div>
+          <div class="stage gb" style="flex:1;text-align:center;font-size:21px">Assessment</div>
+          <div class="stage gb" style="flex:1;text-align:center;font-size:21px">Interview</div>
+          <div class="stage gb" style="flex:1;text-align:center;font-size:21px">Offer</div>
         </div>
-        <div class="abs" style="right:40px;top:40px;font-size:20px;font-weight:600;color:var(--muted)">Tracker</div>
-        <div class="abs" id="stagebar" style="left:40px;top:96px;width:1100px;height:64px;border-radius:32px;background:var(--well)"></div>
-        <div class="abs" id="stageind" style="top:102px;height:52px;border-radius:26px;background:var(--ink)"></div>
-        <div class="abs row" style="left:40px;top:96px;width:1100px;height:64px">
-          <div class="stage" style="flex:1;text-align:center;font-size:21px;font-weight:650">Saved</div>
-          <div class="stage" style="flex:1;text-align:center;font-size:21px;font-weight:650">Applied</div>
-          <div class="stage" style="flex:1;text-align:center;font-size:21px;font-weight:650">Assessment</div>
-          <div class="stage" style="flex:1;text-align:center;font-size:21px;font-weight:650">Interview</div>
-          <div class="stage" style="flex:1;text-align:center;font-size:21px;font-weight:650">Offer</div>
-        </div>
-        <div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div>
-        <div class="abs" id="minicard" style="top:190px;width:204px;height:150px;border-radius:22px;background:#fff;border:1.5px solid var(--line);padding:20px 20px">
-          <div class="logo" style="width:74px;height:44px;border-radius:11px;padding:5px"><img src="logos/aluko-oyebode.png" alt="Aluko &amp; Oyebode"></div>
-          <div style="font-size:19px;font-weight:750;margin-top:12px;letter-spacing:-0.01em;white-space:nowrap">Banking &amp; Finance</div>
-          <div style="font-size:16px;font-weight:550;color:var(--muted);margin-top:3px">Aluko &amp; Oyebode</div>
+        <div class="abs slot"></div><div class="abs slot"></div><div class="abs slot"></div><div class="abs slot"></div><div class="abs slot"></div>
+        <div class="abs" id="minicard" style="width:196px;height:176px;border-radius:8px;background:#FFFDF6;border:1px solid var(--line);padding:18px">
+          <div class="mark" style="width:80px;height:50px"><img src="logos/aluko-oyebode.png" alt=""></div>
+          <div class="gb" style="font-size:18px;margin-top:14px;line-height:1.25">Banking &amp; Finance</div>
+          <div class="gr" style="font-size:16px;color:var(--soft);margin-top:3px">Aluko &amp; Oyebode</div>
         </div>
       </div>
 
-      <!-- 6 · countdown + reminder toggle -->
-      <div class="g" id="g-toggle" style="width:740px;height:120px">
+      <!-- 6 · reminder: the site's stopwatch, and a switch -->
+      <div class="g" id="g-toggle" style="width:760px;height:120px">
         <div class="abs row" style="left:40px;top:0;height:120px;gap:16px">
-          <svg class="i" width="30" height="30" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
-          <span style="font-size:30px;font-weight:700;letter-spacing:-0.015em">Interview in 3 days</span>
+          <img src="logos/stopwatch.svg" width="38" height="38" alt="">
+          <span class="gb" style="font-size:29px">Interview in 3 days</span>
         </div>
-        <div class="abs" style="right:176px;top:0;height:120px;line-height:120px;font-size:21px;font-weight:600;color:var(--muted)">Remind me</div>
-        <div class="abs" id="ttrack" style="right:40px;top:30px;width:112px;height:60px;border-radius:30px"></div>
+        <div class="abs gr" style="right:172px;top:0;height:120px;line-height:120px;font-size:21px;color:var(--soft)">Remind me</div>
+        <div class="abs" id="ttrack" style="right:40px;top:32px;width:104px;height:56px;border-radius:28px"></div>
       </div>
 
-      <!-- shared puck: the toggle knob that becomes the tab indicator -->
+      <!-- the knob that becomes the tab indicator -->
       <div class="abs" id="puck"></div>
 
-      <!-- 7–9 · tabs panel: tabs, scholarship, firm (anchored to the shape's top edge) -->
-      <div class="g" id="g-panel" style="width:780px;height:640px">
+      <!-- 7–9 · tabs, then the scholarship and firm they open into -->
+      <div class="g" id="g-panel" style="width:800px;height:620px">
         <div class="abs row" id="tabs" style="left:0;right:0;top:0;height:120px;justify-content:center;gap:10px">
-          <div class="tab" style="font-size:27px;font-weight:700;padding:0 34px;line-height:72px">Jobs</div>
-          <div class="tab" style="font-size:27px;font-weight:700;padding:0 34px;line-height:72px">Scholarships</div>
-          <div class="tab" style="font-size:27px;font-weight:700;padding:0 34px;line-height:72px">Firms</div>
+          <div class="tab gb" style="font-size:27px;padding:0 34px;line-height:72px">Jobs</div>
+          <div class="tab gb" style="font-size:27px;padding:0 34px;line-height:72px">Scholarships</div>
+          <div class="tab gb" style="font-size:27px;padding:0 34px;line-height:72px">Firms</div>
         </div>
-        <div class="abs" id="tabrule" style="left:40px;right:40px;top:120px;height:1px;background:var(--line)"></div>
+        <div class="abs" id="tabrule" style="left:0;right:0;top:120px;height:1px;background:var(--line)"></div>
 
+        <!-- Chevening, from lib/scholarships-data.ts; row shape from the homepage preview -->
         <div class="abs" id="schol" style="left:48px;right:48px;top:160px">
-          <div class="label" style="color:var(--mint)">Fully funded · One-year master&rsquo;s</div>
-          <div style="font-size:38px;font-weight:750;letter-spacing:-0.02em;line-height:1.15;margin-top:12px">Chevening Scholarship</div>
-          <div style="font-size:22px;color:var(--muted);margin-top:12px;font-weight:550">UK Foreign, Commonwealth and Development Office</div>
-          <div style="font-size:20px;color:var(--muted);margin-top:4px;font-weight:500">Tuition, monthly stipend, flights and visa</div>
-          <div class="row" style="margin-top:34px;justify-content:space-between;font-size:20px;font-weight:650">
-            <span>Closes 6 Oct</span><span style="color:var(--muted)">Opened 4 Aug</span>
-          </div>
-          <div style="margin-top:14px;height:12px;border-radius:6px;background:var(--well);position:relative;overflow:hidden">
-            <div id="scholbar" class="abs" style="left:0;top:0;bottom:0;border-radius:6px;background:var(--ink)"></div>
-          </div>
-        </div>
-
-        <div class="abs" id="firm" style="left:48px;right:48px;top:156px">
-          <div class="row" style="gap:20px">
-            <div class="logo" style="width:120px;height:76px;border-radius:18px;padding:9px"><img src="logos/aluko-oyebode.png" alt="Aluko &amp; Oyebode"></div>
+          <div class="row" style="justify-content:space-between;align-items:flex-start;gap:20px">
             <div>
-              <div class="row" style="gap:12px">
-                <span style="font-size:32px;font-weight:750;letter-spacing:-0.02em">Aluko &amp; Oyebode</span>
-                <span class="pill" style="height:34px;padding:0 14px;background:var(--ink);color:#fff;font-size:15px;font-weight:700;letter-spacing:0.02em">Chambers Band 1</span>
-              </div>
-              <div style="font-size:20px;color:var(--muted);font-weight:550;margin-top:4px">Lagos · Abuja · Port Harcourt</div>
+              <div class="display" style="font-size:44px;line-height:1.1">Chevening Scholarship</div>
+              <div class="gr" style="font-size:22px;color:var(--soft);margin-top:8px">UK Government · Fully funded</div>
             </div>
+            <span class="tag gr" style="height:40px;padding:0 14px;font-size:19px;background:var(--ink);color:var(--carton);margin-top:6px">Open</span>
           </div>
-          <div class="label" style="margin-top:34px">Open roles on Esquirely</div>
-          <div class="abs" id="chart" style="left:0;right:0;top:170px;height:250px">
-            <div class="abs" style="left:0;right:0;bottom:44px;height:1px;background:var(--line)"></div>
+          <div class="gr" style="font-size:21px;color:var(--soft);margin-top:22px;white-space:pre">Full tuition  ·  Monthly stipend  ·  Flights and visa</div>
+          <div style="height:1px;background:var(--line);margin-top:26px"></div>
+          <div class="row" style="gap:14px;margin-top:22px">
+            <img src="logos/stopwatch.svg" width="32" height="32" alt="">
+            <span class="gb" style="font-size:23px">Closes 6 Oct</span>
+            <span class="gr" style="font-size:21px;color:var(--soft)">for 2027/2028 entry</span>
           </div>
         </div>
-      </div>
 
-      <!-- 10 · CV drop zone + review progress -->
-      <div class="g" id="g-drop" style="width:720px;height:500px">
-        <div class="abs" id="dropzone" style="left:32px;top:32px;right:32px;bottom:32px;border-radius:28px;border:2.5px dashed #D6CEC2"></div>
-        <div class="abs" id="drop-empty" style="left:0;right:0;top:130px;text-align:center">
-          <svg class="i" width="52" height="52" viewBox="0 0 24 24" style="color:var(--ink)"><path d="M12 15.5V5M7.5 9.5L12 5l4.5 4.5M5 15.5v2.5a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-2.5"/></svg>
-          <div style="font-size:32px;font-weight:750;letter-spacing:-0.015em;margin-top:20px">Drop your CV</div>
-          <div style="font-size:21px;color:var(--muted);margin-top:8px;font-weight:550">We read it like a partner would</div>
-        </div>
-        <div class="abs" id="drop-full" style="left:80px;right:80px;top:150px">
-          <div class="row" style="gap:18px">
-            <div class="row" style="width:64px;height:76px;border-radius:12px;background:var(--well);justify-content:center;font-size:15px;font-weight:800;color:var(--ink)">PDF</div>
+        <!-- Aluko & Oyebode, from lib/firms-data.ts; chart is its live roles on the board -->
+        <div class="abs" id="firm" style="left:48px;right:48px;top:150px">
+          <div class="row" style="gap:20px">
+            <div class="mark" style="width:104px;height:64px"><img src="logos/aluko-oyebode.png" alt=""></div>
             <div style="flex:1">
-              <div style="font-size:26px;font-weight:700">Adaeze_Okoro_CV.pdf</div>
-              <div style="position:relative;height:28px;margin-top:4px;font-size:20px;font-weight:550;color:var(--muted)">
-                <span class="abs" id="rev-a">Reviewing for banking roles…</span>
-                <span class="abs" id="rev-b" style="color:var(--ink)">6 notes, 2 rewrites</span>
-              </div>
+              <div class="display" style="font-size:38px;line-height:1.1">Aluko &amp; Oyebode</div>
+              <div class="gr" style="font-size:20px;color:var(--soft);margin-top:4px">Lagos · Abuja · Port Harcourt</div>
             </div>
+            <span class="gr" style="font-size:19px;color:var(--soft)">Leading</span>
           </div>
-          <div style="margin-top:34px;height:14px;border-radius:7px;background:var(--well);position:relative;overflow:hidden">
-            <div id="revbar" class="abs" style="left:0;top:0;bottom:0;border-radius:7px;background:var(--mint)"></div>
+          <div class="gr" style="font-size:19px;color:var(--soft);margin-top:18px;white-space:pre">Chambers Band 1  ·  IFLR1000 Tier 1  ·  EMEA Tier 1</div>
+          <div class="gb" style="font-size:19px;margin-top:26px">Open roles on Esquirely</div>
+          <div class="abs" id="chart" style="left:0;right:0;top:190px;height:240px">
+            <div class="abs" style="left:0;right:0;bottom:40px;height:1px;background:var(--line)"></div>
           </div>
         </div>
       </div>
 
-      <!-- 11 · rewrite -->
-      <div class="g" id="g-rewrite" style="width:880px;height:460px">
-        <div class="abs" style="left:52px;right:52px;top:48px">
-          <div class="label">What you wrote</div>
-          <div style="position:relative;display:inline-block;margin-top:12px;font-size:25px;font-style:italic;color:var(--muted);font-weight:500">
-            Responsible for legal research and drafting.
-            <div id="strike" class="abs" style="left:0;top:52%;height:2.5px;background:var(--muted);border-radius:2px"></div>
-          </div>
-          <div class="label" style="margin-top:36px">What we&rsquo;d send</div>
-          <div id="rewrite" style="margin-top:12px;font-size:33px;font-weight:700;line-height:1.3;letter-spacing:-0.015em"></div>
+      <!-- 10 · CV review: the tool's own drop zone and submit -->
+      <div class="g" id="g-drop" style="width:720px;height:480px">
+        <div class="abs" id="dropzone" style="left:40px;top:40px;right:40px;height:270px;border:2px dashed rgba(36,31,22,0.35)"></div>
+        <div class="abs" id="drop-empty" style="left:40px;right:40px;top:98px;text-align:center">
+          <svg class="lu" width="40" height="40" viewBox="0 0 24 24" style="margin:0 auto 18px;color:rgba(36,31,22,0.45)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+          <div class="gb" style="font-size:25px">Drop your CV here, or click to upload</div>
+          <div class="gr" style="font-size:19px;color:var(--soft);margin-top:8px">PDF, DOCX or TXT. Maximum 5MB.</div>
         </div>
-        <div class="abs pill" id="practice" style="right:52px;bottom:44px;height:60px;padding:0 28px;gap:10px;background:var(--ink);color:#fff;font-size:21px;font-weight:700">
-          Practice interview
-          <svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <div class="abs" id="drop-full" style="left:40px;right:40px;top:104px;text-align:center">
+          <svg class="lu" width="40" height="40" viewBox="0 0 24 24" style="margin:0 auto 18px;color:rgba(36,31,22,0.45)"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+          <div class="gb" style="font-size:25px">Adaeze_Okoro_CV.pdf</div>
+          <div class="gr" style="font-size:19px;color:var(--mint-deep);margin-top:8px;text-decoration:underline">Choose a different file</div>
+        </div>
+        <div class="abs row" id="submit" style="left:40px;right:40px;top:352px;height:72px;justify-content:center;gap:12px;background:var(--mint);color:#fff;border:2px solid var(--tool-ink);border-radius:2px;font-weight:800;font-size:21px;letter-spacing:0.05em;text-transform:uppercase">
+          <span class="abs row" id="sub-a" style="inset:0;justify-content:center">Get my review</span>
+          <span class="abs row" id="sub-b" style="inset:0;justify-content:center;gap:12px">
+            <svg class="lu" id="loader2" width="24" height="24" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Reading your CV
+          </span>
+        </div>
+      </div>
+
+      <!-- 11 · the rewrite: the homepage preview's own before/after -->
+      <div class="g" id="g-rewrite" style="width:880px;height:470px">
+        <div class="abs" style="left:48px;right:48px;top:44px">
+          <div class="gb" style="font-size:21px">What you wrote</div>
+          <div class="gr" style="font-size:26px;color:var(--soft);line-height:1.5;font-style:italic;margin-top:10px;max-width:560px">&ldquo;Assisted with various corporate matters and general legal research.&rdquo;</div>
+          <div class="row" style="gap:14px;margin:22px 0">
+            <span style="flex:1;height:1px;background:var(--line)"></span>
+            <svg class="lu" width="26" height="26" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+            <span style="flex:1;height:1px;background:var(--line)"></span>
+          </div>
+          <div class="gb" style="font-size:21px">What we&rsquo;d send</div>
+          <div id="rewrite" class="gr" style="font-size:29px;line-height:1.45;margin-top:10px"></div>
+        </div>
+        <div class="abs btn gb" id="practice" style="right:40px;top:34px;height:54px;padding:0 24px;gap:10px;background:var(--ink);color:var(--cream);font-size:19px">
+          Interview prep
+          <svg class="lu" width="20" height="20" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </div>
       </div>
 
       <!-- 12 · interview prep -->
-      <div class="g" id="g-prep" style="width:880px;height:460px;color:#fff">
-        <div class="abs row" style="left:52px;top:44px;gap:12px;font-size:19px;font-weight:650;color:rgba(255,255,255,.55)">
-          <span>Interview prep</span><span>·</span><span>Question 3 of 10</span>
-        </div>
-        <div class="abs pill" id="close" style="right:40px;top:32px;width:52px;height:52px;background:rgba(255,255,255,.1)">
-          <svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>
-        </div>
-        <div class="abs" style="left:52px;right:52px;top:110px;font-size:40px;font-weight:700;line-height:1.22;letter-spacing:-0.02em">A lender&rsquo;s security package has a gap two days before signing. Walk us through your first hour.</div>
-        <div class="abs row" style="left:52px;bottom:48px;gap:22px">
-          <div class="pill" style="width:76px;height:76px;background:var(--mint);color:#fff">
-            <svg class="i" width="30" height="30" viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>
-          </div>
-          <div class="row" id="wave" style="gap:6px;height:60px"></div>
-          <span style="font-size:22px;font-weight:650;color:rgba(255,255,255,.55);margin-left:6px">0:14</span>
+      <div class="g" id="g-prep" style="width:880px;height:470px;color:var(--cream)">
+        <div class="abs gb" style="left:52px;top:48px;font-size:21px">The interview</div>
+        <div class="abs gr" style="left:52px;top:82px;font-size:20px;color:rgba(250,246,240,0.66)">Nigerian firm partner · Local market, client handling</div>
+        <svg class="lu abs" id="close" style="right:44px;top:44px" width="30" height="30" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        <div class="abs display" style="left:52px;right:60px;top:150px;font-size:44px;line-height:1.14">A lender&rsquo;s security package has a gap two days before signing. Walk us through your first hour.</div>
+        <div class="abs row gb" style="left:52px;bottom:48px;gap:8px;font-size:21px;color:rgba(250,246,240,0.66)">
+          Why they ask this
+          <svg class="lu" width="22" height="22" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
         </div>
       </div>
 
-      <!-- 13 · bell -->
-      <div class="g" id="g-bell" style="width:128px;height:128px;color:#fff">
-        <svg class="i abs" id="bellicon" style="left:36px;top:34px;transform-origin:28px 6px" width="56" height="56" viewBox="0 0 24 24"><path d="M6.5 16.5V11a5.5 5.5 0 0 1 11 0v5.5l1.5 2H5z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg>
+      <!-- 13 · the notification bell, as NotificationBell.tsx draws it -->
+      <div class="g" id="g-bell" style="width:128px;height:128px;color:var(--cream)">
+        <svg class="abs" id="bellicon" style="left:36px;top:36px;transform-origin:50% 15%" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       </div>
 
-      <!-- 14 · toast -->
+      <!-- 14 · the notification, as a row from the panel -->
       <div class="g" id="g-toast" style="width:760px;height:132px">
-        <div class="abs row" style="left:26px;top:0;height:132px;gap:22px">
-<div class="logo" style="width:112px;height:80px;border-radius:18px;padding:8px"><img src="logos/aluko-oyebode.png" alt="Aluko &amp; Oyebode"></div>
+        <div class="abs row" style="left:28px;top:0;height:132px;gap:22px">
+          <div class="mark" style="width:104px;height:64px"><img src="logos/aluko-oyebode.png" alt=""></div>
           <div>
-            <div class="row" style="gap:10px;font-size:19px;font-weight:650;color:var(--muted)"><span style="width:10px;height:10px;border-radius:5px;background:var(--mint)"></span>Matches your alert · Lagos</div>
-            <div style="font-size:29px;font-weight:750;letter-spacing:-0.015em;margin-top:4px">Associate, Banking &amp; Finance</div>
+            <div class="gb" style="font-size:27px">Associate, Banking &amp; Finance</div>
+            <div class="gr" style="font-size:20px;color:var(--soft);margin-top:4px">Aluko &amp; Oyebode · matches your alert</div>
           </div>
         </div>
-        <div class="abs pill" id="view" style="right:26px;top:34px;height:64px;padding:0 30px;background:var(--ink);color:#fff;font-size:22px;font-weight:700">View</div>
+        <div class="abs gr" style="right:30px;top:34px;font-size:19px;color:var(--soft)">now</div>
       </div>
     </div>
 
-    <!-- badge sits outside the shape so the shape's clip never crops it -->
-    <div class="abs pill" id="badge" style="width:40px;height:40px;background:var(--mint);color:#fff;font-size:21px;font-weight:800">1</div>
-    <!-- the file being dragged in -->
-    <div class="abs row" id="file" style="height:72px;padding:0 24px 0 14px;gap:14px;border-radius:20px;background:#fff;border:1.5px solid var(--line);font-size:21px;font-weight:700;white-space:nowrap">
-      <div class="row" style="width:44px;height:52px;border-radius:9px;background:var(--well);justify-content:center;font-size:12px;font-weight:800">PDF</div>
+    <!-- outside the shape so its clip never crops them -->
+    <div class="abs btn" id="badge" style="min-width:42px;height:42px;padding:0 10px;background:#EF4444;color:#fff;font-size:21px;font-weight:700">1</div>
+    <div class="abs row gb" id="file" style="height:76px;padding:0 24px 0 18px;gap:12px;background:var(--carton);border:1.5px solid #000;border-radius:12px;font-size:21px;white-space:nowrap">
+      <svg class="lu" width="28" height="28" viewBox="0 0 24 24" style="color:rgba(36,31,22,0.6)"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
       Adaeze_Okoro_CV.pdf
     </div>
-    <!-- chart tooltip -->
-    <div class="abs" id="tip" style="height:58px;padding:0 20px;border-radius:14px;background:var(--ink);color:#fff;font-size:20px;font-weight:650;line-height:58px;white-space:nowrap">Banking &amp; Finance · 3 open roles</div>
+    <div class="abs gb" id="tip" style="height:56px;padding:0 18px;border-radius:6px;background:var(--ink);color:var(--carton);font-size:19px;line-height:56px;white-space:nowrap">Banking &amp; Finance · 3 open roles</div>
   </div>
 
-  <svg id="cursor" viewBox="0 0 46 46"><path d="M8 5.5v29.5l7.6-7.2 5 11.2 5.2-2.3-5-11h10.6z" fill="#1A1A1A" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>
+  <svg id="cursor" viewBox="0 0 46 46"><path d="M8 5.5v29.5l7.6-7.2 5 11.2 5.2-2.3-5-11h10.6z" fill="#12100E" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>
 </div>
 <div id="hint"></div>
 
@@ -305,7 +334,7 @@ svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
 <script>
 'use strict';
 /* ================================================================ time grid
-   Everything is placed on the grid measured from the audio (audio/analyze.py). */
+   Everything sits on the grid measured from the audio (audio/analyze.py). */
 const BT = window.BEATS || { beat: 0.5, offset: 0, duration: 14, beats: 28 };
 const T = BT.duration;                         // loop length, 14 s
 const B = BT.beat;                             // 0.5 s
@@ -313,6 +342,7 @@ const BAR = 4 * B;
 const D0 = ((BT.offset % BAR) + BAR + BAR / 2) % BAR - BAR / 2;   // first downbeat, ~0
 const beat = k => D0 + (k - 1) * B;            // beat k = 1..28
 const mod = (x, m) => ((x % m) + m) % m;
+const CY = 800;                                // screen y of the shape's centre
 
 /* ================================================================ springs
    Closed-form step response of a damped spring, 0 → 1. z < 1 overshoots a hair. */
@@ -327,7 +357,9 @@ function step(tau, c) {
 const SP = {
   shape:  { f: 2.3, z: 0.84 },   // the hero: ~1 % overshoot
   camera: { f: 1.5, z: 0.95 },
+  scroll: { f: 1.1, z: 1 },      // the colour scroll
   soft:   { f: 2.0, z: 1 },
+  colour: { f: 5.5, z: 1 },
   ui:     { f: 3.4, z: 0.86 },
   snap:   { f: 5.2, z: 0.9 },
   fast:   { f: 7.5, z: 1 },
@@ -349,28 +381,27 @@ function track(keys, def = SP.ui) {
   let prev = v0;
   for (const k of ks) { k.d = k.v - prev; prev = k.v; }
   const live = ks.filter(k => k.d !== 0);
-  const f = t => {
+  return t => {
     t = mod(t, T);
     let v = v0;
     for (const k of live) v += k.d * (step(t - k.t, k.c) + step(t - k.t + T, k.c));
     return v;
   };
-  f.keys = ks;
-  return f;
 }
 const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
 function colorTrack(keys, def) {
-  const ch = [0, 1, 2].map(i => track(keys.map(([t, c, cfg]) => [t, hex(c)[i], cfg]), def));
+  const ch = [0, 1, 2].map(i => track(keys.map(([t, c, cfg]) => [t, (typeof c === 'string' ? hex(c) : c)[i], cfg]), def));
   const f = t => ch.map(c => Math.round(Math.min(255, Math.max(0, c(t)))));
   f.css = t => `rgb(${f(t).join(',')})`;
   return f;
 }
 const lerp = (a, b, u) => a + (b - a) * u;
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const smooth = u => { u = clamp(u); return u * u * (3 - 2 * u); };
 const mixc = (a, b, u) => `rgb(${hex(a).map((x, i) => Math.round(lerp(x, hex(b)[i], u))).join(',')})`;
 
 /* Visibility window: enters after the previous content has begun to leave
-   (the gotcha: swapped text needs its own enter and exit timing). */
+   (text swapped inside a morphing container needs its own enter and exit). */
 function win(tin, tout, delay = 0.07, cin = SP.enter, cout = SP.exit) {
   return track([[tin + delay, 1, cin], [tout, 0, cout]]);
 }
@@ -388,184 +419,203 @@ function show(el, v, blur = 9, lift = 10) {
   return true;
 }
 
-const C = { ink: '#1A1A1A', paper: '#FFFFFF', mint: '#14B8A6', well: '#F4F0EA', canvas: '#ECE7DF', line: '#E7E1D8', muted: '#6E685F' };
+const C = { ink: '#12100E', cream: '#FAF6F0', carton: '#FFF8E5', mint: '#14B8A6', mintDeep: '#10A192', white: '#FFFFFF' };
 
-/* ================================================================ the score
-   Beats are 1-indexed like the storyboard. */
+/* ================================================================ the score */
 const b = beat;
+/* Shape states. rule = 1 is a carton panel (1.5px black rule, hard 6×8
+   offset shadow, 12px radius); rule = 0 is a round button (neither). */
 const STATES = [
-  // name,     t,      w,    h,   r,  bg
-  ['pill',    b(28),  400,  112, 56, C.ink],
-  ['loader',  b(1) + 0.03, 112, 112, 56, C.ink],
-  ['check',   b(3),   112,  112, 56, C.mint],
-  ['island',  b(4),  1000,  120, 60, C.ink],
-  ['card',    b(8),   780,  480, 40, C.paper],
-  ['pipe',    b(10), 1180,  380, 40, C.paper],
-  ['toggle',  b(13),  740,  120, 60, C.paper],
-  ['tabs',    b(15),  780,  120, 60, C.paper],
-  ['schol',   b(17),  780,  470, 44, C.paper],
-  ['firm',    b(19),  780,  640, 44, C.paper],
-  ['drop',    b(21),  720,  500, 40, C.paper],
-  ['rewrite', b(23),  880,  460, 40, C.paper],
-  ['prep',    b(24),  880,  460, 40, C.ink],
-  ['bell',    b(25),  128,  128, 64, C.ink],
-  ['toast',   b(27),  760,  132, 66, C.paper],
+  // name,     t,            w,    h,   r,  bg,        rule
+  ['pill',    b(28),        420,  112, 56, C.mint,    0],
+  ['loader',  b(1) + 0.03,  360,  112, 56, C.cream,   0],
+  ['check',   b(3),         112,  112, 56, C.cream,   0],
+  ['island',  b(4),        1000,  120, 60, C.cream,   1],
+  ['card',    b(8),         800,  460, 12, C.carton,  1],
+  ['pipe',    b(10),       1180,  400, 12, C.carton,  1],
+  ['toggle',  b(13),        760,  120, 12, C.carton,  1],
+  ['tabs',    b(15),        800,  120, 12, C.carton,  1],
+  ['schol',   b(17),        800,  430, 12, C.carton,  1],
+  ['firm',    b(19),        800,  620, 12, C.carton,  1],
+  ['drop',    b(21),        720,  480, 12, C.carton,  1],
+  ['rewrite', b(23),        880,  470, 12, C.carton,  1],
+  ['prep',    b(24),        880,  470, 12, C.ink,     1],
+  ['bell',    b(25),        128,  128, 64, C.ink,     0],
+  ['toast',   b(27),        760,  132, 12, C.carton,  1],
 ];
 const at = name => STATES.find(s => s[0] === name)[1];
 const shapeW = track(STATES.map(s => [s[1], s[2]]), SP.shape);
 const shapeH = track(STATES.map(s => [s[1], s[3]]), SP.shape);
 const shapeR = track(STATES.map(s => [s[1], s[4]]), SP.shape);
-// colour snaps: an ink↔paper crossfade lingering at mid-grey reads as a dead slab
-const shapeBg = colorTrack(STATES.map(s => [s[1], s[5]]), { f: 5.5, z: 1 });
-const fillScale = (w, h) => Math.min(0.80 * 1440 / w, 0.64 * 1440 / h, 2.5);
+const shapeBg = colorTrack(STATES.map(s => [s[1], s[5]]), SP.colour);
+const shapeRule = track(STATES.map(s => [s[1], s[6]]), SP.fast);
+const fillScale = (w, h) => Math.min(0.80 * 1440 / w, 0.56 * 1440 / h, 2.2);
 const camS = track(STATES.map(s => [s[1] + 0.04, fillScale(s[2], s[3])]), SP.camera);
+
+/* The colour scroll: one stop per bar, straight from EverythingYouNeed.tsx,
+   opening and closing on ink so the loop joins itself. */
+const STOPS = [[26, 26, 26], [56, 189, 248], [249, 115, 22], [239, 68, 68], [34, 197, 94], [139, 92, 246], [20, 184, 166]];
+const canvasBg = colorTrack(STOPS.map((c, i) => [b(1 + 4 * i) - 0.2, c]), SP.scroll);
 
 // Press dips on the shape itself (a click on the whole shape).
 const press = [];
-const shapeClicks = [b(1), b(8), b(13), b(25), b(27)];
-for (const t of shapeClicks) press.push([t - 0.05, 0.965, SP.fast], [t + 0.07, 1, SP.ui]);
-const shapePress = track(press.length ? press : [[0, 1]]);
+for (const t of [b(1), b(8), b(13), b(25), b(27), b(28)]) press.push([t - 0.05, 0.965, SP.fast], [t + 0.07, 1, SP.ui]);
+const shapePress = track(press);
 
 /* ------------------------------------------------ element positions
    Measured once from layout (not animation state) at scale 1. */
-const G = {};  // group id -> {el, W, H, origin(t)}
+const G = {};
 function group(id, origin) {
   const el = $('#g-' + id);
   const W = el.offsetWidth, H = el.offsetHeight;
   G[id] = { el, W, H, origin: origin || (() => [-W / 2, -H / 2]) };
-}
-function pt(id, sel, dx = 0, dy = 0) {
-  const g = G[id], el = typeof sel === 'string' ? g.el.querySelector(sel) : sel;
-  const gr = g.el.getBoundingClientRect(), r = el.getBoundingClientRect();
-  const ox = r.left - gr.left + r.width / 2 + dx, oy = r.top - gr.top + r.height / 2 + dy;
-  return t => { const [x, y] = g.origin(t); return [x + ox, y + oy]; };
 }
 function box(id, el) {
   const g = G[id];
   const gr = g.el.getBoundingClientRect(), r = el.getBoundingClientRect();
   return { x: r.left - gr.left, y: r.top - gr.top, w: r.width, h: r.height };
 }
+function pt(id, sel) {
+  const g = G[id], bx = box(id, g.el.querySelector(sel)), [ox, oy] = g.origin(0);
+  return [ox + bx.x + bx.w / 2, oy + bx.y + bx.h / 2];
+}
 
 let seek;
 const CUES = [];
 function cue(t, type, gain = 1) { CUES.push({ t: +mod(t, T).toFixed(4), type, gain }); }
+const IDS = ['pill', 'loader', 'check', 'island', 'card', 'pipe', 'toggle', 'drop', 'rewrite', 'prep', 'bell', 'toast'];
 
 function build() {
-  for (const id of ['pill', 'loader', 'check', 'island', 'card', 'pipe', 'toggle', 'drop', 'rewrite', 'prep', 'bell', 'toast']) group(id);
-  group('panel', t => [-390, -shapeH(t) / 2]);
+  for (const id of IDS) group(id);
+  group('panel', t => [-400, -shapeH(t) / 2]);
 
   /* ---------------- windows */
   const W = {
     pill:    win(at('pill'), at('loader'), 0.08),
-    loader:  win(at('loader'), at('check')),
+    loader:  win(at('loader'), at('check'), 0.06),
     check:   win(at('check'), at('island'), 0.04),
-    island:  win(at('island'), at('card'), 0.07),
-    card:    win(at('card'), at('pipe'), 0.07),
-    pipe:    win(at('pipe'), at('toggle'), 0.07),
+    island:  win(at('island'), at('card')),
+    card:    win(at('card'), at('pipe')),
+    pipe:    win(at('pipe'), at('toggle')),
     toggle:  win(at('toggle'), at('tabs')),
-    tabs:    win(at('tabs'), at('drop'), 0.1),
-    schol:   win(at('schol'), at('firm'), 0.07),
-    firm:    win(at('firm'), at('drop'), 0.07),
-    drop:    win(at('drop'), at('rewrite'), 0.1),
+    tabs:    win(at('tabs'), at('drop')),
+    schol:   win(at('schol'), at('firm')),
+    firm:    win(at('firm'), at('drop')),
+    drop:    win(at('drop'), at('rewrite')),
     rewrite: win(at('rewrite'), at('prep')),
-    prep:    win(at('prep'), at('bell'), 0.1),
+    prep:    win(at('prep'), at('bell')),
     bell:    win(at('bell'), at('toast'), 0.08),
-    toast:   win(at('toast'), at('pill'), 0.1),
+    toast:   win(at('toast'), at('pill')),
   };
 
-  /* ---------------- island chips + count */
+  /* ---------------- headlines: glide in from alternating sides, scroll up and out */
+  const HEADS = [[b(25), b(5)], [b(5), b(9)], [b(9), b(13)], [b(13), b(17)], [b(17), b(19)], [b(19), b(21)], [b(21), b(25)]];
+  const headEls = $$('#heads .head');
+  // the old headline clears the band before the connector passes through it
+  // (≈ bar line − 0.25 s to + 0.05 s), and the new one lands after it
+  const headW = HEADS.map(([a, z]) => win(a + 0.08, z - 0.35, 0, { f: 2.2, z: 1 }, { f: 6, z: 1 }));
+
+  /* ---------------- connector passes: one per bar line, like scrolling between blocks */
+  const PASSES = [0, 1, 2, 3, 4, 5, 6].map(i => b(1 + 4 * i));
+  const conn = $('#conn'), revealPath = $('#revealpath'), headPath = $('#headpath');
+  const revealLen = revealPath.getTotalLength();
+  revealPath.style.strokeDasharray = `${revealLen} ${revealLen + 10}`;
+
+  /* ---------------- filter chips + count */
   const chips = [0, 1, 2].map(i => $('#chip' + i));
   const chipOn = chips.map((_, i) => track([[b(5 + i), 1, SP.snap], [b(3), 0, SP.fast]]));
   const cnts = $$('.cnt');
   const cntW = [win(at('island'), b(5), 0.1, SP.enter, SP.fast), win(b(5), b(6), 0.05, SP.enter, SP.fast), win(b(6), b(7), 0.05, SP.enter, SP.fast), win(b(7), at('card'), 0.05, SP.enter, SP.fast)];
 
-  /* ---------------- card apply button */
-  const applyOn = track([[b(9), 1, SP.snap], [b(3), 0]]);
-  const applyA = win(at('card'), b(9), 0, SP.enter, SP.fast), applyB = win(b(9), at('pipe'), 0.06);
+  /* ---------------- card: Apply files it to the tracker */
+  const noteW = win(b(9), at('pipe'), 0.05);
 
-  /* ---------------- pipeline: drag the card from Applied to Interview */
+  /* ---------------- tracker: drag the card from Applied to Interview */
   const stages = $$('#g-pipe .stage');
-  const colX = stages.map(s => box('pipe', s).x + box('pipe', s).w / 2);        // group coords
+  const colX = stages.map(s => box('pipe', s).x + box('pipe', s).w / 2);
   const slots = $$('#g-pipe .slot');
   const mini = $('#minicard');
   const gp = G.pipe;
   const toShape = (x, y) => [x - gp.W / 2, y - gp.H / 2];
-  const cardY = 190 + 75;
+  const cardY = 188 + 88;
 
   /* ---------------- cursor path, in shape-centre coordinates */
   const P = {
     pill: [0, 4],
-    chip: [0, 1, 2].map(i => pt('island', '#chip' + i)(0)),
-    count: pt('island', '#count')(0),
-    apply: pt('card', '#apply')(0),
+    chip: [0, 1, 2].map(i => pt('island', '#chip' + i)),
+    count: pt('island', '#count'),
+    apply: pt('card', '#apply'),
     card0: toShape(colX[1], cardY),
-    toggle: pt('toggle', '#ttrack')(0),
-    tabs: $$('#tabs .tab'),
-    close: pt('prep', '#close')(0),
-    practice: pt('rewrite', '#practice')(0),
-    view: pt('toast', '#view')(0),
+    toggle: pt('toggle', '#ttrack'),
+    close: pt('prep', '#close'),
+    practice: pt('rewrite', '#practice'),
+    submit: pt('drop', '#submit'),
+    toast: [120, 0],
   };
-  const tabBoxes = P.tabs.map(el => box('panel', el));
-  const tabPt = (i, h) => [tabBoxes[i].x + tabBoxes[i].w / 2 - 390, tabBoxes[i].y + tabBoxes[i].h / 2 - h / 2];
+  const tabEls = $$('#tabs .tab');
+  const tabBoxes = tabEls.map(el => box('panel', el));
+  const tabPt = (i, h) => [tabBoxes[i].x + tabBoxes[i].w / 2 - 400, tabBoxes[i].y + tabBoxes[i].h / 2 - h / 2];
 
   const holdT0 = b(11), holdT1 = b(12);
-  const dragTo = toShape(colX[3] + 92, cardY - 16);
-  const ck = [];   // [t, x, y, cfg]
+  const dragTo = toShape(colX[3] + 92, cardY - 18);
+  const home1 = toShape(colX[3], cardY);
+  const ck = [];
   const moveTo = (tArrive, [x, y], lead = 0.3, cfg = SP.cursor) => ck.push([tArrive - lead, x, y, cfg]);
   const rest = (t, [x, y]) => ck.push([t, x, y, SP.soft]);
 
-  moveTo(b(1), P.pill, 0.34);
+  moveTo(b(1), P.pill, 0.42);
   rest(b(1) + 0.16, [150, 150]);
   moveTo(b(5), P.chip[0], 0.4);
   moveTo(b(6), P.chip[1], 0.3);
   moveTo(b(7), P.chip[2], 0.3);
-  moveTo(b(8), [P.count[0] + 40, P.count[1]], 0.3);
+  moveTo(b(8), [P.count[0] + 10, P.count[1]], 0.3);
   moveTo(b(9), P.apply, 0.34);
   moveTo(holdT0, P.card0, 0.36);
   ck.push([holdT0 + 0.03, dragTo[0], dragTo[1], SP.drag]);
-  moveTo(b(13), [toShape(colX[3], cardY)[0] + 10, toShape(colX[3], cardY)[1] + 20], 0.34);
+  moveTo(b(13), [home1[0] + 10, home1[1] + 20], 0.34);
   moveTo(b(14), P.toggle, 0.34);
   rest(b(14) + 0.16, [P.toggle[0] + 30, 150]);
   moveTo(b(16), tabPt(1, 120), 0.36);
-  moveTo(b(18), tabPt(2, 470), 0.34);
-  // chart geometry first (needed for the hover point)
+  moveTo(b(18), tabPt(2, 430), 0.34);
+
+  // chart: Aluko & Oyebode's live listings on the board by practice area (jobs table, 26 Sep 2026)
   const chartEl = $('#chart');
-  // Aluko & Oyebode's live listings on the board by practice area (jobs table, 26 Sep 2026)
   const DATA = [['Corporate', 7], ['Banking', 3], ['IP', 3], ['Cap. Mkts', 2], ['Regulatory', 2]];
-  const HOT = 1;   // the bar the cursor hovers: Banking & Finance
+  const HOT = 1;
   const chartBox = box('panel', chartEl);
   const chartBars = DATA.map(([name, v], i) => {
-    const bw = 88, gap = (chartBox.w - DATA.length * bw) / (DATA.length - 1);
+    const bw = 92, gap = (chartBox.w - DATA.length * bw) / (DATA.length - 1);
     const bar = document.createElement('div');
     bar.className = 'abs';
-    Object.assign(bar.style, { left: i * (bw + gap) + 'px', width: bw + 'px', bottom: '44px', borderRadius: '14px 14px 4px 4px' });
+    Object.assign(bar.style, { left: i * (bw + gap) + 'px', width: bw + 'px', bottom: '40px', borderRadius: '2px 2px 0 0' });
     const lab = document.createElement('div');
-    lab.className = 'abs';
-    Object.assign(lab.style, { left: i * (bw + gap) - 20 + 'px', width: bw + 40 + 'px', bottom: '0', height: '34px', textAlign: 'center', fontSize: '17px', fontWeight: 650, color: C.muted });
+    lab.className = 'abs gr';
+    Object.assign(lab.style, { left: i * (bw + gap) - 24 + 'px', width: bw + 48 + 'px', bottom: '0', height: '30px', textAlign: 'center', fontSize: '17px', color: 'var(--soft)' });
     lab.textContent = name;
     chartEl.append(bar, lab);
-    const hMax = 150 * v / 7;
-    return { bar, lab, v, hMax, x: chartBox.x + i * (bw + gap) + bw / 2 - 390, h0: chartBox.h - 44 };
+    return { bar, lab, v, hMax: 150 * v / 7, x: chartBox.x + i * (bw + gap) + bw / 2 - 400, h0: chartBox.h - 40 };
   });
-  const chartTop = chartBox.y - 640 / 2;
-  const hoverPt = [chartBars[HOT].x + 10, chartTop + chartBars[HOT].h0 - chartBars[HOT].hMax * 0.55];
+  const chartTop = chartBox.y - 620 / 2;
+  const hoverPt = [chartBars[HOT].x + 10, chartTop + chartBars[HOT].h0 - chartBars[HOT].hMax * 0.5];
   moveTo(b(20) - 0.04, hoverPt, 0.34);
-  // file drag: pick up just outside the drop zone, carry it in, let go
-  const fileStart = [330, 330], fileEnd = [0, 30];
+
+  // the CV is carried in from outside the drop zone, then GET MY REVIEW
+  const fileStart = [330, 340], fileEnd = [0, -40];
   moveTo(b(21), fileStart, 0.28);
   const fileHold0 = b(21) + 0.02, fileHold1 = b(21) + 0.36;
   ck.push([fileHold0, fileEnd[0], fileEnd[1], { f: 2.6, z: 1 }]);
-  rest(b(22), [200, 210]);
+  moveTo(b(22), P.submit, 0.12);
+  rest(b(22) + 0.14, [P.submit[0] + 160, P.submit[1] + 60]);
   moveTo(b(24), P.practice, 0.36);
   moveTo(b(25), P.close, 0.32);
   rest(b(25) + 0.16, [110, 120]);
   moveTo(b(27), [0, 0], 0.3);
-  moveTo(b(28), P.view, 0.3);
-  // …and back onto the pill for the press on frame 0 (it wraps, so frame 840 = frame 0)
+  moveTo(b(28), P.toast, 0.3);
+  // …then onto the pill, hovering long enough for its arrow to run, and the press on frame 0
 
   const curX = track(ck.map(k => [k[0], k[1], k[3]]), SP.cursor);
   const curY = track(ck.map(k => [k[0], k[2], k[3]]), SP.cursor);
-  const clicks = [b(1), b(5), b(6), b(7), b(8), b(9), b(13), b(14), b(16), b(18), b(24), b(25), b(27), b(28)];
+  const clicks = [b(1), b(5), b(6), b(7), b(8), b(9), b(13), b(14), b(16), b(18), b(22), b(24), b(25), b(27), b(28)];
   const cp = [];
   for (const t of clicks) cp.push([t - 0.05, 1, SP.fast], [t + 0.07, 0, SP.ui]);
   cp.push([holdT0 - 0.05, 1, SP.fast], [holdT1, 0, SP.ui]);
@@ -574,7 +624,7 @@ function build() {
 
   /* drag physics: direct manipulation while held, spring home on release */
   const grab = [curX(holdT0), curY(holdT0)];
-  const home0 = P.card0, home1 = toShape(colX[3], cardY);
+  const home0 = P.card0;
   const cardAt = t => {
     t = mod(t, T);
     if (t < holdT0) return home0;
@@ -584,26 +634,26 @@ function build() {
     return [lerp(rel[0], home1[0], s), lerp(rel[1], home1[1], s)];
   };
   const held = track([[holdT0, 1, SP.snap], [holdT1, 0, SP.ui]]);
-  // nearest column, sampled along the (pure) drag path -> liquid indicator keys
   const colOf = x => colX.reduce((bi, cx, i) => Math.abs(x + gp.W / 2 - cx) < Math.abs(x + gp.W / 2 - colX[bi]) ? i : bi, 0);
-  const indKeysL = [[b(4), colX[1] - 100 - gp.W / 2]], indKeysR = [[b(4), colX[1] + 100 - gp.W / 2]];
+  const IW = 196;
+  const indKeysL = [[b(4), colX[1] - IW / 2 - gp.W / 2]], indKeysR = [[b(4), colX[1] + IW / 2 - gp.W / 2]];
   let last = 1;
   for (let t = holdT0; t < holdT1 + 0.6; t += 0.002) {
     const c = colOf(cardAt(t)[0]);
     if (c !== last) {
       const right = c > last;
-      indKeysL.push([t, colX[c] - 100 - gp.W / 2, right ? SP.trail : SP.lead]);
-      indKeysR.push([t, colX[c] + 100 - gp.W / 2, right ? SP.lead : SP.trail]);
+      indKeysL.push([t, colX[c] - IW / 2 - gp.W / 2, right ? SP.trail : SP.lead]);
+      indKeysR.push([t, colX[c] + IW / 2 - gp.W / 2, right ? SP.lead : SP.trail]);
       last = c;
     }
   }
-  const indL = track(indKeysL, SP.ui), indR = track(indKeysR, SP.ui);
+  const indL = track(indKeysL), indR = track(indKeysR);
 
-  /* ---------------- toggle knob -> tab indicator (one element, two edges) */
+  /* ---------------- switch knob → tab indicator (one element, two edges) */
   const tt = box('toggle', $('#ttrack'));
   const tOrigin = G.toggle.origin(0);
-  const knob = on => { const x0 = tOrigin[0] + tt.x + (on ? tt.w - 54 : 6); return [x0, x0 + 48]; };
-  const tabEdge = (i) => [tabBoxes[i].x - 390, tabBoxes[i].x - 390 + tabBoxes[i].w];
+  const knob = on => { const x0 = tOrigin[0] + tt.x + (on ? tt.w - 50 : 6); return [x0, x0 + 44]; };
+  const tabEdge = i => [tabBoxes[i].x - 400, tabBoxes[i].x - 400 + tabBoxes[i].w];
   const pk = [
     [b(10), knob(false), SP.fast, SP.fast],
     [b(14), knob(true), SP.trail, SP.lead],        // moving right: right edge leads
@@ -613,43 +663,43 @@ function build() {
   ];
   const puckL = track(pk.map(k => [k[0], k[1][0], k[2]]));
   const puckR = track(pk.map(k => [k[0], k[1][1], k[3]]));
-  const puckH = track([[b(10), 48, SP.fast], [at('tabs'), 72, SP.ui]]);
-  const puckC = colorTrack([[b(10), C.paper, SP.fast], [at('tabs'), C.ink, { f: 5.5, z: 1 }]]);
+  const puckH = track([[b(10), 44, SP.fast], [at('tabs'), 72, SP.ui]]);
+  const puckC = colorTrack([[b(10), C.white, SP.fast], [at('tabs'), C.ink, SP.colour]]);
   const trackOn = track([[b(14), 1, SP.snap], [b(10), 0, SP.fast]]);
   const puckVis = win(at('toggle'), at('drop'), 0.1);
 
-  /* ---------------- scholarship bar, chart, tooltip */
-  // Chevening: open 4 Aug – 6 Oct, 53 of 63 days gone on 26 Sep
-  const scholFill = track([[at('schol') + 0.2, 0.84, { f: 1.4, z: 1 }], [b(3), 0, SP.fast]]);
+  /* ---------------- chart + tooltip */
   const barH = chartBars.map((_, i) => track([[at('firm') + 0.12 + i * 0.06, 1, SP.ui], [b(3), 0, SP.fast]]));
   const hover = track([[b(20) - 0.02, 1, SP.snap], [at('drop'), 0, SP.fast]]);
   const tipW = win(b(20), at('drop') - 0.02, 0.02, SP.snap, SP.exit);
   const tipEl = $('#tip');
 
-  /* ---------------- file drop, review */
+  /* ---------------- CV review */
   const fileEl = $('#file');
   const fileVis = track([[fileHold0 - 0.12, 1, SP.snap], [fileHold1 + 0.02, 0, SP.exit]]);
-  const dropEmpty = win(at('drop'), fileHold1, 0.1, SP.enter, SP.fast);
+  const dropEmpty = win(at('drop'), fileHold1, 0.08, SP.enter, SP.fast);
   const dropFull = win(fileHold1, at('rewrite'), 0.04);
-  const zoneHot = track([[fileHold0 + 0.12, 1, SP.ui], [fileHold1, 0, SP.soft]]);
-  const rev = track([[b(22), 1, { f: 1.25, z: 1 }], [b(3), 0, SP.fast]]);
-  const revA = win(fileHold1, b(23) - 0.12, 0.05, SP.enter, SP.fast), revB = win(b(23) - 0.12, at('rewrite'), 0.02);
+  const zoneHot = track([[fileHold0 + 0.1, 1, SP.ui], [fileHold1, 0, SP.soft]]);
+  const subA = win(at('drop'), b(22) + 0.04, 0.1, SP.enter, SP.fast), subB = win(b(22) + 0.04, at('rewrite'), 0.02);
+  const subPress = track([[b(22) - 0.05, 1, SP.fast], [b(22) + 0.08, 0, SP.ui]]);
 
-  /* ---------------- rewrite */
-  const words = 'Drafted 14 facility agreements for a ₦2bn syndicated loan, from term sheet to signing.'.split(' ');
+  /* ---------------- rewrite, word by word (the line has one beat on screen) */
+  const words = '“Drafted share purchase agreements on a ₦2.1bn acquisition, closing three weeks ahead of schedule.”'.split(' ');
   const rw = $('#rewrite');
-  const wordEls = words.map(w => { const s = document.createElement('span'); s.textContent = w + ' '; s.style.display = 'inline-block'; s.style.whiteSpace = 'pre'; if (/14|₦2bn/.test(w)) s.style.color = C.mint; rw.append(s); return s; });
-  // the rewrite only has one beat on screen, so the whole line must land by ~0.3 s
-  const wordW = words.map((_, i) => win(at('rewrite') + 0.07 + i * 0.016, at('prep'), 0, { f: 6, z: 1 }, SP.exit));
-  const strike = track([[at('rewrite') + 0.04, 1, SP.snap], [b(3), 0, SP.fast]]);
-  const strikeW = $('#strike').parentElement.getBoundingClientRect().width;
+  const wordEls = words.map(w => { const s = document.createElement('span'); s.textContent = w + ' '; s.style.display = 'inline-block'; s.style.whiteSpace = 'pre'; rw.append(s); return s; });
+  const wordW = words.map((_, i) => win(at('rewrite') + 0.06 + i * 0.014, at('prep'), 0, { f: 6, z: 1 }, SP.exit));
 
-  /* ---------------- prep waveform */
-  const waveEl = $('#wave');
-  const waveBars = Array.from({ length: 22 }, () => { const d = document.createElement('div'); Object.assign(d.style, { width: '6px', borderRadius: '3px', background: 'rgba(255,255,255,.75)' }); waveEl.append(d); return d; });
-
-  /* ---------------- bell + badge */
+  /* ---------------- bell: NotificationBell's notifRing, 0.6 s, as keyframes */
   const bellIcon = $('#bellicon'), badge = $('#badge');
+  const RING = [[0, 0], [0.15, 13], [0.30, -11], [0.45, 8], [0.60, -6], [0.75, 3], [1, 0]];
+  const ringAt = u => {
+    if (u <= 0 || u >= 1) return 0;
+    for (let i = 1; i < RING.length; i++) if (u <= RING[i][0]) {
+      const [u0, a0] = RING[i - 1], [u1, a1] = RING[i];
+      return lerp(a0, a1, smooth((u - u0) / (u1 - u0)));
+    }
+    return 0;
+  };
   const badgeS = track([[b(26), 1, { f: 4.2, z: 0.72 }], [at('toast') + 0.02, 0, SP.exit]]);
 
   /* ---------------- sound cues, placed on the same times the motion uses */
@@ -661,174 +711,194 @@ function build() {
   cue(b(16), 'tick'); cue(b(17), 'whoosh', 0.7); cue(b(18), 'tick'); cue(b(19), 'whoosh', 0.6);
   for (let i = 0; i < 5; i++) cue(at('firm') + 0.12 + i * 0.06, 'blip', 0.5 + 0.1 * i);
   cue(b(20), 'tick', 0.5); cue(b(21), 'whoosh', 0.8); cue(fileHold0, 'grab', 0.7); cue(fileHold1, 'drop');
-  cue(b(23), 'success', 0.7); cue(b(24), 'click'); cue(b(24), 'whoosh', 0.7); cue(b(25), 'click'); cue(b(25), 'whoosh', 0.8);
-  cue(b(26), 'bell'); cue(b(27), 'click'); cue(b(27), 'whoosh', 0.8); cue(b(28), 'click'); cue(b(28), 'whoosh', 0.7);
+  cue(b(22), 'click'); cue(b(23), 'success', 0.7); cue(b(24), 'click'); cue(b(24), 'whoosh', 0.7);
+  cue(b(25), 'click'); cue(b(25), 'whoosh', 0.8); cue(b(26), 'bell'); cue(b(27), 'click'); cue(b(27), 'whoosh', 0.8);
+  cue(b(28), 'click'); cue(b(28), 'whoosh', 0.7);
   CUES.sort((a, c) => a.t - c.t);
 
   /* ================================================================ seek(t) */
-  const shape = $('#shape'), stage = $('#stage'), cursor = $('#cursor');
+  const frame = $('#frame'), shape = $('#shape'), stage = $('#stage'), cursor = $('#cursor');
   const vis = {};
   seek = function (tRaw) {
     const t = mod(tRaw, T);
-    const w = shapeW(t), h = shapeH(t), r = shapeR(t), S = camS(t), ps = shapePress(t);
+    frame.style.background = canvasBg.css(t);
+
+    // headlines: in from the side like the homepage copy, out upward like a scroll
+    headEls.forEach((el, i) => {
+      const v = clamp(headW[i](t));
+      if (v < 0.003) { el.style.visibility = 'hidden'; return; }
+      const [a, z] = HEADS[i];
+      const entering = mod(t - a, T) < mod(z - t, T);
+      const side = i % 2 ? 1 : -1;
+      el.style.visibility = 'visible';
+      el.style.opacity = v.toFixed(4);
+      el.style.transform = entering
+        ? `translate(${(side * 40 * (1 - v)).toFixed(2)}px, ${(60 * (1 - v)).toFixed(2)}px)`
+        : `translate(0, ${(-90 * (1 - v)).toFixed(2)}px)`;
+    });
+
+    // connector: rises through the frame at each bar line, drawing itself as it goes
+    let shown = false;
+    PASSES.forEach((tc, i) => {
+      // starts 0.95 s before the bar line and has cleared the headline band ~0.2 s after it
+      const u = mod(t - (tc - 0.95) + T / 2, T) - T / 2;     // seconds since this pass began
+      if (u < 0 || u > 1.25 || shown) return;
+      shown = true;
+      const y = lerp(1480, -300, smooth(u / 1.25));
+      conn.style.visibility = 'visible';
+      conn.style.transform = `translate(0, ${y.toFixed(1)}px) scaleX(${i % 2 ? -1 : 1})`;
+      const p = smooth(u / 0.8);
+      revealPath.style.strokeDashoffset = (revealLen * (1 - p)).toFixed(2);
+      headPath.style.opacity = clamp((p - 0.92) / 0.08).toFixed(3);
+    });
+    if (!shown) conn.style.visibility = 'hidden';
+
+    // the shape
+    const w = shapeW(t), h = shapeH(t), r = shapeR(t), S = camS(t), ps = shapePress(t), rule = clamp(shapeRule(t));
     stage.style.transform = `scale(${(S * ps).toFixed(5)})`;
     Object.assign(shape.style, {
       left: (-w / 2).toFixed(2) + 'px', top: (-h / 2).toFixed(2) + 'px',
       width: w.toFixed(2) + 'px', height: h.toFixed(2) + 'px',
       borderRadius: Math.min(r, w / 2, h / 2).toFixed(2) + 'px',
       background: shapeBg.css(t),
+      // carton panels: hard black rule and a hard offset shadow; round buttons: neither
+      boxShadow: `inset 0 0 0 1.5px rgba(0,0,0,${rule.toFixed(3)}), ${(6 * rule).toFixed(2)}px ${(8 * rule).toFixed(2)}px 0 rgba(0,0,0,${(0.85 * rule).toFixed(3)})`,
     });
-    const bgLum = shapeBg(t).reduce((a, c) => a + c, 0) / 765;
-    shape.style.boxShadow = `0 1px 2px rgba(26,26,26,${(0.06 * bgLum).toFixed(3)}), 0 18px 50px -12px rgba(26,26,26,${(0.16 * bgLum + 0.1).toFixed(3)}), inset 0 0 0 1px rgba(26,26,26,${(0.05 * bgLum).toFixed(3)})`;
 
-    // place every group at its origin in shape-centre coords
     for (const id in G) {
       const g = G[id], [ox, oy] = g.origin(t);
       g.el.style.left = (w / 2 + ox).toFixed(2) + 'px';
       g.el.style.top = (h / 2 + oy).toFixed(2) + 'px';
     }
-    for (const id of ['pill', 'loader', 'check', 'island', 'card', 'pipe', 'toggle', 'drop', 'rewrite', 'prep', 'bell', 'toast']) vis[id] = show(G[id].el, W[id](t));
+    for (const id of IDS) vis[id] = show(G[id].el, W[id](t));
 
-    // loader
-    if (vis.loader) {
-      // indeterminate quarter-arc, then on beat 2 it fills to a full ring
-      const u = 0.26 + 0.74 * clamp(step(t - b(2), SP.ui));
-      $('#spinner').style.rotate = (t * 460).toFixed(1) + 'deg';
-      $('#arc').style.strokeDasharray = `${(u * 119.38).toFixed(2)} 200`;
+    // Browse roles: the arrow runs cta-arrow-swap while the cursor hovers, then the click
+    if (vis.pill) {
+      const u = mod(t - (b(1) - 0.62) + T / 2, T) - T / 2;
+      const k = clamp(u / 0.52), D = 1.4 * 16 * 1.6;
+      let x = 0, o = 1;
+      if (k > 0 && k < 1) {
+        if (k < 0.45) { const q = smooth(k / 0.45); x = D * q; o = 1 - q; }
+        else if (k < 0.55) { x = -D; o = 0; }
+        else { const q = smooth((k - 0.55) / 0.45); x = -D * (1 - q); o = q; }
+      }
+      $('#pillarrow').style.transform = `translateX(${x.toFixed(2)}px)`;
+      $('#pillarrow').style.opacity = o.toFixed(3);
     }
-    // check draws itself
+    // BrandLoader: the wordmark's pulse, one breath across the beat pair, peaking on beat 2
+    if (vis.loader) $('#wordmark').style.opacity = (0.55 + 0.45 * (0.5 - 0.5 * Math.cos(TAU * (t - b(1))))).toFixed(3);
     if (vis.check) {
-      const d = track.checkLen || (track.checkLen = $('#checkpath').getTotalLength());
-      const u = step(t - at('check') - 0.06, SP.ui);
-      $('#checkpath').style.strokeDasharray = d;
-      $('#checkpath').style.strokeDashoffset = (d * (1 - clamp(u))).toFixed(2);
+      const cpth = $('#checkpath'), d = 24;
+      cpth.style.strokeDasharray = d;
+      cpth.style.strokeDashoffset = (d * (1 - clamp(step(t - at('check') - 0.06, SP.ui)))).toFixed(2);
     }
-    // island chips
     if (vis.island) {
       chips.forEach((c, i) => {
         const u = clamp(chipOn[i](t));
-        c.style.background = `rgba(255,255,255,${u.toFixed(3)})`;
-        c.style.color = mixc('#FFFFFF', C.ink, u);
-        c.style.boxShadow = `inset 0 0 0 1.5px rgba(255,255,255,${(0.28 * (1 - u)).toFixed(3)})`;
-        c.style.scale = (1 + 0.04 * Math.sin(Math.PI * clamp((t - b(5 + i) + 0.05) / 0.2))).toFixed(4);
+        c.style.background = mixc('#F4EFE7', C.ink, u);
+        c.style.color = mixc(C.ink, C.carton, u);
+        c.style.border = `1px solid rgba(18,16,14,${(0.16 + 0.84 * u).toFixed(3)})`;
       });
       cnts.forEach((c, i) => show(c, cntW[i](t), 6, 8));
     }
-    // card
     if (vis.card) {
-      const u = clamp(applyOn(t));
-      $('#apply').style.background = mixc(C.ink, C.mint, u);
-      $('#apply').style.color = '#fff';
-      show($('#apply-a'), applyA(t), 6, -8); show($('#apply-b'), applyB(t), 6, 8);
+      show($('#tracknote'), noteW(t), 6, 8);
+      $('#apply').style.scale = (1 - 0.05 * clamp(step(t - b(9) + 0.05, SP.fast) - step(t - b(9) - 0.07, SP.ui))).toFixed(4);
     }
-    // pipeline
     if (vis.pipe) {
       const L = indL(t), R = indR(t);
-      Object.assign($('#stageind').style, { left: (L + gp.W / 2).toFixed(2) + 'px', width: Math.max(52, R - L).toFixed(2) + 'px' });
+      Object.assign($('#stageind').style, { left: (L + gp.W / 2).toFixed(2) + 'px', width: Math.max(56, R - L).toFixed(2) + 'px' });
       stages.forEach((s, i) => {
         const cx = colX[i] - gp.W / 2;
         const cover = clamp((Math.min(R, cx + 60) - Math.max(L, cx - 60)) / 120);
-        s.style.color = mixc(C.ink, '#FFFFFF', cover);
+        s.style.color = mixc(C.ink, C.cream, cover);
       });
       const [cxp, cyp] = cardAt(t), hd = clamp(held(t));
       const vx = (cardAt(t + 1 / 240)[0] - cardAt(t - 1 / 240)[0]) * 120;
       Object.assign(mini.style, {
-        left: (cxp + gp.W / 2 - 102).toFixed(2) + 'px', top: (cyp + gp.H / 2 - 75).toFixed(2) + 'px',
-        rotate: clamp(vx * 0.0028, -5, 5).toFixed(3) + 'deg', scale: (1 + 0.05 * hd).toFixed(4),
-        boxShadow: `0 ${(2 + 22 * hd).toFixed(1)}px ${(6 + 40 * hd).toFixed(1)}px -8px rgba(26,26,26,${(0.12 + 0.2 * hd).toFixed(3)})`,
+        left: (cxp + gp.W / 2 - 98).toFixed(2) + 'px', top: (cyp + gp.H / 2 - 88).toFixed(2) + 'px',
+        rotate: clamp(vx * 0.0028, -5, 5).toFixed(3) + 'deg', scale: (1 + 0.04 * hd).toFixed(4),
+        // lifted, it takes the carton's hard shadow
+        boxShadow: `${(6 * hd).toFixed(2)}px ${(8 * hd).toFixed(2)}px 0 rgba(0,0,0,${(0.85 * hd).toFixed(3)})`,
+        borderColor: `rgba(0,0,0,${(0.16 + 0.84 * hd).toFixed(3)})`,
       });
       const near = colOf(cxp);
       slots.forEach((s, i) => Object.assign(s.style, {
-        left: (colX[i] - 102) + 'px', width: '204px', height: '150px', borderRadius: '22px',
-        background: C.well, opacity: (0.55 + 0.45 * (i === near ? hd : 0)).toFixed(3),
-        boxShadow: i === near ? `inset 0 0 0 2px rgba(26,26,26,${(0.18 * hd).toFixed(3)})` : 'none',
+        left: (colX[i] - 98) + 'px', top: '188px', width: '196px', height: '176px', borderRadius: '8px',
+        background: 'rgba(18,16,14,0.04)',
+        boxShadow: `inset 0 0 0 1px rgba(18,16,14,${(0.12 + (i === near ? 0.5 * hd : 0)).toFixed(3)})`,
       }));
     }
-    // toggle track
-    if (vis.toggle) $('#ttrack').style.background = mixc('#E3DDD3', C.mint, clamp(trackOn(t)));
-    // puck
+    if (vis.toggle) $('#ttrack').style.background = mixc('#E4DCCB', C.ink, clamp(trackOn(t)));
     const pv = puckVis(t), pe = $('#puck');
     if (pv > 0.003) {
       const L = puckL(t), R = puckR(t), ph = puckH(t);
       const tabsY = -h / 2 + 60;
+      const knobness = 1 - clamp((ph - 44) / 28);
       Object.assign(pe.style, {
         visibility: 'visible', opacity: clamp(pv).toFixed(4),
         left: (w / 2 + L).toFixed(2) + 'px', width: Math.max(ph, R - L).toFixed(2) + 'px',
         top: (h / 2 + tabsY - ph / 2).toFixed(2) + 'px', height: ph.toFixed(2) + 'px',
         borderRadius: (ph / 2).toFixed(2) + 'px', background: puckC.css(t),
-        boxShadow: `0 2px 6px rgba(26,26,26,${(0.18 * (1 - clamp((ph - 48) / 24))).toFixed(3)})`,
+        boxShadow: `inset 0 0 0 1.5px rgba(0,0,0,${(0.9 * knobness).toFixed(3)})`,
         zIndex: 2,
       });
-      // tabs + labels: colour from how much of each label the puck covers
       const tv = W.tabs(t);
       show($('#tabs'), tv, 8, 0); show($('#tabrule'), clamp((h - 160) / 200) * tv, 0, 0);
       $('#tabs').style.zIndex = 3;
-      P.tabs.forEach((el, i) => {
-        const bx = tabBoxes[i], x0 = bx.x - 390, x1 = x0 + bx.w;
+      tabEls.forEach((el, i) => {
+        const bx = tabBoxes[i], x0 = bx.x - 400, x1 = x0 + bx.w;
         const cover = clamp((Math.min(R, x1) - Math.max(L, x0)) / bx.w);
-        el.style.color = mixc(C.ink, '#FFFFFF', cover * clamp((ph - 48) / 24));
+        el.style.color = mixc(C.ink, C.cream, cover * (1 - knobness));
       });
-    } else { pe.style.visibility = 'hidden'; $('#tabs').style.visibility = 'hidden'; $('#tabrule').style.visibility = 'hidden'; }
-    // scholarship + firm
-    if (show($('#schol'), W.schol(t))) $('#scholbar').style.width = (clamp(scholFill(t), 0, 1) * 100).toFixed(2) + '%';
+    } else { pe.style.visibility = 'hidden'; show($('#tabs'), 0); show($('#tabrule'), 0); }
+    show($('#schol'), W.schol(t));
     const fv = W.firm(t);
     if (show($('#firm'), fv)) {
       const hv = clamp(hover(t));
       chartBars.forEach((cb, i) => {
-        const hh = cb.hMax * Math.max(0, barH[i](t));
-        cb.bar.style.height = hh.toFixed(2) + 'px';
-        cb.bar.style.background = i === HOT ? mixc(C.ink, C.mint, hv) : mixc(C.ink, '#CFC7BB', hv * 0.9);
-        cb.lab.style.color = i === HOT ? mixc(C.muted, C.ink, hv) : C.muted;
+        cb.bar.style.height = (cb.hMax * Math.max(0, barH[i](t))).toFixed(2) + 'px';
+        cb.bar.style.background = i === HOT ? C.ink : mixc(C.ink, '#E4DCCB', hv);
+        cb.lab.style.color = i === HOT ? mixc('#6B665C', C.ink, hv) : 'rgba(18,16,14,0.66)';
+        cb.lab.style.fontWeight = i === HOT && hv > 0.5 ? 700 : 400;
       });
     }
-    const tv2 = tipW(t) * fv;
-    if (show(tipEl, tv2, 6, 8)) {
-      const [hx, hy] = [chartBars[HOT].x, chartTop + chartBars[HOT].h0 - chartBars[HOT].hMax];
-      Object.assign(tipEl.style, { left: (hx - 44).toFixed(1) + 'px', top: (hy - 72).toFixed(1) + 'px' });
+    if (show(tipEl, tipW(t) * fv, 6, 8)) {
+      const hx = chartBars[HOT].x, hy = chartTop + chartBars[HOT].h0 - chartBars[HOT].hMax;
+      Object.assign(tipEl.style, { left: (hx - 46).toFixed(1) + 'px', top: (hy - 72).toFixed(1) + 'px' });
     }
-    // drop zone
     if (vis.drop) {
       const hot = clamp(zoneHot(t));
-      $('#dropzone').style.borderColor = mixc('#D6CEC2', C.mint, hot);
-      $('#dropzone').style.background = `rgba(20,184,166,${(0.06 * hot).toFixed(3)})`;
+      $('#dropzone').style.borderColor = mixc('#A6A198', C.mintDeep, hot);
+      $('#dropzone').style.background = `rgba(20,184,166,${(0.08 * hot).toFixed(3)})`;
       show($('#drop-empty'), dropEmpty(t)); show($('#drop-full'), dropFull(t));
-      $('#revbar').style.width = (clamp(rev(t)) * 100).toFixed(2) + '%';
-      show($('#rev-a'), revA(t), 5, -6); show($('#rev-b'), revB(t), 5, 6);
+      const pr = clamp(subPress(t));
+      Object.assign($('#submit').style, {
+        transform: `translate(${(2 * pr).toFixed(2)}px, ${(2 * pr).toFixed(2)}px)`,
+        boxShadow: `${(5 - 2 * pr).toFixed(2)}px ${(5 - 2 * pr).toFixed(2)}px 0 #241F16`,
+      });
+      show($('#sub-a'), subA(t), 5, -6); show($('#sub-b'), subB(t), 5, 6);
+      $('#loader2').style.rotate = (t * 400).toFixed(1) + 'deg';
     }
     const fvv = fileVis(t);
     if (show(fileEl, fvv, 4, 0)) {
-      const x = curX(t), y = curY(t);
-      Object.assign(fileEl.style, { left: (x - 60).toFixed(1) + 'px', top: (y - 18).toFixed(1) + 'px', rotate: (-4 * clamp(fvv)).toFixed(2) + 'deg', boxShadow: '0 18px 40px -12px rgba(26,26,26,.28)' });
-      fileEl.style.scale = (0.9 + 0.1 * clamp(fvv)).toFixed(4);
+      Object.assign(fileEl.style, {
+        left: (curX(t) - 60).toFixed(1) + 'px', top: (curY(t) - 20).toFixed(1) + 'px',
+        rotate: (-4 * clamp(fvv)).toFixed(2) + 'deg', boxShadow: '6px 8px 0 rgba(0,0,0,0.85)',
+        scale: (0.9 + 0.1 * clamp(fvv)).toFixed(4),
+      });
     }
-    // rewrite
     if (vis.rewrite) {
       wordEls.forEach((el, i) => show(el, wordW[i](t), 8, 6));
-      $('#strike').style.width = (clamp(strike(t)) * strikeW).toFixed(1) + 'px';
-      const pp = $('#practice');
-      pp.style.scale = (1 - 0.05 * clamp(step(t - b(24) + 0.05, SP.fast) - step(t - b(24) - 0.07, SP.ui))).toFixed(4);
+      $('#practice').style.scale = (1 - 0.05 * clamp(step(t - b(24) + 0.05, SP.fast) - step(t - b(24) - 0.07, SP.ui))).toFixed(4);
     }
-    // prep waveform: a pure function of t
-    if (vis.prep) waveBars.forEach((d, i) => {
-      const e = clamp((t - at('prep') - 0.1) / 0.3);
-      const a = 0.5 + 0.5 * Math.sin(t * 9.1 + i * 0.83) * Math.sin(t * 4.3 + i * 0.37);
-      d.style.height = (8 + 44 * a * e).toFixed(1) + 'px';
-    });
-    // bell rings on b(26)
-    if (vis.bell) {
-      const dt = t - b(26);
-      const ang = dt > 0 ? 15 * Math.exp(-dt / 0.2) * Math.sin(TAU * 6 * dt) : 0;
-      bellIcon.style.rotate = ang.toFixed(2) + 'deg';
-    }
+    if (vis.bell) bellIcon.style.rotate = ringAt((t - b(26)) / 0.6).toFixed(2) + 'deg';
     const bs = badgeS(t);
-    if (bs > 0.002) {
-      Object.assign(badge.style, { visibility: 'visible', left: (w / 2 - 36).toFixed(1) + 'px', top: (-h / 2 - 6).toFixed(1) + 'px', scale: Math.max(0, bs).toFixed(4), opacity: clamp(bs * 3).toFixed(3) });
-    } else badge.style.visibility = 'hidden';
-    // toast "View" press
-    if (vis.toast) $('#view').style.scale = (1 - 0.06 * clamp(step(t - b(28) + 0.05, SP.fast) - step(t - b(28) - 0.07, SP.ui))).toFixed(4);
+    if (bs > 0.002) Object.assign(badge.style, { visibility: 'visible', left: (w / 2 - 38).toFixed(1) + 'px', top: (-h / 2 - 8).toFixed(1) + 'px', scale: Math.max(0, bs).toFixed(4), opacity: clamp(bs * 3).toFixed(3) });
+    else badge.style.visibility = 'hidden';
 
     // cursor: shape-centre coords -> screen, constant on-screen size
-    const sx = 720 + curX(t) * S * ps, sy = 720 + curY(t) * S * ps;
+    const sx = 720 + curX(t) * S * ps, sy = CY + curY(t) * S * ps;
     const cd = clamp(curDown(t));
     cursor.style.transform = `translate(${(sx - 6).toFixed(2)}px, ${(sy - 4).toFixed(2)}px) scale(${(1 - 0.14 * cd).toFixed(4)})`;
   };
@@ -839,25 +909,23 @@ function build() {
 
 /* ================================================================ boot */
 window.ready = (async () => {
-  await document.fonts.load('600 20px Schibsted');
-  await document.fonts.load('italic 500 20px Schibsted');
+  await document.fonts.load('600 20px Hanken');
+  await document.fonts.load('700 20px Schibsted');
+  await document.fonts.load('italic 400 20px Schibsted');
   await document.fonts.ready;
   await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
   document.getElementById('stage').style.transform = 'scale(1)';
-  // lay the shape out big and visible so measurement sees real boxes
   build();
   const q = new URLSearchParams(location.search);
   if (q.has('t')) { seek(parseFloat(q.get('t'))); return true; }
   if (q.has('render')) { seek(0); return true; }
-  // interactive preview: click to play with sound
   const hint = document.getElementById('hint');
   hint.textContent = 'Click to play with sound';
   const audio = new Audio('audio/esquirely-pipeline.wav');
   audio.loop = true;
-  let t0 = null;
-  const loop = now => { const t = audio.paused ? (t0 === null ? 0 : (now - t0) / 1000) : audio.currentTime; seek(t); requestAnimationFrame(loop); };
-  document.addEventListener('click', () => { if (audio.paused) { audio.play().catch(() => {}); hint.textContent = ''; } else { audio.pause(); } });
-  t0 = performance.now();
+  const t0 = performance.now();
+  const loop = now => { seek(audio.paused ? (now - t0) / 1000 : audio.currentTime); requestAnimationFrame(loop); };
+  document.addEventListener('click', () => { if (audio.paused) { audio.play().catch(() => {}); hint.textContent = ''; } else audio.pause(); });
   requestAnimationFrame(loop);
   return true;
 })();

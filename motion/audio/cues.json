@@ -155,6 +155,11 @@
   "gain": 1
  },
  {
+  "t": 10.4994,
+  "type": "click",
+  "gain": 1
+ },
+ {
   "t": 10.9994,
   "type": "success",
   "gain": 0.7
