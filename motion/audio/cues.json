@@ -1,0 +1,212 @@
+[
+ {
+  "t": 0.0294,
+  "type": "whoosh",
+  "gain": 0.5
+ },
+ {
+  "t": 0.4994,
+  "type": "blip",
+  "gain": 0.8
+ },
+ {
+  "t": 0.9994,
+  "type": "success",
+  "gain": 1
+ },
+ {
+  "t": 1.4994,
+  "type": "whoosh",
+  "gain": 1
+ },
+ {
+  "t": 1.9994,
+  "type": "tick",
+  "gain": 0.8
+ },
+ {
+  "t": 2.4994,
+  "type": "tick",
+  "gain": 0.9
+ },
+ {
+  "t": 2.9994,
+  "type": "tick",
+  "gain": 1
+ },
+ {
+  "t": 3.4994,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 3.4994,
+  "type": "whoosh",
+  "gain": 0.8
+ },
+ {
+  "t": 3.9994,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 3.9994,
+  "type": "success",
+  "gain": 0.6
+ },
+ {
+  "t": 4.4994,
+  "type": "whoosh",
+  "gain": 1
+ },
+ {
+  "t": 4.9994,
+  "type": "grab",
+  "gain": 1
+ },
+ {
+  "t": 5.4994,
+  "type": "drop",
+  "gain": 1
+ },
+ {
+  "t": 5.9994,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 5.9994,
+  "type": "whoosh",
+  "gain": 0.7
+ },
+ {
+  "t": 6.4994,
+  "type": "toggle",
+  "gain": 1
+ },
+ {
+  "t": 6.9994,
+  "type": "whoosh",
+  "gain": 0.8
+ },
+ {
+  "t": 7.4994,
+  "type": "tick",
+  "gain": 1
+ },
+ {
+  "t": 7.9994,
+  "type": "whoosh",
+  "gain": 0.7
+ },
+ {
+  "t": 8.4994,
+  "type": "tick",
+  "gain": 1
+ },
+ {
+  "t": 8.9994,
+  "type": "whoosh",
+  "gain": 0.6
+ },
+ {
+  "t": 9.1194,
+  "type": "blip",
+  "gain": 0.5
+ },
+ {
+  "t": 9.1794,
+  "type": "blip",
+  "gain": 0.6
+ },
+ {
+  "t": 9.2394,
+  "type": "blip",
+  "gain": 0.7
+ },
+ {
+  "t": 9.2994,
+  "type": "blip",
+  "gain": 0.8
+ },
+ {
+  "t": 9.3594,
+  "type": "blip",
+  "gain": 0.9
+ },
+ {
+  "t": 9.4994,
+  "type": "tick",
+  "gain": 0.5
+ },
+ {
+  "t": 9.9994,
+  "type": "whoosh",
+  "gain": 0.8
+ },
+ {
+  "t": 10.0194,
+  "type": "grab",
+  "gain": 0.7
+ },
+ {
+  "t": 10.3594,
+  "type": "drop",
+  "gain": 1
+ },
+ {
+  "t": 10.9994,
+  "type": "success",
+  "gain": 0.7
+ },
+ {
+  "t": 11.4994,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 11.4994,
+  "type": "whoosh",
+  "gain": 0.7
+ },
+ {
+  "t": 11.9994,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 11.9994,
+  "type": "whoosh",
+  "gain": 0.8
+ },
+ {
+  "t": 12.4994,
+  "type": "bell",
+  "gain": 1
+ },
+ {
+  "t": 12.9994,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 12.9994,
+  "type": "whoosh",
+  "gain": 0.8
+ },
+ {
+  "t": 13.4994,
+  "type": "click",
+  "gain": 1
+ },
+ {
+  "t": 13.4994,
+  "type": "whoosh",
+  "gain": 0.7
+ },
+ {
+  "t": 13.9994,
+  "type": "click",
+  "gain": 1
+ }
+]

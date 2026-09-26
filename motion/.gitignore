@@ -1,0 +1,3 @@
+out/
+audio/__pycache__/
+audio/track.wav

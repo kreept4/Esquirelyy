@@ -1,0 +1,17 @@
+{
+  "bpm_measured": 119.939,
+  "bpm": 120.0,
+  "phase_offset_coarse": 0.487,
+  "attack_correction_ms": 12.41,
+  "beat": 0.5,
+  "offset": 1.99940625,
+  "beats": 28,
+  "bars": 7,
+  "duration": 14.0,
+  "downbeat_phase_scores": [
+    0.413,
+    1.269,
+    0.706,
+    2.269
+  ]
+}

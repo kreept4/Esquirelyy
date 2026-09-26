@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Esquirely — One Shape</title>
+<!--
+  Esquirely motion piece. 1440 × 1440, 14 s, 120 BPM, 7 bars, one shape, no cuts.
+
+  Every style on this page is computed from time inside seek(t). There are no
+  CSS transitions, no timers, and no state carried between frames: render any
+  frame in any order and it comes out the same. Springs are closed-form step
+  responses; a value that changes target many times is the sum of one spring
+  per change, wrapped around the loop so frame 0 and frame 840 are the same
+  frame, cursor position and speed included.
+
+  Open the file and click to play with sound, or use ?t=3.5 to freeze a frame.
+-->
+<style>
+@font-face { font-family: 'Schibsted'; src: url(fonts/schibsted-grotesk-latin-wght-normal.woff2) format('woff2'); font-weight: 400 900; font-style: normal; }
+@font-face { font-family: 'Schibsted'; src: url(fonts/schibsted-grotesk-latin-wght-italic.woff2) format('woff2'); font-weight: 400 900; font-style: italic; }
+
+:root {
+  --canvas: #ECE7DF;
+  --ink: #1A1A1A;
+  --paper: #FFFFFF;
+  --muted: #6E685F;
+  --line: #E7E1D8;
+  --well: #F4F0EA;
+  --mint: #14B8A6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1440px; height: 1440px; overflow: hidden; background: var(--canvas); }
+body { font-family: 'Schibsted', system-ui, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+.cnt { font-feature-settings: 'tnum'; }
+#frame { position: relative; width: 1440px; height: 1440px; overflow: hidden; background: var(--canvas); }
+#stage { position: absolute; left: 720px; top: 720px; width: 0; height: 0; transform-origin: 0 0; }
+#shape { position: absolute; overflow: hidden; }
+.g { position: absolute; left: 0; top: 0; }
+.abs { position: absolute; }
+.row { display: flex; align-items: center; }
+svg.i { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
+.chip { height: 60px; padding: 0 26px; border-radius: 30px; font-size: 22px; font-weight: 600; display: flex; align-items: center; white-space: nowrap; }
+.pill { border-radius: 999px; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+.label { font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+#cursor { position: absolute; left: 0; top: 0; width: 46px; height: 46px; transform-origin: 6px 4px; z-index: 50; }
+#hint { position: fixed; left: 24px; bottom: 20px; font: 600 16px 'Schibsted'; color: var(--muted); z-index: 60; }
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="stage">
+    <div id="shape">
+
+      <!-- 0 · Browse roles pill -->
+      <div class="g" id="g-pill" style="width:400px;height:112px">
+        <div class="abs row" style="inset:0;justify-content:center;gap:14px;color:#fff;font-size:34px;font-weight:650;letter-spacing:-0.01em">
+          <span>Browse roles</span>
+          <svg class="i" width="30" height="30" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+
+      <!-- 1 · loader -->
+      <div class="g" id="g-loader" style="width:112px;height:112px">
+        <svg id="spinner" class="abs" style="left:32px;top:32px" width="48" height="48" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="19" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="5"/>
+          <circle id="arc" cx="24" cy="24" r="19" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" transform="rotate(-90 24 24)"/>
+        </svg>
+      </div>
+
+      <!-- 2 · check -->
+      <div class="g" id="g-check" style="width:112px;height:112px">
+        <svg class="abs" style="left:28px;top:28px" width="56" height="56" viewBox="0 0 56 56">
+          <path id="checkpath" d="M15 29.5 L24.5 39 L42 19" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- 3 · filter island -->
+      <div class="g" id="g-island" style="width:1000px;height:120px;color:#fff">
+        <div class="abs row" style="left:34px;top:0;height:120px;gap:16px">
+          <svg class="i" width="30" height="30" viewBox="0 0 24 24" style="opacity:.7"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+          <span style="font-size:24px;font-weight:600;opacity:.7;margin-right:8px">Roles</span>
+          <div class="chip" id="chip0"><span>Law firm</span></div>
+          <div class="chip" id="chip1"><span>Disputes</span></div>
+          <div class="chip" id="chip2"><span>Lagos</span></div>
+        </div>
+        <div class="abs row" id="count" style="right:34px;top:0;height:120px;gap:10px;font-size:24px;font-weight:650">
+          <div style="position:relative;width:74px;height:32px">
+            <span class="abs cnt" style="right:0;top:0">1,204</span>
+            <span class="abs cnt" style="right:0;top:0">486</span>
+            <span class="abs cnt" style="right:0;top:0">97</span>
+            <span class="abs cnt" style="right:0;top:0">12</span>
+          </div>
+          <span style="opacity:.6">roles</span>
+          <svg class="i" width="24" height="24" viewBox="0 0 24 24" style="opacity:.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+
+      <!-- 4 · role card -->
+      <div class="g" id="g-card" style="width:780px;height:480px">
+        <div class="abs row" style="left:48px;top:48px;gap:22px">
+          <div class="row" style="width:84px;height:84px;border-radius:22px;background:var(--ink);color:#fff;justify-content:center;font-size:30px;font-weight:800;letter-spacing:-0.02em">AO</div>
+          <div>
+            <div style="font-size:22px;font-weight:600;color:var(--muted)">Adeyemi &amp; Okafor</div>
+            <div style="font-size:38px;font-weight:750;letter-spacing:-0.02em;margin-top:4px">Associate, Dispute Resolution</div>
+          </div>
+        </div>
+        <div class="abs row" style="left:48px;top:172px;gap:12px">
+          <div class="chip" style="background:var(--well);height:52px;font-size:20px">Lagos</div>
+          <div class="chip" style="background:var(--well);height:52px;font-size:20px">Law firm</div>
+          <div class="chip" style="background:var(--well);height:52px;font-size:20px">2–4 yrs PQE</div>
+        </div>
+        <div class="abs" style="left:48px;right:48px;top:268px;font-size:21px;line-height:1.55;color:var(--muted)">Commercial litigation and arbitration before the Federal High Court and Lagos Court of Arbitration.</div>
+        <div class="abs" style="left:0;right:0;top:360px;height:1px;background:var(--line)"></div>
+        <div class="abs row" style="left:48px;top:361px;height:119px;gap:12px;font-size:21px;font-weight:650">
+          <svg class="i" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+          <span>Closes 3 Oct</span>
+        </div>
+        <div class="abs row" style="right:48px;top:361px;height:119px;gap:14px">
+          <div class="pill" style="width:64px;height:64px;border:1.5px solid var(--line)">
+            <svg class="i" width="24" height="24" viewBox="0 0 24 24"><path d="M7 4.5h10v15l-5-3.6-5 3.6z"/></svg>
+          </div>
+          <div class="pill" id="apply" style="position:relative;width:190px;height:64px;font-size:22px;font-weight:700;overflow:hidden">
+            <span class="abs row" id="apply-a" style="inset:0;justify-content:center">Apply</span>
+            <span class="abs row" id="apply-b" style="inset:0;justify-content:center;gap:10px">
+              <svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Tracked
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 · tracker pipeline -->
+      <div class="g" id="g-pipe" style="width:1180px;height:380px">
+        <div class="abs row" style="left:40px;top:34px;gap:14px">
+          <span style="font-size:26px;font-weight:750;letter-spacing:-0.01em">Your applications</span>
+        </div>
+        <div class="abs" style="right:40px;top:40px;font-size:20px;font-weight:600;color:var(--muted)">Tracker</div>
+        <div class="abs" id="stagebar" style="left:40px;top:96px;width:1100px;height:64px;border-radius:32px;background:var(--well)"></div>
+        <div class="abs" id="stageind" style="top:102px;height:52px;border-radius:26px;background:var(--ink)"></div>
+        <div class="abs row" style="left:40px;top:96px;width:1100px;height:64px">
+          <div class="stage" style="flex:1;text-align:center;font-size:21px;font-weight:650">Saved</div>
+          <div class="stage" style="flex:1;text-align:center;font-size:21px;font-weight:650">Applied</div>
+          <div class="stage" style="flex:1;text-align:center;font-size:21px;font-weight:650">Assessment</div>
+          <div class="stage" style="flex:1;text-align:center;font-size:21px;font-weight:650">Interview</div>
+          <div class="stage" style="flex:1;text-align:center;font-size:21px;font-weight:650">Offer</div>
+        </div>
+        <div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div>
+        <div class="abs" id="minicard" style="top:190px;width:204px;height:150px;border-radius:22px;background:#fff;border:1.5px solid var(--line);padding:20px 20px">
+          <div class="row" style="width:40px;height:40px;border-radius:11px;background:var(--ink);color:#fff;justify-content:center;font-size:15px;font-weight:800">AO</div>
+          <div style="font-size:19px;font-weight:750;margin-top:14px;letter-spacing:-0.01em;white-space:nowrap">Associate, Disputes</div>
+          <div style="font-size:16px;font-weight:550;color:var(--muted);margin-top:3px">Adeyemi &amp; Okafor</div>
+        </div>
+      </div>
+
+      <!-- 6 · countdown + reminder toggle -->
+      <div class="g" id="g-toggle" style="width:740px;height:120px">
+        <div class="abs row" style="left:40px;top:0;height:120px;gap:16px">
+          <svg class="i" width="30" height="30" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+          <span style="font-size:30px;font-weight:700;letter-spacing:-0.015em">Interview in 3 days</span>
+        </div>
+        <div class="abs" style="right:176px;top:0;height:120px;line-height:120px;font-size:21px;font-weight:600;color:var(--muted)">Remind me</div>
+        <div class="abs" id="ttrack" style="right:40px;top:30px;width:112px;height:60px;border-radius:30px"></div>
+      </div>
+
+      <!-- shared puck: the toggle knob that becomes the tab indicator -->
+      <div class="abs" id="puck"></div>
+
+      <!-- 7–9 · tabs panel: tabs, scholarship, firm (anchored to the shape's top edge) -->
+      <div class="g" id="g-panel" style="width:780px;height:640px">
+        <div class="abs row" id="tabs" style="left:0;right:0;top:0;height:120px;justify-content:center;gap:10px">
+          <div class="tab" style="font-size:27px;font-weight:700;padding:0 34px;line-height:72px">Jobs</div>
+          <div class="tab" style="font-size:27px;font-weight:700;padding:0 34px;line-height:72px">Scholarships</div>
+          <div class="tab" style="font-size:27px;font-weight:700;padding:0 34px;line-height:72px">Firms</div>
+        </div>
+        <div class="abs" id="tabrule" style="left:40px;right:40px;top:120px;height:1px;background:var(--line)"></div>
+
+        <div class="abs" id="schol" style="left:48px;right:48px;top:160px">
+          <div class="label" style="color:var(--mint)">Fully funded · LLM</div>
+          <div style="font-size:38px;font-weight:750;letter-spacing:-0.02em;line-height:1.15;margin-top:12px">Master of Laws, International Commercial Law</div>
+          <div style="font-size:22px;color:var(--muted);margin-top:12px;font-weight:550">United Kingdom · Tuition, stipend and flights</div>
+          <div class="row" style="margin-top:34px;justify-content:space-between;font-size:20px;font-weight:650">
+            <span>Deadline 14 Nov</span><span style="color:var(--muted)">49 days left</span>
+          </div>
+          <div style="margin-top:14px;height:12px;border-radius:6px;background:var(--well);position:relative;overflow:hidden">
+            <div id="scholbar" class="abs" style="left:0;top:0;bottom:0;border-radius:6px;background:var(--ink)"></div>
+          </div>
+        </div>
+
+        <div class="abs" id="firm" style="left:48px;right:48px;top:156px">
+          <div class="row" style="gap:20px">
+            <div class="row" style="width:72px;height:72px;border-radius:19px;background:var(--ink);color:#fff;justify-content:center;font-size:26px;font-weight:800">AO</div>
+            <div>
+              <div class="row" style="gap:12px">
+                <span style="font-size:32px;font-weight:750;letter-spacing:-0.02em">Adeyemi &amp; Okafor</span>
+                <span class="pill" style="height:34px;padding:0 14px;background:var(--ink);color:#fff;font-size:16px;font-weight:700;letter-spacing:0.04em">TIER 1</span>
+              </div>
+              <div style="font-size:20px;color:var(--muted);font-weight:550;margin-top:4px">Lagos · Abuja · 140 lawyers</div>
+            </div>
+          </div>
+          <div class="label" style="margin-top:34px">Practice mix</div>
+          <div class="abs" id="chart" style="left:0;right:0;top:170px;height:250px">
+            <div class="abs" style="left:0;right:0;bottom:44px;height:1px;background:var(--line)"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10 · CV drop zone + review progress -->
+      <div class="g" id="g-drop" style="width:720px;height:500px">
+        <div class="abs" id="dropzone" style="left:32px;top:32px;right:32px;bottom:32px;border-radius:28px;border:2.5px dashed #D6CEC2"></div>
+        <div class="abs" id="drop-empty" style="left:0;right:0;top:130px;text-align:center">
+          <svg class="i" width="52" height="52" viewBox="0 0 24 24" style="color:var(--ink)"><path d="M12 15.5V5M7.5 9.5L12 5l4.5 4.5M5 15.5v2.5a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-2.5"/></svg>
+          <div style="font-size:32px;font-weight:750;letter-spacing:-0.015em;margin-top:20px">Drop your CV</div>
+          <div style="font-size:21px;color:var(--muted);margin-top:8px;font-weight:550">We read it like a partner would</div>
+        </div>
+        <div class="abs" id="drop-full" style="left:80px;right:80px;top:150px">
+          <div class="row" style="gap:18px">
+            <div class="row" style="width:64px;height:76px;border-radius:12px;background:var(--well);justify-content:center;font-size:15px;font-weight:800;color:var(--ink)">PDF</div>
+            <div style="flex:1">
+              <div style="font-size:26px;font-weight:700">Adaeze_Okoro_CV.pdf</div>
+              <div style="position:relative;height:28px;margin-top:4px;font-size:20px;font-weight:550;color:var(--muted)">
+                <span class="abs" id="rev-a">Reviewing for disputes roles…</span>
+                <span class="abs" id="rev-b" style="color:var(--ink)">6 notes, 2 rewrites</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:34px;height:14px;border-radius:7px;background:var(--well);position:relative;overflow:hidden">
+            <div id="revbar" class="abs" style="left:0;top:0;bottom:0;border-radius:7px;background:var(--mint)"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11 · rewrite -->
+      <div class="g" id="g-rewrite" style="width:880px;height:460px">
+        <div class="abs" style="left:52px;right:52px;top:48px">
+          <div class="label">What you wrote</div>
+          <div style="position:relative;display:inline-block;margin-top:12px;font-size:25px;font-style:italic;color:var(--muted);font-weight:500">
+            Responsible for legal research and drafting.
+            <div id="strike" class="abs" style="left:0;top:52%;height:2.5px;background:var(--muted);border-radius:2px"></div>
+          </div>
+          <div class="label" style="margin-top:36px">What we&rsquo;d send</div>
+          <div id="rewrite" style="margin-top:12px;font-size:33px;font-weight:700;line-height:1.3;letter-spacing:-0.015em"></div>
+        </div>
+        <div class="abs pill" id="practice" style="right:52px;bottom:44px;height:60px;padding:0 28px;gap:10px;background:var(--ink);color:#fff;font-size:21px;font-weight:700">
+          Practice interview
+          <svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+
+      <!-- 12 · interview prep -->
+      <div class="g" id="g-prep" style="width:880px;height:460px;color:#fff">
+        <div class="abs row" style="left:52px;top:44px;gap:12px;font-size:19px;font-weight:650;color:rgba(255,255,255,.55)">
+          <span>Interview prep</span><span>·</span><span>Question 3 of 10</span>
+        </div>
+        <div class="abs pill" id="close" style="right:40px;top:32px;width:52px;height:52px;background:rgba(255,255,255,.1)">
+          <svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>
+        </div>
+        <div class="abs" style="left:52px;right:52px;top:110px;font-size:40px;font-weight:700;line-height:1.22;letter-spacing:-0.02em">A client&rsquo;s key facts change the week before trial. Walk us through your first hour.</div>
+        <div class="abs row" style="left:52px;bottom:48px;gap:22px">
+          <div class="pill" style="width:76px;height:76px;background:var(--mint);color:#fff">
+            <svg class="i" width="30" height="30" viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>
+          </div>
+          <div class="row" id="wave" style="gap:6px;height:60px"></div>
+          <span style="font-size:22px;font-weight:650;color:rgba(255,255,255,.55);margin-left:6px">0:14</span>
+        </div>
+      </div>
+
+      <!-- 13 · bell -->
+      <div class="g" id="g-bell" style="width:128px;height:128px;color:#fff">
+        <svg class="i abs" id="bellicon" style="left:36px;top:34px;transform-origin:28px 6px" width="56" height="56" viewBox="0 0 24 24"><path d="M6.5 16.5V11a5.5 5.5 0 0 1 11 0v5.5l1.5 2H5z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg>
+      </div>
+
+      <!-- 14 · toast -->
+      <div class="g" id="g-toast" style="width:860px;height:132px">
+        <div class="abs row" style="left:26px;top:0;height:132px;gap:22px">
+          <div class="pill" style="width:80px;height:80px;background:var(--well)">
+            <svg class="i" width="32" height="32" viewBox="0 0 24 24"><path d="M6.5 16.5V11a5.5 5.5 0 0 1 11 0v5.5l1.5 2H5z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg>
+          </div>
+          <div>
+            <div class="row" style="gap:10px;font-size:19px;font-weight:650;color:var(--muted)"><span style="width:10px;height:10px;border-radius:5px;background:var(--mint)"></span>New listing · closes Friday</div>
+            <div style="font-size:29px;font-weight:750;letter-spacing:-0.015em;margin-top:4px">Associate, Disputes at Adeyemi &amp; Okafor</div>
+          </div>
+        </div>
+        <div class="abs pill" id="view" style="right:26px;top:34px;height:64px;padding:0 30px;background:var(--ink);color:#fff;font-size:22px;font-weight:700">View</div>
+      </div>
+    </div>
+
+    <!-- badge sits outside the shape so the shape's clip never crops it -->
+    <div class="abs pill" id="badge" style="width:40px;height:40px;background:var(--mint);color:#fff;font-size:21px;font-weight:800">1</div>
+    <!-- the file being dragged in -->
+    <div class="abs row" id="file" style="height:72px;padding:0 24px 0 14px;gap:14px;border-radius:20px;background:#fff;border:1.5px solid var(--line);font-size:21px;font-weight:700;white-space:nowrap">
+      <div class="row" style="width:44px;height:52px;border-radius:9px;background:var(--well);justify-content:center;font-size:12px;font-weight:800">PDF</div>
+      Adaeze_Okoro_CV.pdf
+    </div>
+    <!-- chart tooltip -->
+    <div class="abs" id="tip" style="height:58px;padding:0 20px;border-radius:14px;background:var(--ink);color:#fff;font-size:20px;font-weight:650;line-height:58px;white-space:nowrap">Disputes · 38% of work</div>
+  </div>
+
+  <svg id="cursor" viewBox="0 0 46 46"><path d="M8 5.5v29.5l7.6-7.2 5 11.2 5.2-2.3-5-11h10.6z" fill="#1A1A1A" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>
+</div>
+<div id="hint"></div>
+
+<script src="beats.js"></script>
+<script>
+'use strict';
+/* ================================================================ time grid
+   Everything is placed on the grid measured from the audio (audio/analyze.py). */
+const BT = window.BEATS || { beat: 0.5, offset: 0, duration: 14, beats: 28 };
+const T = BT.duration;                         // loop length, 14 s
+const B = BT.beat;                             // 0.5 s
+const BAR = 4 * B;
+const D0 = ((BT.offset % BAR) + BAR + BAR / 2) % BAR - BAR / 2;   // first downbeat, ~0
+const beat = k => D0 + (k - 1) * B;            // beat k = 1..28
+const mod = (x, m) => ((x % m) + m) % m;
+
+/* ================================================================ springs
+   Closed-form step response of a damped spring, 0 → 1. z < 1 overshoots a hair. */
+const TAU = Math.PI * 2;
+function step(tau, c) {
+  if (tau <= 0) return 0;
+  const w = TAU * c.f, z = c.z;
+  if (z >= 1) return 1 - (1 + w * tau) * Math.exp(-w * tau);
+  const wd = w * Math.sqrt(1 - z * z);
+  return 1 - Math.exp(-z * w * tau) * (Math.cos(wd * tau) + (z * w / wd) * Math.sin(wd * tau));
+}
+const SP = {
+  shape:  { f: 2.3, z: 0.84 },   // the hero: ~1 % overshoot
+  camera: { f: 1.5, z: 0.95 },
+  soft:   { f: 2.0, z: 1 },
+  ui:     { f: 3.4, z: 0.86 },
+  snap:   { f: 5.2, z: 0.9 },
+  fast:   { f: 7.5, z: 1 },
+  lead:   { f: 5.0, z: 0.86 },   // leading edge of a liquid indicator
+  trail:  { f: 2.4, z: 0.95 },   // trailing edge
+  cursor: { f: 3.3, z: 1 },
+  drag:   { f: 2.2, z: 1 },
+  enter:  { f: 5.5, z: 1 },
+  exit:   { f: 8.5, z: 1 },
+};
+
+/* A periodic multi-target spring. keys: [time, target, cfg?]. The value before
+   the first key is the last key's target (it's a loop), and each change of
+   target adds one spring. The previous lap's springs are summed in too, so a
+   key near the end of the loop carries across frame 0 without a seam. */
+function track(keys, def = SP.ui) {
+  const ks = keys.map(([t, v, c]) => ({ t: mod(t, T), v, c: c || def })).sort((a, b) => a.t - b.t);
+  const v0 = ks[ks.length - 1].v;
+  let prev = v0;
+  for (const k of ks) { k.d = k.v - prev; prev = k.v; }
+  const live = ks.filter(k => k.d !== 0);
+  const f = t => {
+    t = mod(t, T);
+    let v = v0;
+    for (const k of live) v += k.d * (step(t - k.t, k.c) + step(t - k.t + T, k.c));
+    return v;
+  };
+  f.keys = ks;
+  return f;
+}
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+function colorTrack(keys, def) {
+  const ch = [0, 1, 2].map(i => track(keys.map(([t, c, cfg]) => [t, hex(c)[i], cfg]), def));
+  const f = t => ch.map(c => Math.round(Math.min(255, Math.max(0, c(t)))));
+  f.css = t => `rgb(${f(t).join(',')})`;
+  return f;
+}
+const lerp = (a, b, u) => a + (b - a) * u;
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const mixc = (a, b, u) => `rgb(${hex(a).map((x, i) => Math.round(lerp(x, hex(b)[i], u))).join(',')})`;
+
+/* Visibility window: enters after the previous content has begun to leave
+   (the gotcha: swapped text needs its own enter and exit timing). */
+function win(tin, tout, delay = 0.07, cin = SP.enter, cout = SP.exit) {
+  return track([[tin + delay, 1, cin], [tout, 0, cout]]);
+}
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+function show(el, v, blur = 9, lift = 10) {
+  v = clamp(v);
+  const st = el.style;
+  // opacity 0 as well: a child set visible would otherwise show through a hidden parent
+  if (v < 0.003) { st.visibility = 'hidden'; st.opacity = '0'; return false; }
+  st.visibility = 'visible';
+  st.opacity = v.toFixed(4);
+  st.filter = v > 0.995 ? 'none' : `blur(${((1 - v) * blur).toFixed(2)}px)`;
+  st.translate = `0 ${((1 - v) * lift).toFixed(2)}px`;
+  return true;
+}
+
+const C = { ink: '#1A1A1A', paper: '#FFFFFF', mint: '#14B8A6', well: '#F4F0EA', canvas: '#ECE7DF', line: '#E7E1D8', muted: '#6E685F' };
+
+/* ================================================================ the score
+   Beats are 1-indexed like the storyboard. */
+const b = beat;
+const STATES = [
+  // name,     t,      w,    h,   r,  bg
+  ['pill',    b(28),  400,  112, 56, C.ink],
+  ['loader',  b(1) + 0.03, 112, 112, 56, C.ink],
+  ['check',   b(3),   112,  112, 56, C.mint],
+  ['island',  b(4),  1000,  120, 60, C.ink],
+  ['card',    b(8),   780,  480, 40, C.paper],
+  ['pipe',    b(10), 1180,  380, 40, C.paper],
+  ['toggle',  b(13),  740,  120, 60, C.paper],
+  ['tabs',    b(15),  780,  120, 60, C.paper],
+  ['schol',   b(17),  780,  470, 44, C.paper],
+  ['firm',    b(19),  780,  640, 44, C.paper],
+  ['drop',    b(21),  720,  500, 40, C.paper],
+  ['rewrite', b(23),  880,  460, 40, C.paper],
+  ['prep',    b(24),  880,  460, 40, C.ink],
+  ['bell',    b(25),  128,  128, 64, C.ink],
+  ['toast',   b(27),  860,  132, 66, C.paper],
+];
+const at = name => STATES.find(s => s[0] === name)[1];
+const shapeW = track(STATES.map(s => [s[1], s[2]]), SP.shape);
+const shapeH = track(STATES.map(s => [s[1], s[3]]), SP.shape);
+const shapeR = track(STATES.map(s => [s[1], s[4]]), SP.shape);
+// colour snaps: an ink↔paper crossfade lingering at mid-grey reads as a dead slab
+const shapeBg = colorTrack(STATES.map(s => [s[1], s[5]]), { f: 5.5, z: 1 });
+const fillScale = (w, h) => Math.min(0.80 * 1440 / w, 0.64 * 1440 / h, 2.5);
+const camS = track(STATES.map(s => [s[1] + 0.04, fillScale(s[2], s[3])]), SP.camera);
+
+// Press dips on the shape itself (a click on the whole shape).
+const press = [];
+const shapeClicks = [b(1), b(8), b(13), b(25), b(27)];
+for (const t of shapeClicks) press.push([t - 0.05, 0.965, SP.fast], [t + 0.07, 1, SP.ui]);
+const shapePress = track(press.length ? press : [[0, 1]]);
+
+/* ------------------------------------------------ element positions
+   Measured once from layout (not animation state) at scale 1. */
+const G = {};  // group id -> {el, W, H, origin(t)}
+function group(id, origin) {
+  const el = $('#g-' + id);
+  const W = el.offsetWidth, H = el.offsetHeight;
+  G[id] = { el, W, H, origin: origin || (() => [-W / 2, -H / 2]) };
+}
+function pt(id, sel, dx = 0, dy = 0) {
+  const g = G[id], el = typeof sel === 'string' ? g.el.querySelector(sel) : sel;
+  const gr = g.el.getBoundingClientRect(), r = el.getBoundingClientRect();
+  const ox = r.left - gr.left + r.width / 2 + dx, oy = r.top - gr.top + r.height / 2 + dy;
+  return t => { const [x, y] = g.origin(t); return [x + ox, y + oy]; };
+}
+function box(id, el) {
+  const g = G[id];
+  const gr = g.el.getBoundingClientRect(), r = el.getBoundingClientRect();
+  return { x: r.left - gr.left, y: r.top - gr.top, w: r.width, h: r.height };
+}
+
+let seek;
+const CUES = [];
+function cue(t, type, gain = 1) { CUES.push({ t: +mod(t, T).toFixed(4), type, gain }); }
+
+function build() {
+  for (const id of ['pill', 'loader', 'check', 'island', 'card', 'pipe', 'toggle', 'drop', 'rewrite', 'prep', 'bell', 'toast']) group(id);
+  group('panel', t => [-390, -shapeH(t) / 2]);
+
+  /* ---------------- windows */
+  const W = {
+    pill:    win(at('pill'), at('loader'), 0.08),
+    loader:  win(at('loader'), at('check')),
+    check:   win(at('check'), at('island'), 0.04),
+    island:  win(at('island'), at('card'), 0.07),
+    card:    win(at('card'), at('pipe'), 0.07),
+    pipe:    win(at('pipe'), at('toggle'), 0.07),
+    toggle:  win(at('toggle'), at('tabs')),
+    tabs:    win(at('tabs'), at('drop'), 0.1),
+    schol:   win(at('schol'), at('firm'), 0.07),
+    firm:    win(at('firm'), at('drop'), 0.07),
+    drop:    win(at('drop'), at('rewrite'), 0.1),
+    rewrite: win(at('rewrite'), at('prep')),
+    prep:    win(at('prep'), at('bell'), 0.1),
+    bell:    win(at('bell'), at('toast'), 0.08),
+    toast:   win(at('toast'), at('pill'), 0.1),
+  };
+
+  /* ---------------- island chips + count */
+  const chips = [0, 1, 2].map(i => $('#chip' + i));
+  const chipOn = chips.map((_, i) => track([[b(5 + i), 1, SP.snap], [b(3), 0, SP.fast]]));
+  const cnts = $$('.cnt');
+  const cntW = [win(at('island'), b(5), 0.1, SP.enter, SP.fast), win(b(5), b(6), 0.05, SP.enter, SP.fast), win(b(6), b(7), 0.05, SP.enter, SP.fast), win(b(7), at('card'), 0.05, SP.enter, SP.fast)];
+
+  /* ---------------- card apply button */
+  const applyOn = track([[b(9), 1, SP.snap], [b(3), 0]]);
+  const applyA = win(at('card'), b(9), 0, SP.enter, SP.fast), applyB = win(b(9), at('pipe'), 0.06);
+
+  /* ---------------- pipeline: drag the card from Applied to Interview */
+  const stages = $$('#g-pipe .stage');
+  const colX = stages.map(s => box('pipe', s).x + box('pipe', s).w / 2);        // group coords
+  const slots = $$('#g-pipe .slot');
+  const mini = $('#minicard');
+  const gp = G.pipe;
+  const toShape = (x, y) => [x - gp.W / 2, y - gp.H / 2];
+  const cardY = 190 + 75;
+
+  /* ---------------- cursor path, in shape-centre coordinates */
+  const P = {
+    pill: [0, 4],
+    chip: [0, 1, 2].map(i => pt('island', '#chip' + i)(0)),
+    count: pt('island', '#count')(0),
+    apply: pt('card', '#apply')(0),
+    card0: toShape(colX[1], cardY),
+    toggle: pt('toggle', '#ttrack')(0),
+    tabs: $$('#tabs .tab'),
+    close: pt('prep', '#close')(0),
+    practice: pt('rewrite', '#practice')(0),
+    view: pt('toast', '#view')(0),
+  };
+  const tabBoxes = P.tabs.map(el => box('panel', el));
+  const tabPt = (i, h) => [tabBoxes[i].x + tabBoxes[i].w / 2 - 390, tabBoxes[i].y + tabBoxes[i].h / 2 - h / 2];
+
+  const holdT0 = b(11), holdT1 = b(12);
+  const dragTo = toShape(colX[3] + 92, cardY - 16);
+  const ck = [];   // [t, x, y, cfg]
+  const moveTo = (tArrive, [x, y], lead = 0.3, cfg = SP.cursor) => ck.push([tArrive - lead, x, y, cfg]);
+  const rest = (t, [x, y]) => ck.push([t, x, y, SP.soft]);
+
+  moveTo(b(1), P.pill, 0.34);
+  rest(b(1) + 0.16, [150, 150]);
+  moveTo(b(5), P.chip[0], 0.4);
+  moveTo(b(6), P.chip[1], 0.3);
+  moveTo(b(7), P.chip[2], 0.3);
+  moveTo(b(8), [P.count[0] + 40, P.count[1]], 0.3);
+  moveTo(b(9), P.apply, 0.34);
+  moveTo(holdT0, P.card0, 0.36);
+  ck.push([holdT0 + 0.03, dragTo[0], dragTo[1], SP.drag]);
+  moveTo(b(13), [toShape(colX[3], cardY)[0] + 10, toShape(colX[3], cardY)[1] + 20], 0.34);
+  moveTo(b(14), P.toggle, 0.34);
+  rest(b(14) + 0.16, [P.toggle[0] + 30, 150]);
+  moveTo(b(16), tabPt(1, 120), 0.36);
+  moveTo(b(18), tabPt(2, 470), 0.34);
+  // chart geometry first (needed for the hover point)
+  const chartEl = $('#chart');
+  const DATA = [['Disputes', 38], ['Corporate', 26], ['Banking', 17], ['Energy', 12], ['Tax', 7]];
+  const chartBox = box('panel', chartEl);
+  const chartBars = DATA.map(([name, v], i) => {
+    const bw = 88, gap = (chartBox.w - DATA.length * bw) / (DATA.length - 1);
+    const bar = document.createElement('div');
+    bar.className = 'abs';
+    Object.assign(bar.style, { left: i * (bw + gap) + 'px', width: bw + 'px', bottom: '44px', borderRadius: '14px 14px 4px 4px' });
+    const lab = document.createElement('div');
+    lab.className = 'abs';
+    Object.assign(lab.style, { left: i * (bw + gap) - 20 + 'px', width: bw + 40 + 'px', bottom: '0', height: '34px', textAlign: 'center', fontSize: '17px', fontWeight: 650, color: C.muted });
+    lab.textContent = name;
+    chartEl.append(bar, lab);
+    const hMax = 150 * v / 38;
+    return { bar, lab, v, hMax, x: chartBox.x + i * (bw + gap) + bw / 2 - 390, h0: chartBox.h - 44 };
+  });
+  const chartTop = chartBox.y - 640 / 2;
+  const hoverPt = [chartBars[0].x + 10, chartTop + chartBars[0].h0 - chartBars[0].hMax * 0.55];
+  moveTo(b(20) - 0.04, hoverPt, 0.34);
+  // file drag: pick up just outside the drop zone, carry it in, let go
+  const fileStart = [330, 330], fileEnd = [0, 30];
+  moveTo(b(21), fileStart, 0.28);
+  const fileHold0 = b(21) + 0.02, fileHold1 = b(21) + 0.36;
+  ck.push([fileHold0, fileEnd[0], fileEnd[1], { f: 2.6, z: 1 }]);
+  rest(b(22), [200, 210]);
+  moveTo(b(24), P.practice, 0.36);
+  moveTo(b(25), P.close, 0.32);
+  rest(b(25) + 0.16, [110, 120]);
+  moveTo(b(27), [0, 0], 0.3);
+  moveTo(b(28), P.view, 0.3);
+  // …and back onto the pill for the press on frame 0 (it wraps, so frame 840 = frame 0)
+
+  const curX = track(ck.map(k => [k[0], k[1], k[3]]), SP.cursor);
+  const curY = track(ck.map(k => [k[0], k[2], k[3]]), SP.cursor);
+  const clicks = [b(1), b(5), b(6), b(7), b(8), b(9), b(13), b(14), b(16), b(18), b(24), b(25), b(27), b(28)];
+  const cp = [];
+  for (const t of clicks) cp.push([t - 0.05, 1, SP.fast], [t + 0.07, 0, SP.ui]);
+  cp.push([holdT0 - 0.05, 1, SP.fast], [holdT1, 0, SP.ui]);
+  cp.push([fileHold0 - 0.06, 1, SP.fast], [fileHold1, 0, SP.ui]);
+  const curDown = track(cp, SP.fast);
+
+  /* drag physics: direct manipulation while held, spring home on release */
+  const grab = [curX(holdT0), curY(holdT0)];
+  const home0 = P.card0, home1 = toShape(colX[3], cardY);
+  const cardAt = t => {
+    t = mod(t, T);
+    if (t < holdT0) return home0;
+    if (t <= holdT1) return [home0[0] + curX(t) - grab[0], home0[1] + curY(t) - grab[1]];
+    const rel = [home0[0] + curX(holdT1) - grab[0], home0[1] + curY(holdT1) - grab[1]];
+    const s = step(t - holdT1, SP.ui);
+    return [lerp(rel[0], home1[0], s), lerp(rel[1], home1[1], s)];
+  };
+  const held = track([[holdT0, 1, SP.snap], [holdT1, 0, SP.ui]]);
+  // nearest column, sampled along the (pure) drag path -> liquid indicator keys
+  const colOf = x => colX.reduce((bi, cx, i) => Math.abs(x + gp.W / 2 - cx) < Math.abs(x + gp.W / 2 - colX[bi]) ? i : bi, 0);
+  const indKeysL = [[b(4), colX[1] - 100 - gp.W / 2]], indKeysR = [[b(4), colX[1] + 100 - gp.W / 2]];
+  let last = 1;
+  for (let t = holdT0; t < holdT1 + 0.6; t += 0.002) {
+    const c = colOf(cardAt(t)[0]);
+    if (c !== last) {
+      const right = c > last;
+      indKeysL.push([t, colX[c] - 100 - gp.W / 2, right ? SP.trail : SP.lead]);
+      indKeysR.push([t, colX[c] + 100 - gp.W / 2, right ? SP.lead : SP.trail]);
+      last = c;
+    }
+  }
+  const indL = track(indKeysL, SP.ui), indR = track(indKeysR, SP.ui);
+
+  /* ---------------- toggle knob -> tab indicator (one element, two edges) */
+  const tt = box('toggle', $('#ttrack'));
+  const tOrigin = G.toggle.origin(0);
+  const knob = on => { const x0 = tOrigin[0] + tt.x + (on ? tt.w - 54 : 6); return [x0, x0 + 48]; };
+  const tabEdge = (i) => [tabBoxes[i].x - 390, tabBoxes[i].x - 390 + tabBoxes[i].w];
+  const pk = [
+    [b(10), knob(false), SP.fast, SP.fast],
+    [b(14), knob(true), SP.trail, SP.lead],        // moving right: right edge leads
+    [at('tabs'), tabEdge(0), SP.lead, SP.trail],     // moving left: left edge leads
+    [b(16), tabEdge(1), SP.trail, SP.lead],
+    [b(18), tabEdge(2), SP.trail, SP.lead],
+  ];
+  const puckL = track(pk.map(k => [k[0], k[1][0], k[2]]));
+  const puckR = track(pk.map(k => [k[0], k[1][1], k[3]]));
+  const puckH = track([[b(10), 48, SP.fast], [at('tabs'), 72, SP.ui]]);
+  const puckC = colorTrack([[b(10), C.paper, SP.fast], [at('tabs'), C.ink, { f: 5.5, z: 1 }]]);
+  const trackOn = track([[b(14), 1, SP.snap], [b(10), 0, SP.fast]]);
+  const puckVis = win(at('toggle'), at('drop'), 0.1);
+
+  /* ---------------- scholarship bar, chart, tooltip */
+  const scholFill = track([[at('schol') + 0.2, 0.62, { f: 1.4, z: 1 }], [b(3), 0, SP.fast]]);
+  const barH = chartBars.map((_, i) => track([[at('firm') + 0.12 + i * 0.06, 1, SP.ui], [b(3), 0, SP.fast]]));
+  const hover = track([[b(20) - 0.02, 1, SP.snap], [at('drop'), 0, SP.fast]]);
+  const tipW = win(b(20), at('drop') - 0.02, 0.02, SP.snap, SP.exit);
+  const tipEl = $('#tip');
+
+  /* ---------------- file drop, review */
+  const fileEl = $('#file');
+  const fileVis = track([[fileHold0 - 0.12, 1, SP.snap], [fileHold1 + 0.02, 0, SP.exit]]);
+  const dropEmpty = win(at('drop'), fileHold1, 0.1, SP.enter, SP.fast);
+  const dropFull = win(fileHold1, at('rewrite'), 0.04);
+  const zoneHot = track([[fileHold0 + 0.12, 1, SP.ui], [fileHold1, 0, SP.soft]]);
+  const rev = track([[b(22), 1, { f: 1.25, z: 1 }], [b(3), 0, SP.fast]]);
+  const revA = win(fileHold1, b(23) - 0.12, 0.05, SP.enter, SP.fast), revB = win(b(23) - 0.12, at('rewrite'), 0.02);
+
+  /* ---------------- rewrite */
+  const words = 'Drafted 14 research memos for a ₦2bn commercial dispute at the Federal High Court.'.split(' ');
+  const rw = $('#rewrite');
+  const wordEls = words.map(w => { const s = document.createElement('span'); s.textContent = w + ' '; s.style.display = 'inline-block'; s.style.whiteSpace = 'pre'; if (/14|₦2bn/.test(w)) s.style.color = C.mint; rw.append(s); return s; });
+  // the rewrite only has one beat on screen, so the whole line must land by ~0.3 s
+  const wordW = words.map((_, i) => win(at('rewrite') + 0.07 + i * 0.016, at('prep'), 0, { f: 6, z: 1 }, SP.exit));
+  const strike = track([[at('rewrite') + 0.04, 1, SP.snap], [b(3), 0, SP.fast]]);
+  const strikeW = $('#strike').parentElement.getBoundingClientRect().width;
+
+  /* ---------------- prep waveform */
+  const waveEl = $('#wave');
+  const waveBars = Array.from({ length: 22 }, () => { const d = document.createElement('div'); Object.assign(d.style, { width: '6px', borderRadius: '3px', background: 'rgba(255,255,255,.75)' }); waveEl.append(d); return d; });
+
+  /* ---------------- bell + badge */
+  const bellIcon = $('#bellicon'), badge = $('#badge');
+  const badgeS = track([[b(26), 1, { f: 4.2, z: 0.72 }], [at('toast') + 0.02, 0, SP.exit]]);
+
+  /* ---------------- sound cues, placed on the same times the motion uses */
+  cue(b(1), 'click'); cue(b(1) + 0.03, 'whoosh', 0.5); cue(b(2), 'blip', 0.8); cue(b(3), 'success');
+  cue(b(4), 'whoosh'); for (let i = 0; i < 3; i++) cue(b(5 + i), 'tick', 0.8 + i * 0.1);
+  cue(b(8), 'click'); cue(b(8), 'whoosh', 0.8); cue(b(9), 'click'); cue(b(9), 'success', 0.6);
+  cue(b(10), 'whoosh'); cue(holdT0, 'grab'); cue(holdT1, 'drop');
+  cue(b(13), 'click'); cue(b(13), 'whoosh', 0.7); cue(b(14), 'toggle'); cue(b(15), 'whoosh', 0.8);
+  cue(b(16), 'tick'); cue(b(17), 'whoosh', 0.7); cue(b(18), 'tick'); cue(b(19), 'whoosh', 0.6);
+  for (let i = 0; i < 5; i++) cue(at('firm') + 0.12 + i * 0.06, 'blip', 0.5 + 0.1 * i);
+  cue(b(20), 'tick', 0.5); cue(b(21), 'whoosh', 0.8); cue(fileHold0, 'grab', 0.7); cue(fileHold1, 'drop');
+  cue(b(23), 'success', 0.7); cue(b(24), 'click'); cue(b(24), 'whoosh', 0.7); cue(b(25), 'click'); cue(b(25), 'whoosh', 0.8);
+  cue(b(26), 'bell'); cue(b(27), 'click'); cue(b(27), 'whoosh', 0.8); cue(b(28), 'click'); cue(b(28), 'whoosh', 0.7);
+  CUES.sort((a, c) => a.t - c.t);
+
+  /* ================================================================ seek(t) */
+  const shape = $('#shape'), stage = $('#stage'), cursor = $('#cursor');
+  const vis = {};
+  seek = function (tRaw) {
+    const t = mod(tRaw, T);
+    const w = shapeW(t), h = shapeH(t), r = shapeR(t), S = camS(t), ps = shapePress(t);
+    stage.style.transform = `scale(${(S * ps).toFixed(5)})`;
+    Object.assign(shape.style, {
+      left: (-w / 2).toFixed(2) + 'px', top: (-h / 2).toFixed(2) + 'px',
+      width: w.toFixed(2) + 'px', height: h.toFixed(2) + 'px',
+      borderRadius: Math.min(r, w / 2, h / 2).toFixed(2) + 'px',
+      background: shapeBg.css(t),
+    });
+    const bgLum = shapeBg(t).reduce((a, c) => a + c, 0) / 765;
+    shape.style.boxShadow = `0 1px 2px rgba(26,26,26,${(0.06 * bgLum).toFixed(3)}), 0 18px 50px -12px rgba(26,26,26,${(0.16 * bgLum + 0.1).toFixed(3)}), inset 0 0 0 1px rgba(26,26,26,${(0.05 * bgLum).toFixed(3)})`;
+
+    // place every group at its origin in shape-centre coords
+    for (const id in G) {
+      const g = G[id], [ox, oy] = g.origin(t);
+      g.el.style.left = (w / 2 + ox).toFixed(2) + 'px';
+      g.el.style.top = (h / 2 + oy).toFixed(2) + 'px';
+    }
+    for (const id of ['pill', 'loader', 'check', 'island', 'card', 'pipe', 'toggle', 'drop', 'rewrite', 'prep', 'bell', 'toast']) vis[id] = show(G[id].el, W[id](t));
+
+    // loader
+    if (vis.loader) {
+      // indeterminate quarter-arc, then on beat 2 it fills to a full ring
+      const u = 0.26 + 0.74 * clamp(step(t - b(2), SP.ui));
+      $('#spinner').style.rotate = (t * 460).toFixed(1) + 'deg';
+      $('#arc').style.strokeDasharray = `${(u * 119.38).toFixed(2)} 200`;
+    }
+    // check draws itself
+    if (vis.check) {
+      const d = track.checkLen || (track.checkLen = $('#checkpath').getTotalLength());
+      const u = step(t - at('check') - 0.06, SP.ui);
+      $('#checkpath').style.strokeDasharray = d;
+      $('#checkpath').style.strokeDashoffset = (d * (1 - clamp(u))).toFixed(2);
+    }
+    // island chips
+    if (vis.island) {
+      chips.forEach((c, i) => {
+        const u = clamp(chipOn[i](t));
+        c.style.background = `rgba(255,255,255,${u.toFixed(3)})`;
+        c.style.color = mixc('#FFFFFF', C.ink, u);
+        c.style.boxShadow = `inset 0 0 0 1.5px rgba(255,255,255,${(0.28 * (1 - u)).toFixed(3)})`;
+        c.style.scale = (1 + 0.04 * Math.sin(Math.PI * clamp((t - b(5 + i) + 0.05) / 0.2))).toFixed(4);
+      });
+      cnts.forEach((c, i) => show(c, cntW[i](t), 6, 8));
+    }
+    // card
+    if (vis.card) {
+      const u = clamp(applyOn(t));
+      $('#apply').style.background = mixc(C.ink, C.mint, u);
+      $('#apply').style.color = '#fff';
+      show($('#apply-a'), applyA(t), 6, -8); show($('#apply-b'), applyB(t), 6, 8);
+    }
+    // pipeline
+    if (vis.pipe) {
+      const L = indL(t), R = indR(t);
+      Object.assign($('#stageind').style, { left: (L + gp.W / 2).toFixed(2) + 'px', width: Math.max(52, R - L).toFixed(2) + 'px' });
+      stages.forEach((s, i) => {
+        const cx = colX[i] - gp.W / 2;
+        const cover = clamp((Math.min(R, cx + 60) - Math.max(L, cx - 60)) / 120);
+        s.style.color = mixc(C.ink, '#FFFFFF', cover);
+      });
+      const [cxp, cyp] = cardAt(t), hd = clamp(held(t));
+      const vx = (cardAt(t + 1 / 240)[0] - cardAt(t - 1 / 240)[0]) * 120;
+      Object.assign(mini.style, {
+        left: (cxp + gp.W / 2 - 102).toFixed(2) + 'px', top: (cyp + gp.H / 2 - 75).toFixed(2) + 'px',
+        rotate: clamp(vx * 0.0028, -5, 5).toFixed(3) + 'deg', scale: (1 + 0.05 * hd).toFixed(4),
+        boxShadow: `0 ${(2 + 22 * hd).toFixed(1)}px ${(6 + 40 * hd).toFixed(1)}px -8px rgba(26,26,26,${(0.12 + 0.2 * hd).toFixed(3)})`,
+      });
+      const near = colOf(cxp);
+      slots.forEach((s, i) => Object.assign(s.style, {
+        left: (colX[i] - 102) + 'px', width: '204px', height: '150px', borderRadius: '22px',
+        background: C.well, opacity: (0.55 + 0.45 * (i === near ? hd : 0)).toFixed(3),
+        boxShadow: i === near ? `inset 0 0 0 2px rgba(26,26,26,${(0.18 * hd).toFixed(3)})` : 'none',
+      }));
+    }
+    // toggle track
+    if (vis.toggle) $('#ttrack').style.background = mixc('#E3DDD3', C.mint, clamp(trackOn(t)));
+    // puck
+    const pv = puckVis(t), pe = $('#puck');
+    if (pv > 0.003) {
+      const L = puckL(t), R = puckR(t), ph = puckH(t);
+      const tabsY = -h / 2 + 60;
+      Object.assign(pe.style, {
+        visibility: 'visible', opacity: clamp(pv).toFixed(4),
+        left: (w / 2 + L).toFixed(2) + 'px', width: Math.max(ph, R - L).toFixed(2) + 'px',
+        top: (h / 2 + tabsY - ph / 2).toFixed(2) + 'px', height: ph.toFixed(2) + 'px',
+        borderRadius: (ph / 2).toFixed(2) + 'px', background: puckC.css(t),
+        boxShadow: `0 2px 6px rgba(26,26,26,${(0.18 * (1 - clamp((ph - 48) / 24))).toFixed(3)})`,
+        zIndex: 2,
+      });
+      // tabs + labels: colour from how much of each label the puck covers
+      const tv = W.tabs(t);
+      show($('#tabs'), tv, 8, 0); show($('#tabrule'), clamp((h - 160) / 200) * tv, 0, 0);
+      $('#tabs').style.zIndex = 3;
+      P.tabs.forEach((el, i) => {
+        const bx = tabBoxes[i], x0 = bx.x - 390, x1 = x0 + bx.w;
+        const cover = clamp((Math.min(R, x1) - Math.max(L, x0)) / bx.w);
+        el.style.color = mixc(C.ink, '#FFFFFF', cover * clamp((ph - 48) / 24));
+      });
+    } else { pe.style.visibility = 'hidden'; $('#tabs').style.visibility = 'hidden'; $('#tabrule').style.visibility = 'hidden'; }
+    // scholarship + firm
+    if (show($('#schol'), W.schol(t))) $('#scholbar').style.width = (clamp(scholFill(t), 0, 1) * 100).toFixed(2) + '%';
+    const fv = W.firm(t);
+    if (show($('#firm'), fv)) {
+      const hv = clamp(hover(t));
+      chartBars.forEach((cb, i) => {
+        const hh = cb.hMax * Math.max(0, barH[i](t));
+        cb.bar.style.height = hh.toFixed(2) + 'px';
+        cb.bar.style.background = i === 0 ? mixc(C.ink, C.mint, hv) : mixc(C.ink, '#CFC7BB', hv * 0.9);
+        cb.lab.style.color = i === 0 ? mixc(C.muted, C.ink, hv) : C.muted;
+      });
+    }
+    const tv2 = tipW(t) * fv;
+    if (show(tipEl, tv2, 6, 8)) {
+      const [hx, hy] = [chartBars[0].x, chartTop + chartBars[0].h0 - chartBars[0].hMax];
+      Object.assign(tipEl.style, { left: (hx - 44).toFixed(1) + 'px', top: (hy - 72).toFixed(1) + 'px' });
+    }
+    // drop zone
+    if (vis.drop) {
+      const hot = clamp(zoneHot(t));
+      $('#dropzone').style.borderColor = mixc('#D6CEC2', C.mint, hot);
+      $('#dropzone').style.background = `rgba(20,184,166,${(0.06 * hot).toFixed(3)})`;
+      show($('#drop-empty'), dropEmpty(t)); show($('#drop-full'), dropFull(t));
+      $('#revbar').style.width = (clamp(rev(t)) * 100).toFixed(2) + '%';
+      show($('#rev-a'), revA(t), 5, -6); show($('#rev-b'), revB(t), 5, 6);
+    }
+    const fvv = fileVis(t);
+    if (show(fileEl, fvv, 4, 0)) {
+      const x = curX(t), y = curY(t);
+      Object.assign(fileEl.style, { left: (x - 60).toFixed(1) + 'px', top: (y - 18).toFixed(1) + 'px', rotate: (-4 * clamp(fvv)).toFixed(2) + 'deg', boxShadow: '0 18px 40px -12px rgba(26,26,26,.28)' });
+      fileEl.style.scale = (0.9 + 0.1 * clamp(fvv)).toFixed(4);
+    }
+    // rewrite
+    if (vis.rewrite) {
+      wordEls.forEach((el, i) => show(el, wordW[i](t), 8, 6));
+      $('#strike').style.width = (clamp(strike(t)) * strikeW).toFixed(1) + 'px';
+      const pp = $('#practice');
+      pp.style.scale = (1 - 0.05 * clamp(step(t - b(24) + 0.05, SP.fast) - step(t - b(24) - 0.07, SP.ui))).toFixed(4);
+    }
+    // prep waveform: a pure function of t
+    if (vis.prep) waveBars.forEach((d, i) => {
+      const e = clamp((t - at('prep') - 0.1) / 0.3);
+      const a = 0.5 + 0.5 * Math.sin(t * 9.1 + i * 0.83) * Math.sin(t * 4.3 + i * 0.37);
+      d.style.height = (8 + 44 * a * e).toFixed(1) + 'px';
+    });
+    // bell rings on b(26)
+    if (vis.bell) {
+      const dt = t - b(26);
+      const ang = dt > 0 ? 15 * Math.exp(-dt / 0.2) * Math.sin(TAU * 6 * dt) : 0;
+      bellIcon.style.rotate = ang.toFixed(2) + 'deg';
+    }
+    const bs = badgeS(t);
+    if (bs > 0.002) {
+      Object.assign(badge.style, { visibility: 'visible', left: (w / 2 - 36).toFixed(1) + 'px', top: (-h / 2 - 6).toFixed(1) + 'px', scale: Math.max(0, bs).toFixed(4), opacity: clamp(bs * 3).toFixed(3) });
+    } else badge.style.visibility = 'hidden';
+    // toast "View" press
+    if (vis.toast) $('#view').style.scale = (1 - 0.06 * clamp(step(t - b(28) + 0.05, SP.fast) - step(t - b(28) - 0.07, SP.ui))).toFixed(4);
+
+    // cursor: shape-centre coords -> screen, constant on-screen size
+    const sx = 720 + curX(t) * S * ps, sy = 720 + curY(t) * S * ps;
+    const cd = clamp(curDown(t));
+    cursor.style.transform = `translate(${(sx - 6).toFixed(2)}px, ${(sy - 4).toFixed(2)}px) scale(${(1 - 0.14 * cd).toFixed(4)})`;
+  };
+  window.seek = seek;
+  window.CUES = CUES;
+  window.LOOP = T;
+}
+
+/* ================================================================ boot */
+window.ready = (async () => {
+  await document.fonts.load('600 20px Schibsted');
+  await document.fonts.load('italic 500 20px Schibsted');
+  await document.fonts.ready;
+  document.getElementById('stage').style.transform = 'scale(1)';
+  // lay the shape out big and visible so measurement sees real boxes
+  build();
+  const q = new URLSearchParams(location.search);
+  if (q.has('t')) { seek(parseFloat(q.get('t'))); return true; }
+  if (q.has('render')) { seek(0); return true; }
+  // interactive preview: click to play with sound
+  const hint = document.getElementById('hint');
+  hint.textContent = 'Click to play with sound';
+  const audio = new Audio('audio/esquirely-pipeline.wav');
+  audio.loop = true;
+  let t0 = null;
+  const loop = now => { const t = audio.paused ? (t0 === null ? 0 : (now - t0) / 1000) : audio.currentTime; seek(t); requestAnimationFrame(loop); };
+  document.addEventListener('click', () => { if (audio.paused) { audio.play().catch(() => {}); hint.textContent = ''; } else { audio.pause(); } });
+  t0 = performance.now();
+  requestAnimationFrame(loop);
+  return true;
+})();
+</script>
+</body>
+</html>
