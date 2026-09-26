@@ -43,6 +43,8 @@ svg.i { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin
 svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
 .chip { height: 60px; padding: 0 26px; border-radius: 30px; font-size: 22px; font-weight: 600; display: flex; align-items: center; white-space: nowrap; }
 .pill { border-radius: 999px; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+.logo { background: #fff; box-shadow: inset 0 0 0 1.5px var(--line); display: flex; align-items: center; justify-content: center; flex: none; }
+.logo img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
 .label { font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 #cursor { position: absolute; left: 0; top: 0; width: 46px; height: 46px; transform-origin: 6px 4px; z-index: 50; }
 #hint { position: fixed; left: 24px; bottom: 20px; font: 600 16px 'Schibsted'; color: var(--muted); z-index: 60; }
@@ -82,15 +84,15 @@ svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
           <svg class="i" width="30" height="30" viewBox="0 0 24 24" style="opacity:.7"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
           <span style="font-size:24px;font-weight:600;opacity:.7;margin-right:8px">Roles</span>
           <div class="chip" id="chip0"><span>Law firm</span></div>
-          <div class="chip" id="chip1"><span>Disputes</span></div>
+          <div class="chip" id="chip1"><span>Banking</span></div>
           <div class="chip" id="chip2"><span>Lagos</span></div>
         </div>
         <div class="abs row" id="count" style="right:34px;top:0;height:120px;gap:10px;font-size:24px;font-weight:650">
           <div style="position:relative;width:74px;height:32px">
-            <span class="abs cnt" style="right:0;top:0">1,204</span>
-            <span class="abs cnt" style="right:0;top:0">486</span>
-            <span class="abs cnt" style="right:0;top:0">97</span>
-            <span class="abs cnt" style="right:0;top:0">12</span>
+            <span class="abs cnt" style="right:0;top:0">24</span>
+            <span class="abs cnt" style="right:0;top:0">22</span>
+            <span class="abs cnt" style="right:0;top:0">5</span>
+            <span class="abs cnt" style="right:0;top:0">3</span>
           </div>
           <span style="opacity:.6">roles</span>
           <svg class="i" width="24" height="24" viewBox="0 0 24 24" style="opacity:.6"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -100,22 +102,22 @@ svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
       <!-- 4 · role card -->
       <div class="g" id="g-card" style="width:780px;height:480px">
         <div class="abs row" style="left:48px;top:48px;gap:22px">
-          <div class="row" style="width:84px;height:84px;border-radius:22px;background:var(--ink);color:#fff;justify-content:center;font-size:30px;font-weight:800;letter-spacing:-0.02em">AO</div>
+          <div class="logo" style="width:132px;height:84px;border-radius:20px;padding:10px"><img src="logos/aluko-oyebode.png" alt="Aluko &amp; Oyebode"></div>
           <div>
-            <div style="font-size:22px;font-weight:600;color:var(--muted)">Adeyemi &amp; Okafor</div>
-            <div style="font-size:38px;font-weight:750;letter-spacing:-0.02em;margin-top:4px">Associate, Dispute Resolution</div>
+            <div style="font-size:22px;font-weight:600;color:var(--muted)">Aluko &amp; Oyebode</div>
+            <div style="font-size:36px;font-weight:750;letter-spacing:-0.02em;margin-top:4px">Associate, Banking &amp; Finance</div>
           </div>
         </div>
         <div class="abs row" style="left:48px;top:172px;gap:12px">
           <div class="chip" style="background:var(--well);height:52px;font-size:20px">Lagos</div>
           <div class="chip" style="background:var(--well);height:52px;font-size:20px">Law firm</div>
-          <div class="chip" style="background:var(--well);height:52px;font-size:20px">2–4 yrs PQE</div>
+          <div class="chip" style="background:var(--well);height:52px;font-size:20px">5+ yrs PQE</div>
         </div>
-        <div class="abs" style="left:48px;right:48px;top:268px;font-size:21px;line-height:1.55;color:var(--muted)">Commercial litigation and arbitration before the Federal High Court and Lagos Court of Arbitration.</div>
+        <div class="abs" style="left:48px;right:48px;top:268px;font-size:21px;line-height:1.55;color:var(--muted)">Research, due diligence and transaction support for banking and finance clients, alongside senior lawyers.</div>
         <div class="abs" style="left:0;right:0;top:360px;height:1px;background:var(--line)"></div>
         <div class="abs row" style="left:48px;top:361px;height:119px;gap:12px;font-size:21px;font-weight:650">
           <svg class="i" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
-          <span>Closes 3 Oct</span>
+          <span>Rolling deadline</span>
         </div>
         <div class="abs row" style="right:48px;top:361px;height:119px;gap:14px">
           <div class="pill" style="width:64px;height:64px;border:1.5px solid var(--line)">
@@ -147,9 +149,9 @@ svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
         </div>
         <div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div><div class="abs slot" style="top:190px"></div>
         <div class="abs" id="minicard" style="top:190px;width:204px;height:150px;border-radius:22px;background:#fff;border:1.5px solid var(--line);padding:20px 20px">
-          <div class="row" style="width:40px;height:40px;border-radius:11px;background:var(--ink);color:#fff;justify-content:center;font-size:15px;font-weight:800">AO</div>
-          <div style="font-size:19px;font-weight:750;margin-top:14px;letter-spacing:-0.01em;white-space:nowrap">Associate, Disputes</div>
-          <div style="font-size:16px;font-weight:550;color:var(--muted);margin-top:3px">Adeyemi &amp; Okafor</div>
+          <div class="logo" style="width:74px;height:44px;border-radius:11px;padding:5px"><img src="logos/aluko-oyebode.png" alt="Aluko &amp; Oyebode"></div>
+          <div style="font-size:19px;font-weight:750;margin-top:12px;letter-spacing:-0.01em;white-space:nowrap">Banking &amp; Finance</div>
+          <div style="font-size:16px;font-weight:550;color:var(--muted);margin-top:3px">Aluko &amp; Oyebode</div>
         </div>
       </div>
 
@@ -176,11 +178,12 @@ svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
         <div class="abs" id="tabrule" style="left:40px;right:40px;top:120px;height:1px;background:var(--line)"></div>
 
         <div class="abs" id="schol" style="left:48px;right:48px;top:160px">
-          <div class="label" style="color:var(--mint)">Fully funded · LLM</div>
-          <div style="font-size:38px;font-weight:750;letter-spacing:-0.02em;line-height:1.15;margin-top:12px">Master of Laws, International Commercial Law</div>
-          <div style="font-size:22px;color:var(--muted);margin-top:12px;font-weight:550">United Kingdom · Tuition, stipend and flights</div>
+          <div class="label" style="color:var(--mint)">Fully funded · One-year master&rsquo;s</div>
+          <div style="font-size:38px;font-weight:750;letter-spacing:-0.02em;line-height:1.15;margin-top:12px">Chevening Scholarship</div>
+          <div style="font-size:22px;color:var(--muted);margin-top:12px;font-weight:550">UK Foreign, Commonwealth and Development Office</div>
+          <div style="font-size:20px;color:var(--muted);margin-top:4px;font-weight:500">Tuition, monthly stipend, flights and visa</div>
           <div class="row" style="margin-top:34px;justify-content:space-between;font-size:20px;font-weight:650">
-            <span>Deadline 14 Nov</span><span style="color:var(--muted)">49 days left</span>
+            <span>Closes 6 Oct</span><span style="color:var(--muted)">Opened 4 Aug</span>
           </div>
           <div style="margin-top:14px;height:12px;border-radius:6px;background:var(--well);position:relative;overflow:hidden">
             <div id="scholbar" class="abs" style="left:0;top:0;bottom:0;border-radius:6px;background:var(--ink)"></div>
@@ -189,16 +192,16 @@ svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
 
         <div class="abs" id="firm" style="left:48px;right:48px;top:156px">
           <div class="row" style="gap:20px">
-            <div class="row" style="width:72px;height:72px;border-radius:19px;background:var(--ink);color:#fff;justify-content:center;font-size:26px;font-weight:800">AO</div>
+            <div class="logo" style="width:120px;height:76px;border-radius:18px;padding:9px"><img src="logos/aluko-oyebode.png" alt="Aluko &amp; Oyebode"></div>
             <div>
               <div class="row" style="gap:12px">
-                <span style="font-size:32px;font-weight:750;letter-spacing:-0.02em">Adeyemi &amp; Okafor</span>
-                <span class="pill" style="height:34px;padding:0 14px;background:var(--ink);color:#fff;font-size:16px;font-weight:700;letter-spacing:0.04em">TIER 1</span>
+                <span style="font-size:32px;font-weight:750;letter-spacing:-0.02em">Aluko &amp; Oyebode</span>
+                <span class="pill" style="height:34px;padding:0 14px;background:var(--ink);color:#fff;font-size:15px;font-weight:700;letter-spacing:0.02em">Chambers Band 1</span>
               </div>
-              <div style="font-size:20px;color:var(--muted);font-weight:550;margin-top:4px">Lagos · Abuja · 140 lawyers</div>
+              <div style="font-size:20px;color:var(--muted);font-weight:550;margin-top:4px">Lagos · Abuja · Port Harcourt</div>
             </div>
           </div>
-          <div class="label" style="margin-top:34px">Practice mix</div>
+          <div class="label" style="margin-top:34px">Open roles on Esquirely</div>
           <div class="abs" id="chart" style="left:0;right:0;top:170px;height:250px">
             <div class="abs" style="left:0;right:0;bottom:44px;height:1px;background:var(--line)"></div>
           </div>
@@ -219,7 +222,7 @@ svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
             <div style="flex:1">
               <div style="font-size:26px;font-weight:700">Adaeze_Okoro_CV.pdf</div>
               <div style="position:relative;height:28px;margin-top:4px;font-size:20px;font-weight:550;color:var(--muted)">
-                <span class="abs" id="rev-a">Reviewing for disputes roles…</span>
+                <span class="abs" id="rev-a">Reviewing for banking roles…</span>
                 <span class="abs" id="rev-b" style="color:var(--ink)">6 notes, 2 rewrites</span>
               </div>
             </div>
@@ -255,7 +258,7 @@ svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
         <div class="abs pill" id="close" style="right:40px;top:32px;width:52px;height:52px;background:rgba(255,255,255,.1)">
           <svg class="i" width="22" height="22" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>
         </div>
-        <div class="abs" style="left:52px;right:52px;top:110px;font-size:40px;font-weight:700;line-height:1.22;letter-spacing:-0.02em">A client&rsquo;s key facts change the week before trial. Walk us through your first hour.</div>
+        <div class="abs" style="left:52px;right:52px;top:110px;font-size:40px;font-weight:700;line-height:1.22;letter-spacing:-0.02em">A lender&rsquo;s security package has a gap two days before signing. Walk us through your first hour.</div>
         <div class="abs row" style="left:52px;bottom:48px;gap:22px">
           <div class="pill" style="width:76px;height:76px;background:var(--mint);color:#fff">
             <svg class="i" width="30" height="30" viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>
@@ -271,14 +274,12 @@ svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
       </div>
 
       <!-- 14 · toast -->
-      <div class="g" id="g-toast" style="width:860px;height:132px">
+      <div class="g" id="g-toast" style="width:760px;height:132px">
         <div class="abs row" style="left:26px;top:0;height:132px;gap:22px">
-          <div class="pill" style="width:80px;height:80px;background:var(--well)">
-            <svg class="i" width="32" height="32" viewBox="0 0 24 24"><path d="M6.5 16.5V11a5.5 5.5 0 0 1 11 0v5.5l1.5 2H5z"/><path d="M10 20.5a2.2 2.2 0 0 0 4 0"/></svg>
-          </div>
+<div class="logo" style="width:112px;height:80px;border-radius:18px;padding:8px"><img src="logos/aluko-oyebode.png" alt="Aluko &amp; Oyebode"></div>
           <div>
-            <div class="row" style="gap:10px;font-size:19px;font-weight:650;color:var(--muted)"><span style="width:10px;height:10px;border-radius:5px;background:var(--mint)"></span>New listing · closes Friday</div>
-            <div style="font-size:29px;font-weight:750;letter-spacing:-0.015em;margin-top:4px">Associate, Disputes at Adeyemi &amp; Okafor</div>
+            <div class="row" style="gap:10px;font-size:19px;font-weight:650;color:var(--muted)"><span style="width:10px;height:10px;border-radius:5px;background:var(--mint)"></span>Matches your alert · Lagos</div>
+            <div style="font-size:29px;font-weight:750;letter-spacing:-0.015em;margin-top:4px">Associate, Banking &amp; Finance</div>
           </div>
         </div>
         <div class="abs pill" id="view" style="right:26px;top:34px;height:64px;padding:0 30px;background:var(--ink);color:#fff;font-size:22px;font-weight:700">View</div>
@@ -293,7 +294,7 @@ svg.i * { vector-effect: non-scaling-stroke; stroke-width: 2.4px; }
       Adaeze_Okoro_CV.pdf
     </div>
     <!-- chart tooltip -->
-    <div class="abs" id="tip" style="height:58px;padding:0 20px;border-radius:14px;background:var(--ink);color:#fff;font-size:20px;font-weight:650;line-height:58px;white-space:nowrap">Disputes · 38% of work</div>
+    <div class="abs" id="tip" style="height:58px;padding:0 20px;border-radius:14px;background:var(--ink);color:#fff;font-size:20px;font-weight:650;line-height:58px;white-space:nowrap">Banking &amp; Finance · 3 open roles</div>
   </div>
 
   <svg id="cursor" viewBox="0 0 46 46"><path d="M8 5.5v29.5l7.6-7.2 5 11.2 5.2-2.3-5-11h10.6z" fill="#1A1A1A" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>
@@ -408,7 +409,7 @@ const STATES = [
   ['rewrite', b(23),  880,  460, 40, C.paper],
   ['prep',    b(24),  880,  460, 40, C.ink],
   ['bell',    b(25),  128,  128, 64, C.ink],
-  ['toast',   b(27),  860,  132, 66, C.paper],
+  ['toast',   b(27),  760,  132, 66, C.paper],
 ];
 const at = name => STATES.find(s => s[0] === name)[1];
 const shapeW = track(STATES.map(s => [s[1], s[2]]), SP.shape);
@@ -529,7 +530,9 @@ function build() {
   moveTo(b(18), tabPt(2, 470), 0.34);
   // chart geometry first (needed for the hover point)
   const chartEl = $('#chart');
-  const DATA = [['Disputes', 38], ['Corporate', 26], ['Banking', 17], ['Energy', 12], ['Tax', 7]];
+  // Aluko & Oyebode's live listings on the board by practice area (jobs table, 26 Sep 2026)
+  const DATA = [['Corporate', 7], ['Banking', 3], ['IP', 3], ['Cap. Mkts', 2], ['Regulatory', 2]];
+  const HOT = 1;   // the bar the cursor hovers: Banking & Finance
   const chartBox = box('panel', chartEl);
   const chartBars = DATA.map(([name, v], i) => {
     const bw = 88, gap = (chartBox.w - DATA.length * bw) / (DATA.length - 1);
@@ -541,11 +544,11 @@ function build() {
     Object.assign(lab.style, { left: i * (bw + gap) - 20 + 'px', width: bw + 40 + 'px', bottom: '0', height: '34px', textAlign: 'center', fontSize: '17px', fontWeight: 650, color: C.muted });
     lab.textContent = name;
     chartEl.append(bar, lab);
-    const hMax = 150 * v / 38;
+    const hMax = 150 * v / 7;
     return { bar, lab, v, hMax, x: chartBox.x + i * (bw + gap) + bw / 2 - 390, h0: chartBox.h - 44 };
   });
   const chartTop = chartBox.y - 640 / 2;
-  const hoverPt = [chartBars[0].x + 10, chartTop + chartBars[0].h0 - chartBars[0].hMax * 0.55];
+  const hoverPt = [chartBars[HOT].x + 10, chartTop + chartBars[HOT].h0 - chartBars[HOT].hMax * 0.55];
   moveTo(b(20) - 0.04, hoverPt, 0.34);
   // file drag: pick up just outside the drop zone, carry it in, let go
   const fileStart = [330, 330], fileEnd = [0, 30];
@@ -616,7 +619,8 @@ function build() {
   const puckVis = win(at('toggle'), at('drop'), 0.1);
 
   /* ---------------- scholarship bar, chart, tooltip */
-  const scholFill = track([[at('schol') + 0.2, 0.62, { f: 1.4, z: 1 }], [b(3), 0, SP.fast]]);
+  // Chevening: open 4 Aug – 6 Oct, 53 of 63 days gone on 26 Sep
+  const scholFill = track([[at('schol') + 0.2, 0.84, { f: 1.4, z: 1 }], [b(3), 0, SP.fast]]);
   const barH = chartBars.map((_, i) => track([[at('firm') + 0.12 + i * 0.06, 1, SP.ui], [b(3), 0, SP.fast]]));
   const hover = track([[b(20) - 0.02, 1, SP.snap], [at('drop'), 0, SP.fast]]);
   const tipW = win(b(20), at('drop') - 0.02, 0.02, SP.snap, SP.exit);
@@ -632,7 +636,7 @@ function build() {
   const revA = win(fileHold1, b(23) - 0.12, 0.05, SP.enter, SP.fast), revB = win(b(23) - 0.12, at('rewrite'), 0.02);
 
   /* ---------------- rewrite */
-  const words = 'Drafted 14 research memos for a ₦2bn commercial dispute at the Federal High Court.'.split(' ');
+  const words = 'Drafted 14 facility agreements for a ₦2bn syndicated loan, from term sheet to signing.'.split(' ');
   const rw = $('#rewrite');
   const wordEls = words.map(w => { const s = document.createElement('span'); s.textContent = w + ' '; s.style.display = 'inline-block'; s.style.whiteSpace = 'pre'; if (/14|₦2bn/.test(w)) s.style.color = C.mint; rw.append(s); return s; });
   // the rewrite only has one beat on screen, so the whole line must land by ~0.3 s
@@ -773,13 +777,13 @@ function build() {
       chartBars.forEach((cb, i) => {
         const hh = cb.hMax * Math.max(0, barH[i](t));
         cb.bar.style.height = hh.toFixed(2) + 'px';
-        cb.bar.style.background = i === 0 ? mixc(C.ink, C.mint, hv) : mixc(C.ink, '#CFC7BB', hv * 0.9);
-        cb.lab.style.color = i === 0 ? mixc(C.muted, C.ink, hv) : C.muted;
+        cb.bar.style.background = i === HOT ? mixc(C.ink, C.mint, hv) : mixc(C.ink, '#CFC7BB', hv * 0.9);
+        cb.lab.style.color = i === HOT ? mixc(C.muted, C.ink, hv) : C.muted;
       });
     }
     const tv2 = tipW(t) * fv;
     if (show(tipEl, tv2, 6, 8)) {
-      const [hx, hy] = [chartBars[0].x, chartTop + chartBars[0].h0 - chartBars[0].hMax];
+      const [hx, hy] = [chartBars[HOT].x, chartTop + chartBars[HOT].h0 - chartBars[HOT].hMax];
       Object.assign(tipEl.style, { left: (hx - 44).toFixed(1) + 'px', top: (hy - 72).toFixed(1) + 'px' });
     }
     // drop zone
@@ -838,6 +842,7 @@ window.ready = (async () => {
   await document.fonts.load('600 20px Schibsted');
   await document.fonts.load('italic 500 20px Schibsted');
   await document.fonts.ready;
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
   document.getElementById('stage').style.transform = 'scale(1)';
   // lay the shape out big and visible so measurement sees real boxes
   build();

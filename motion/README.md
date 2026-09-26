@@ -7,12 +7,24 @@ One shape morphs through twelve product states over 7 bars at 120 BPM, and somet
 | Bar | What the shape becomes |
 |---|---|
 | 1 | **Browse roles** pill → loader → check → filter island |
-| 2 | Filter chips *Law firm · Disputes · Lagos* (1,204 → 12 roles) → role card |
+| 2 | Filter chips *Law firm · Banking · Lagos* (24 → 22 → 5 → 3 roles) → Aluko & Oyebode role card |
 | 3 | **Apply** → *Tracked* → tracker pipeline; the card is dragged Applied → Interview |
 | 4 | *Interview in 3 days*; the **Remind me** toggle flips; its knob becomes the tab indicator |
-| 5 | Scholarships → Firms; a practice-mix chart draws itself; hover tooltip |
+| 5 | Chevening → Aluko & Oyebode; their open roles by practice area draw themselves; hover tooltip |
 | 6 | CV dropped in → review → *What you wrote / What we'd send* → interview prep |
-| 7 | Bell rings → new-listing toast → back to the pill |
+| 7 | Bell rings → job-alert toast for the same role → back to the pill |
+
+## Real data, real logos
+
+No invented firms or figures appear in the video:
+
+- **Filter counts** (24 → 22 → 5 → 3) are live counts from the `jobs` table on 26 Sep 2026: all open roles, then law firms, then Banking & Finance, then Lagos.
+- **The role** is Aluko & Oyebode's *Associate, Banking & Finance* (Lagos, rolling), seeded from the firm's ATS in `scripts/seed-aluko-roles.mjs`.
+- **The firm card** uses `public/firm-logos/aluko-oyebode.png`, the offices from `lib/firms-data.ts`, and the Chambers Band 1 (2026) ranking. The chart shows the firm's 12 live listings by practice area.
+- **The scholarship** is the Chevening entry from `lib/scholarships-data.ts`.
+- **The CV line and interview question** are illustrative sample content and name no one.
+
+If the board changes, update the counts in `index.html` (`.cnt` spans and `DATA`).
 
 ## Files
 
