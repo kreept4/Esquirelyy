@@ -22,7 +22,7 @@ catch { ({ chromium } = require(path.join(execFileSync('npm', ['root', '-g']).to
 const HERE = path.dirname(new URL(import.meta.url).pathname);
 const OUT = path.join(HERE, 'out');
 const FPS = 60, SUB = 4, SIZE = 1440;
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.woff2': 'font/woff2', '.wav': 'audio/wav', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml' };
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.woff2': 'font/woff2', '.wav': 'audio/wav', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg' };
 
 function serve() {
   return new Promise(res => {
