@@ -1,7 +1,7 @@
 """
 "Pipeline" — an original 120 BPM deep-house loop for the Esquirely motion piece.
 
-Seven bars of F minor, synthesised from nothing but numpy, so there is no
+Eight bars of F minor, synthesised from nothing but numpy, so there is no
 licence to track: the track is ours. Everything is written onto a circular
 buffer exactly one loop long, so every tail (reverb, open hats, the crash on
 the downbeat) wraps round to the start and the loop point is inaudible.
@@ -13,9 +13,9 @@ from scipy.signal import butter, sosfilt
 import wave, pathlib
 
 SR = 48000
-BPM = 120
+BPM = 90
 BEAT = 60 / BPM
-BARS = 7
+BARS = 8
 LOOP = BARS * 4 * BEAT            # 14.0 s
 N = int(round(LOOP * SR))
 S16 = BEAT / 4                    # one sixteenth
@@ -166,7 +166,7 @@ def crash():
 
 
 # ------------------------------------------------------------------ score
-# F minor. Seven bars, the seventh a turnaround whose C7(b9) leans back to bar 1.
+# F minor. Seven bars, the eighth a turnaround whose C7(b9) leans back to bar 1.
 CHORDS = [
     # (bar, beat, voicing, bass root)
     (0, 0, [53, 56, 60, 63, 67], 41),   # Fm9
@@ -174,9 +174,9 @@ CHORDS = [
     (2, 0, [49, 53, 56, 60, 63], 37),   # Dbmaj9
     (3, 0, [49, 53, 56, 60, 63], 37),
     (4, 0, [56, 60, 61, 65], 46),       # Bbm9 (rootless)
-    (5, 0, [55, 58, 60, 63, 67], 36),   # Cm7 / add9 colour
-    (6, 0, [56, 60, 61, 65], 37),       # Dbmaj7
-    (6, 2, [55, 58, 61, 64], 36),       # C7(b9)
+    (6, 0, [55, 58, 60, 63, 67], 36),   # Cm7 / add9 colour
+    (7, 0, [56, 60, 61, 65], 37),       # Dbmaj7
+    (7, 2, [55, 58, 61, 64], 36),       # C7(b9)
 ]
 
 
@@ -224,8 +224,8 @@ def build(outro=0.0):
 
     # Turnaround: clap roll over the last two beats of bar 7, swelling into the loop.
     for i, s in enumerate(range(8, 16)):
-        place(drums, C, pos(6, s) - (SWING if s % 2 else 0), 0.2 + 0.08 * i, 0.1 * (-1) ** i)
-    place(music, noise_riser(4 * BEAT), 6 * 4 * BEAT, 0.3)
+        place(drums, C, pos(BARS - 1, s) - (SWING if s % 2 else 0), 0.2 + 0.08 * i, 0.1 * (-1) ** i)
+    place(music, noise_riser(4 * BEAT), (BARS - 1) * 4 * BEAT, 0.3)
     place(drums, crash(), 0.0, 0.2, 0.2)
     place(send, crash(), 0.0, 0.05)
 
@@ -239,7 +239,7 @@ def build(outro=0.0):
     # Stabs: syncopated, brighter on the "3" of the pattern.
     for bar in range(BARS):
         for s, br in ((3, 0.8), (6, 0.55), (10, 1.0), (13, 0.5)):
-            if bar == 6 and s == 13:
+            if bar == BARS - 1 and s == 13:
                 continue
             _, _, v, _ = chord_at(bar, s // 4)
             x = stab(v, 0.22, br)

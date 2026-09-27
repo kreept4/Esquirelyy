@@ -3,7 +3,7 @@ Measure the beat grid of track.wav with numpy, so the animation is cut to what
 the audio actually does rather than to what the score says it should do.
 
   1. onset strength   spectral flux of a log-magnitude STFT, half-wave rectified
-  2. tempo            autocorrelation of the onset curve, 90–160 BPM window,
+  2. tempo            autocorrelation of the onset curve, 70–160 BPM window,
                       refined to sub-hop precision by parabolic interpolation
   3. phase            the offset whose comb of beat times collects the most onset
   4. downbeat         of the four beat phases, the one with the most low-band
@@ -48,7 +48,7 @@ def main():
 
     # 2. tempo
     ac = np.correlate(flux, flux, 'full')[len(flux) - 1:]
-    lo, hi = int(fps * 60 / 160), int(fps * 60 / 90)
+    lo, hi = int(fps * 60 / 160), int(fps * 60 / 70)
     k = lo + int(np.argmax(ac[lo:hi]))
     a, b, c = ac[k - 1], ac[k], ac[k + 1]
     k_ref = k + 0.5 * (a - c) / (a - 2 * b + c)

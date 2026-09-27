@@ -1,17 +1,17 @@
 {
-  "bpm_measured": 119.939,
-  "bpm": 120.0,
-  "phase_offset_coarse": 0.487,
-  "attack_correction_ms": 12.41,
-  "beat": 0.5,
-  "offset": 1.99940625,
-  "beats": 28,
-  "bars": 7,
-  "duration": 14.0,
+  "bpm_measured": 90.001,
+  "bpm": 90.0,
+  "phase_offset_coarse": 0.656,
+  "attack_correction_ms": 9.99,
+  "beat": 0.6666666666666666,
+  "offset": 2.6659895833333334,
+  "beats": 32,
+  "bars": 8,
+  "duration": 21.333333333333332,
   "downbeat_phase_scores": [
-    0.413,
-    1.269,
-    0.706,
-    2.269
+    1.636,
+    2.642,
+    2.395,
+    3.636
   ]
 }

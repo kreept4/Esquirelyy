@@ -1,13 +1,13 @@
 # Esquirely: One Shape
 
-A 14-second looping motion piece for Esquirely, made entirely in code. There is no After Effects and no stock music.
+A 21-second looping motion piece for Esquirely, made entirely in code. There is no After Effects and no stock music.
 
-One shape morphs through twelve product states over 7 bars at 120 BPM, and something happens on every beat. A cursor drives the changes with real clicks and drags.
+One shape morphs through twelve product states over 8 bars at 90 BPM, and something happens on every beat. The tempo and the eighth bar are for reading time: the rewrite, the interview question and the alert each hold for two beats. A cursor drives the changes with real clicks and drags.
 
 There are two cuts:
 
-- **`esquirely-motion.mp4`** (17 s) is the one to post. The piece plays once, then ends: the click lands on bar 8's downbeat, the headline scrolls away, the shape turns into the amber E mark, builds its bars and the wordmark slides out beside it, with esquirely.com.ng beneath, and the music resolves on the Fm9 and rings out to silence.
-- **`esquirely-motion-loop.mp4`** (14 s) is the seamless loop, for anywhere that repeats it. Its last frame runs straight into its first, so it stops half a beat before a downbeat by design. Played once without repeating, that reads as cut off, which is why the posting cut has an ending.
+- **`esquirely-motion.mp4`** (about 25 s) is the one to post. The piece plays once, then ends: the click lands on bar 8's downbeat, the headline scrolls away, the shape turns into the amber E mark, builds its bars and the wordmark slides out beside it, with esquirely.com.ng beneath, and the music resolves on the Fm9 and rings out to silence.
+- **`esquirely-motion-loop.mp4`** (about 21 s) is the seamless loop, for anywhere that repeats it. Its last frame runs straight into its first, so it stops half a beat before a downbeat by design. Played once without repeating, that reads as cut off, which is why the posting cut has an ending.
 
 | Bar | What the shape becomes |
 |---|---|
@@ -17,7 +17,7 @@ There are two cuts:
 | 4 | *Interview in 3 days* (stopwatch); the **Remind me** switch flips; its knob becomes the tab indicator |
 | 5 | Scholarships list → the firms directory, scrolled through thirteen firms, coming to rest on Olajide Oyewole LLP |
 | 6 | CV dropped in → GET MY REVIEW → *What you wrote / What we'd send* → interview prep |
-| 7 | Bell rings → job-alert toast for the same role → back to the pill (loop) or on to the wordmark end card (posting cut) |
+| 7–8 | Bell rings → job-alert toast for the same role → back to the pill (loop) or on to the wordmark end card (posting cut) |
 
 ## Built from the site's own parts
 
@@ -37,11 +37,11 @@ Nothing in the video is a stock UI kit or a generic accent. Everything comes fro
 
 No invented firms or figures appear in the video:
 
-- **Filter counts** (24 → 22 → 5 → 3) are live counts from the `jobs` table on 26 Sep 2026: all open roles, then law firms, then Banking & Finance, then Lagos.
+- **Filter counts** (24 → 22 → 7 → 2) are live counts from the `jobs` table on 26 Sep 2026: all open roles, then law firms, then Dispute Resolution, then Abuja.
 - **The role** is Olajide Oyewole LLP's *Associate, Dispute Resolution* (Abuja, closes 13 Nov), a live listing, with its description condensed from the posting. The job alert at the end is Babalakin & Co's live *Senior Associate, Energy & Extractive Industries*.
 - **The directory** is the firms directory's list view with thirteen real entries: Templars, G Elias, Udo Udoma & Belo-Osagie, Banwo & Ighodalo, Aluko & Oyebode, Olaniwun Ajayi, AELEX, Kenna Partners, Perchstone & Graeys, Babalakin, Olajide Oyewole, Advocaat and Detail Solicitors. Each has its logo from `public/firm-logos`, its tier and offices from `lib/firms-data.ts`, and the directory's own pin and briefcase icons. Open-role counts come from the board (Aluko 12, Babalakin 1, Olajide Oyewole 1) and appear only where there are any, as on the site. The scroll comes to rest on the firm the viewer just applied to, with the directory's hover tint.
 - **The scholarship** is the Chevening entry from `lib/scholarships-data.ts`.
-- **The CV before/after** is the homepage preview's own example. The interview question is illustrative and names no one.
+- **The CV before/after** is the homepage preview's own example. The interview question ("Why do you want to join our dispute resolution team?") is illustrative.
 
 If the board changes, update the counts in `index.html` (the `.cnt` spans and the `FIRMS` open-role column).
 
@@ -50,7 +50,7 @@ If the board changes, update the counts in `index.html` (the `.cnt` spans and th
 | File | Role |
 |---|---|
 | `index.html` | The whole animation. Every style is computed from time inside `seek(t)`. Open it and click to play with sound, or add `?t=3.5` to freeze a frame. |
-| `audio/compose.py` | Synthesizes the track "Pipeline" in numpy: F minor deep house, 7 bars, written onto a circular buffer so the tails wrap and the loop point is inaudible. |
+| `audio/compose.py` | Synthesizes the track "Pipeline" in numpy: F minor deep house, 8 bars at 90 BPM, written onto a circular buffer so the tails wrap and the loop point is inaudible. |
 | `audio/analyze.py` | Measures the beat grid from the audio and writes `beats.js`, which the page reads. Tempo comes from onset autocorrelation, phase from the kick band refined to its attack, and the downbeat from clap parity plus bass-root change. |
 | `audio/mix.py` | Synthesizes the UI sounds (click, tick, whoosh, drop, toggle, bell) in key and places each one by its measured peak at the cue times the page exports. |
 | `render.mjs` | Renders with Playwright. `beats` gives one frame per beat for review. `full` renders 60 fps with 12 subframes per frame across a 180° shutter, blended by ffmpeg `tmix` for motion blur. The template's 4 subframes strobed on the fastest moves (the panel crossing columns travels about 45 px a frame), showing four copies instead of a blur. |
@@ -58,7 +58,7 @@ If the board changes, update the counts in `index.html` (the `.cnt` spans and th
 
 ## How it works
 
-- **Springs are closed-form step responses.** A value that changes target several times is the sum of one spring per change. The previous lap's springs are summed in too, so the value is a pure function of time and wraps seamlessly at t = 14 s.
+- **Springs are closed-form step responses.** A value that changes target several times is the sum of one spring per change. The previous lap's springs are summed in too, so the value is a pure function of time and wraps seamlessly at the loop point.
 - **Liquid indicators.** The two edges of the tracker stage indicator and the toggle knob / tab indicator ride different springs. The leading edge is stiff and the trailing edge is soft, so the shape stretches as it travels.
 - **Direct manipulation.** While the cursor holds the tracker card or the CV file, its position is the cursor's. On release it springs home from wherever it was dropped.
 - **Text swaps** get their own enter and exit timing. The outgoing text leaves fast and the incoming text arrives slightly later, so nothing overlaps inside the morphing container.

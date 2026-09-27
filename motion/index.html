@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=1440">
 <title>Esquirely — One Shape</title>
 <!--
-  Esquirely motion piece. 1440 × 1440, 14 s, 120 BPM, 7 bars, one shape, no cuts.
+  Esquirely motion piece. 1440 × 1440, ≈21 s, 90 BPM, 8 bars, one shape, no cuts.
 
   Framed as the desktop homepage's "Everything you need, in one place." section
   (src/components/features/EverythingYouNeed.tsx): each block is two columns,
@@ -315,7 +315,7 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
         <div class="abs gb" style="left:48px;top:46px;font-size:21px">The interview</div>
         <div class="abs gr" style="left:48px;top:80px;font-size:20px;color:var(--cream-soft)">Nigerian firm partner · Local market, client handling</div>
         <svg class="lu abs" id="close" style="right:42px;top:42px" width="30" height="30" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        <div class="abs display" style="left:48px;right:56px;top:150px;font-size:44px;line-height:1.14">A lender&rsquo;s security package has a gap two days before signing. Walk us through your first hour.</div>
+        <div class="abs display" style="left:48px;right:56px;top:150px;font-size:44px;line-height:1.14">Why do you want to join our dispute resolution team?</div>
         <div class="abs row gb" style="left:48px;bottom:46px;gap:8px;font-size:21px;color:var(--cream-soft)">
           Why they ask this
           <svg class="lu" width="22" height="22" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
@@ -467,7 +467,7 @@ const b = beat;
    offset shadow, 12px radius); rule = 0 is a round button (neither). */
 const BASE_STATES = [
   // name,     t,            w,    h,   r,  bg,        rule
-  ['pill',    b(28),        420,  112, 56, C.mint,    0],
+  ['pill',    b(31),        420,  112, 56, C.mint,    0],
   ['loader',  b(1) + 0.03,  360,  112, 56, C.cream,   0],
   ['check',   b(3),         112,  112, 56, C.cream,   0],
   ['island',  b(4),         760,  110, 12, C.carton,  1],
@@ -479,9 +479,9 @@ const BASE_STATES = [
   ['firm',    b(19),        800,  640, 12, C.carton,  1],
   ['drop',    b(21),        720,  480, 12, C.carton,  1],
   ['rewrite', b(23),        800,  500, 12, C.carton,  1],
-  ['prep',    b(24),        800,  500, 12, C.ink,     1],
-  ['bell',    b(25),        128,  128, 64, C.ink,     0],
-  ['toast',   b(27),        820,  132, 12, C.carton,  1],
+  ['prep',    b(25),        800,  500, 12, C.ink,     1],
+  ['bell',    b(27),        128,  128, 64, C.ink,     0],
+  ['toast',   b(29),        820,  132, 12, C.carton,  1],
 ];
 const STATES = OUTRO
   ? [...BASE_STATES.filter(s => !inOutro(s[1])), ['end', b(1) + 0.03, 200, 200, 0, '#FCB712', 0, 1.2]]
@@ -503,12 +503,12 @@ const camS = track(STATES.map(s => [s[1], s[7] ?? fillScale(s[2], s[3])]), SP.sh
    the section does. */
 const BLOCKS = [
   // start,  end,    copy side
-  [b(25),   b(4),   'L'],     // Everything you need, in one place.
+  [b(27),   b(4),   'L'],     // Everything you need, in one place.
   [b(4),    b(10),  'L'],     // Every role, one board
   [b(10),   b(15),  'R'],     // The whole pipeline, tracked
   [b(15),   b(19),  'L'],     // Funding, deadline-tracked
   [b(19),   b(21),  'R'],     // Know the firm before you apply
-  [b(21),   b(25),  'L'],     // Feedback that says something
+  [b(21),   b(27),  'L'],     // Feedback that says something
 ];
 const shapeX = track([
   ...BLOCKS.map(([a, , side]) => [a - 0.12, side === 'L' ? COL : -COL]).filter(k => !inOutro(k[0])),
@@ -522,7 +522,8 @@ const PASSES = BLOCKS.map(([a], i) => ({ t: a, from: BLOCKS[(i + 5) % 6][2], to:
    (and once more at the loop), so it is a count of settled springs: pure in t
    and continuous across frame 0 because the last stop is the first. */
 const STOPS = [[26, 26, 26], [56, 189, 248], [249, 115, 22], [239, 68, 68], [34, 197, 94], [139, 92, 246], [20, 184, 166], [26, 26, 26]];
-const SCROLLS = [...BLOCKS.map(([a]) => a), b(1)].map(tc => mod(tc - 0.22, T)).filter(k => !inOutro(k));
+// the last step (teal back to ink) lands as the mint pill arrives: mint on teal would vanish
+const SCROLLS = [...BLOCKS.map(([a]) => a), b(31)].map(tc => mod(tc - 0.22, T)).filter(k => !inOutro(k));
 function scrollPos(t) {
   t = mod(t, T);
   let s = 0;
@@ -536,7 +537,7 @@ function canvasColour(t) {
 
 // Press dips on the shape itself (a click on the whole shape).
 const press = [];
-for (const t of [b(1), b(8), b(13), b(25), b(27), b(28)]) press.push([t - 0.05, 0.965, SP.fast], [t + 0.07, 1, SP.ui]);
+for (const t of [b(1), b(8), b(13), b(27), b(29), b(31)]) press.push([t - 0.05, 0.965, SP.fast], [t + 0.07, 1, SP.ui]);
 const shapePress = track(press);
 
 /* shape coords → screen, and back */
@@ -726,11 +727,11 @@ function build() {
   moveTo(fileHold1, [0, -60], fileHold1 - fileHold0 - 0.02, { f: 2.6, z: 1 });
   moveTo(b(22) + 0.16, P.submit, 0.18);
   rest(b(22) + 0.3, [P.submit[0] + 160, P.submit[1] + 60]);
-  moveTo(b(24), P.practice, 0.36);
-  moveTo(b(25), P.close, 0.32);
-  rest(b(25) + 0.16, [110, 120]);
-  moveTo(b(27), [0, 0], 0.3);
-  moveTo(b(28), P.toast, 0.3);
+  moveTo(b(25), P.practice, 0.36);
+  moveTo(b(27), P.close, 0.32);
+  rest(b(27) + 0.16, [110, 120]);
+  moveTo(b(29), [0, 0], 0.3);
+  moveTo(b(31), P.toast, 0.3);
   // …then onto the pill, hovering long enough for its arrow to run, and the press on frame 0
 
   if (OUTRO) {                       // after the last click the cursor drifts off and fades
@@ -740,7 +741,7 @@ function build() {
   const curX = track(ck.map(k => [k[0], k[1], k[3]]), SP.cursor);
   const curY = track(ck.map(k => [k[0], k[2], k[3]]), SP.cursor);
   const submitClick = b(22) + 0.16;
-  const clicks = [b(1), b(5), b(6), b(7), b(8), b(9), b(13), b(14), b(16), b(18), submitClick, b(24), b(25), b(27), b(28)].filter(t => !inOutro(t));
+  const clicks = [b(1), b(5), b(6), b(7), b(8), b(9), b(13), b(14), b(16), b(18), submitClick, b(25), b(27), b(29), b(31)].filter(t => !inOutro(t));
   const cp = [];
   for (const t of clicks) cp.push([t - 0.05, 1, SP.fast], [t + 0.07, 0, SP.ui]);
   cp.push([holdT0 - 0.05, 1, SP.fast], [holdT1, 0, SP.ui]);
@@ -823,7 +824,7 @@ function build() {
     }
     return 0;
   };
-  const badgeS = track([[b(26), 1, { f: 4.2, z: 0.72 }], [at('toast') + 0.02, 0, SP.exit]]);
+  const badgeS = track([[b(28), 1, { f: 4.2, z: 0.72 }], [at('toast') + 0.02, 0, SP.exit]]);
 
   /* ---------------- sound cues, placed on the same times the motion uses */
   cue(b(1), 'click'); cue(b(1) + 0.03, 'whoosh', 0.5); cue(b(2), 'blip', 0.8); cue(b(3), 'success');
@@ -834,9 +835,9 @@ function build() {
   cue(b(16), 'tick'); cue(b(17), 'whoosh', 0.7); cue(b(18), 'tick'); cue(b(19), 'whoosh', 0.6);
   for (let i = 0; i < 4; i++) cue(b(19) + 0.18 + i * 0.05, 'tick', 0.3);          // the wheel
   cue(b(20), 'blip', 0.6); cue(b(21), 'whoosh', 0.8); cue(fileHold0, 'grab', 0.7); cue(fileHold1, 'drop');
-  cue(submitClick, 'click'); cue(b(23), 'success', 0.7); cue(b(24), 'click'); cue(b(24), 'whoosh', 0.7);
-  cue(b(25), 'click'); cue(b(25), 'whoosh', 0.8); cue(b(26), 'bell'); cue(b(27), 'click'); cue(b(27), 'whoosh', 0.8);
-  cue(b(28), 'click'); cue(b(28), 'whoosh', 0.7);
+  cue(submitClick, 'click'); cue(b(23), 'success', 0.7); cue(b(25), 'click'); cue(b(25), 'whoosh', 0.7);
+  cue(b(27), 'click'); cue(b(27), 'whoosh', 0.8); cue(b(28), 'bell'); cue(b(29), 'click'); cue(b(29), 'whoosh', 0.8);
+  cue(b(31), 'click'); cue(b(31), 'whoosh', 0.7);
   if (OUTRO) {
     for (let i = CUES.length - 1; i >= 0; i--) if (CUES[i].t > 0.1 && inOutro(CUES[i].t)) CUES.splice(i, 1);
     for (let i = 0; i < 4; i++) cue(ebarT(i), 'blip', 0.45 + 0.1 * i);   // the E builds, bar by bar
@@ -1023,9 +1024,9 @@ function build() {
     }
     if (vis.rewrite) {
       wordEls.forEach((el, i) => show(el, wordW[i](t), 8, 6));
-      $('#practice').style.scale = (1 - 0.05 * clamp(step(t - b(24) + 0.05, SP.fast) - step(t - b(24) - 0.07, SP.ui))).toFixed(4);
+      $('#practice').style.scale = (1 - 0.05 * clamp(step(t - b(25) + 0.05, SP.fast) - step(t - b(25) - 0.07, SP.ui))).toFixed(4);
     }
-    if (vis.bell) bellIcon.style.rotate = ringAt((t - b(26)) / 0.6).toFixed(2) + 'deg';
+    if (vis.bell) bellIcon.style.rotate = ringAt((t - b(28)) / 0.6).toFixed(2) + 'deg';
     const bs = badgeS(t);
     if (bs > 0.002) Object.assign(badge.style, { visibility: 'visible', left: (w / 2 - 38).toFixed(1) + 'px', top: (-h / 2 - 8).toFixed(1) + 'px', scale: Math.max(0, bs).toFixed(4), opacity: clamp(bs * 3).toFixed(3) });
     else badge.style.visibility = 'hidden';

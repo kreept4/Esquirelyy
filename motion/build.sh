@@ -2,13 +2,13 @@
 # Build the Esquirely motion piece end to end.
 #   needs: python3 + numpy + scipy, node + playwright (chromium), ffmpeg
 #
-#   esquirely-motion.mp4       17 s: the piece once, then its ending (post this one)
-#   esquirely-motion-loop.mp4  14 s: the seamless loop (for anywhere that repeats it)
+#   esquirely-motion.mp4       ~25 s: the piece once, then its ending (post this one)
+#   esquirely-motion-loop.mp4  ~21 s: the seamless loop (for anywhere that repeats it)
 set -euo pipefail
 cd "$(dirname "$0")"
-OUTRO=3
+OUTRO=3.5
 
-python3 audio/compose.py                 # 1. the track, 7 bars of F minor at 120 BPM
+python3 audio/compose.py                 # 1. the track, 8 bars of F minor at 90 BPM
 python3 audio/analyze.py                 # 2. measure its beat grid -> beats.js
 node render.mjs beats                    # 3. one frame per beat for review (+ exports cues.json, cues-outro.json)
 python3 audio/mix.py                     # 4. UI sounds on the measured cues -> esquirely-pipeline.wav
