@@ -47,7 +47,7 @@ If the board changes, update the counts in `index.html` (`.cnt` spans and `DATA`
 | `audio/compose.py` | Synthesizes the track "Pipeline" in numpy: F minor deep house, 7 bars, written onto a circular buffer so the tails wrap and the loop point is inaudible. |
 | `audio/analyze.py` | Measures the beat grid from the audio and writes `beats.js`, which the page reads. Tempo comes from onset autocorrelation, phase from the kick band refined to its attack, and the downbeat from clap parity plus bass-root change. |
 | `audio/mix.py` | Synthesizes the UI sounds (click, tick, whoosh, drop, toggle, bell) in key and places each one by its measured peak at the cue times the page exports. |
-| `render.mjs` | Renders with Playwright. `beats` gives one frame per beat for review. `full` renders 60 fps with 4 subframes per frame, blended by ffmpeg `tmix` for motion blur. |
+| `render.mjs` | Renders with Playwright. `beats` gives one frame per beat for review. `full` renders 60 fps with 12 subframes per frame across a 180° shutter, blended by ffmpeg `tmix` for motion blur. The template's 4 subframes strobed on the fastest moves (the panel crossing columns travels about 45 px a frame), showing four copies instead of a blur. |
 | `build.sh` | Runs every step above and writes `esquirely-motion.mp4`. |
 
 ## How it works

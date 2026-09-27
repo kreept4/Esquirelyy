@@ -2,7 +2,7 @@
 //
 //   node render.mjs beats              one frame per beat -> out/beats/, plus per-bar strips
 //   node render.mjs frames 3.2 3.25    specific times -> out/frames/
-//   node render.mjs full [workers]     60 fps, 4 subframes per frame blended with
+//   node render.mjs full [workers]     60 fps, 12 subframes per frame (180° shutter) blended with
 //                                      ffmpeg tmix for motion blur -> out/video.mp4
 //
 // Frames are pure functions of time (see seek() in index.html), so workers can
@@ -21,7 +21,7 @@ catch { ({ chromium } = require(path.join(execFileSync('npm', ['root', '-g']).to
 
 const HERE = path.dirname(new URL(import.meta.url).pathname);
 const OUT = path.join(HERE, 'out');
-const FPS = 60, SUB = 4, SIZE = 1440;
+const FPS = 60, SUB = 12, SIZE = 1440, SHUTTER = 0.5;
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.woff2': 'font/woff2', '.wav': 'audio/wav', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg' };
 
 function serve() {
@@ -81,7 +81,7 @@ async function main() {
       console.log('beats ->', dir);
     } else if (mode === 'frames') {
       const dir = path.join(OUT, 'frames'); fs.mkdirSync(dir, { recursive: true });
-      for (const t of rest.map(Number)) await shoot(page, t, path.join(dir, `t${t.toFixed(3)}.png`));
+      for (const t of rest.map(Number)) await shoot(page, t, path.join(dir, `t${t.toFixed(5)}.png`));
       console.log('frames ->', dir);
     } else if (mode === 'full') {
       const workers = parseInt(rest[0] ?? String(Math.max(1, os.cpus().length)), 10);
@@ -101,8 +101,10 @@ async function main() {
           '-r', String(FPS), '-c:v', 'libx264rgb', '-preset', 'veryfast', '-crf', '0', chunk]);
         for (let f = f0; f < f1; f++) {
           for (let k = 0; k < SUB; k++) {
-            // subframes straddle the frame time symmetrically: a 360° shutter
-            const t = (f + (k - (SUB - 1) / 2) / SUB) / FPS;
+            // subframes straddle the frame time symmetrically across a 180° shutter
+            // (half the frame interval). At 360° the four samples of a fast move
+            // land far enough apart to read as four copies rather than one blur.
+            const t = (f + SHUTTER * (k - (SUB - 1) / 2) / SUB) / FPS;
             await pg.evaluate(t => window.seek(t), t);
             const buf = await pg.screenshot({ type: 'png' });
             if (!ff.proc.stdin.write(buf)) await new Promise(r => ff.proc.stdin.once('drain', r));
