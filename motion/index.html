@@ -68,7 +68,9 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
 .blk h1 { font-family: 'Hanken', sans-serif; font-weight: 600; letter-spacing: -0.03em; font-size: 104px; line-height: 1.02; color: var(--cream); }
 .blk p { font-size: 23px; line-height: 1.75; color: var(--cream-soft); max-width: 44ch; margin: 26px 0 40px; }
 .blk .cta { align-self: flex-start; height: 66px; padding: 0 42px; border-radius: 999px; background: var(--mint); color: #fff; font-weight: 700; font-size: 21px; display: flex; align-items: center; }
-#conn { position: absolute; left: 70px; top: 0; width: 1300px; height: 169px; z-index: 2; overflow: visible; }
+/* Drawn in place in the band below the panels, so the dots are still while they
+   draw: flown through the frame they motion-blurred into streaks behind the panel. */
+.conn { position: absolute; left: 70px; top: 1060px; width: 1300px; height: 169px; z-index: 2; overflow: visible; visibility: hidden; }
 .tcard { position: absolute; width: 232px; height: 100px; border-radius: 8px; border: 1px solid var(--line); background: #FBF3DF; padding: 12px; }
 /* The logo, as the site draws it: the amber E square (src/app/icon.svg, measured
    bars, the supplied file's own colours) and the navbar wordmark (Hanken 900, -0.045em). */
@@ -91,21 +93,35 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
   <div class="blk R"><h2>Know the firm before you apply</h2><p>Tier rankings, practice-area breakdowns, office locations, and hiring history for Nigerian firms.</p><div class="cta">Browse firms</div></div>
   <div class="blk L"><h2>Feedback that says something</h2><p>CV reviews, cover letter drafts, and interview prep tuned to the Nigerian legal market: specific notes, not platitudes.</p><div class="cta">Try the tools</div></div>
 
-  <!-- the connector: the homepage's dotted spiral, same path, same marker -->
-  <svg id="conn" viewBox="0 0 1000 130" fill="none">
+  <!-- the connector: the homepage's dotted spiral, same path, same marker. Two
+       of them, because two column changes can fall a beat apart. -->
+  <svg class="conn" id="conn0" viewBox="0 0 1000 130" fill="none">
     <defs>
-      <marker id="arrowhead" viewBox="0 0 16 16" refX="11" refY="8" markerUnits="userSpaceOnUse" markerWidth="22" markerHeight="22" orient="auto-start-reverse">
-        <path id="headpath" d="M2 1.5 L13 8 L2 14.5" fill="none" stroke="#FAF6F0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <marker id="arrowhead0" viewBox="0 0 16 16" refX="11" refY="8" markerUnits="userSpaceOnUse" markerWidth="30" markerHeight="30" orient="auto-start-reverse">
+        <path class="connhead" d="M2 1.5 L13 8 L2 14.5" fill="none" stroke="#FAF6F0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
       </marker>
-      <mask id="reveal" maskUnits="userSpaceOnUse" x="-50" y="-50" width="1100" height="240">
-        <path id="revealpath" d="M760 2 C762 28 720 46 660 54 C590 63 520 46 470 56 C432 64 428 92 462 96 C492 99 500 74 478 64 C450 51 396 62 356 76 C320 89 292 104 268 120" stroke="#fff" stroke-width="16" fill="none"/>
+      <mask id="reveal0" maskUnits="userSpaceOnUse" x="-50" y="-50" width="1100" height="240">
+        <path class="revealpath" d="M760 2 C762 28 720 46 660 54 C590 63 520 46 470 56 C432 64 428 92 462 96 C492 99 500 74 478 64 C450 51 396 62 356 76 C320 89 292 104 268 120" stroke="#fff" stroke-width="18" fill="none"/>
       </mask>
     </defs>
-    <g mask="url(#reveal)">
-      <path d="M760 2 C762 28 720 46 660 54 C590 63 520 46 470 56 C432 64 428 92 462 96 C492 99 500 74 478 64 C450 51 396 62 356 76 C320 89 292 104 268 120"
-        stroke="#FAF6F0" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="0 9" shape-rendering="geometricPrecision"/>
+    <g mask="url(#reveal0)">
+      <path d="M760 2 C762 28 720 46 660 54 C590 63 520 46 470 56 C432 64 428 92 462 96 C492 99 500 74 478 64 C450 51 396 62 356 76 C320 89 292 104 268 120" stroke="#FAF6F0" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 12" shape-rendering="geometricPrecision"/>
     </g>
-    <path d="M268 120 L267.9 120.07" stroke="none" fill="none" marker-end="url(#arrowhead)"/>
+    <path d="M268 120 L267.9 120.07" stroke="none" fill="none" marker-end="url(#arrowhead0)"/>
+  </svg>
+  <svg class="conn" id="conn1" viewBox="0 0 1000 130" fill="none">
+    <defs>
+      <marker id="arrowhead1" viewBox="0 0 16 16" refX="11" refY="8" markerUnits="userSpaceOnUse" markerWidth="30" markerHeight="30" orient="auto-start-reverse">
+        <path class="connhead" d="M2 1.5 L13 8 L2 14.5" fill="none" stroke="#FAF6F0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+      <mask id="reveal1" maskUnits="userSpaceOnUse" x="-50" y="-50" width="1100" height="240">
+        <path class="revealpath" d="M760 2 C762 28 720 46 660 54 C590 63 520 46 470 56 C432 64 428 92 462 96 C492 99 500 74 478 64 C450 51 396 62 356 76 C320 89 292 104 268 120" stroke="#fff" stroke-width="18" fill="none"/>
+      </mask>
+    </defs>
+    <g mask="url(#reveal1)">
+      <path d="M760 2 C762 28 720 46 660 54 C590 63 520 46 470 56 C432 64 428 92 462 96 C492 99 500 74 478 64 C450 51 396 62 356 76 C320 89 292 104 268 120" stroke="#FAF6F0" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 12" shape-rendering="geometricPrecision"/>
+    </g>
+    <path d="M268 120 L267.9 120.07" stroke="none" fill="none" marker-end="url(#arrowhead1)"/>
   </svg>
 
   <div id="stage">
@@ -143,37 +159,36 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
         <div class="abs row" style="left:34px;top:0;height:110px;gap:12px">
           <svg class="lu" width="28" height="28" viewBox="0 0 24 24" style="color:var(--soft);margin-right:6px"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           <span class="tag gr" id="chip0" style="height:48px;padding:0 16px;font-size:21px">Law firm</span>
-          <span class="tag gr" id="chip1" style="height:48px;padding:0 16px;font-size:21px">Banking &amp; Finance</span>
-          <span class="tag gr" id="chip2" style="height:48px;padding:0 16px;font-size:21px">Lagos</span>
+          <span class="tag gr" id="chip1" style="height:48px;padding:0 16px;font-size:21px">Dispute Resolution</span>
+          <span class="tag gr" id="chip2" style="height:48px;padding:0 16px;font-size:21px">Abuja</span>
         </div>
         <div class="abs row gb" id="count" style="right:34px;top:0;height:110px;gap:9px;font-size:22px">
           <div style="position:relative;width:30px;height:30px">
             <span class="abs cnt" style="right:0;top:0">24</span>
             <span class="abs cnt" style="right:0;top:0">22</span>
-            <span class="abs cnt" style="right:0;top:0">5</span>
-            <span class="abs cnt" style="right:0;top:0">3</span>
+            <span class="abs cnt" style="right:0;top:0">7</span>
+            <span class="abs cnt" style="right:0;top:0">2</span>
           </div>
           <span class="gr" style="color:var(--soft)">roles</span>
           <svg class="lu" width="22" height="22" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </div>
       </div>
 
-      <!-- 4 · role card: a live listing (jobs table) -->
+      <!-- 4 · role card: a live listing, Olajide Oyewole LLP (jobs table, 26 Sep 2026) -->
       <div class="g" id="g-card" style="width:800px;height:460px">
         <div class="abs row" style="left:44px;top:44px;right:44px;gap:22px;align-items:flex-start">
-          <div class="mark" style="width:112px;height:70px"><img src="logos/aluko-oyebode.png" alt=""></div>
+          <div class="mark" style="width:112px;height:70px;padding:4px"><img src="logos/olajide-oyewole.png" alt=""></div>
           <div style="flex:1">
-            <div class="gb" style="font-size:34px;line-height:1.2">Associate, Banking &amp; Finance</div>
-            <div class="gr" style="font-size:22px;color:var(--soft);margin-top:4px">Aluko &amp; Oyebode · Lagos</div>
+            <div class="gb" style="font-size:34px;line-height:1.2">Associate, Dispute Resolution</div>
+            <div class="gr" style="font-size:22px;color:var(--soft);margin-top:4px">Olajide Oyewole LLP · Abuja · Closes 13 Nov</div>
           </div>
-          <span class="gr" style="font-size:19px;color:var(--soft);margin-top:8px">Rolling</span>
         </div>
         <div class="abs row" style="left:44px;top:170px;gap:10px">
-          <span class="tag gr" style="height:40px;padding:0 14px;font-size:19px;background:var(--ink);color:var(--carton);border:1px solid var(--ink)">Banking &amp; Finance</span>
+          <span class="tag gr" style="height:40px;padding:0 14px;font-size:19px;background:var(--ink);color:var(--carton);border:1px solid var(--ink)">Dispute Resolution</span>
           <span class="tag gr" style="height:40px;padding:0 14px;font-size:19px;background:var(--fill);border:1px solid var(--line)">Mid-level</span>
           <span class="tag gr" style="height:40px;padding:0 14px;font-size:19px;background:var(--fill);border:1px solid var(--line)">Law firm</span>
         </div>
-        <div class="abs gr" style="left:44px;right:44px;top:240px;font-size:21px;line-height:1.6;color:var(--soft)">Research, due diligence and transaction support, drafting and reviewing documents, alongside senior lawyers.</div>
+        <div class="abs gr" style="left:44px;right:44px;top:240px;font-size:21px;line-height:1.6;color:var(--soft)">Commercial litigation, arbitration, mediation, employment disputes and debt recovery, alongside senior lawyers.</div>
         <div class="abs" style="left:0;right:0;top:350px;height:1px;background:var(--line)"></div>
         <div class="abs row gr" id="tracknote" style="left:44px;top:351px;height:109px;gap:9px;font-size:21px;color:var(--mint-deep)">
           <svg class="lu" width="21" height="21" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
@@ -202,7 +217,7 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
         <div class="tcard" data-k="templars"><div class="mark" style="width:62px;height:36px;padding:3px"><img src="logos/templars.png" alt=""></div><div class="gr" style="font-size:17px;margin-top:10px">Templars</div></div>
         <div class="tcard" data-k="flutterwave"><div class="mark" style="width:62px;height:36px"><img src="logos/flutterwave.jpg" alt=""></div><div class="gr" style="font-size:17px;margin-top:10px">Flutterwave</div></div>
         <div class="tcard" data-k="olaniwun"><div class="mark" style="width:62px;height:36px;padding:3px"><img src="logos/olaniwun-ajayi.png" alt=""></div><div class="gr" style="font-size:17px;margin-top:10px">Olaniwun Ajayi LP</div></div>
-        <div class="tcard" id="minicard" style="background:#FFFDF6"><div class="mark" style="width:62px;height:36px"><img src="logos/aluko-oyebode.png" alt=""></div><div class="gb" style="font-size:17px;margin-top:10px">Aluko &amp; Oyebode</div></div>
+        <div class="tcard" id="minicard" style="background:#FFFDF6"><div class="mark" style="width:62px;height:36px;padding:2px"><img src="logos/olajide-oyewole.png" alt=""></div><div class="gb" style="font-size:17px;margin-top:10px">Olajide Oyewole LLP</div></div>
       </div>
 
       <!-- 6 · reminder: the site's stopwatch, and a switch -->
@@ -219,7 +234,7 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
       <div class="abs" id="puck"></div>
 
       <!-- 7–9 · tabs, then the scholarships and the firm they open into -->
-      <div class="g" id="g-panel" style="width:800px;height:620px">
+      <div class="g" id="g-panel" style="width:800px;height:640px">
         <div class="abs row" id="tabs" style="left:0;right:0;top:0;height:120px;justify-content:center;gap:10px">
           <div class="tab gb" style="font-size:27px;padding:0 34px;line-height:72px">Jobs</div>
           <div class="tab gb" style="font-size:27px;padding:0 34px;line-height:72px">Scholarships</div>
@@ -243,20 +258,14 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
           </div>
         </div>
 
-        <!-- Aluko & Oyebode, lib/firms-data.ts; the chart is its live roles on the board -->
-        <div class="abs" id="firm" style="left:44px;right:44px;top:150px">
-          <div class="row" style="gap:20px">
-            <div class="mark" style="width:104px;height:64px"><img src="logos/aluko-oyebode.png" alt=""></div>
-            <div style="flex:1">
-              <div class="display" style="font-size:38px;line-height:1.1">Aluko &amp; Oyebode</div>
-              <div class="gr" style="font-size:20px;color:var(--soft);margin-top:4px">Lagos · Abuja · Port Harcourt</div>
-            </div>
-            <span class="gr" style="font-size:19px;color:var(--soft)">Leading</span>
+        <!-- the firms directory (app/firms): search, then the list view, scrolled -->
+        <div class="abs" id="dir" style="left:0;right:0;top:120px;bottom:0">
+          <div class="abs row" style="left:40px;right:40px;top:22px;height:56px;border:1px solid var(--line);border-radius:6px;padding:0 18px;gap:12px;background:#fff;color:var(--soft)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <span class="gr" style="font-size:20px">Search firms</span>
           </div>
-          <div class="gr" style="font-size:19px;color:var(--soft);margin-top:18px;white-space:pre">Chambers Band 1  ·  IFLR1000 Tier 1  ·  EMEA Tier 1</div>
-          <div class="gb" style="font-size:19px;margin-top:26px">Open roles on Esquirely</div>
-          <div class="abs" id="chart" style="left:0;right:0;top:190px;height:240px">
-            <div class="abs" style="left:0;right:0;bottom:40px;height:1px;background:var(--line)"></div>
+          <div class="abs" id="dirview" style="left:0;right:0;top:96px;bottom:0;overflow:hidden">
+            <div class="abs" id="dirlist" style="left:0;right:0;top:0"></div>
           </div>
         </div>
       </div>
@@ -319,12 +328,12 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
       </div>
 
       <!-- 14 · the notification, as a row from the panel -->
-      <div class="g" id="g-toast" style="width:760px;height:132px">
+      <div class="g" id="g-toast" style="width:820px;height:132px">
         <div class="abs row" style="left:28px;top:0;height:132px;gap:22px">
-          <div class="mark" style="width:104px;height:64px"><img src="logos/aluko-oyebode.png" alt=""></div>
+          <div class="mark" style="width:132px;height:56px;padding:6px"><img src="logos/babalakin.png" alt=""></div>
           <div>
-            <div class="gb" style="font-size:27px">Associate, Banking &amp; Finance</div>
-            <div class="gr" style="font-size:20px;color:var(--soft);margin-top:4px">Aluko &amp; Oyebode · matches your alert</div>
+            <div class="gb" style="font-size:24px">Senior Associate, Energy &amp; Extractive</div>
+            <div class="gr" style="font-size:19px;color:var(--soft);margin-top:4px">Babalakin &amp; Co · Lagos · matches your alert</div>
           </div>
         </div>
         <div class="abs gr" style="right:30px;top:34px;font-size:19px;color:var(--soft)">now</div>
@@ -337,7 +346,6 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
       <svg class="lu" width="28" height="28" viewBox="0 0 24 24" style="color:rgba(36,31,22,0.6)"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
       Adaeze_Okoro_CV.pdf
     </div>
-    <div class="abs gb" id="charttip" style="height:56px;padding:0 18px;border-radius:6px;background:var(--ink);color:var(--carton);font-size:19px;line-height:56px;white-space:nowrap">Banking &amp; Finance · 3 open roles</div>
   </div>
 
   <div id="brand">
@@ -468,12 +476,12 @@ const BASE_STATES = [
   ['toggle',  b(13),        760,  120, 12, C.carton,  1],
   ['tabs',    b(15),        800,  120, 12, C.carton,  1],
   ['schol',   b(17),        800,  470, 12, C.carton,  1],
-  ['firm',    b(19),        800,  620, 12, C.carton,  1],
+  ['firm',    b(19),        800,  640, 12, C.carton,  1],
   ['drop',    b(21),        720,  480, 12, C.carton,  1],
   ['rewrite', b(23),        800,  500, 12, C.carton,  1],
   ['prep',    b(24),        800,  500, 12, C.ink,     1],
   ['bell',    b(25),        128,  128, 64, C.ink,     0],
-  ['toast',   b(27),        760,  132, 12, C.carton,  1],
+  ['toast',   b(27),        820,  132, 12, C.carton,  1],
 ];
 const STATES = OUTRO
   ? [...BASE_STATES.filter(s => !inOutro(s[1])), ['end', b(1) + 0.03, 200, 200, 0, '#FCB712', 0, 1.2]]
@@ -486,7 +494,9 @@ const shapeBg = colorTrack(STATES.map(s => [s[1], s[5]]), SP.colour);
 const shapeRule = track(STATES.map(s => [s[1], s[6]]), SP.fast);
 // the panel column is 700 px wide (less the hard shadow): every state fills it, small ones capped
 const fillScale = (w, h) => Math.min(688 / w, 820 / h, 1.5);
-const camS = track(STATES.map(s => [s[1] + 0.04, s[7] ?? fillScale(s[2], s[3])]), SP.camera);
+// the camera rides the shape's own spring: on a slower one, a small state growing
+// into a wide one (bell → alert) got big before the camera pulled back, and overran the frame
+const camS = track(STATES.map(s => [s[1], s[7] ?? fillScale(s[2], s[3])]), SP.shape);
 
 /* The blocks, as on the desktop homepage. side = the column the COPY takes;
    the shape takes the other. Header and every-role both read copy-left, as
@@ -603,9 +613,11 @@ function build() {
   const curOp = OUTRO ? track([[b(1) + 0.3, 0, SP.soft], [12.0, 1, SP.fast]]) : () => 1;
 
   /* ---------------- connector */
-  const conn = $('#conn'), revealPath = $('#revealpath'), headPath = $('#headpath');
-  const revealLen = revealPath.getTotalLength();
-  revealPath.style.strokeDasharray = `${revealLen} ${revealLen + 10}`;
+  const conns = $$('.conn').map(el => {
+    const rp = el.querySelector('.revealpath'), len = rp.getTotalLength();
+    rp.style.strokeDasharray = `${len} ${len + 10}`;
+    return { el, rp, len, head: el.querySelector('.connhead') };
+  });
 
   /* ---------------- filter chips + count */
   const chips = [0, 1, 2].map(i => $('#chip' + i));
@@ -669,26 +681,44 @@ function build() {
   moveTo(b(16), tabPt(1, 120), 0.36);
   moveTo(b(18), tabPt(2, 470), 0.34);
 
-  // chart: Aluko & Oyebode's live listings on the board by practice area (jobs table, 26 Sep 2026)
-  const chartEl = $('#chart');
-  const DATA = [['Corporate', 7], ['Banking', 3], ['IP', 3], ['Cap. Mkts', 2], ['Regulatory', 2]];
-  const HOT = 1;
-  const chartBox = box('panel', chartEl);
-  const chartBars = DATA.map(([name, v], i) => {
-    const bw = 92, gap = (chartBox.w - DATA.length * bw) / (DATA.length - 1);
-    const bar = document.createElement('div');
-    bar.className = 'abs';
-    Object.assign(bar.style, { left: i * (bw + gap) + 'px', width: bw + 'px', bottom: '40px', borderRadius: '2px 2px 0 0' });
-    const lab = document.createElement('div');
-    lab.className = 'abs gr';
-    Object.assign(lab.style, { left: i * (bw + gap) - 24 + 'px', width: bw + 48 + 'px', bottom: '0', height: '30px', textAlign: 'center', fontSize: '17px', color: 'var(--soft)' });
-    lab.textContent = name;
-    chartEl.append(bar, lab);
-    return { bar, lab, v, hMax: 150 * v / 7, x: chartBox.x + i * (bw + gap) + bw / 2 - 400, h0: chartBox.h - 40 };
+  // the firms directory: real entries from lib/firms-data.ts, list view, logos
+  // from public/firm-logos. Open-role counts come from the board (jobs table,
+  // 26 Sep 2026), shown only where there are any, as the directory does.
+  const FIRMS = [
+    ['templars', 'Templars', 'Leading', 'Lagos · Abuja · Port Harcourt', 0],
+    ['g-elias', 'G Elias & Co', 'Leading', 'Lagos · Abuja', 0],
+    ['udo-udoma-bello-osagie', 'Udo Udoma & Belo-Osagie', 'Leading', 'Lagos · Abuja · Port Harcourt', 0],
+    ['banwo-ighodalo', 'Banwo & Ighodalo', 'Leading', 'Lagos · Abuja · Port Harcourt', 0],
+    ['aluko-oyebode', 'Aluko & Oyebode', 'Leading', 'Lagos · Abuja · Port Harcourt', 12],
+    ['olaniwun-ajayi', 'Olaniwun Ajayi LP', 'Leading', 'Lagos · Abuja · Port Harcourt · London', 0],
+    ['aelex', 'AELEX', 'Leading', 'Lagos · Abuja · Port Harcourt · Accra', 0],
+    ['kenna-partners', 'Kenna Partners', 'Established', 'Lagos · Abuja · Enugu', 0],
+    ['perchstone-graeys', 'Perchstone & Graeys LP', 'Established', 'Lagos · Abuja · Benin City · London', 0],
+    ['babalakin', 'Babalakin & Co', 'Established', 'Lagos · Abuja · Port Harcourt', 1],
+    ['olajide-oyewole', 'Olajide Oyewole LLP', 'Established', 'Lagos · Abuja', 1],
+    ['advocaat', 'Advocaat Law Practice', 'Established', 'Lagos · Abuja · Calabar', 0],
+    ['detail-solicitors', 'Detail Solicitors', 'Established', 'Lagos', 0],
+  ];
+  const HOT = 10, ROW = 100;                 // the scroll comes to rest on the firm you applied to
+  const PIN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><ellipse cx="12" cy="21.1" rx="4.4" ry="1.5" opacity="0.3"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.8 12.92A6.4 6.4 0 1 1 17.2 12.92L12 20.15Z M12 6.45a2.75 2.75 0 1 0 0 5.5 2.75 2.75 0 0 0 0-5.5Z"/></svg>';
+  const CASE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9.7 2.4h4.6A2.6 2.6 0 0 1 16.9 5v2.1h-2.2V5.3a.85.85 0 0 0-.85-.85h-3.7a.85.85 0 0 0-.85.85v1.8H7.1V5a2.6 2.6 0 0 1 2.6-2.6Z"/><rect x="2" y="7.5" width="20" height="14" rx="2.8" opacity="0.36"/><path fill-rule="evenodd" clip-rule="evenodd" d="M2 11.6h20v3.7H2Z M11.05 12.5a.95.95 0 0 0 0 1.9h1.9a.95.95 0 0 0 0-1.9Z"/></svg>';
+  const dirList = $('#dirlist');
+  const dirRows = FIRMS.map(([slug, name, tier, cities, roles], i) => {
+    const r = document.createElement('div');
+    r.className = 'abs row';
+    Object.assign(r.style, { left: '24px', right: '24px', top: i * ROW + 'px', height: ROW + 'px', gap: '20px', padding: '0 16px', borderTop: i ? '1px solid var(--line)' : 'none', borderRadius: '4px' });
+    r.innerHTML = `<div class="mark" style="width:112px;height:62px;padding:5px"><img src="logos/${slug}.png" alt=""></div>
+      <div style="flex:1;min-width:0"><div class="gb" style="font-size:21px;white-space:nowrap">${name.replace('&', '&amp;')}</div><div class="gr" style="font-size:16px;color:var(--soft);margin-top:3px">${tier}</div></div>
+      <div style="text-align:right;font-size:15px;color:var(--soft)"><div class="row gr" style="gap:6px;justify-content:flex-end">${PIN}${cities}</div>${roles ? `<div class="row gb" style="gap:6px;justify-content:flex-end;margin-top:6px;color:var(--ink)">${CASE}${roles} open role${roles > 1 ? 's' : ''}</div>` : ''}</div>`;
+    dirList.append(r);
+    return r;
   });
-  const chartTop = chartBox.y - 620 / 2;
-  const hoverPt = [chartBars[HOT].x + 10, chartTop + chartBars[HOT].h0 - chartBars[HOT].hMax * 0.5];
-  moveTo(b(20) - 0.04, hoverPt, 0.34);
+  const DIR_VIEW_TOP = 120 + 96, DIR_VIEW_H = 640 - DIR_VIEW_TOP;
+  const scrollTo = HOT * ROW + ROW / 2 - DIR_VIEW_H / 2;
+  const dirScroll = track([[b(19) + 0.18, scrollTo, { f: 2.4, z: 1 }], [b(3), 0, SP.fast]]);
+  const hoverRow = track([[b(20) - 0.02, 1, SP.snap], [at('drop'), 0, SP.fast]]);
+  const hotPt = [40 + 112 + 40 + 60 - 400, DIR_VIEW_TOP + HOT * ROW + ROW / 2 - scrollTo - 640 / 2];
+  moveTo(b(20) - 0.05, hotPt, 0.5);                   // in place before the wheel: the list moves under it
 
   // the CV: picked up off to the side while the panel crosses, carried in, dropped on beat 22
   const fileHold0 = b(21) + 0.14, fileHold1 = b(22) - 0.04;
@@ -766,11 +796,6 @@ function build() {
   const trackOn = track([[b(14), 1, SP.snap], [b(10), 0, SP.fast]]);
   const puckVis = win(at('toggle'), at('drop'), 0.1);
 
-  /* ---------------- chart + tooltip */
-  const barH = chartBars.map((_, i) => track([[at('firm') + 0.12 + i * 0.06, 1, SP.ui], [b(3), 0, SP.fast]]));
-  const hover = track([[b(20) - 0.02, 1, SP.snap], [at('drop'), 0, SP.fast]]);
-  const tipW = win(b(20), at('drop') - 0.02, 0.02, SP.snap, SP.exit);
-  const tipEl = $('#charttip');
 
   /* ---------------- CV review */
   const fileEl = $('#file');
@@ -807,8 +832,8 @@ function build() {
   cue(b(10), 'whoosh'); cue(holdT0, 'grab'); cue(holdT1, 'drop');
   cue(b(13), 'click'); cue(b(13), 'whoosh', 0.7); cue(b(14), 'toggle'); cue(b(15), 'whoosh', 0.8);
   cue(b(16), 'tick'); cue(b(17), 'whoosh', 0.7); cue(b(18), 'tick'); cue(b(19), 'whoosh', 0.6);
-  for (let i = 0; i < 5; i++) cue(at('firm') + 0.12 + i * 0.06, 'blip', 0.5 + 0.1 * i);
-  cue(b(20), 'tick', 0.5); cue(b(21), 'whoosh', 0.8); cue(fileHold0, 'grab', 0.7); cue(fileHold1, 'drop');
+  for (let i = 0; i < 4; i++) cue(b(19) + 0.18 + i * 0.05, 'tick', 0.3);          // the wheel
+  cue(b(20), 'blip', 0.6); cue(b(21), 'whoosh', 0.8); cue(fileHold0, 'grab', 0.7); cue(fileHold1, 'drop');
   cue(submitClick, 'click'); cue(b(23), 'success', 0.7); cue(b(24), 'click'); cue(b(24), 'whoosh', 0.7);
   cue(b(25), 'click'); cue(b(25), 'whoosh', 0.8); cue(b(26), 'bell'); cue(b(27), 'click'); cue(b(27), 'whoosh', 0.8);
   cue(b(28), 'click'); cue(b(28), 'whoosh', 0.7);
@@ -839,23 +864,23 @@ function build() {
         : `translate(0, ${(-160 * (1 - v)).toFixed(2)}px)`;
     });
 
-    // connector: rises through the frame as the panel crosses, drawing itself
-    let shown = false;
-    for (const p of PASSES) {
-      const u = mod(t - (p.t - 0.55) + T / 2, T) - T / 2;
-      if (u < 0 || u > 1.05) continue;
-      shown = true;
-      const y = lerp(1480, -260, smooth(u / 1.05));
-      // the unflipped sweep runs right to left, like the panel going from the right column to the left
+    // connector: drawn in place below the panels as the panel crosses columns,
+    // from the column it leaves to the one it lands in, then it scrolls up and away
+    conns.forEach(c => { c.el.style.visibility = 'hidden'; });
+    PASSES.forEach((p, i) => {
+      const u = mod(t - (p.t - 0.3) + T / 2, T) - T / 2;
+      if (u < 0 || u > 1.35) return;
+      const c = conns[i % 2];
+      // the unflipped sweep runs right to left: the panel leaving the right column
+      // (copy on the left, from === 'L') for the left one. Flip it for the other way.
       const flip = p.from === 'R';
-      conn.style.visibility = 'visible';
-      conn.style.transform = `translate(0, ${y.toFixed(1)}px) scaleX(${flip ? -1 : 1})`;
-      const q = smooth(u / 0.7);
-      revealPath.style.strokeDashoffset = (revealLen * (1 - q)).toFixed(2);
-      headPath.style.opacity = clamp((q - 0.92) / 0.08).toFixed(3);
-      break;
-    }
-    if (!shown) conn.style.visibility = 'hidden';
+      const q = smooth(u / 0.75), out = smooth((u - 1.0) / 0.35);
+      c.el.style.visibility = 'visible';
+      c.el.style.opacity = (1 - out).toFixed(3);
+      c.el.style.transform = `translate(0, ${(-70 * out).toFixed(1)}px) scaleX(${flip ? -1 : 1})`;
+      c.rp.style.strokeDashoffset = (c.len * (1 - q)).toFixed(2);
+      c.head.style.opacity = clamp((q - 0.9) / 0.1).toFixed(3);
+    });
 
     // the shape
     const w = shapeW(t), h = shapeH(t), r = shapeR(t), S = camS(t), ps = shapePress(t), rule = clamp(shapeRule(t)), X = shapeX(t);
@@ -968,19 +993,10 @@ function build() {
       });
     } else { pe.style.visibility = 'hidden'; show($('#tabs'), 0); show($('#tabrule'), 0); }
     show($('#schol'), W.schol(t));
-    const fv = W.firm(t);
-    if (show($('#firm'), fv)) {
-      const hv = clamp(hover(t));
-      chartBars.forEach((cb, i) => {
-        cb.bar.style.height = (cb.hMax * Math.max(0, barH[i](t))).toFixed(2) + 'px';
-        cb.bar.style.background = i === HOT ? C.ink : mixc(C.ink, '#E4DCCB', hv);
-        cb.lab.style.color = i === HOT ? mixc('#6B665C', C.ink, hv) : 'rgba(18,16,14,0.66)';
-        cb.lab.style.fontWeight = i === HOT && hv > 0.5 ? 700 : 400;
-      });
-    }
-    if (show(tipEl, tipW(t) * fv, 6, 8)) {
-      const hx = chartBars[HOT].x, hy = chartTop + chartBars[HOT].h0 - chartBars[HOT].hMax;
-      Object.assign(tipEl.style, { left: (hx - 46).toFixed(1) + 'px', top: (hy - 72).toFixed(1) + 'px' });
+    if (show($('#dir'), W.firm(t))) {
+      dirList.style.transform = `translateY(${(-dirScroll(t)).toFixed(2)}px)`;
+      // the directory's hover: --hover-tint, the cream-dark ground
+      dirRows[HOT].style.background = `rgba(240,235,227,${clamp(hoverRow(t)).toFixed(3)})`;
     }
     if (vis.drop) {
       const hot = clamp(zoneHot(t));
