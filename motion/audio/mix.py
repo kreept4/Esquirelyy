@@ -8,7 +8,8 @@ on the cue, and a click's transient lands on the frame the cursor goes down.
 
 Pitched sounds are in F minor with the track.
 
-    python3 mix.py        -> esquirely-pipeline.wav (music + UI, seamless loop)
+    python3 mix.py              -> esquirely-pipeline.wav       (music + UI, seamless loop)
+    python3 mix.py --outro 3    -> esquirely-pipeline-full.wav  (the loop once, then the ending)
 """
 import json, pathlib
 import numpy as np
@@ -103,32 +104,50 @@ def peak_index(x):
     return int(np.argmax(env))
 
 
-def main():
+def sound_for(c, counters):
+    kind = c['type']
+    if kind == 'tick':
+        x = tick(TICKS[counters['tick'] % len(TICKS)]); counters['tick'] += 1
+    elif kind == 'blip':
+        x = blip(BLIPS[counters['blip'] % len(BLIPS)]); counters['blip'] += 1
+    else:
+        x = {'click': click, 'whoosh': whoosh, 'success': success, 'grab': grab,
+             'drop': drop, 'toggle': toggle, 'bell': bell}[kind]()
+    return x * c.get('gain', 1)
+
+
+def main(outro=0.0):
+    """outro = 0: the seamless loop, sounds wrapped round it.
+    outro > 0: the loop once, then the ending's cues (cues-outro.json) after it."""
     cues = json.loads((HERE / 'cues.json').read_text())
+    if outro:
+        tail = json.loads((HERE / 'cues-outro.json').read_text())
+        cues = cues + [dict(c, t=c['t'] + LOOP) for c in tail if c['t'] < outro]
     from compose import build   # re-render the music so this script stands alone
-    music = build()
-    ui = np.zeros(N)
-    ti = bi = 0
-    for c in cues:
-        kind = c['type']
-        if kind == 'tick':
-            x = tick(TICKS[ti % len(TICKS)]); ti += 1
-        elif kind == 'blip':
-            x = blip(BLIPS[bi % len(BLIPS)]); bi += 1
-        else:
-            x = {'click': click, 'whoosh': whoosh, 'success': success, 'grab': grab,
-                 'drop': drop, 'toggle': toggle, 'bell': bell}[kind]()
+    music = build(outro)
+    total = music.shape[1]
+    ui = np.zeros(total)
+    counters = {'tick': 0, 'blip': 0}
+    for c in sorted(cues, key=lambda c: c['t']):
+        x = sound_for(c, counters)
         # a whoosh should crest while the shape is moving fastest, ~90 ms after the change
-        lag = 0.09 if kind == 'whoosh' else 0.0
+        lag = 0.09 if c['type'] == 'whoosh' else 0.0
         start = int(round((c['t'] + lag) * SR)) - peak_index(x)
-        idx = (start + np.arange(len(x))) % N
-        np.add.at(ui, idx, x * c.get('gain', 1))
+        idx = start + np.arange(len(x))
+        if outro:
+            keep = (idx >= 0) & (idx < total)
+            idx, x = idx[keep], x[keep]
+        else:
+            idx %= N
+        np.add.at(ui, idx, x)
     ui = sosfilt(butter(1, 120, 'highpass', fs=SR, output='sos'), ui)
     out = music * 0.86 + np.stack([ui, ui]) * 0.55
     out = np.tanh(1.1 * out / np.max(np.abs(out))) / np.tanh(1.1) * 10 ** (-1 / 20)
-    write_wav(HERE / 'esquirely-pipeline.wav', out)
-    print(f'esquirely-pipeline.wav  {len(cues)} UI cues on a {LOOP:.1f}s loop')
+    name = 'esquirely-pipeline-full.wav' if outro else 'esquirely-pipeline.wav'
+    write_wav(HERE / name, out)
+    print(f'{name}  {len(cues)} UI cues, {total / SR:.2f}s')
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    main(float(sys.argv[sys.argv.index('--outro') + 1]) if '--outro' in sys.argv else 0.0)

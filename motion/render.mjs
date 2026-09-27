@@ -1,9 +1,11 @@
 // Render index.html with Playwright.
 //
 //   node render.mjs beats              one frame per beat -> out/beats/, plus per-bar strips
-//   node render.mjs frames 3.2 3.25    specific times -> out/frames/
-//   node render.mjs full [workers]     60 fps, 12 subframes per frame (180° shutter) blended with
-//                                      ffmpeg tmix for motion blur -> out/video.mp4
+//   node render.mjs frames 3.2 3.25    specific times -> out/frames/ (add `outro` first for the ending)
+//   node render.mjs full [workers] [outro seconds]
+//                                      60 fps, 12 subframes per frame (180° shutter) blended with
+//                                      ffmpeg tmix for motion blur -> out/video.mkv (the loop). With an
+//                                      outro length, the loop plays once and ends -> out/video-full.mkv
 //
 // Frames are pure functions of time (see seek() in index.html), so workers can
 // render disjoint ranges in any order and the result is identical.
@@ -35,10 +37,10 @@ function serve() {
   });
 }
 
-async function openPage(browser, port) {
+async function openPage(browser, port, outro = false) {
   const page = await browser.newPage({ viewport: { width: SIZE, height: SIZE }, deviceScaleFactor: 1 });
   page.on('pageerror', e => console.error('page error:', e.message));
-  await page.goto(`http://127.0.0.1:${port}/index.html?render=1`);
+  await page.goto(`http://127.0.0.1:${port}/index.html?render=1${outro ? '&outro=1' : ''}`);
   await page.evaluate(() => window.ready);
   return page;
 }
@@ -66,6 +68,11 @@ async function main() {
     const page = await openPage(browser, port);
     const meta = await page.evaluate(() => ({ cues: window.CUES, loop: window.LOOP, beats: window.BEATS }));
     fs.writeFileSync(path.join(HERE, 'audio', 'cues.json'), JSON.stringify(meta.cues, null, 1));
+    {
+      const op = await openPage(browser, port, true);
+      fs.writeFileSync(path.join(HERE, 'audio', 'cues-outro.json'), JSON.stringify(await op.evaluate(() => window.CUES), null, 1));
+      await op.close();
+    }
 
     if (mode === 'beats') {
       const dir = path.join(OUT, 'beats'); fs.mkdirSync(dir, { recursive: true });
@@ -80,12 +87,17 @@ async function main() {
       }
       console.log('beats ->', dir);
     } else if (mode === 'frames') {
+      // `frames outro 0.5 1.2` shoots the ending's page instead
       const dir = path.join(OUT, 'frames'); fs.mkdirSync(dir, { recursive: true });
-      for (const t of rest.map(Number)) await shoot(page, t, path.join(dir, `t${t.toFixed(5)}.png`));
+      const useOutro = rest[0] === 'outro';
+      const pg = useOutro ? await openPage(browser, port, true) : page;
+      for (const t of rest.filter(x => x !== 'outro').map(Number)) await shoot(pg, t, path.join(dir, `${useOutro ? 'o' : 't'}${t.toFixed(5)}.png`));
       console.log('frames ->', dir);
     } else if (mode === 'full') {
       const workers = parseInt(rest[0] ?? String(Math.max(1, os.cpus().length)), 10);
-      const frames = Math.round(meta.loop * FPS);
+      const outro = parseFloat(rest[1] ?? '0');
+      const tag = outro ? '-full' : '';
+      const frames = Math.round((meta.loop + outro) * FPS);
       const per = Math.ceil(frames / workers);
       const t0 = Date.now();
       let done = 0;
@@ -93,7 +105,8 @@ async function main() {
         const f0 = w * per, f1 = Math.min(frames, f0 + per);
         if (f0 >= f1) return;
         const pg = w === 0 ? page : await openPage(browser, port);
-        const chunk = path.join(OUT, `chunk${w}.mkv`);
+        const po = outro ? await openPage(browser, port, true) : null;
+        const chunk = path.join(OUT, `chunk${tag}${w}.mkv`);
         // tmix averages the last SUB inputs; keep every SUB-th output so each
         // frame is the mean of exactly its own subframes.
         const ff = ffmpeg(['-f', 'image2pipe', '-framerate', String(FPS * SUB), '-i', '-',
@@ -105,8 +118,10 @@ async function main() {
             // (half the frame interval). At 360° the four samples of a fast move
             // land far enough apart to read as four copies rather than one blur.
             const t = (f + SHUTTER * (k - (SUB - 1) / 2) / SUB) / FPS;
-            await pg.evaluate(t => window.seek(t), t);
-            const buf = await pg.screenshot({ type: 'png' });
+            // past the loop point, the ending's page takes over from where the loop left off
+            const [p, tt] = outro && t >= meta.loop ? [po, t - meta.loop] : [pg, t];
+            await p.evaluate(t => window.seek(t), tt);
+            const buf = await p.screenshot({ type: 'png' });
             if (!ff.proc.stdin.write(buf)) await new Promise(r => ff.proc.stdin.once('drain', r));
           }
           if (++done % 60 === 0) process.stdout.write(`\r${done}/${frames} frames  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
@@ -115,10 +130,10 @@ async function main() {
         await ff;
       }));
       console.log(`\nrendered ${frames} frames in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
-      const list = path.join(OUT, 'chunks.txt');
-      fs.writeFileSync(list, Array.from({ length: workers }, (_, w) => `file 'chunk${w}.mkv'`).filter((_, w) => w * per < frames).join('\n'));
-      await ffmpeg(['-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', path.join(OUT, 'video.mkv')]);
-      console.log('video ->', path.join(OUT, 'video.mkv'));
+      const list = path.join(OUT, `chunks${tag}.txt`);
+      fs.writeFileSync(list, Array.from({ length: workers }, (_, w) => `file 'chunk${tag}${w}.mkv'`).filter((_, w) => w * per < frames).join('\n'));
+      await ffmpeg(['-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', path.join(OUT, `video${tag}.mkv`)]);
+      console.log('video ->', path.join(OUT, `video${tag}.mkv`));
     }
   } finally {
     await browser.close();

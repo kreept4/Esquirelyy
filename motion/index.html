@@ -70,6 +70,7 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
 .blk .cta { align-self: flex-start; height: 66px; padding: 0 42px; border-radius: 999px; background: var(--mint); color: #fff; font-weight: 700; font-size: 21px; display: flex; align-items: center; }
 #conn { position: absolute; left: 70px; top: 0; width: 1300px; height: 169px; z-index: 2; overflow: visible; }
 .tcard { position: absolute; width: 232px; height: 100px; border-radius: 8px; border: 1px solid var(--line); background: #FBF3DF; padding: 12px; }
+#url { position: absolute; left: 0; right: 0; top: 872px; text-align: center; font-weight: 700; font-size: 30px; letter-spacing: 0.01em; color: var(--cream); z-index: 4; visibility: hidden; }
 #cursor { position: absolute; left: 0; top: 0; width: 46px; height: 46px; transform-origin: 6px 4px; z-index: 50; }
 #hint { position: fixed; left: 24px; bottom: 20px; font: 700 16px 'Schibsted'; color: var(--cream); opacity: .7; z-index: 60; }
 </style>
@@ -327,6 +328,8 @@ svg.lu { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: roun
     <div class="abs gb" id="charttip" style="height:56px;padding:0 18px;border-radius:6px;background:var(--ink);color:var(--carton);font-size:19px;line-height:56px;white-space:nowrap">Banking &amp; Finance · 3 open roles</div>
   </div>
 
+  <div id="url">esquirely.com.ng</div>
+
   <svg id="cursor" viewBox="0 0 46 46"><path d="M8 5.5v29.5l7.6-7.2 5 11.2 5.2-2.3-5-11h10.6z" fill="#12100E" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>
 </div>
 <div id="hint"></div>
@@ -343,6 +346,14 @@ const BAR = 4 * B;
 const D0 = ((BT.offset % BAR) + BAR + BAR / 2) % BAR - BAR / 2;   // first downbeat, ~0
 const beat = k => D0 + (k - 1) * B;            // beat k = 1..28
 const mod = (x, m) => ((x % m) + m) % m;
+/* ?outro renders the ending instead of the loop's next lap. It is the same
+   score with everything from the downbeat to 3.6 s replaced: the click lands,
+   the headline scrolls away, and the shape travels to centre as the wordmark.
+   Keys before the loop point are untouched, so the ending picks up exactly
+   where the last lap leaves off. */
+const Q = new URLSearchParams(location.search);
+const OUTRO = Q.has('outro');
+const inOutro = t => OUTRO && mod(t, T) > 0.02 && mod(t, T) < 3.6;
 // frame centre; the panel column (72–772 or 668–1368) is centred COL either side of it,
 // the copy takes the other 540 px with a 56 px gutter, as the desktop section lays out
 const CX = 720, CY = 720, COL = 298;
@@ -429,7 +440,7 @@ const C = { ink: '#12100E', cream: '#FAF6F0', carton: '#FFF8E5', mint: '#14B8A6'
 const b = beat;
 /* Shape states. rule = 1 is a carton panel (1.5px black rule, hard 6×8
    offset shadow, 12px radius); rule = 0 is a round button (neither). */
-const STATES = [
+const BASE_STATES = [
   // name,     t,            w,    h,   r,  bg,        rule
   ['pill',    b(28),        420,  112, 56, C.mint,    0],
   ['loader',  b(1) + 0.03,  360,  112, 56, C.cream,   0],
@@ -447,7 +458,10 @@ const STATES = [
   ['bell',    b(25),        128,  128, 64, C.ink,     0],
   ['toast',   b(27),        760,  132, 12, C.carton,  1],
 ];
-const at = name => STATES.find(s => s[0] === name)[1];
+const STATES = OUTRO
+  ? [...BASE_STATES.filter(s => !inOutro(s[1])), ['end', b(1) + 0.03, 440, 140, 70, C.cream, 0]]
+  : BASE_STATES;
+const at = name => BASE_STATES.find(s => s[0] === name)[1];
 const shapeW = track(STATES.map(s => [s[1], s[2]]), SP.shape);
 const shapeH = track(STATES.map(s => [s[1], s[3]]), SP.shape);
 const shapeR = track(STATES.map(s => [s[1], s[4]]), SP.shape);
@@ -469,7 +483,10 @@ const BLOCKS = [
   [b(19),   b(21),  'R'],     // Know the firm before you apply
   [b(21),   b(25),  'L'],     // Feedback that says something
 ];
-const shapeX = track(BLOCKS.map(([a, , side]) => [a - 0.12, side === 'L' ? COL : -COL]), SP.travel);
+const shapeX = track([
+  ...BLOCKS.map(([a, , side]) => [a - 0.12, side === 'L' ? COL : -COL]).filter(k => !inOutro(k[0])),
+  ...(OUTRO ? [[b(1) + 0.2, 0]] : []),          // the ending: to centre
+], SP.travel);
 // the connector runs wherever the panel changes sides, as it does between blocks
 const PASSES = BLOCKS.map(([a], i) => ({ t: a, from: BLOCKS[(i + 5) % 6][2], to: BLOCKS[i][2] })).filter(p => p.from !== p.to);
 
@@ -478,7 +495,7 @@ const PASSES = BLOCKS.map(([a], i) => ({ t: a, from: BLOCKS[(i + 5) % 6][2], to:
    (and once more at the loop), so it is a count of settled springs: pure in t
    and continuous across frame 0 because the last stop is the first. */
 const STOPS = [[26, 26, 26], [56, 189, 248], [249, 115, 22], [239, 68, 68], [34, 197, 94], [139, 92, 246], [20, 184, 166], [26, 26, 26]];
-const SCROLLS = [...BLOCKS.map(([a]) => a), b(1)].map(tc => mod(tc - 0.22, T));
+const SCROLLS = [...BLOCKS.map(([a]) => a), b(1)].map(tc => mod(tc - 0.22, T)).filter(k => !inOutro(k));
 function scrollPos(t) {
   t = mod(t, T);
   let s = 0;
@@ -535,9 +552,9 @@ function build() {
   /* ---------------- windows */
   const W = {
     pill:    win(at('pill'), at('loader'), 0.08),
-    loader:  win(at('loader'), at('check'), 0.06),
-    check:   win(at('check'), at('island'), 0.04),
-    island:  win(at('island'), at('card')),
+    loader:  OUTRO ? win(at('loader'), 3.9, 0.06) : win(at('loader'), at('check'), 0.06),
+    check:   OUTRO ? () => 0 : win(at('check'), at('island'), 0.04),
+    island:  OUTRO ? () => 0 : win(at('island'), at('card')),
     card:    win(at('card'), at('pipe')),
     pipe:    win(at('pipe'), at('toggle')),
     toggle:  win(at('toggle'), at('tabs')),
@@ -553,7 +570,13 @@ function build() {
 
   /* ---------------- block copy: glides in from its own side, scrolls up and out */
   const blkEls = $$('.blk');
-  const blkW = BLOCKS.map(([a, z]) => win(a + 0.06, z - 0.28, 0, { f: 2.2, z: 1 }, { f: 5, z: 1 }));
+  const blkW = BLOCKS.map(([a, z], i) => {
+    if (OUTRO && inOutro(a)) return () => 0;                       // no next block: it ends
+    if (OUTRO && i === 0) return win(a + 0.06, b(1) + 0.18, 0, { f: 2.2, z: 1 }, { f: 5, z: 1 });
+    return win(a + 0.06, z - 0.28, 0, { f: 2.2, z: 1 }, { f: 5, z: 1 });
+  });
+  const urlW = OUTRO ? win(b(1) + 0.55, 3.9, 0, { f: 2.4, z: 1 }, SP.exit) : () => 0;
+  const curOp = OUTRO ? track([[b(1) + 0.3, 0, SP.soft], [12.0, 1, SP.fast]]) : () => 1;
 
   /* ---------------- connector */
   const conn = $('#conn'), revealPath = $('#revealpath'), headPath = $('#headpath');
@@ -656,10 +679,14 @@ function build() {
   moveTo(b(28), P.toast, 0.3);
   // …then onto the pill, hovering long enough for its arrow to run, and the press on frame 0
 
+  if (OUTRO) {                       // after the last click the cursor drifts off and fades
+    for (let i = ck.length - 1; i >= 0; i--) if (inOutro(ck[i][0])) ck.splice(i, 1);
+    ck.push([b(1) + 0.22, 1250, 1300, SP.soft]);
+  }
   const curX = track(ck.map(k => [k[0], k[1], k[3]]), SP.cursor);
   const curY = track(ck.map(k => [k[0], k[2], k[3]]), SP.cursor);
   const submitClick = b(22) + 0.16;
-  const clicks = [b(1), b(5), b(6), b(7), b(8), b(9), b(13), b(14), b(16), b(18), submitClick, b(24), b(25), b(27), b(28)];
+  const clicks = [b(1), b(5), b(6), b(7), b(8), b(9), b(13), b(14), b(16), b(18), submitClick, b(24), b(25), b(27), b(28)].filter(t => !inOutro(t));
   const cp = [];
   for (const t of clicks) cp.push([t - 0.05, 1, SP.fast], [t + 0.07, 0, SP.ui]);
   cp.push([holdT0 - 0.05, 1, SP.fast], [holdT1, 0, SP.ui]);
@@ -761,6 +788,10 @@ function build() {
   cue(submitClick, 'click'); cue(b(23), 'success', 0.7); cue(b(24), 'click'); cue(b(24), 'whoosh', 0.7);
   cue(b(25), 'click'); cue(b(25), 'whoosh', 0.8); cue(b(26), 'bell'); cue(b(27), 'click'); cue(b(27), 'whoosh', 0.8);
   cue(b(28), 'click'); cue(b(28), 'whoosh', 0.7);
+  if (OUTRO) {
+    for (let i = CUES.length - 1; i >= 0; i--) if (CUES[i].t > 0.1 && inOutro(CUES[i].t)) CUES.splice(i, 1);
+    cue(b(1) + 0.55, 'success', 0.7);               // the wordmark lands
+  }
   CUES.sort((a, c) => a.t - c.t);
 
   /* ================================================================ seek(t) */
@@ -834,7 +865,8 @@ function build() {
       $('#pillarrow').style.opacity = o.toFixed(3);
     }
     // BrandLoader: the wordmark's pulse, one breath across the beat pair, peaking on beat 2
-    if (vis.loader) $('#wordmark').style.opacity = (0.55 + 0.45 * (0.5 - 0.5 * Math.cos(TAU * (t - b(1))))).toFixed(3);
+    if (vis.loader) $('#wordmark').style.opacity = OUTRO ? '1' : (0.55 + 0.45 * (0.5 - 0.5 * Math.cos(TAU * (t - b(1))))).toFixed(3);
+    show($('#url'), urlW(t), 6, 14);
     if (vis.check) {
       const cpth = $('#checkpath'), d = 24;
       cpth.style.strokeDasharray = d;
@@ -950,6 +982,7 @@ function build() {
     // the cursor lives in screen space: the page scrolls under it, as it would
     const cd = clamp(curDown(t));
     cursor.style.transform = `translate(${(curX(t) - 6).toFixed(2)}px, ${(curY(t) - 4).toFixed(2)}px) scale(${(1 - 0.14 * cd).toFixed(4)})`;
+    cursor.style.opacity = clamp(curOp(t)).toFixed(3);
   };
   window.seek = seek;
   window.CUES = CUES;
@@ -965,7 +998,7 @@ window.ready = (async () => {
   await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
   document.getElementById('stage').style.transform = 'scale(1)';
   build();
-  const q = new URLSearchParams(location.search);
+  const q = Q;
   if (q.has('t')) { seek(parseFloat(q.get('t'))); return true; }
   if (q.has('render')) { seek(0); return true; }
   const hint = document.getElementById('hint');

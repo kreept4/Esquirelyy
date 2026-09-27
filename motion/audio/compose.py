@@ -33,11 +33,22 @@ def t_(n):
     return np.arange(n) / SR
 
 
+# The loop build writes onto a circular buffer exactly one loop long. The
+# linear build (build(outro=...)) writes onto a plain buffer with room for the
+# ending after it, and nothing wraps.
+_TOTAL, _WRAP = N, True
+
+
 def place(buf, x, at, gain=1.0, pan=0.0):
-    """Add mono x into stereo buf at time `at` (s), wrapping past the loop end."""
-    i0 = int(round((at % LOOP) * SR))
+    """Add mono x into stereo buf at time `at` (s); on the loop, wrap past the end."""
+    i0 = int(round(((at % LOOP) if _WRAP else at) * SR))
     l, r = np.cos((pan + 1) * np.pi / 4), np.sin((pan + 1) * np.pi / 4)
-    idx = (i0 + np.arange(len(x))) % N
+    idx = i0 + np.arange(len(x))
+    if _WRAP:
+        idx %= N
+    else:
+        keep = (idx >= 0) & (idx < _TOTAL)
+        idx, x = idx[keep], x[keep]
     np.add.at(buf[0], idx, x * gain * l * np.sqrt(2))
     np.add.at(buf[1], idx, x * gain * r * np.sqrt(2))
 
@@ -183,8 +194,14 @@ def pos(bar, six):
     return t + (SWING if six % 2 else 0)
 
 
-def build():
-    drums = np.zeros((2, N)); music = np.zeros((2, N)); send = np.zeros((2, N))
+def build(outro=0.0):
+    """outro = 0: the seamless loop. outro > 0: the loop played once, then bar 8's
+    downbeat lands (kick, crash, the Fm9 left to ring) and decays to silence."""
+    global _TOTAL, _WRAP
+    _WRAP = outro == 0
+    _TOTAL = N + int(round(outro * SR))
+    NT = _TOTAL
+    drums = np.zeros((2, NT)); music = np.zeros((2, NT)); send = np.zeros((2, NT))
     K, C, CH, OH, SH = kick(), clap(), hat(), hat(True), shaker()
 
     kicks = []
@@ -249,11 +266,30 @@ def build():
             place(music, pluck(m), pos(bar, s), 0.22, 0.35)
             place(send, pluck(m), pos(bar, s), 0.16)
 
-    # Dotted-eighth ping-pong delay on the send, circular.
+    # The ending: bar 8's downbeat, where the riser and clap roll were heading.
+    if outro:
+        t8 = BARS * 4 * BEAT
+        kicks.append(t8)
+        place(drums, K, t8, 0.95)
+        place(drums, crash(), t8, 0.3, 0.2)
+        place(send, crash(), t8, 0.12)
+        fm9 = CHORDS[0][2]
+        last = stab(fm9, 1.5, 0.9)
+        place(music, last, t8, 1.4, -0.1)
+        place(send, last, t8, 0.9)
+        place(music, pad([m + 12 for m in fm9], 1.6), t8, 0.26, 0.3)
+        place(send, pad([m + 12 for m in fm9], 1.6), t8, 0.2)
+        place(music, bass_note(29, 1.1), t8, 0.5)
+        for dt, m in ((0.0, 77), (0.375, 84)):
+            place(music, pluck(m), t8 + dt, 0.22, 0.35)
+            place(send, pluck(m), t8 + dt, 0.22)
+
+    # Dotted-eighth ping-pong delay on the send (circular on the loop).
     d = int(round(0.75 * BEAT * SR))
     delayed = np.zeros_like(send)
+    shift = (lambda x, k: np.roll(x, k)) if _WRAP else (lambda x, k: np.concatenate([np.zeros(k), x[:-k]]))
     for k, g in enumerate((0.45, 0.28, 0.16), 1):
-        delayed[k % 2] += np.roll(send.sum(0) / 2, k * d) * g
+        delayed[k % 2] += shift(send.sum(0) / 2, k * d) * g
     send += delayed * 0.7
 
     # Circular convolution reverb: a 2.4 s decaying noise tail, seamless across the loop.
@@ -261,20 +297,29 @@ def build():
     ir = rng.standard_normal((2, ir_n)) * np.exp(-it / 0.55)
     ir[:, :int(0.012 * SR)] = 0
     ir = np.stack([filt(ir[c], 'lowpass', 6500) for c in range(2)])
-    wet = np.stack([np.real(np.fft.ifft(np.fft.fft(send[c]) * np.fft.fft(ir[c], N))) for c in range(2)])
+    if _WRAP:
+        wet = np.stack([np.real(np.fft.ifft(np.fft.fft(send[c]) * np.fft.fft(ir[c], N))) for c in range(2)])
+    else:
+        L = NT + ir_n
+        wet = np.stack([np.real(np.fft.ifft(np.fft.fft(send[c], L) * np.fft.fft(ir[c], L)))[:NT] for c in range(2)])
     wet = filt(wet, 'highpass', 250) * 0.05
 
     # Kick sidechain on everything musical.
-    duck = np.ones(N)
-    tt = t_(N)
+    duck = np.ones(NT)
+    tt = t_(NT)
     for tk in kicks:
-        dt = (tt - tk) % LOOP
+        dt = ((tt - tk) % LOOP) if _WRAP else (tt - tk)
+        dt = np.where(dt < 0, 1.0, dt)
         duck -= 0.62 * np.exp(-dt / 0.11) * np.minimum(1, dt / 0.006) * (dt < 0.5)
     duck = np.clip(duck, 0.3, 1)
 
     mix = drums + (music + wet) * duck
     mix = filt(mix, 'highpass', 28)
     mix = np.tanh(1.25 * mix / np.max(np.abs(mix))) / np.tanh(1.25)
+    if outro:
+        # let the last chord ring, then a short fade so the file ends in silence
+        f = int(0.5 * SR)
+        mix[:, -f:] *= np.cos(np.linspace(0, np.pi / 2, f)) ** 2
     return mix * 10 ** (-1.2 / 20)
 
 

@@ -2,7 +2,12 @@
 
 A 14-second looping motion piece for Esquirely, made entirely in code. There is no After Effects and no stock music.
 
-One shape morphs through twelve product states over 7 bars at 120 BPM, and something happens on every beat. A cursor drives the changes with real clicks and drags. The last frame is the first frame, so the video loops seamlessly.
+One shape morphs through twelve product states over 7 bars at 120 BPM, and something happens on every beat. A cursor drives the changes with real clicks and drags.
+
+There are two cuts:
+
+- **`esquirely-motion.mp4`** (17 s) is the one to post. The piece plays once, then ends: the click lands on bar 8's downbeat, the headline scrolls away, the shape travels to centre as the "Esquirely." wordmark with esquirely.com.ng beneath it, and the music resolves on the Fm9 and rings out to silence.
+- **`esquirely-motion-loop.mp4`** (14 s) is the seamless loop, for anywhere that repeats it. Its last frame runs straight into its first, so it stops half a beat before a downbeat by design. Played once without repeating, that reads as cut off, which is why the posting cut has an ending.
 
 | Bar | What the shape becomes |
 |---|---|
@@ -12,7 +17,7 @@ One shape morphs through twelve product states over 7 bars at 120 BPM, and somet
 | 4 | *Interview in 3 days* (stopwatch); the **Remind me** switch flips; its knob becomes the tab indicator |
 | 5 | Chevening → Aluko & Oyebode; their open roles by practice area draw themselves; hover tooltip |
 | 6 | CV dropped in → GET MY REVIEW → *What you wrote / What we'd send* → interview prep |
-| 7 | Bell rings → job-alert toast for the same role → back to the pill |
+| 7 | Bell rings → job-alert toast for the same role → back to the pill (loop) or on to the wordmark end card (posting cut) |
 
 ## Built from the site's own parts
 
@@ -48,7 +53,7 @@ If the board changes, update the counts in `index.html` (`.cnt` spans and `DATA`
 | `audio/analyze.py` | Measures the beat grid from the audio and writes `beats.js`, which the page reads. Tempo comes from onset autocorrelation, phase from the kick band refined to its attack, and the downbeat from clap parity plus bass-root change. |
 | `audio/mix.py` | Synthesizes the UI sounds (click, tick, whoosh, drop, toggle, bell) in key and places each one by its measured peak at the cue times the page exports. |
 | `render.mjs` | Renders with Playwright. `beats` gives one frame per beat for review. `full` renders 60 fps with 12 subframes per frame across a 180° shutter, blended by ffmpeg `tmix` for motion blur. The template's 4 subframes strobed on the fastest moves (the panel crossing columns travels about 45 px a frame), showing four copies instead of a blur. |
-| `build.sh` | Runs every step above and writes `esquirely-motion.mp4`. |
+| `build.sh` | Runs every step above and writes both cuts. The ending is the page's `?outro` mode: the same score with everything from the loop point to 3.6 s replaced, so it continues exactly from the last lap. |
 
 ## How it works
 
