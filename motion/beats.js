@@ -1,1 +1,1 @@
-window.BEATS = {"bpm_measured": 90.001, "bpm": 90.0, "phase_offset_coarse": 0.656, "attack_correction_ms": 9.99, "beat": 0.6666666666666666, "offset": 2.6659895833333334, "beats": 32, "bars": 8, "duration": 21.333333333333332, "downbeat_phase_scores": [1.636, 2.642, 2.395, 3.636]};
+window.BEATS = {"bpm_measured": 90.001, "bpm": 90.0, "phase_offset_coarse": 0.656, "attack_correction_ms": 11.35, "beat": 0.6666666666666666, "offset": 0.0006875000000000631, "beats": 32, "bars": 8, "duration": 21.333333333333332, "downbeat_phase_scores": [2.717, 0.733, 1.717, 1.041]};
