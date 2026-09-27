@@ -6,7 +6,7 @@ One shape morphs through twelve product states over 7 bars at 120 BPM, and somet
 
 There are two cuts:
 
-- **`esquirely-motion.mp4`** (17 s) is the one to post. The piece plays once, then ends: the click lands on bar 8's downbeat, the headline scrolls away, the shape travels to centre as the "Esquirely." wordmark with esquirely.com.ng beneath it, and the music resolves on the Fm9 and rings out to silence.
+- **`esquirely-motion.mp4`** (17 s) is the one to post. The piece plays once, then ends: the click lands on bar 8's downbeat, the headline scrolls away, the shape turns into the amber E mark, builds its bars and the wordmark slides out beside it, with esquirely.com.ng beneath, and the music resolves on the Fm9 and rings out to silence.
 - **`esquirely-motion-loop.mp4`** (14 s) is the seamless loop, for anywhere that repeats it. Its last frame runs straight into its first, so it stops half a beat before a downbeat by design. Played once without repeating, that reads as cut off, which is why the posting cut has an ending.
 
 | Bar | What the shape becomes |
@@ -26,6 +26,7 @@ Nothing in the video is a stock UI kit or a generic accent. Everything comes fro
 - **The colour scroll** from the homepage's *Everything you need* section (`EverythingYouNeed.tsx`). Its stops (ink, sky, orange, red, green, violet, teal) run one per bar and return to ink, so the loop closes.
 - **The layout** is the desktop section: two columns, the block's copy (title, description, mint call to action, all verbatim) on one side and the panel on the other, alternating block by block. The copy glides in from its side and scrolls up and out; the panel is the one morphing shape, and it crosses to the other column when the block changes.
 - **The connector** is the section's dotted spiral: the same path, `0 9` round dots and marker arrowhead. Whenever the panel changes sides, it rises through the frame and draws itself, pointing where the panel is going.
+- **The logo** is the site's own. The amber E square uses the four measured bars and sampled colours from `src/app/icon.svg`, and the wordmark is the navbar's (Hanken Grotesk 900, -0.045em). A navbar-style lockup sits top-left for the whole piece. In the ending, the shape becomes the E square, builds its bars one by one, and the wordmark slides out beside it.
 - **The previews** match the homepage's: the tracker's columns and firms (Banwo & Ighodalo, Detail Solicitors, Templars, Flutterwave, Olaniwun Ajayi LP, with their logos from `public/`) and the scholarships list (Chevening, Commonwealth Shared, Fordham), row for row.
 - **Components** follow the site's rules: carton `#FFF8E5` panels with a hard black rule and a 6×8 offset shadow, 2px tags ("a tag, not a pill"), round buttons, landscape logo plates, Hanken Grotesk 600 headings and Schibsted Grotesk text.
 - **Icons** are only ones the site ships: the lucide-react 0.400 icons it imports (Search, ArrowRight, Check, Bookmark, ExternalLink, Upload, FileText, Loader2, X, ChevronRight), the `NotificationBell` SVG with its `notifRing` keyframes, and `public/icons/stopwatch.svg`.
