@@ -1,0 +1,12 @@
+{
+  "_note": "Voice-over lines, each placed on a beat (1-indexed, 90 BPM: beat k starts at (k-1) x 0.667 s). 'until' is the beat the line should finish by; vo.py warns if a take runs long. 'outro_only' lines play only in the cut with the ending.",
+  "lines": [
+    { "id": "01", "beat": 1.25, "until": 4,  "text": "Your legal career, in one place." },
+    { "id": "02", "beat": 4,    "until": 10, "text": "Filter legal roles across Nigeria, down to the one that fits you." },
+    { "id": "03", "beat": 10,   "until": 15, "text": "Apply, and track every application from submission to offer." },
+    { "id": "04", "beat": 15,   "until": 21, "text": "Find scholarships before they close, and know the firm before you apply." },
+    { "id": "05", "beat": 21,   "until": 27, "text": "Get honest feedback on your CV, then practise the interview." },
+    { "id": "06", "beat": 27,   "until": 33, "text": "And when the right role goes live, you'll know first." },
+    { "id": "07", "beat": 33.6, "until": 38, "text": "Esquirely. esquirely dot com dot N G.", "outro_only": true }
+  ]
+}

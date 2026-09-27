@@ -116,9 +116,52 @@ def sound_for(c, counters):
     return x * c.get('gain', 1)
 
 
-def main(outro=0.0):
+def load_vo(outro):
+    """The voice-over takes in audio/vo/, decoded to 48 kHz mono and placed on
+    their beats. Returns (voice track, presence envelope) or None if there are none."""
+    import subprocess
+    script = json.loads((HERE / 'vo_script.json').read_text())['lines']
+    beats = json.loads((HERE / 'beats.json').read_text())
+    B = beats['beat']
+    D0 = ((beats['offset'] % (4 * B)) + 6 * B) % (4 * B) - 2 * B
+    total = N + int(round(outro * SR))
+    voice = np.zeros(total)
+    found = 0
+    for ln in script:
+        if ln.get('outro_only') and not outro:
+            continue
+        src = next((q for q in (HERE / 'vo' / f"{ln['id']}.wav", HERE / 'vo' / f"{ln['id']}.mp3") if q.exists()), None)
+        if not src:
+            print(f"  missing take {ln['id']}: {ln['text']}")
+            continue
+        raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', str(src), '-ac', '1', '-ar', str(SR), '-f', 'f32le', '-'],
+                             capture_output=True, check=True).stdout
+        x = np.frombuffer(raw, '<f4').astype(np.float64)
+        # trim the silence the take was delivered with, so the line starts on its beat
+        live = np.nonzero(np.abs(x) > 0.02 * np.abs(x).max())[0]
+        x = x[max(0, live[0] - int(0.02 * SR)): live[-1] + int(0.08 * SR)]
+        x = sosfilt(butter(2, 80, 'highpass', fs=SR, output='sos'), x)
+        x *= 10 ** (-16 / 20) / np.sqrt(np.mean(x ** 2) + 1e-12)          # every line at the same loudness
+        start = int(round((D0 + (ln['beat'] - 1) * B) * SR))
+        room = int(round((ln['until'] - ln['beat']) * B * SR))
+        if len(x) > room:
+            print(f"  take {ln['id']} runs {len(x) / SR:.2f}s for a {room / SR:.2f}s slot")
+        idx = start + np.arange(len(x))
+        keep = idx < total
+        voice[idx[keep]] += x[keep]
+        found += 1
+    if not found:
+        return None
+    env = np.convolve(np.abs(voice), np.ones(int(0.05 * SR)) / int(0.05 * SR), 'same')
+    env = np.clip(env / (env.max() + 1e-9) * 4, 0, 1)
+    env = np.convolve(env, np.ones(int(0.25 * SR)) / int(0.25 * SR), 'same')   # duck in and out gently
+    return voice, np.clip(env, 0, 1)
+
+
+def main(outro=0.0, vo=False):
     """outro = 0: the seamless loop, sounds wrapped round it.
-    outro > 0: the loop once, then the ending's cues (cues-outro.json) after it."""
+    outro > 0: the loop once, then the ending's cues (cues-outro.json) after it.
+    vo: lay the voice-over on top, with the music a bed under it."""
     cues = json.loads((HERE / 'cues.json').read_text())
     if outro:
         tail = json.loads((HERE / 'cues-outro.json').read_text())
@@ -141,13 +184,19 @@ def main(outro=0.0):
             idx %= N
         np.add.at(ui, idx, x)
     ui = sosfilt(butter(1, 120, 'highpass', fs=SR, output='sos'), ui)
-    out = music * 0.86 + np.stack([ui, ui]) * 0.55
+    if vo and (v := load_vo(outro)) is not None:
+        voice, env = v
+        # the music becomes a bed: well down, and further down while someone speaks
+        bed = 0.32 * (1 - 0.55 * env)
+        out = music * bed + np.stack([ui, ui]) * 0.3 + np.stack([voice, voice]) * 0.9
+    else:
+        out = music * 0.86 + np.stack([ui, ui]) * 0.55
     out = np.tanh(1.1 * out / np.max(np.abs(out))) / np.tanh(1.1) * 10 ** (-1 / 20)
-    name = 'esquirely-pipeline-full.wav' if outro else 'esquirely-pipeline.wav'
+    name = ('esquirely-pipeline-full' if outro else 'esquirely-pipeline') + ('-vo' if vo else '') + '.wav'
     write_wav(HERE / name, out)
     print(f'{name}  {len(cues)} UI cues, {total / SR:.2f}s')
 
 
 if __name__ == '__main__':
     import sys
-    main(float(sys.argv[sys.argv.index('--outro') + 1]) if '--outro' in sys.argv else 0.0)
+    main(float(sys.argv[sys.argv.index('--outro') + 1]) if '--outro' in sys.argv else 0.0, '--vo' in sys.argv)
