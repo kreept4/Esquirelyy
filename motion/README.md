@@ -50,7 +50,7 @@ If the board changes, update the counts in `index.html` (the `.cnt` spans and th
 | File | Role |
 |---|---|
 | `index.html` | The whole animation. Every style is computed from time inside `seek(t)`. Open it and click to play with sound, or add `?t=3.5` to freeze a frame. |
-| `audio/compose.py` | Synthesizes the track "Pipeline" in numpy: F minor deep house, 8 bars at 90 BPM, written onto a circular buffer so the tails wrap and the loop point is inaudible. |
+| `audio/compose.py` | Synthesizes the track "Pipeline" in numpy: a 90 BPM Afrobeats groove in F minor (log-drum bass, 3-3-2 rims, offbeat stabs, a two-bar hook), 8 bars, written onto a circular buffer so the tails wrap and the loop point is inaudible. |
 | `audio/analyze.py` | Measures the beat grid from the audio and writes `beats.js`, which the page reads. Tempo comes from onset autocorrelation, phase from the kick band refined to its attack, and the downbeat from clap parity plus bass-root change. |
 | `audio/mix.py` | Synthesizes the UI sounds (click, tick, whoosh, drop, toggle, bell) in key and places each one by its measured peak at the cue times the page exports. |
 | `render.mjs` | Renders with Playwright. `beats` gives one frame per beat for review. `full` renders 60 fps with 12 subframes per frame across a 180° shutter, blended by ffmpeg `tmix` for motion blur. The template's 4 subframes strobed on the fastest moves (the panel crossing columns travels about 45 px a frame), showing four copies instead of a blur. |
