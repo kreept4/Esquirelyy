@@ -44,30 +44,62 @@
  * the board.
  */
 export const ROLE_ENTRIES = [
+  /* THE 13 OCTOBER DROP: FOUR SEATS AT TWO FIRMS, AND THEY ARE GENUINELY SEATS.
+     So DROP_NOUN goes back to 'role' and DROP_ACTION to 'are hiring' below,
+     both of which the last two drops correctly could not use: a competition and
+     an internship are neither. Both fliers here say "hiring" in as many words.
+
+     ⚠ PUNUKA LEADS BECAUSE IT IS THE ONE WITH A DATE. It closes on 30 October;
+     the three Ninewells seats publish no closing date. Same rule as every drop
+     before it: the listing a reader can still miss goes first.
+
+     ⚠ THREE ENTRIES ARE ONE FIRM. Ninewells posted three associate seats on a
+     single flier, and each is its own row on the board, so each is its own
+     entry here: the board filters to all four slugs and the counts say four.
+     The employer lists below are de-duplicated for that reason, or the bell,
+     the headline and the subject line would each have said "Ninewells" three
+     times. */
   {
-    /* THE WHOLE DROP IS ONE LISTING, 23 September 2026. The count helpers below
-       all branch at one, so nothing in the bell, the modal, the carousel or the
-       email says "listings" about a single thing.
-
-       ⚠ THE LINE LEADS ON THE DATE AND THE ROOM, not on the firm. This is six
-       hours in Victoria Island on a fixed day, and the two internships that
-       went out in the last drop were both virtual and open to anyone in the
-       country. A reader who has just learned from us that these things are
-       remote will assume this one is too unless the first clause says
-       otherwise, and they will find out when they cannot get there.
-
-       The eligibility is narrow in the other direction: graduates who have
-       finished the degree and have NOT been called. Not students, not lawyers.
-       Same window the Fabunmi competition is for, which is the notice at the
-       top of this same email, so the two halves are aimed at one reader. */
-    slug: 'the-law-crest-one-day-legal-internship-program-2026',
-    employer: 'The Law Crest LLP',
-    employerShort: 'The Law Crest',
-    title: 'One-Day Legal Internship Program 2026',
-    line: 'One day in Lagos, on 7 October, 10am to 4pm at the Continental Re Centre on Victoria Island. You have to be there in person. Open to law graduates who have not yet been called to the Bar. No closing date is published and a one-day programme fills.',
-    short: 'a one-day internship at The Law Crest in Lagos, if you are waiting to be called',
+    slug: 'punuka-senior-associate-capital-markets-media-property-lagos',
+    employer: 'Punuka Attorneys & Solicitors',
+    employerShort: 'Punuka',
+    title: 'Senior Associate, Capital Markets, Media & Entertainment and Property',
+    line: 'Lagos, senior: 7 to 9 years post-call, with a 2:1 in both the LL.B and the B.L. An LL.M counts in your favour. The work is capital markets, media and entertainment, and property. Apply by email and name the position. Closes 30 October.',
+    short: 'a senior associate seat at Punuka that closes on 30 October',
     blurb:
-      'The Law Crest LLP are running a one-day internship on 7 October for law graduates who have not yet been called to the Bar. It runs from 10am to 4pm on Victoria Island, and unlike the last two internships we sent you, this one is in the room rather than online.',
+      'Punuka Attorneys & Solicitors are hiring a senior associate in Lagos across capital markets, media and entertainment, and property. They want 7 to 9 years post-call and a 2:1 in both degrees, and applications close on 30 October.',
+  },
+  {
+    slug: 'ninewells-energy-associate-lagos',
+    employer: 'Ninewells Law Practice',
+    employerShort: 'Ninewells',
+    title: 'Energy Associate',
+    line: "Lagos, 3 to 5 years post-call. Energy work, where the firm wants strong drafting and research, negotiation and commercial sense, and clear, practical advice. Apply by sending your CV. No closing date is published.",
+    short: 'an energy associate seat at Ninewells',
+    blurb:
+      'Ninewells Law Practice are hiring an energy associate in Lagos, at 3 to 5 years post-call. No closing date is published.',
+  },
+  {
+    slug: 'ninewells-corporate-commercial-associate-lagos',
+    employer: 'Ninewells Law Practice',
+    employerShort: 'Ninewells',
+    title: 'Corporate & Commercial Associate',
+    line: "Lagos, 3 to 5 years post-call. Corporate and commercial work, on the same terms as the energy seat: drafting, research, negotiation and practical advice. Apply by sending your CV. No closing date is published.",
+    short: 'a corporate and commercial one',
+    blurb:
+      'They are also hiring a corporate and commercial associate in Lagos, on the same 3 to 5 years.',
+  },
+  {
+    slug: 'ninewells-litigation-associate-lagos',
+    employer: 'Ninewells Law Practice',
+    employerShort: 'Ninewells',
+    title: 'Litigation Associate',
+    line: "Lagos, 3 to 5 years post-call. A litigator's seat: advocacy and courtroom skill, quick thinking under pressure, persuasion, and a grasp of litigation strategy. Apply by sending your CV. No closing date is published.",
+    /* The shorts are written to be joined: roleSummary() lists them in one
+       sentence, and this last one closes it. */
+    short: 'a litigation one, all four in Lagos',
+    blurb:
+      'And a litigation associate, for somebody who wants to be on their feet in court.',
   },
 ] as const
 
@@ -75,13 +107,19 @@ export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
    *  somebody who read the 1 September note has not seen this one. */
-  id: 'roles-2026-09-23',
+  id: 'roles-2026-10-13',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-09-23T09:00:00.000Z',
+  at: '2026-10-13T09:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
-  employers: ROLE_ENTRIES.map(r => r.employer),
+  /* ⚠ ONE NAME PER FIRM, NOT PER ROLE. Every consumer of these two joins them
+     into a sentence or a row of names, and a drop where one firm posts several
+     seats would otherwise print that firm once per seat: "Punuka, Ninewells,
+     Ninewells and Ninewells are hiring". First appearance wins, so the order
+     still follows ROLE_ENTRIES. The role count does not read these; it reads
+     ROLE_ENTRIES, so four seats are still four. */
+  employers: [...new Set<string>(ROLE_ENTRIES.map(r => r.employer))],
   /** The same firms without the parenthetical network names. Read by the bell. */
-  employersShort: ROLE_ENTRIES.map(r => r.employerShort),
+  employersShort: [...new Set<string>(ROLE_ENTRIES.map(r => r.employerShort))],
 } as const
 
 /* THE ANNOUNCEMENT EMAIL IS NOT RETROACTIVE, and that is fine. Each send bakes
@@ -123,7 +161,7 @@ export const NEW_ROLES_COUNT: number = ROLE_ENTRIES.length
  * the slugs rather than assumed downstream. Drops that are genuinely seats set
  * it back to 'role' and every surface follows.
  */
-export const DROP_NOUN: string = 'listing'
+export const DROP_NOUN: string = 'role'
 
 export function roleCountLabel(): string {
   return `${NEW_ROLES_COUNT} new ${DROP_NOUN}${NEW_ROLES_COUNT === 1 ? '' : 's'}`
@@ -257,7 +295,7 @@ export function seatsSentence(): string {
  * for the sharper line or leave it alone and still be correct. Named here
  * beside DROP_NOUN, because a drop should describe itself in one place.
  */
-export const DROP_ACTION: string = 'are taking applications'
+export const DROP_ACTION: string = 'are hiring'
 
 /**
  * "X and Y are taking applications."

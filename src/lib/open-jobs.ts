@@ -86,6 +86,17 @@
  * rows, so neither produces anything on the board.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
+  /* 13 October, the whole of the drop: Punuka's senior associate seat and the
+     three associate seats Ninewells posted on one flier. Open because every
+     slug in a drop must be (the announcement's button lands on
+     /jobs?roles=<these slugs>), and because both firms published their fliers
+     for anyone to read. As with every row here, the address the application
+     goes to stays behind the account. */
+  'punuka-senior-associate-capital-markets-media-property-lagos',
+  'ninewells-energy-associate-lagos',
+  'ninewells-corporate-commercial-associate-lagos',
+  'ninewells-litigation-associate-lagos',
+
   /* 23 September. A one-day programme on 7 October, in a room in Victoria
      Island, for graduates who have not yet been called.
 
