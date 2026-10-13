@@ -96,56 +96,50 @@ const ITEMS: NewsItem[] = [
 
   {
     /**
-     * The LGIC, in the Badejo-Okusanya swearing-in's slot.
+     * The 2026 SAN conferment, in the J.O Fabunmi competition's slot.
      *
-     * ⚠ WHY THAT SLIDE CAME OFF. It was a 28 August ceremony, and by now the
-     * thing it reported is a month old. The note that used to sit here said the
-     * slide was fair "until it is either delivered on or clearly not", and that
-     * a promise with a two year term attached should be revisited rather than
-     * left to sit. It was also the last `type: 'photo'` entry on the carousel,
-     * so the row now reads as one set of splashes with nothing sitting in a
-     * different kind of box. The `.news-photo` rules stay in globals.css for
-     * the reason the note further down already gives.
+     * ⚠ WHY THAT SLIDE CAME OFF, AND THE TWO BELOW IT WITH IT. All three were
+     * listings with a date on them and every date had passed: the Fabunmi
+     * registration closed on 28 September, Omaplex on 5 October, and the Law
+     * Crest internship was a single day, 7 October. A slide is worth what a
+     * reader can do with it, and a reader who tapped any of the three found a
+     * closed form. Same rule the LBVIP note above records: this file expires by
+     * somebody editing it.
      *
-     * More to the point: a carousel slot is worth what a reader can do with it,
-     * and this one closes in seven days.
+     * ⚠ A `news` SLIDE, AND THE FIRST `type: 'photo'` SINCE THE BADEJO ONE CAME
+     * OFF. The ceremony is the story, so it gets a photograph of the ceremony
+     * rather than a mark: the new silks in wig and gown in the Supreme Court
+     * courtroom. It is a press photograph, so `credit` names where it came from
+     * and the carousel prints it, which is the acknowledgement the fair dealing
+     * for reporting current events expects. It came from Political Economist's
+     * report of the day (politicaleconomistng.com, 13 October), 664 by 462,
+     * the largest genuine photograph of the ceremony any outlet published;
+     * the larger images in the other reports were a portrait of the CJN
+     * composited onto stock scales and a gavel, which is not a picture of the
+     * event.
      *
-     * ⚠ IT POINTS AT THE LISTING, NOT AT THE GOOGLE FORM, which is the same
-     * call the LBVIP slide made. The eligibility, the window and the three
-     * steps are read here first and the form is one tap from there. Sending a
-     * reader straight to forms.gle would skip the only page that tells them
-     * they must be awaiting law school admission to be eligible at all.
+     * The facts are the reports': Channels, TVC, Radio Nigeria and Blueprint all
+     * carry the same numbers. 68 sworn in on Monday 12 October, opening the
+     * 2026/2027 legal year; 67 as advocates and one, Professor Nnamdi
+     * Obiaraeri, as an academic.
      *
-     * ⚠ AND THE SLUG IS IN lib/open-jobs.ts, which is the half of this that
-     * does not look like work. Most of the people who see this carousel are
-     * signed out. A card pointing at a slug outside that set sends every one of
-     * them to /auth/login instead of to the listing.
-     *
-     * THE MARK IS `logos` AND IT IS THE MONOGRAM. The full panel is a circle
-     * over a wordmark over a tagline, which is a grey smear in a 70px splash;
-     * the circle alone fills it. Same decision as Greenberg Traurig above, and
-     * the extractor records it.
+     * ⚠ THIS ONE HAS A SHELF LIFE TOO. It is news this week and history next
+     * month. Pull it, or replace it, once the next thing worth a slot arrives.
      */
-    slug: 'jo-fabunmi-internship-competition-2026',
-    kind: 'update',
-    date: '2026-09-21',
-    /* ⚠ "PUTTING 3 MILLION BEHIND AN INTERNSHIP" IS WHAT THIS SAID, and it
-       told a reader nothing. Behind it how? Funding it, paying the intern,
-       awarding it? The flier is not vague about this and the card was: inside a
-       gold medal it reads "₦3,000,000 NAIRA UP FOR GRABS", which is prize
-       money and says so.
-
-       So the card says the amount and calls it what it is. It does not go on
-       to discuss how the prize is split: the flier does not say, and raising
-       the question only to leave it open reads as doubt about the listing
-       rather than as care. A reader who needs the breakdown asks the firm,
-       which is what the third application step on the listing is for. */
-    title: 'A competition with 3 million naira in prize money',
+    slug: 'san-conferment-2026',
+    kind: 'news',
+    date: '2026-10-12',
+    title: '68 new Senior Advocates of Nigeria',
     summary:
-      'J.O Fabunmi & Co are running the sixth edition of their internship competition. It is open to Nigerians waiting to start law school, and you need a 2:1 from an accredited university, here or abroad. Registration closes on 28 September.',
-    href: '/jobs/6th-annual-professor-j-o-fabunmi-internship-competition-lgic',
-    cta: 'Read the criteria',
-    media: { type: 'logos', slugs: ['J.O Fabunmi & Co'] },
+      'The Chief Justice, Kudirat Kekere-Ekun, swore in 68 new SANs at the Supreme Court in Abuja on 12 October, opening the 2026/2027 legal year. Sixty-seven were conferred as advocates and one, Professor Nnamdi Obiaraeri, as an academic.',
+    href: 'https://www.channelstv.com/2026/10/12/full-list-cjn-swears-in-68-new-sans',
+    cta: 'See the full list',
+    media: {
+      type: 'photo',
+      src: '/news/san-swearing-in-2026.jpg',
+      alt: 'New Senior Advocates of Nigeria in wigs and silk gowns at the swearing-in at the Supreme Court, Abuja',
+      credit: 'Political Economist',
+    },
   },
 
   {
@@ -234,82 +228,12 @@ const ITEMS: NewsItem[] = [
      values were tuned for the Badejo portrait specifically, so leave them
      alone rather than tidying them away: the next photo slide will want them,
      and rederiving those numbers costs more than the dead CSS does. */
-  {
-    /**
-     * The Law Crest one-day internship.
-     *
-     * ⚠ IT SITS ABOVE THE OMAPLEX SLIDE DESPITE CLOSING TWO DAYS LATER, and
-     * the reason is not the date. The two are near neighbours on the board and
-     * they are opposites in the one respect that decides who can take them:
-     * Omaplex is virtual and open to anyone in Nigeria, this is six hours in a
-     * room in Victoria Island. A reader who has just been told internships are
-     * remote should meet the exception before the rule, not after it.
-     *
-     * The card leads on that constraint rather than on the firm, because "you
-     * have to be in Lagos" is the sentence that saves most of this audience a
-     * click and earns the rest of them one.
-     *
-     * ⚠ THE TITLE IS BUILT ON THE OMAPLEX ONE NEXT TO IT, deliberately. That
-     * reads "Intern at Omaplex from anywhere in Nigeria"; this reads "Intern at
-     * The Law Crest for a day, in Lagos". Same verb, same shape, and the two
-     * clauses that differ are exactly the two facts that separate the
-     * programmes. Read together they teach the difference in a glance, which is
-     * worth more than either sentence is on its own.
-     *
-     * An earlier version was "One day inside a Lagos firm, on 7 October", which
-     * named neither the firm nor who it was for, and "inside a Lagos firm"
-     * reads like an exposé rather than an internship.
-     */
-    slug: 'law-crest-one-day-internship-2026',
-    kind: 'update',
-    date: '2026-09-23',
-    title: 'Intern at The Law Crest for a day, in Lagos',
-    summary:
-      'The Law Crest LLP are running a one-day internship on 7 October, for law graduates who have not yet been called to the Bar. It runs from 10am to 4pm at the Continental Re Centre on Victoria Island, and you have to be there in person. No closing date is published, so it is worth registering early.',
-    href: '/jobs/the-law-crest-one-day-legal-internship-program-2026',
-    cta: 'Read the criteria',
-    media: { type: 'logos', slugs: ['The Law Crest LLP'] },
-  },
-  {
-    /**
-     * The Omaplex internship, in the slot the general version of this point
-     * used to hold.
-     *
-     * ⚠ WHAT CAME OFF, AND WHY IT HAD TO. The old slide was a tip titled
-     * "Distance is not a barrier", naming Omaplex and Lekan Bamidele & Co as
-     * two firms that run virtual internships, pointing at /firms. Its own note
-     * said it named two firms students outside Lagos would act on, so if either
-     * arrangement changed it was the first slide to pull. One had: LBVIP closed
-     * on 30 August, so half the card was advertising something that no longer
-     * existed, to exactly the readers most likely to chase it.
-     *
-     * ⚠ AND A TIP BECOMES AN UPDATE, which is the more useful half of this
-     * change. The old card was true all year and actionable on no particular
-     * day: a reader who saw it could go and look at two firm profiles. This one
-     * has a form and a date on it. The carousel's job is to show somebody
-     * something they can act on, and a live listing with a fortnight left beats
-     * a standing observation about geography.
-     *
-     * The observation is not lost, it is just carried by a real example now.
-     * The reason this listing is worth a slot is the same reason the old tip
-     * was worth one: it is virtual, so where a reader lives does not decide
-     * whether they can take it, which is not true of anything else on the
-     * board.
-     *
-     * Points at the listing rather than at the firm's site or the form, the
-     * same call the LBVIP and Greenberg slides made. The eligibility and the
-     * closing date are read here first, and the form is one tap from there.
-     */
-    slug: 'omaplex-virtual-internship-2026',
-    kind: 'update',
-    date: '2026-09-22',
-    title: 'Intern at Omaplex from anywhere in Nigeria',
-    summary:
-      'Omaplex are running the 2026 edition of their virtual internship, so where you live does not decide whether you can take it. It is open to law students and aspiring lawyers, and the firm lists seven subjects it will cover, from data protection to sport arbitration. Registration closes on 5 October.',
-    href: '/jobs/omaplex-virtual-internship-2026',
-    cta: 'Read the criteria',
-    media: { type: 'logos', slugs: ['Omaplex Law Firm'] }
-  },
+  /* THE LAW CREST AND OMAPLEX SLIDES CAME OFF ON 13 OCTOBER, both because the
+     date on them had passed: Omaplex registration closed on 5 October and the
+     Law Crest internship ran on the 7th. Their notes argued each other's
+     placement (the in-person exception before the remote rule), so they went
+     together, and the J.O Fabunmi slide went the same day for the same reason.
+     The SAN conferment slide above took the one slot that was refilled. */
   {
     /* Slug no longer carries the count. It was 'directory-at-44', which meant
        the URL went stale the moment a firm was added, and the card was still
