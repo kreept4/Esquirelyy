@@ -1,2 +1,4 @@
-# motion piece sources and renders; not part of the site
-motion/
+# motion piece sources and renders; not part of the site. Anchored with a
+# leading slash: a bare "motion/" also matches src/components/motion/, which
+# the site imports, and the build fails with "Module not found".
+/motion/
