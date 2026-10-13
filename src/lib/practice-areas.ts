@@ -30,6 +30,12 @@ export const PRACTICE_AREAS = [
   'International Law',
   'Policy & Governance',
   'Public Law & Regulatory',
+  /* Added 13 October 2026 with the Punuka senior associate seat, whose flier
+     names capital markets, media and entertainment, and property. Real Estate
+     was already stored on the Greenberg Traurig row but was missing here, so it
+     was a tag a reader could see and not filter by. */
+  'Media & Entertainment',
+  'Real Estate',
 ] as const
 
 /**
