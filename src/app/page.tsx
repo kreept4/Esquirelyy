@@ -115,8 +115,24 @@ export default async function HomePage() {
    *
    * The full set is one tap away and the ticker above still reads from the
    * unsliced list, so nothing is hidden, only unstacked.
+   *
+   * ⚠ ONE BALL PER EMPLOYER, SINCE 13 OCTOBER. Ninewells posted three associate
+   * seats on one flier, all added in the same minute, and the pit spent three of
+   * its eight balls on one firm. That is the Aluko problem above in miniature:
+   * a crowd of one employer where the pit is meant to show a spread. So the
+   * newest open row per employer gets the ball and the rest of that firm's rows
+   * are still on the board behind it. Keyed on the employer string, which is
+   * the directory name for every firm with a mark, so one firm is one key.
    */
-  const openRoles = open.slice(0, 8)
+  const seenEmployers = new Set<string>()
+  const openRoles = open
+    .filter((j: any) => {
+      const key = String(j.employer || '').trim().toLowerCase()
+      if (seenEmployers.has(key)) return false
+      seenEmployers.add(key)
+      return true
+    })
+    .slice(0, 8)
   const tickerItems = listings.slice(0, 8).map((j: any) => j.employer + ', ' + j.title)
 
   return (
