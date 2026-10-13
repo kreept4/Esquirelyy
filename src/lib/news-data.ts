@@ -118,6 +118,13 @@ const ITEMS: NewsItem[] = [
      * composited onto stock scales and a gavel, which is not a picture of the
      * event.
      *
+     * ⚠ THE FILE IS AN AI UPSCALE OF THAT ORIGINAL, NOT A NEW PHOTOGRAPH.
+     * ESRGAN (the MIT-licensed @upscalerjs/esrgan-thick 4x model) took it to
+     * 2656 by 1848, and a Lanczos resize took that to a 3840-wide master,
+     * san-swearing-in-2026-4k.jpg. The carousel loads the 1920-wide copy: the
+     * slot is never wider than a tablet, and a 4K file on the home page is
+     * data a reader on a phone plan pays for and never sees.
+     *
      * The facts are the reports': Channels, TVC, Radio Nigeria and Blueprint all
      * carry the same numbers. 68 sworn in on Monday 12 October, opening the
      * 2026/2027 legal year; 67 as advocates and one, Professor Nnamdi
