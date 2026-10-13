@@ -341,8 +341,8 @@ export function dropVerb(): string {
 }
 
 /**
- * "the closing date and the application route" / "the closing dates and the
- * application routes".
+ * "the application route and any closing date" / "the application routes and
+ * any closing date".
  *
  * The provenance sentence in the announcement email had both nouns welded to
  * the plural while its own subject came from dropSubject(), so a drop of one
@@ -351,11 +351,17 @@ export function dropVerb(): string {
  * subject governing two plural objects that describe a single role. Exactly the
  * failure dropSubject, dropVerb and noticePhrase were each written to prevent,
  * one clause further along the same sentence.
+ *
+ * ⚠ "ANY CLOSING DATE", NOT "THE CLOSING DATES". The 13 October drop had four
+ * roles and one date: three Ninewells seats each say "No closing date is
+ * published" two lines above a sentence that then vouched for their closing
+ * dates. The route is always there; the date is not, so the date is the one
+ * that gets the hedge.
  */
 export function publishedNouns(): string {
   return NEW_ROLES_COUNT === 1
-    ? 'the closing date and the application route'
-    : 'the closing dates and the application routes'
+    ? 'the application route and any closing date'
+    : 'the application routes and any closing date'
 }
 
 /** "it" / "them", for a sentence that has already named the drop. */

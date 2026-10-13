@@ -231,8 +231,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
         ]
       : []),
     ...ROLES.flatMap(r => [`${r.employer}: ${r.title}`, r.line, '']),
-    `${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER}, so ${publishedNouns()}`,
-    'above are the ones they published.',
+    `${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER}, so ${publishedNouns()} above are the ones they published.`,
     '',
     /* The plain-text part gets the notice too. A recipient whose client
        blocks HTML would otherwise receive a different email from everybody
