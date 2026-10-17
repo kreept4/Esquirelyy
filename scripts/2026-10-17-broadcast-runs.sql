@@ -58,3 +58,14 @@ create table if not exists public.broadcast_sends (
 alter table public.broadcast_sends enable row level security;
 create index if not exists broadcast_sends_drop_kind_email
   on public.broadcast_sends (drop_id, kind, email);
+
+-- ⚠ AND THE SERVICE ROLE HAS TO BE GRANTED THE TABLES EXPLICITLY. This project
+-- no longer grants new public tables to the API roles by default, so without
+-- these the route's first query failed with "permission denied for table
+-- broadcast_runs" (it failed before claiming the run, so nothing was sent).
+-- anon and authenticated get nothing, on purpose: see the RLS note above.
+grant select, insert, update on public.broadcast_runs to service_role;
+grant select, insert on public.broadcast_sends to service_role;
+grant usage, select on sequence public.broadcast_sends_id_seq to service_role;
+revoke all on public.broadcast_runs from anon, authenticated;
+revoke all on public.broadcast_sends from anon, authenticated;
