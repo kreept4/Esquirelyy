@@ -3012,6 +3012,34 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   tangerinelife: '/employer-logos/tangerine.png',
   tangerine: '/employer-logos/tangerine.png',
 
+  /* KS Legal (Kayode Sofola & Associates), added 17 October 2026 with their
+     Ikoyi associate seat. Hiring, not researched, so here rather than in
+     ALL_FIRMS, like every entry above.
+
+     The firm's current lockup, the tree block with the wordmark, from
+     kslegal.org (ks-legal-new-logo_v1.png, published May 2026), trimmed to its
+     ink and saved at 600px wide. It is the full lockup and not the tree alone,
+     for the Heirs reason further down: the tree does not say KS Legal to
+     anybody who has not met the firm, and the words do. At 3.9:1 it sits under
+     Zyph's 6.5:1, which already reads in the pit.
+
+     ⚠ NOT IDOWU SOFOLA & CO. That firm is in the directory and is a different
+     practice. The keys below are all KS or Kayode, so neither name can resolve
+     to the other's mark. */
+  kslegalkayodesofolaandassociates: '/employer-logos/ks-legal.png',
+  kayodesofolaandassociateskslegal: '/employer-logos/ks-legal.png',
+  kayodesofolaandassociates: '/employer-logos/ks-legal.png',
+  kslegal: '/employer-logos/ks-legal.png',
+
+  /* Sigma Consulting Group, added 17 October 2026 for the Lekki legal
+     associate seat they are recruiting for. ⚠ THE MARK IS THE RECRUITER'S,
+     because the firm the seat is at is not named anywhere in the posting, and
+     the board row says so in its title. Taken from the header of Sigma's own
+     careers page, trimmed to its ink. */
+  sigmaconsultinggroup: '/employer-logos/sigma-consulting.png',
+  sigmaconsulting: '/employer-logos/sigma-consulting.png',
+  mysigma: '/employer-logos/sigma-consulting.png',
+
   /* Greenberg Traurig, added 1 September 2026 for the carousel rather than for
      the board. It is not and will not be a listing: a London training contract
      gated on A-levels and the SQE does not belong among roles a Nigerian

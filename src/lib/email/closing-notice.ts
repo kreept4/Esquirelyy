@@ -66,7 +66,9 @@ export type ClosingNotice = {
    programme. That is the machinery doing its job and it is also why nobody
    noticed: a stale notice here is invisible rather than wrong, so it is only
    found when somebody comes to write the next one. */
-/* ⚠ NULL FOR THE 13 OCTOBER DROP, ON PURPOSE. The Fabunmi competition this
+/* ⚠ NULL FOR THE 13 OCTOBER DROP, ON PURPOSE, AND STILL NULL FOR THE 17
+   OCTOBER DROP THAT REPLACED IT: Punuka is in both, so the reasoning below did
+   not change. The Fabunmi competition this
    named shut on 28 September. Of what is still open, the soonest deadline is
    Punuka's, which is in the drop itself and already carries its date on its own
    card; the next one outside the drop is Olajide Oyewole on 13 November, a

@@ -44,21 +44,29 @@
  * the board.
  */
 export const ROLE_ENTRIES = [
-  /* THE 13 OCTOBER DROP: FOUR SEATS AT TWO FIRMS, AND THEY ARE GENUINELY SEATS.
-     So DROP_NOUN goes back to 'role' and DROP_ACTION to 'are hiring' below,
-     both of which the last two drops correctly could not use: a competition and
-     an internship are neither. Both fliers here say "hiring" in as many words.
+  /* THE 17 OCTOBER DROP: THREE SEATS AT THREE EMPLOYERS. It replaces the 13
+     October drop, which never went out by email: its three Ninewells seats
+     were delisted on 16 October, before the broadcast, and announcing a firm
+     whose roles are already off the board would have sent everybody to a
+     filter with one result in it. Punuka carries over unchanged, and KS Legal
+     and Sigma take the Ninewells places. All three say "hiring" in as many
+     words, so DROP_NOUN stays 'role' and DROP_ACTION stays 'are hiring'.
 
-     ⚠ PUNUKA LEADS BECAUSE IT IS THE ONE WITH A DATE. It closes on 30 October;
-     the three Ninewells seats publish no closing date. Same rule as every drop
-     before it: the listing a reader can still miss goes first.
+     ⚠ PUNUKA STILL LEADS BECAUSE IT IS STILL THE ONE WITH A DATE. It closes on
+     30 October; KS Legal and Sigma publish no closing date. Same rule as every
+     drop before it: the listing a reader can still miss goes first.
 
-     ⚠ THREE ENTRIES ARE ONE FIRM. Ninewells posted three associate seats on a
-     single flier, and each is its own row on the board, so each is its own
-     entry here: the board filters to all four slugs and the counts say four.
-     The employer lists below are de-duplicated for that reason, or the bell,
-     the headline and the subject line would each have said "Ninewells" three
-     times. */
+     ⚠ SIGMA IS A RECRUITER, AND EVERY LINE BELOW SAYS WHO THE SEAT IS ACTUALLY
+     WITH. The posting is for "our client, a reputable and fast-growing law firm
+     in Lekki", unnamed. "Sigma Consulting Group are hiring a legal associate"
+     would be read as a seat at a consultancy, so its line, short and blurb
+     each say the seat is at a Lekki law firm and Sigma is the route. The lists
+     of names (the subject line, the bell's row of firms) can only say Sigma,
+     because that is the name on the row the reader lands on and the only one
+     published.
+
+     The employer lists below are still de-duplicated, which this drop does not
+     need and the next one with two seats at one firm will. */
   {
     slug: 'punuka-senior-associate-capital-markets-media-property-lagos',
     employer: 'Punuka Attorneys & Solicitors',
@@ -70,53 +78,46 @@ export const ROLE_ENTRIES = [
       'Punuka Attorneys & Solicitors are hiring a senior associate in Lagos across capital markets, media and entertainment, and property. They want 7 to 9 years post-call and a 2:1 in both degrees, and applications close on 30 October.',
   },
   {
-    slug: 'ninewells-energy-associate-lagos',
-    employer: 'Ninewells Law Practice',
-    employerShort: 'Ninewells',
-    title: 'Energy Associate',
-    line: "Lagos, 3 to 5 years post-call. Energy work, where the firm wants strong drafting and research, negotiation and commercial sense, and clear, practical advice. Apply by sending your CV. No closing date is published.",
-    short: 'an energy associate seat at Ninewells',
+    slug: 'ks-legal-associate-ikoyi-lagos',
+    employer: 'KS Legal (Kayode Sofola & Associates)',
+    employerShort: 'KS Legal',
+    title: 'Associate',
+    line: 'Ikoyi, Lagos: 3 to 7 years post-qualification, with a 2:1 or better in the LL.B or B.L, or an LL.M at Merit. The firm makes exceptions for unusual alternative experience. Competitive salary. Apply by email with your CV, subject "Application for the post of an Associate". No closing date is published.',
+    short: 'an associate seat at KS Legal in Ikoyi',
     blurb:
-      'Ninewells Law Practice are hiring an energy associate in Lagos, at 3 to 5 years post-call. No closing date is published.',
+      'KS Legal, Kayode Sofola & Associates, are hiring an associate in Ikoyi at 3 to 7 years post-qualification, and will look at unusual alternative experience too.',
   },
   {
-    slug: 'ninewells-corporate-commercial-associate-lagos',
-    employer: 'Ninewells Law Practice',
-    employerShort: 'Ninewells',
-    title: 'Corporate & Commercial Associate',
-    line: "Lagos, 3 to 5 years post-call. Corporate and commercial work, on the same terms as the energy seat: drafting, research, negotiation and practical advice. Apply by sending your CV. No closing date is published.",
-    short: 'a corporate and commercial one',
-    blurb:
-      'They are also hiring a corporate and commercial associate in Lagos, on the same 3 to 5 years.',
-  },
-  {
-    slug: 'ninewells-litigation-associate-lagos',
-    employer: 'Ninewells Law Practice',
-    employerShort: 'Ninewells',
-    title: 'Litigation Associate',
-    line: "Lagos, 3 to 5 years post-call. A litigator's seat: advocacy and courtroom skill, quick thinking under pressure, persuasion, and a grasp of litigation strategy. Apply by sending your CV. No closing date is published.",
+    slug: 'sigma-legal-associate-lekki-lagos',
+    employer: 'Sigma Consulting Group',
+    employerShort: 'Sigma',
+    title: 'Legal Associate at a Lekki law firm',
+    line: 'Lekki, Lagos, on-site: 2 to 4 years post-call, for an unnamed Lekki law firm that Sigma Consulting Group is recruiting for. Litigation alongside corporate and commercial work. Pays 300,000 to 400,000 naira a month, net. Apply by email with your CV, subject "Legal Associate - Lekki". No closing date is published.',
     /* The shorts are written to be joined: roleSummary() lists them in one
        sentence, and this last one closes it. */
-    short: 'a litigation one, all four in Lagos',
+    short: 'a Lekki law firm seat through Sigma at 300,000 to 400,000 naira a month',
     blurb:
-      'And a litigation associate, for somebody who wants to be on their feet in court.',
+      'And Sigma Consulting Group are recruiting a legal associate for a Lekki law firm they do not name, at 2 to 4 years post-call, paying 300,000 to 400,000 naira a month.',
   },
 ] as const
 
 export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
-   *  somebody who read the 1 September note has not seen this one. */
-  id: 'roles-2026-10-13',
+   *  somebody who read the 1 September note has not seen this one. Bumped
+   *  from roles-2026-10-13 because that drop changed under it: two of its
+   *  three employers are new, so a reader who dismissed it has not seen them. */
+  id: 'roles-2026-10-17',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-10-13T09:00:00.000Z',
+  at: '2026-10-17T09:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   /* ⚠ ONE NAME PER FIRM, NOT PER ROLE. Every consumer of these two joins them
      into a sentence or a row of names, and a drop where one firm posts several
-     seats would otherwise print that firm once per seat: "Punuka, Ninewells,
-     Ninewells and Ninewells are hiring". First appearance wins, so the order
-     still follows ROLE_ENTRIES. The role count does not read these; it reads
-     ROLE_ENTRIES, so four seats are still four. */
+     seats would otherwise print that firm once per seat: the 13 October drop
+     would have read "Punuka, Ninewells, Ninewells and Ninewells are hiring".
+     First appearance wins, so the order still follows ROLE_ENTRIES. The role
+     count does not read these; it reads ROLE_ENTRIES, so four seats at two
+     firms are still four. */
   employers: [...new Set<string>(ROLE_ENTRIES.map(r => r.employer))],
   /** The same firms without the parenthetical network names. Read by the bell. */
   employersShort: [...new Set<string>(ROLE_ENTRIES.map(r => r.employerShort))],
