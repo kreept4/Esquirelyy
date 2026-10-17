@@ -86,12 +86,16 @@
  * rows, so none of them produces anything on the board.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
-  /* 17 October: KS Legal's Ikoyi associate seat and the Lekki seat Sigma is
-     recruiting for, which with Punuka below are the whole of the current drop.
-     Open for the reason every drop slug is (the announcement's button lands on
-     /jobs?roles=<these slugs>), and because both were published for anyone to
-     read: KS Legal on a public flier, Sigma on its own careers page and on
-     LinkedIn. The application route stays behind the account, as everywhere. */
+  /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
+     drop, and the Lekki seat Sigma was recruiting for. Open for the reason
+     every drop slug is (the announcement's button lands on
+     /jobs?roles=<these slugs>), and because KS Legal published its flier for
+     anyone to read. The application route stays behind the account, as
+     everywhere.
+     ⚠ SIGMA WAS DELISTED THE SAME DAY IT WENT UP (a recruiter posting for a
+     firm it does not name; the reason is on the row) and is kept here for the
+     Ninewells reason below: its URL was public for a few hours, so it should
+     404 honestly rather than start redirecting to /auth/login. */
   'ks-legal-associate-ikoyi-lagos',
   'sigma-legal-associate-lekki-lagos',
 

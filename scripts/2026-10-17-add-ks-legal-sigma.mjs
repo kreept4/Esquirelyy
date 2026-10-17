@@ -73,6 +73,13 @@
  *   Both
  *     location      'Lagos'. Ikoyi and Lekki are in the role descriptions.
  *
+ * ⚠ SIGMA WAS DELISTED LATER THE SAME DAY. On a closer look it is a high-volume
+ * recruiter (583 open positions, mostly healthcare and sales) and the posting
+ * had been live since 3 August, for a firm it never names. Genuine, but not a
+ * listing the board can vouch for. The row carries is_active false and a
+ * delisted_reason. Re-running this script does not undo that, because the
+ * upsert never writes is_active; it only rewrites the listing's text.
+ *
  * Run: node scripts/2026-10-17-add-ks-legal-sigma.mjs           (writes, via .env.local)
  *      node scripts/2026-10-17-add-ks-legal-sigma.mjs --sql     (prints the same upsert as SQL)
  * Idempotent. Re-running updates the rows rather than adding a second set.

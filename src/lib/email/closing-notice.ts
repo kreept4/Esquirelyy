@@ -66,19 +66,27 @@ export type ClosingNotice = {
    programme. That is the machinery doing its job and it is also why nobody
    noticed: a stale notice here is invisible rather than wrong, so it is only
    found when somebody comes to write the next one. */
-/* ⚠ NULL FOR THE 13 OCTOBER DROP, ON PURPOSE, AND STILL NULL FOR THE 17
-   OCTOBER DROP THAT REPLACED IT: Punuka is in both, so the reasoning below did
-   not change. The Fabunmi competition this
-   named shut on 28 September. Of what is still open, the soonest deadline is
-   Punuka's, which is in the drop itself and already carries its date on its own
-   card; the next one outside the drop is Olajide Oyewole on 13 November, a
-   month out, and leading the subject line with "closes in 31 days" would spend
-   the most valuable words in the email on something that is not urgent. With
-   the notice null the headline and subject lead on the drop. Set it again the
-   next time something outside a drop is genuinely in its last fortnight. */
+/* ⚠ PUNUKA, FOR THE 17 OCTOBER SEND, AND IT IS HERE BECAUSE IT IS NOT NEW.
+   It went up on 13 October and has been on the board since, so the drop in
+   lib/new-roles.ts no longer counts it as a new role: telling members it had
+   just opened would not be true. It is still open, though, and it closes on 30
+   October, thirteen days after this send, which is inside the fortnight this
+   block was always meant for. So it is the notice: a card above the new role
+   that says it is still taking applications and when it stops, and a headline
+   that names it as closing rather than as hiring.
+
+   (Until this send the constant was null, because Punuka sat inside the drop
+   and already carried its date on its own card. The Fabunmi notice before that
+   shut on 28 September.) */
 // `as` rather than an annotation, so TypeScript does not narrow the constant to
 // null and reject the reads in activeClosingNotice as unreachable.
-const NOTICE = null as ClosingNotice | null
+const NOTICE = {
+  employer: 'Punuka',
+  title: 'Senior Associate, Capital Markets, Media & Entertainment and Property',
+  deadline: '2026-10-30',
+  body: 'Still open on the board. A senior associate seat in Lagos across capital markets, media and entertainment, and property, for 7 to 9 years post-call with a 2:1 in both the LL.B and the B.L. Applications close on 30 October.',
+  slug: 'punuka-senior-associate-capital-markets-media-property-lagos',
+} as ClosingNotice | null
 
 /**
  * The notice with its day count, or null when there is none or it has closed.

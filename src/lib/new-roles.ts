@@ -44,39 +44,24 @@
  * the board.
  */
 export const ROLE_ENTRIES = [
-  /* THE 17 OCTOBER DROP: THREE SEATS AT THREE EMPLOYERS. It replaces the 13
-     October drop, which never went out by email: its three Ninewells seats
-     were delisted on 16 October, before the broadcast, and announcing a firm
-     whose roles are already off the board would have sent everybody to a
-     filter with one result in it. Punuka carries over unchanged, and KS Legal
-     and Sigma take the Ninewells places. All three say "hiring" in as many
-     words, so DROP_NOUN stays 'role' and DROP_ACTION stays 'are hiring'.
+  /* THE 17 OCTOBER DROP: ONE SEAT, AT KS LEGAL. It replaces the 13 October
+     drop, which never went out by email: its three Ninewells seats were
+     delisted on 16 October, before the broadcast.
 
-     ⚠ PUNUKA STILL LEADS BECAUSE IT IS STILL THE ONE WITH A DATE. It closes on
-     30 October; KS Legal and Sigma publish no closing date. Same rule as every
-     drop before it: the listing a reader can still miss goes first.
+     ⚠ PUNUKA IS NOT HERE, AND IT IS STILL IN THE EMAIL. It was in the 13
+     October drop and has been on the board since then, so announcing it as
+     new would be telling members something they may already have read. It
+     closes on 30 October, which puts it inside the closing notice's fortnight,
+     so it rides in lib/email/closing-notice.ts instead: a card above this one
+     that says it is still open and when it shuts, and a headline that names
+     it as closing rather than as hiring.
 
-     ⚠ SIGMA IS A RECRUITER, AND EVERY LINE BELOW SAYS WHO THE SEAT IS ACTUALLY
-     WITH. The posting is for "our client, a reputable and fast-growing law firm
-     in Lekki", unnamed. "Sigma Consulting Group are hiring a legal associate"
-     would be read as a seat at a consultancy, so its line, short and blurb
-     each say the seat is at a Lekki law firm and Sigma is the route. The lists
-     of names (the subject line, the bell's row of firms) can only say Sigma,
-     because that is the name on the row the reader lands on and the only one
-     published.
-
-     The employer lists below are still de-duplicated, which this drop does not
-     need and the next one with two seats at one firm will. */
-  {
-    slug: 'punuka-senior-associate-capital-markets-media-property-lagos',
-    employer: 'Punuka Attorneys & Solicitors',
-    employerShort: 'Punuka',
-    title: 'Senior Associate, Capital Markets, Media & Entertainment and Property',
-    line: 'Lagos, senior: 7 to 9 years post-call, with a 2:1 in both the LL.B and the B.L. An LL.M counts in your favour. The work is capital markets, media and entertainment, and property. Apply by email and name the position. Closes 30 October.',
-    short: 'a senior associate seat at Punuka that closes on 30 October',
-    blurb:
-      'Punuka Attorneys & Solicitors are hiring a senior associate in Lagos across capital markets, media and entertainment, and property. They want 7 to 9 years post-call and a 2:1 in both degrees, and applications close on 30 October.',
-  },
+     ⚠ AND SIGMA IS NOT HERE EITHER. It was added this morning alongside KS
+     Legal and taken off the board the same day: a recruiter posting for a firm
+     it does not name, live on its careers page since 3 August. Genuine, but
+     not something the board can vouch for, and the provenance line under these
+     cards ("read off the employer's own notice") would not have been true of
+     it. The row is delisted, not deleted, with the reason on it. */
   {
     slug: 'ks-legal-associate-ikoyi-lagos',
     employer: 'KS Legal (Kayode Sofola & Associates)',
@@ -86,18 +71,6 @@ export const ROLE_ENTRIES = [
     short: 'an associate seat at KS Legal in Ikoyi',
     blurb:
       'KS Legal, Kayode Sofola & Associates, are hiring an associate in Ikoyi at 3 to 7 years post-qualification, and will look at unusual alternative experience too.',
-  },
-  {
-    slug: 'sigma-legal-associate-lekki-lagos',
-    employer: 'Sigma Consulting Group',
-    employerShort: 'Sigma',
-    title: 'Legal Associate at a Lekki law firm',
-    line: 'Lekki, Lagos, on-site: 2 to 4 years post-call, for an unnamed Lekki law firm that Sigma Consulting Group is recruiting for. Litigation alongside corporate and commercial work. Pays 300,000 to 400,000 naira a month, net. Apply by email with your CV, subject "Legal Associate - Lekki". No closing date is published.',
-    /* The shorts are written to be joined: roleSummary() lists them in one
-       sentence, and this last one closes it. */
-    short: 'a Lekki law firm seat through Sigma at 300,000 to 400,000 naira a month',
-    blurb:
-      'And Sigma Consulting Group are recruiting a legal associate for a Lekki law firm they do not name, at 2 to 4 years post-call, paying 300,000 to 400,000 naira a month.',
   },
 ] as const
 
