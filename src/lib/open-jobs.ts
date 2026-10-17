@@ -80,18 +80,28 @@
  * week after they had stopped being either. A count in a comment is a fact
  * about one afternoon.
  *
- * Two entries below are CLOSED ROLES kept deliberately — see the note on
+ * Some entries below are CLOSED ROLES kept deliberately — see the note on
  * zyph-legal-legal-associate. They are in the set so their URLs 404 honestly
  * rather than redirecting a crawler to a login page; openJobs() filters real
- * rows, so neither produces anything on the board.
+ * rows, so none of them produces anything on the board.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
-  /* 13 October, the whole of the drop: Punuka's senior associate seat and the
-     three associate seats Ninewells posted on one flier. Open because every
-     slug in a drop must be (the announcement's button lands on
-     /jobs?roles=<these slugs>), and because both firms published their fliers
-     for anyone to read. As with every row here, the address the application
-     goes to stays behind the account. */
+  /* 17 October: KS Legal's Ikoyi associate seat and the Lekki seat Sigma is
+     recruiting for, which with Punuka below are the whole of the current drop.
+     Open for the reason every drop slug is (the announcement's button lands on
+     /jobs?roles=<these slugs>), and because both were published for anyone to
+     read: KS Legal on a public flier, Sigma on its own careers page and on
+     LinkedIn. The application route stays behind the account, as everywhere. */
+  'ks-legal-associate-ikoyi-lagos',
+  'sigma-legal-associate-lekki-lagos',
+
+  /* 13 October: Punuka's senior associate seat and the three associate seats
+     Ninewells posted on one flier. Punuka is still open and still in the drop.
+     ⚠ THE THREE NINEWELLS SLUGS ARE CLOSED AND KEPT ON PURPOSE. They were
+     delisted on 16 October, and are left in this set for the Zyph reason in the
+     note above: a URL that has been public should 404 honestly to a crawler
+     rather than start redirecting it to /auth/login. openJobs() only returns
+     live rows, so they put nothing on the board. */
   'punuka-senior-associate-capital-markets-media-property-lagos',
   'ninewells-energy-associate-lagos',
   'ninewells-corporate-commercial-associate-lagos',
