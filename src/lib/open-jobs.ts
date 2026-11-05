@@ -86,6 +86,12 @@
  * rows, so none of them produces anything on the board.
  */
 const OPEN_JOB_SLUGS = new Set<string>([
+  /* 5 November: Stren & Blan's 2027 NYSC trainee associate round, the whole
+     of the current drop. Open for the reason every drop slug is, and because
+     the firm published the flier and its form link for anyone to read. The
+     route to the form stays behind the account, as everywhere. */
+  'stren-blan-trainee-associate-2027-nysc',
+
   /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
      drop, and the Lekki seat Sigma was recruiting for. Open for the reason
      every drop slug is (the announcement's button lands on

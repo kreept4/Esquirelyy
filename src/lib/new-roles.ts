@@ -44,45 +44,39 @@
  * the board.
  */
 export const ROLE_ENTRIES = [
-  /* THE 17 OCTOBER DROP: ONE SEAT, AT KS LEGAL. It replaces the 13 October
-     drop, which never went out by email: its three Ninewells seats were
-     delisted on 16 October, before the broadcast.
+  /* THE 5 NOVEMBER DROP: STREN & BLAN'S 2027 NYSC TRAINEE ASSOCIATES. One
+     listing, though it is a recruitment round rather than a single seat: the
+     flier says "Trainee Associates", plural, and gives no number. It is filed
+     as one row because it is one form and one deadline, and the line below says
+     seats rather than "a seat" so nobody reads it as a single opening.
 
-     ⚠ PUNUKA IS NOT HERE, AND IT IS STILL IN THE EMAIL. It was in the 13
-     October drop and has been on the board since then, so announcing it as
-     new would be telling members something they may already have read. It
-     closes on 30 October, which puts it inside the closing notice's fortnight,
-     so it rides in lib/email/closing-notice.ts instead: a card above this one
-     that says it is still open and when it shuts, and a headline that names
-     it as closing rather than as hiring.
+     ⚠ IT CLOSES ON 13 NOVEMBER, EIGHT DAYS AFTER THE SEND. The line ends on the
+     date for that reason: a reader deciding whether to open the form tonight or
+     next week needs it more than anything else on the card.
 
-     ⚠ AND SIGMA IS NOT HERE EITHER. It was added this morning alongside KS
-     Legal and taken off the board the same day: a recruiter posting for a firm
-     it does not name, live on its careers page since 3 August. Genuine, but
-     not something the board can vouch for, and the provenance line under these
-     cards ("read off the employer's own notice") would not have been true of
-     it. The row is delisted, not deleted, with the reason on it. */
+     Same day the board was cleared of seven rolling fliers from August and early
+     September (KBO, B.F.A., Principle, U&P, AVA, Tangerine, Abe & Asotie): none
+     carried a closing date and none had a live posting to check, so each is
+     delisted with that reason on its row, not deleted. */
   {
-    slug: 'ks-legal-associate-ikoyi-lagos',
-    employer: 'KS Legal (Kayode Sofola & Associates)',
-    employerShort: 'KS Legal',
-    title: 'Associate',
-    line: 'Ikoyi, Lagos: 3 to 7 years post-qualification, with a 2:1 or better in the LL.B or B.L, or an LL.M at Merit. The firm makes exceptions for unusual alternative experience. Competitive salary. Apply by email with your CV, subject "Application for the post of an Associate". No closing date is published.',
-    short: 'an associate seat at KS Legal in Ikoyi',
+    slug: 'stren-blan-trainee-associate-2027-nysc',
+    employer: 'Stren & Blan Partners',
+    employerShort: 'Stren & Blan',
+    title: 'Trainee Associate, 2027 NYSC',
+    line: 'Trainee associate seats for the 2027 NYSC year. You need an LL.B at Second Class Upper (2:1) or better. The flier does not name an office; the firm is in Lagos, Abuja and Enugu. Apply through the firm\'s online form. Closes Friday 13 November.',
+    short: 'trainee associate seats at Stren & Blan for the 2027 NYSC year, closing on 13 November',
     blurb:
-      'KS Legal, Kayode Sofola & Associates, are hiring an associate in Ikoyi at 3 to 7 years post-qualification, and will look at unusual alternative experience too.',
+      'Stren & Blan Partners are recruiting trainee associates for the 2027 NYSC year. They want a 2:1 LL.B, and applications close on 13 November.',
   },
 ] as const
 
 export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
-   *  somebody who read the 1 September note has not seen this one. Bumped
-   *  from roles-2026-10-13 because that drop changed under it: two of its
-   *  three employers are new, so a reader who dismissed it has not seen them. */
-  id: 'roles-2026-10-17',
+   *  somebody who read the 1 September note has not seen this one. */
+  id: 'roles-2026-11-05',
   /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-10-17T09:00:00.000Z',
+  at: '2026-11-05T09:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   /* ⚠ ONE NAME PER FIRM, NOT PER ROLE. Every consumer of these two joins them
      into a sentence or a row of names, and a drop where one firm posts several
