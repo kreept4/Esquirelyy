@@ -98,6 +98,9 @@ const OPEN_JOB_SLUGS = new Set<string>([
   /* And Ikeyi Shittu's litigation and commercial lawyers, added the same
      afternoon from the firm's own LinkedIn post. */
   'ikeyi-shittu-lawyer-litigation-commercial-transactions',
+  /* And Adeola Oyinlade's senior litigation seat in Yaba, from the firm's
+     own LinkedIn post and flier. */
+  'adeola-oyinlade-senior-associate-litigation-yaba',
 
   /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
      drop, and the Lekki seat Sigma was recruiting for. Open for the reason

@@ -46,9 +46,12 @@
 export const ROLE_ENTRIES = [
   /* THE 5 NOVEMBER DROP: STREN & BLAN'S 2027 NYSC TRAINEE ASSOCIATES, IKEYI
      SHITTU'S LITIGATION AND COMMERCIAL LAWYERS, AND OLANIWUN AJAYI'S BLUE
-     EXPERIENCE OPEN DAY. All three close on 13 November, so the order is not
-     by deadline: the two hiring rounds first, newly called then five years'
-     call, and the open day last because it is the one that is not a job.
+     EXPERIENCE OPEN DAY, all three closing on 13 November, and ADEOLA
+     OYINLADE'S SENIOR LITIGATION SEAT, closing on 20 November.
+     The three that share a date go first, as the listings a reader can miss
+     soonest; among them the two hiring rounds lead, newly called then five
+     years' call, and the open day follows. Adeola Oyinlade closes a week later,
+     so it goes last.
 
      ⚠ AN OPEN DAY IS NOT A ROLE, so DROP_NOUN is 'opportunity' and DROP_ACTION
      'are taking applications' below, for the reason those constants give: the
@@ -99,11 +102,23 @@ export const ROLE_ENTRIES = [
     employerShort: 'Olaniwun Ajayi',
     title: 'Blue Experience 2.0, Open Day 2026',
     line: 'For law undergraduates: a day at the firm\'s Lagos office on Banana Island to meet its lawyers, ask questions and see the firm from the inside. It is in person on Wednesday 25 November. Apply on the firm\'s online form. Applications close 13 November.',
+    /* Closes the run of three that share 13 November; the Adeola Oyinlade
+       short after it carries its own date. */
+    short: 'Olaniwun Ajayi\'s open day for law undergraduates on 25 November, those three closing on 13 November',
+    blurb:
+      'Olaniwun Ajayi are opening their Banana Island office to law undergraduates for a day on 25 November. Applications for that also close on 13 November.',
+  },
+  {
+    slug: 'adeola-oyinlade-senior-associate-litigation-yaba',
+    employer: 'Adeola Oyinlade & Co',
+    employerShort: 'Adeola Oyinlade',
+    title: 'Senior Associate, Litigation',
+    line: 'Yaba, Lagos, full-time: 5 to 10 years post-call with a strong emphasis on litigation. A proven trial advocate with sound procedure, drafting and research, able to run cases with little supervision. Apply by email with your CV and a cover letter, subject "Litigation Lawyer". Closes 20 November.',
     /* The shorts are written to be joined: roleSummary() lists them in one
        sentence, and this last one closes it. */
-    short: 'Olaniwun Ajayi\'s open day for law undergraduates on 25 November, all three closing on 13 November',
+    short: 'a senior litigation seat at Adeola Oyinlade in Yaba, closing on 20 November',
     blurb:
-      'And Olaniwun Ajayi are opening their Banana Island office to law undergraduates for a day on 25 November. Applications for that also close on 13 November.',
+      'And Adeola Oyinlade & Co are hiring a senior associate to lead litigation in Yaba, at 5 to 10 years post-call, closing on 20 November.',
   },
 ] as const
 
@@ -217,6 +232,22 @@ export function employerSentenceShort(): string {
   const names = [...NEW_ROLES.employersShort]
   if (names.length <= 1) return names[0] ?? ''
   return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
+}
+
+/**
+ * The short firm names for a subject line: all of them up to three, then the
+ * first two and a count. "A, B and C" / "A, B and 2 more".
+ *
+ * ⚠ FOUR NAMES DO NOT FIT A SUBJECT LINE. The 5 November drop named four firms
+ * and the subject came to 88 characters, past the ~70 most clients show, so the
+ * last two names were the ones cut, mid-word. Every firm is still named in the
+ * headline and on its own card; the subject only has to say how many and who
+ * leads.
+ */
+export function employerSubjectShort(): string {
+  const names = [...NEW_ROLES.employersShort]
+  if (names.length <= 3) return employerSentenceShort()
+  return `${names.slice(0, 2).join(', ')} and ${names.length - 2} more`
 }
 
 /**

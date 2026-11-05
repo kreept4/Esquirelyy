@@ -3008,6 +3008,19 @@ const EMPLOYER_LOGOS: Record<string, string> = {
      No EMPLOYER_BALL_BG. The mark is an orange fruit and a near-black wordmark
      on transparency, which reads on the cream card and in the white ball
      without a ground. */
+  /* Adeola Oyinlade & Co, added 5 November 2026 with their Yaba senior
+     associate (litigation) seat. Hiring, not researched, so here rather than in
+     ALL_FIRMS, like every entry in this map.
+
+     Their round seal, from the 1804px share image on adeolaoyinlade.com, cut to
+     the circle on a transparent ground and saved at 256px. Round and square in
+     proportion, so it fills the ball the way the World Bank's globe does,
+     which is why it was chosen over the 3:1 header lockup. The teal ring reads
+     on both the cream card and the white ball, so no EMPLOYER_BALL_BG. */
+  adeolaoyinladeandco: '/employer-logos/adeola-oyinlade.png',
+  adeolaoyinladeco: '/employer-logos/adeola-oyinlade.png',
+  adeolaoyinlade: '/employer-logos/adeola-oyinlade.png',
+
   tangerineafrica: '/employer-logos/tangerine.png',
   tangerinelife: '/employer-logos/tangerine.png',
   tangerine: '/employer-logos/tangerine.png',
