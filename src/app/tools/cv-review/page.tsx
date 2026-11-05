@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Upload,
   FileText,
@@ -12,6 +12,7 @@ import {
   FileDown,
 } from 'lucide-react'
 import { useRequireAuth } from '../useRequireAuth'
+import { readToolPrefill, roleAtFirm } from '@/lib/tool-links'
 import { createClient } from '@/lib/supabase/client'
 import ToolShell from '../ToolShell'
 import BrandLoader from '@/components/ui/BrandLoader'
@@ -127,6 +128,14 @@ export default function CVReviewPage() {
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [generationHistory, setGenerationHistory] = useState<GenerationHistoryItem[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
+
+  /* Arriving from a role's card, page or tracker row: the review is aimed at
+     that role without the reader typing it back. Only into an empty box. See
+     lib/tool-links.ts. */
+  useEffect(() => {
+    const target = roleAtFirm(readToolPrefill(window.location.search))
+    if (target) setTargetRole(t => t || target)
+  }, [])
 
   /**
    * Whether the rebuild can run without asking for the file again.

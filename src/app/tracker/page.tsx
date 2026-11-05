@@ -11,6 +11,7 @@ import Footer from '@/components/layout/Footer'
 import BrandLoader from '@/components/ui/BrandLoader'
 import { createClient } from '@/lib/supabase/client'
 import { stateOptions } from '@/lib/nigeria'
+import ToolPrompt from '@/components/features/ToolPrompt'
 
 /**
  * The tracker.
@@ -335,6 +336,17 @@ function LedgerRow({
               )}
             </div>
           </div>
+
+          {/* The next useful tool for where this application has got to.
+              Saved means not yet sent, so the CV and the letter; anything
+              from Applied to a second interview means a panel may be coming,
+              so interview prep, opened for this role at this firm. An offer
+              or a closed row needs neither. */}
+          {app.status === 'Saved' ? (
+            <ToolPrompt kind="apply" role={app.role} firm={app.firm} />
+          ) : !closed && app.status !== 'Offer' ? (
+            <ToolPrompt kind="interview" role={app.role} firm={app.firm} />
+          ) : null}
         </div>
       )}
     </li>

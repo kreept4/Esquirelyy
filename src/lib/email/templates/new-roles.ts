@@ -21,6 +21,9 @@ import {
 } from '@/lib/scholarships-data'
 import { activeStudentNotice } from '@/lib/email/student-notice'
 import { activeClosingNotice } from '@/lib/email/closing-notice'
+import { logoForEmployer } from '@/lib/firms-data'
+import { toolHref } from '@/lib/tool-links'
+import LOGO_PLATES from '@/lib/email/logo-plates.json'
 
 /**
  * The new roles announcement.
@@ -63,6 +66,42 @@ const MUTED = '#8A8378'
  */
 const URGENT = '#FF6B5B'
 
+/**
+ * THE ROLE CARD'S GROUND, AND WHY IT IS STONE RATHER THAN THE OLD PALE AMBER.
+ *
+ * The cards were #FFF8E5, the same warm yellow as the site's carton. The brief
+ * for the 5 November send was a textured tile in a neutral that does not
+ * shift between a light and a dark phone, with the firm's mark on it. Amber
+ * tinted every logo laid on it; a warm stone does not, and it sits between the
+ * cream page and the ink masthead without competing with either.
+ *
+ * CARD carries the colour as a bgcolor and inline style, locked by es-b-card in
+ * the style block below; the linen weave is a transparent image laid over it
+ * (public/email/card-linen.png, built by scripts/build-email-assets.mjs, which
+ * explains why it must be transparent and not a picture of linen). STONE is the
+ * muted type on this ground, darker than MUTED because #8A8378 on stone does
+ * not clear contrast at 11px. RULE is the hairline above the tool prompt.
+ */
+const CARD = '#F5F0E7'
+const STONE = '#6B6458'
+const RULE = '#D8D0C2'
+
+type Plate = { src: string; width: number; height: number }
+const PLATES = LOGO_PLATES as Record<string, Plate>
+
+/** Two initials for the fallback plate, skipping "&" and "and". */
+function monogram(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(w => /^[A-Za-z]/.test(w) && !/^(and|of|the)$/i.test(w))
+    .slice(0, 2)
+    .map(w => w[0].toUpperCase())
+    .join('')
+}
+
+/** An href safe to drop into an HTML attribute. */
+const attr = (u: string) => u.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+
 const CONTOUR =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23241F16' stroke-opacity='0.28' stroke-width='1.5'%3E%3Cpath d='M0 20c26-14 54 14 80 0s54-14 80 0'/%3E%3Cpath d='M0 47c26-11 54 11 80 0s54-11 80 0'/%3E%3Cpath d='M0 74c26-16 54 16 80 0s54-16 80 0'/%3E%3Cpath d='M0 101c26-9 54 9 80 0s54-9 80 0'/%3E%3Cpath d='M0 128c26-15 54 15 80 0s54-15 80 0'/%3E%3C/g%3E%3C/svg%3E\")"
 
@@ -85,7 +124,11 @@ const CONTOUR =
  * seats: three lists and three different answers, so the subject line would
  * have counted one number while the body listed another. The entries now live
  * beside the slug each one describes and every surface reads them from there.
- * The wording is unchanged; only its home moved. */
+ * The wording is unchanged; only its home moved.
+ *
+ * ⚠ AND THE STANDARD ABOVE HAS SINCE MOVED ON. From the 5 November drop the
+ * lines are written, not transcribed: one opening clause, then the same facts
+ * in the same order. The rule and its limits are at ROLE_ENTRIES. */
 const ROLES = ROLE_ENTRIES
 
 /* Shared with the notification modal rather than defined twice — the singular
@@ -218,6 +261,83 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
   const closingNotice = closing
   const scholarshipDays = closingScholarship ? daysUntilDeadline(closingScholarship) : null
 
+  /**
+   * The tools each card points to, with the role and firm carried in the link
+   * so the tool opens already filled in. See lib/tool-links.ts and
+   * components/features/ToolPrompt.tsx, whose copy this matches so the email
+   * and the site say the same thing in the same words.
+   */
+  const prompts = (r: (typeof ROLES)[number]) => {
+    const p = { role: r.title, firm: r.employer }
+    return r.prep === 'event'
+      ? {
+          kicker: 'Going?',
+          body: 'Add it to your tracker so the closing date stays in view, and use the notes to keep track of who you meet on the day.',
+          links: [{ label: 'Open your tracker', href: `${siteUrl}/tracker` }],
+        }
+      : {
+          kicker: 'Before you apply',
+          body: `A sharper CV and a cover letter written for ${r.employerShort} are what move an application up the pile.`,
+          links: [
+            { label: 'Review your CV', href: `${siteUrl}${toolHref('cv-review', p)}` },
+            { label: 'Write the cover letter', href: `${siteUrl}${toolHref('cover-letter', p)}` },
+          ],
+        }
+  }
+
+  /**
+   * One role, as a card: the firm's plate, the seat, the copy, and the tool
+   * that helps with it.
+   *
+   * ⚠ THE PLATE IS AN IMAGE OF A WHITE PLATE, NOT AN <img> IN A WHITE CELL.
+   * See scripts/build-email-assets.mjs. The short version: a logo baked onto
+   * its plate at a size fitted to its own shape is the only way a round seal
+   * and a wordmark four times wider than it is tall both look right in the
+   * same slot, and pixels are the one thing a dark-mode client never
+   * recolours. When images are off, the alt text is the firm's short name in
+   * ink, on the card's own stone.
+   *
+   * A firm with no plate yet gets a monogram drawn in HTML instead, so a new
+   * employer in a future drop renders cleanly before anybody has run the asset
+   * script for it. Run it anyway: a monogram is a fallback, not a design.
+   */
+  const roleCard = (r: (typeof ROLES)[number]) => {
+    const logo = logoForEmployer(r.employer)
+    const plate = logo ? PLATES[logo] : undefined
+    const mark = plate
+      ? `<img src="${siteUrl}${plate.src}" width="${plate.width}" height="${plate.height}" alt="${r.employerShort}" style="display:block;width:${plate.width}px;height:${plate.height}px;border:0;outline:none;text-decoration:none;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:14px;font-weight:900;line-height:${plate.height}px;color:${INK};" />`
+      : `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;">
+                    <tr>
+                      <td class="es-b-white es-t-ink" width="60" height="60" align="center" valign="middle" bgcolor="#FFFFFF" style="width:60px;height:60px;background-color:#FFFFFF;border:1px solid ${RULE};border-radius:9px;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:20px;font-weight:900;color:${INK};">${monogram(r.employer)}</td>
+                    </tr>
+                  </table>`
+    const tp = prompts(r)
+    return `
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 16px 0;">
+              <tr>
+                <td class="es-b-card" bgcolor="${CARD}" background="${siteUrl}/email/card-linen.png" style="padding:18px 18px 16px 18px;background-color:${CARD};background-image:url('${siteUrl}/email/card-linen.png');background-repeat:repeat;border:2px solid ${INK};">
+                  ${mark}
+                  <p class="es-t-stone" style="margin:14px 0 3px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${STONE};">${r.employer}</p>
+                  <p class="es-t-ink" style="margin:0 0 8px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:19px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:${INK};">${r.title}</p>
+                  <p class="es-t-ink" style="margin:0;font-size:14px;line-height:1.65;color:${INK};">${r.line}</p>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:16px 0 0 0;">
+                    <tr>
+                      <td class="es-b-rule" height="1" bgcolor="${RULE}" style="height:1px;line-height:1px;font-size:0;background-color:${RULE};">&nbsp;</td>
+                    </tr>
+                  </table>
+                  <p class="es-t-stone" style="margin:12px 0 4px 0;font-size:10px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${STONE};">${tp.kicker}</p>
+                  <p class="es-t-ink" style="margin:0 0 8px 0;font-size:13px;line-height:1.55;color:${INK};">${tp.body}</p>
+                  <p style="margin:0;font-size:12px;line-height:1.9;">${tp.links
+                    .map(
+                      l =>
+                        `<a class="es-t-ink" href="${attr(l.href)}" style="font-weight:700;color:${INK};text-decoration:none;border-bottom:2px solid #14B8A6;">${l.label}&nbsp;&rarr;</a>`
+                    )
+                    .join('&nbsp;&nbsp;&nbsp;&nbsp;')}</p>
+                </td>
+              </tr>
+            </table>`
+  }
+
   const text = [
     greeting,
     '',
@@ -231,7 +351,16 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
           '',
         ]
       : []),
-    ...ROLES.flatMap(r => [`${r.employer}: ${r.title}`, r.line, '']),
+    ...ROLES.flatMap(r => {
+      const tp = prompts(r)
+      return [
+        `${r.employer}: ${r.title}`,
+        r.line,
+        `${tp.kicker.endsWith('?') ? tp.kicker : `${tp.kicker}:`} ${tp.body}`,
+        ...tp.links.map(l => `${l.label}: ${l.href}`),
+        '',
+      ]
+    }),
     `${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER}, so ${publishedNouns()} above are the ones they published.`,
     '',
     /* The plain-text part gets the notice too. A recipient whose client
@@ -322,6 +451,9 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
   .es-b-mint { background-color: #14B8A6 !important; }
   .es-b-white { background-color: #FFFFFF !important; }
   .es-b-pale { background-color: #FFF8E5 !important; }
+  .es-b-card { background-color: #F5F0E7 !important; }
+  .es-b-rule { background-color: #D8D0C2 !important; }
+  .es-t-stone { color: #6B6458 !important; }
   body { background-color: #FAF7F2 !important; }
   }
 
@@ -341,6 +473,9 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
   [data-ogsc] .es-b-mint { background-color: #14B8A6 !important; }
   [data-ogsc] .es-b-white { background-color: #FFFFFF !important; }
   [data-ogsc] .es-b-pale { background-color: #FFF8E5 !important; }
+  [data-ogsc] .es-b-card { background-color: #F5F0E7 !important; }
+  [data-ogsc] .es-b-rule { background-color: #D8D0C2 !important; }
+  [data-ogsc] .es-t-stone { color: #6B6458 !important; }
   [data-ogsc] body { background-color: #FAF7F2 !important; }
   [data-ogsb] .es-t-ink { color: #241F16 !important; }
   [data-ogsb] .es-t-cream { color: #FAF7F2 !important; }
@@ -358,6 +493,9 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
   [data-ogsb] .es-b-mint { background-color: #14B8A6 !important; }
   [data-ogsb] .es-b-white { background-color: #FFFFFF !important; }
   [data-ogsb] .es-b-pale { background-color: #FFF8E5 !important; }
+  [data-ogsb] .es-b-card { background-color: #F5F0E7 !important; }
+  [data-ogsb] .es-b-rule { background-color: #D8D0C2 !important; }
+  [data-ogsb] .es-t-stone { color: #6B6458 !important; }
   [data-ogsb] body { background-color: #FAF7F2 !important; }
 </style>
 <title>${subject}</title>
@@ -451,18 +589,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
                 : ''
             }
 
-            ${ROLES.map(
-              r => `
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 14px 0;">
-              <tr>
-                <td class="es-b-pale" style="padding:14px 16px;background-color:#FFF8E5;border:2px solid ${INK};">
-                  <p class="es-t-muted" style="margin:0 0 2px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${MUTED};">${r.employer}</p>
-                  <p class="es-t-ink" style="margin:0 0 6px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:${INK};">${r.title}</p>
-                  <p class="es-t-ink" style="margin:0;font-size:14px;line-height:1.6;color:${INK};">${r.line}</p>
-                </td>
-              </tr>
-            </table>`
-            ).join('')}
+            ${ROLES.map(roleCard).join('')}
 
             ${
               closingScholarship && scholarshipDays !== null

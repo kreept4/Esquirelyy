@@ -10,6 +10,7 @@ import { createClient as createSessionClient } from '@/lib/supabase/server'
 import { isOpenJob } from '@/lib/open-jobs'
 import JsonLd, { breadcrumb, jobPostingSchema } from '@/components/seo/JsonLd'
 import OpportunityCard from '@/components/features/OpportunityCard'
+import ToolPrompt from '@/components/features/ToolPrompt'
 import {
   fetchOpportunities,
   opportunitySlug,
@@ -524,6 +525,10 @@ export default async function JobDetailPage({ params }: { params: Promise<{ slug
                     : ''}
               </p>
             </div>
+
+            {/* Under the carton, not inside it: the card is the one thing this
+                page asks you to do, and the tools are what you do first. */}
+            <ToolPrompt kind="apply" role={job.title} firm={job.employer} />
           </aside>
         </div>
       </main>
@@ -578,6 +583,14 @@ function OpportunityPage({
                the HTML for a signed-out reader to find in View Source. */
             applyHref={canApply ? opportunity.link : null}
             applyGateHref={`/auth/login?redirect=/jobs/${slug}`}
+          />
+          {/* An open day or a talk is not applied for with a CV, so it points
+              to the tracker instead; a programme or competition is, so it gets
+              the same prompt as a role. */}
+          <ToolPrompt
+            kind={['event', 'webinar', 'workshop', 'conference'].includes(opportunity.type) ? 'event' : 'apply'}
+            role={opportunity.title}
+            firm={opportunity.organization}
           />
         </div>
       </main>

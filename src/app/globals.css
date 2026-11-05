@@ -8309,3 +8309,59 @@ select.sch-region {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+/* ------------------------------------------------------------------
+   The tool prompt: the nudge towards CV review, the cover letter or
+   interview prep, sat beside the role it is for. See
+   components/features/ToolPrompt.tsx.
+
+   Quieter than the carton above it on purpose: a dashed hairline and
+   no shadow, so on a job page it reads as the step before the Apply
+   button rather than a second button competing with it.
+   ------------------------------------------------------------------ */
+.tool-prompt {
+  margin-top: 1.25rem;
+  padding: 1.1rem 1.25rem 1.2rem;
+  border: 1px dashed rgba(36, 31, 22, 0.38);
+  border-radius: var(--radius-panel);
+  background: rgba(255, 248, 229, 0.55);
+}
+.tool-prompt-kicker {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin: 0 0 0.45rem;
+}
+.tool-prompt-body {
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0;
+}
+.tool-prompt-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-top: 0.8rem;
+}
+.tool-prompt-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--mint);
+  padding-bottom: 1px;
+  transition: border-color 0.18s ease, gap 0.18s ease;
+}
+.tool-prompt-link:hover { border-color: var(--ink); gap: 0.5rem; }
+
+/* In a tracker row it spans both columns of the open row, under the
+   stepper and the notes, where the next step naturally goes. */
+.trk-row-body .tool-prompt { grid-column: 1 / -1; margin-top: 0; }
+
+/* On an opportunity page it sits under the card, at the card's width and
+   flush with its left edge. */
+.opp-page .tool-prompt { max-width: 46rem; box-sizing: border-box; }

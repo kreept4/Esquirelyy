@@ -1,7 +1,8 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Loader2, ArrowRight, AlertCircle, X } from 'lucide-react'
 import { useRequireAuth } from '../useRequireAuth'
+import { readToolPrefill, roleAtFirm } from '@/lib/tool-links'
 import { createClient } from '@/lib/supabase/client'
 import ToolShell from '../ToolShell'
 import BrandLoader from '@/components/ui/BrandLoader'
@@ -69,6 +70,14 @@ export default function InterviewPrepPage() {
   const [showHistory, setShowHistory] = useState(false)
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
+
+  /* Arriving from a tracker row or a role's page: the session is set for that
+     role and firm, so the questions are about the interview actually coming
+     up. Only into an empty box. See lib/tool-links.ts. */
+  useEffect(() => {
+    const target = roleAtFirm(readToolPrefill(window.location.search))
+    if (target) setTargetRole(t => t || target)
+  }, [])
   const fileRef = useRef<HTMLInputElement>(null)
 
   async function loadHistory() {

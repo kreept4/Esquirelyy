@@ -93,9 +93,9 @@ const row = {
       step: 3,
       title: 'Come with questions',
       detail:
-        'The day is built around meeting the firm\'s lawyers and asking them ' +
-        'things. The flier publishes no agenda, so what you get out of it ' +
-        'depends on what you bring.',
+        'The day is built around meeting the firm\'s lawyers and putting your ' +
+        'questions to them, so arrive with a few of your own. What you take ' +
+        'away depends on what you bring.',
       off_platform: true,
     },
   ],
