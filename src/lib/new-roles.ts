@@ -44,8 +44,11 @@
  * the board.
  */
 export const ROLE_ENTRIES = [
-  /* THE 5 NOVEMBER DROP: STREN & BLAN'S 2027 NYSC TRAINEE ASSOCIATES AND
-     OLANIWUN AJAYI'S BLUE EXPERIENCE OPEN DAY. Both close on 13 November.
+  /* THE 5 NOVEMBER DROP: STREN & BLAN'S 2027 NYSC TRAINEE ASSOCIATES, IKEYI
+     SHITTU'S LITIGATION AND COMMERCIAL LAWYERS, AND OLANIWUN AJAYI'S BLUE
+     EXPERIENCE OPEN DAY. All three close on 13 November, so the order is not
+     by deadline: the two hiring rounds first, newly called then five years'
+     call, and the open day last because it is the one that is not a job.
 
      ⚠ AN OPEN DAY IS NOT A ROLE, so DROP_NOUN is 'opportunity' and DROP_ACTION
      'are taking applications' below, for the reason those constants give: the
@@ -79,6 +82,16 @@ export const ROLE_ENTRIES = [
       'Stren & Blan Partners are recruiting trainee associates for the 2027 NYSC year. They want a 2:1 LL.B, and applications close on 13 November.',
   },
   {
+    slug: 'ikeyi-shittu-lawyer-litigation-commercial-transactions',
+    employer: 'Ikeyi Shittu & Co',
+    employerShort: 'Ikeyi Shittu',
+    title: 'Lawyer, Litigation and Commercial Transactions',
+    line: 'Lagos, Abuja or Enugu, hybrid: at least 5 years post-call in litigation and commercial transactions, with a First or 2:1 LL.B. An LL.M is a plus. Knowledge of tax, employment, energy, maritime, technology or construction law counts. Apply by email with the role and location as the subject. Closes 13 November.',
+    short: "lawyer seats at Ikeyi Shittu for five years' call in litigation and commercial work",
+    blurb:
+      "Ikeyi Shittu & Co are hiring lawyers with at least five years' call in litigation and commercial transactions, in Lagos, Abuja or Enugu, closing on 13 November too.",
+  },
+  {
     /* An opportunity, not a jobs row: the slug is opportunitySlug(title) from
        lib/opportunities.ts, which is what /jobs?roles= matches against. */
     slug: 'blue-experience-2-0-olaniwun-ajayi-open-day-2026',
@@ -88,7 +101,7 @@ export const ROLE_ENTRIES = [
     line: 'For law undergraduates: a day at the firm\'s Lagos office on Banana Island to meet its lawyers, ask questions and see the firm from the inside. It is in person on Wednesday 25 November. Apply on the firm\'s online form. Applications close 13 November.',
     /* The shorts are written to be joined: roleSummary() lists them in one
        sentence, and this last one closes it. */
-    short: 'Olaniwun Ajayi\'s open day for law undergraduates on 25 November, both closing on 13 November',
+    short: 'Olaniwun Ajayi\'s open day for law undergraduates on 25 November, all three closing on 13 November',
     blurb:
       'And Olaniwun Ajayi are opening their Banana Island office to law undergraduates for a day on 25 November. Applications for that also close on 13 November.',
   },

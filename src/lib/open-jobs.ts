@@ -95,6 +95,9 @@ const OPEN_JOB_SLUGS = new Set<string>([
      open day for law undergraduates. Open for the reason the Law Crest day
      below is: the firm published the flier and the form link for anyone. */
   'blue-experience-2-0-olaniwun-ajayi-open-day-2026',
+  /* And Ikeyi Shittu's litigation and commercial lawyers, added the same
+     afternoon from the firm's own LinkedIn post. */
+  'ikeyi-shittu-lawyer-litigation-commercial-transactions',
 
   /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
      drop, and the Lekki seat Sigma was recruiting for. Open for the reason
