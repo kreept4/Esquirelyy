@@ -4,6 +4,7 @@ import { Copy, Check, AlertCircle, ArrowRight, X, Loader2, Pencil, FileDown, Fil
 import { useRequireAuth } from '../useRequireAuth'
 import { createClient } from '@/lib/supabase/client'
 import { officesForEmployer } from '@/lib/firms-data'
+import { readToolPrefill } from '@/lib/tool-links'
 import ToolShell from '../ToolShell'
 import { countBodyWords, WORD_CEILING } from '@/lib/cover-letter/word-count'
 import BrandLoader from '@/components/ui/BrandLoader'
@@ -161,6 +162,19 @@ export default function CoverLetterPage() {
     })()
     return () => { live = false }
   }, [userId])
+
+  /* Arriving from a role's card, page or tracker row: the link carries the
+     title and the firm, so the reader does not retype what they were just
+     looking at. Empty fields only. See lib/tool-links.ts. */
+  useEffect(() => {
+    const { role, firm } = readToolPrefill(window.location.search)
+    if (!role && !firm) return
+    setForm(f => ({
+      ...f,
+      targetRole: f.targetRole || role,
+      employer: f.employer || firm,
+    }))
+  }, [])
 
   const set = (k: string, v: string) =>
     setForm(f => ({

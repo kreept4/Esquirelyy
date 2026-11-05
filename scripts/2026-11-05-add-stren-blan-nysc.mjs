@@ -56,7 +56,10 @@ const rows = [
     about:
       'A full-service commercial law firm with offices in Lagos, Abuja and Enugu, working across transactions, disputes and regulatory matters.',
     role_desc:
-      'Stren & Blan Partners are recruiting trainee associates from the 2027 NYSC batch, for a service year at the firm. The flier does not say which office the seats are in; the firm has offices in Lagos, Abuja and Enugu. Apply through the firm\'s application form. Applications close on Friday 13 November 2026.',
+      /* Rewritten 5 November before the send: the reader-facing copy no longer
+         talks about the notice itself ("the flier does not say which
+         office"). The location field already says Lagos, Abuja or Enugu. */
+      'Stren & Blan Partners are taking on trainee associates from the 2027 NYSC batch, for a service year in practice at a firm with offices in Lagos, Abuja and Enugu. Applications go through the firm\'s online form and close on Friday 13 November 2026.',
     requirements: [
       'An LL.B with at least Second Class Honours, Upper Division (2:1)',
       'Due to serve in the 2027 NYSC year',
