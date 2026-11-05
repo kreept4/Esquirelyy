@@ -7,6 +7,7 @@ import {
   dropSubject,
   dropVerb,
   employerSentenceShort,
+  employerSubjectShort,
   newRolesCta,
   noticePhrase,
   publishedNouns,
@@ -177,7 +178,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
      2 days, and World Bank are hiring" is 57. */
   const subject = closing
     ? `${closing.employer} ${closes}, and ${firms} ${DROP_ACTION}`
-    : `${roleCountLabel()}: ${firms}`
+    : `${roleCountLabel()}: ${employerSubjectShort()}`
   const link = `${siteUrl}${NEW_ROLES_HREF}`
 
   /**
