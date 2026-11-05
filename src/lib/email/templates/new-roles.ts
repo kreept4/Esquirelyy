@@ -263,27 +263,36 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
 
   /**
    * The tools each card points to, with the role and firm carried in the link
-   * so the tool opens already filled in. See lib/tool-links.ts and
-   * components/features/ToolPrompt.tsx, whose copy this matches so the email
-   * and the site say the same thing in the same words.
+   * so the tool opens already filled in. See lib/tool-links.ts. The site's
+   * version is components/features/ToolPrompt.tsx: same kickers, same first
+   * link, plus a sentence there because a page shows it once, not four times.
    */
   const prompts = (r: (typeof ROLES)[number]) => {
     const p = { role: r.title, firm: r.employer }
+    /* ⚠ A KICKER AND THE LINKS, NO SENTENCE. The first version gave every card
+       the same line about a sharper CV moving an application up the pile, and
+       three identical sentences down one email read as filler by the second
+       card. Settled in the Figma pass: the kicker says when, the links say
+       what, and naming the firm in the cover-letter link is what makes each
+       one specific. */
     return r.prep === 'event'
-      ? {
-          kicker: 'Going?',
-          body: 'Add it to your tracker so the closing date stays in view, and use the notes to keep track of who you meet on the day.',
-          links: [{ label: 'Open your tracker', href: `${siteUrl}/tracker` }],
-        }
+      ? { kicker: 'Going?', links: [{ label: 'Open your tracker', href: `${siteUrl}/tracker` }] }
       : {
           kicker: 'Before you apply',
-          body: `A sharper CV and a cover letter written for ${r.employerShort} are what move an application up the pile.`,
           links: [
-            { label: 'Review your CV', href: `${siteUrl}${toolHref('cv-review', p)}` },
-            { label: 'Write the cover letter', href: `${siteUrl}${toolHref('cover-letter', p)}` },
+            { label: 'Sharpen your CV', href: `${siteUrl}${toolHref('cv-review', p)}` },
+            { label: `Draft your ${r.employerShort} cover letter`, href: `${siteUrl}${toolHref('cover-letter', p)}` },
           ],
         }
   }
+
+  /** "13 Nov" from an ISO date, without a Date object and so without a timezone. */
+  const shortDate = (iso: string) => {
+    const [, m, d] = iso.split('-').map(Number)
+    return `${d} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][m - 1]}`
+  }
+  const pillLabel = (r: (typeof ROLES)[number]) =>
+    `${r.prep === 'event' ? 'Apply by' : 'Closes'} ${shortDate(r.deadline)}`
 
   /**
    * One role, as a card: the firm's plate, the seat, the copy, and the tool
@@ -312,27 +321,41 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
                     </tr>
                   </table>`
     const tp = prompts(r)
+    /* Measured off the Figma pass (file "Esquirely Roles Email"): 1px ink
+       border at 12px radius, 22px padding, the plate and the deadline pill on
+       one row, 20px Hanken Bold title, 16px between blocks. Outlook desktop
+       draws the corners square, which is the only client that does. */
     return `
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:0 0 16px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate;margin:0 0 16px 0;">
               <tr>
-                <td class="es-b-card" bgcolor="${CARD}" background="${siteUrl}/email/card-linen.png" style="padding:18px 18px 16px 18px;background-color:${CARD};background-image:url('${siteUrl}/email/card-linen.png');background-repeat:repeat;border:2px solid ${INK};">
-                  ${mark}
-                  <p class="es-t-stone" style="margin:14px 0 3px 0;font-size:11px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${STONE};">${r.employer}</p>
-                  <p class="es-t-ink" style="margin:0 0 8px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:19px;line-height:1.25;font-weight:900;letter-spacing:-0.3px;color:${INK};">${r.title}</p>
-                  <p class="es-t-ink" style="margin:0;font-size:14px;line-height:1.65;color:${INK};">${r.line}</p>
+                <td class="es-b-card" bgcolor="${CARD}" background="${siteUrl}/email/card-linen.png" style="padding:22px 22px 20px 22px;background-color:${CARD};background-image:url('${siteUrl}/email/card-linen.png');background-repeat:repeat;border:1px solid ${INK};border-radius:12px;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+                    <tr>
+                      <td valign="middle" style="padding:0;">${mark}</td>
+                      <td align="right" valign="middle" style="padding:0 0 0 12px;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right" style="border-collapse:separate;">
+                          <tr>
+                            <td class="es-b-white es-t-ink" bgcolor="#FFFFFF" style="padding:6px 11px;background-color:#FFFFFF;border:1px solid ${RULE};border-radius:999px;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.2;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${INK};white-space:nowrap;">${pillLabel(r)}</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                  <p class="es-t-stone" style="margin:16px 0 4px 0;font-size:11px;line-height:15px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;color:${STONE};">${r.employer}</p>
+                  <p class="es-t-ink" style="margin:0 0 16px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:20px;line-height:25px;font-weight:700;letter-spacing:-0.3px;color:${INK};">${r.title}</p>
+                  <p class="es-t-ink" style="margin:0;font-size:14px;line-height:23px;color:${INK};">${r.line}</p>
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:16px 0 0 0;">
                     <tr>
                       <td class="es-b-rule" height="1" bgcolor="${RULE}" style="height:1px;line-height:1px;font-size:0;background-color:${RULE};">&nbsp;</td>
                     </tr>
                   </table>
-                  <p class="es-t-stone" style="margin:12px 0 4px 0;font-size:10px;line-height:1.4;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${STONE};">${tp.kicker}</p>
-                  <p class="es-t-ink" style="margin:0 0 8px 0;font-size:13px;line-height:1.55;color:${INK};">${tp.body}</p>
-                  <p style="margin:0;font-size:12px;line-height:1.9;">${tp.links
+                  <p class="es-t-stone" style="margin:16px 0 8px 0;font-size:10px;line-height:14px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;color:${STONE};">${tp.kicker}</p>
+                  <p style="margin:0;font-size:12.5px;line-height:22px;">${tp.links
                     .map(
                       l =>
-                        `<a class="es-t-ink" href="${attr(l.href)}" style="font-weight:700;color:${INK};text-decoration:none;border-bottom:2px solid #14B8A6;">${l.label}&nbsp;&rarr;</a>`
+                        `<a class="es-t-ink" href="${attr(l.href)}" style="font-weight:600;color:${INK};text-decoration:none;border-bottom:2px solid #14B8A6;padding-bottom:1px;white-space:nowrap;">${l.label}&nbsp;&rarr;</a>`
                     )
-                    .join('&nbsp;&nbsp;&nbsp;&nbsp;')}</p>
+                    .join('<span style="display:inline-block;width:22px;">&nbsp;</span>')}</p>
                 </td>
               </tr>
             </table>`
@@ -354,9 +377,9 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
     ...ROLES.flatMap(r => {
       const tp = prompts(r)
       return [
-        `${r.employer}: ${r.title}`,
+        `${r.employer}: ${r.title} (${pillLabel(r).charAt(0).toLowerCase()}${pillLabel(r).slice(1)})`,
         r.line,
-        `${tp.kicker.endsWith('?') ? tp.kicker : `${tp.kicker}:`} ${tp.body}`,
+        tp.kicker,
         ...tp.links.map(l => `${l.label}: ${l.href}`),
         '',
       ]
