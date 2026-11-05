@@ -30,6 +30,7 @@ import {
   NEW_ROLES_HREF,
   checkedSentence,
   dropSentence,
+  newRolesCta,
   roleCountLabel,
   seatsSentence,
 } from '@/lib/new-roles'
@@ -602,7 +603,9 @@ export default function NotificationBell({
                 className="grotesk-bold notif-modal-cta"
                 onClick={() => setShowDrop(false)}
               >
-                Show me the new roles
+                {/* From the drop, not typed: this read "the new roles" over an
+                    open day, which is not one. */}
+                {newRolesCta()}
               </Link>
             </div>
           </div>

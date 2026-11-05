@@ -91,6 +91,10 @@ const OPEN_JOB_SLUGS = new Set<string>([
      the firm published the flier and its form link for anyone to read. The
      route to the form stays behind the account, as everywhere. */
   'stren-blan-trainee-associate-2027-nysc',
+  /* Same day, the other half of the drop: Olaniwun Ajayi's Blue Experience
+     open day for law undergraduates. Open for the reason the Law Crest day
+     below is: the firm published the flier and the form link for anyone. */
+  'blue-experience-2-0-olaniwun-ajayi-open-day-2026',
 
   /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
      drop, and the Lekki seat Sigma was recruiting for. Open for the reason

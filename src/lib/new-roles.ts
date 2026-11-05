@@ -44,8 +44,18 @@
  * the board.
  */
 export const ROLE_ENTRIES = [
-  /* THE 5 NOVEMBER DROP: STREN & BLAN'S 2027 NYSC TRAINEE ASSOCIATES. One
-     listing, though it is a recruitment round rather than a single seat: the
+  /* THE 5 NOVEMBER DROP: STREN & BLAN'S 2027 NYSC TRAINEE ASSOCIATES AND
+     OLANIWUN AJAYI'S BLUE EXPERIENCE OPEN DAY. Both close on 13 November.
+
+     ⚠ AN OPEN DAY IS NOT A ROLE, so DROP_NOUN is 'opportunity' and DROP_ACTION
+     'are taking applications' below, for the reason those constants give: the
+     subject line must not tell undergraduates that Olaniwun Ajayi are hiring
+     them. Stren & Blan's round is a recruitment, and "taking applications" is
+     still true of it.
+
+     Stren & Blan leads: it went up first, and both share a closing date.
+
+     STREN & BLAN is one listing, though it is a recruitment round rather than a single seat: the
      flier says "Trainee Associates", plural, and gives no number. It is filed
      as one row because it is one form and one deadline, and the line below says
      seats rather than "a seat" so nobody reads it as a single opening.
@@ -64,9 +74,23 @@ export const ROLE_ENTRIES = [
     employerShort: 'Stren & Blan',
     title: 'Trainee Associate, 2027 NYSC',
     line: 'Trainee associate seats for the 2027 NYSC year. You need an LL.B at Second Class Upper (2:1) or better. The flier does not name an office; the firm is in Lagos, Abuja and Enugu. Apply through the firm\'s online form. Closes Friday 13 November.',
-    short: 'trainee associate seats at Stren & Blan for the 2027 NYSC year, closing on 13 November',
+    short: 'trainee associate seats at Stren & Blan for the 2027 NYSC year',
     blurb:
       'Stren & Blan Partners are recruiting trainee associates for the 2027 NYSC year. They want a 2:1 LL.B, and applications close on 13 November.',
+  },
+  {
+    /* An opportunity, not a jobs row: the slug is opportunitySlug(title) from
+       lib/opportunities.ts, which is what /jobs?roles= matches against. */
+    slug: 'blue-experience-2-0-olaniwun-ajayi-open-day-2026',
+    employer: 'Olaniwun Ajayi LP',
+    employerShort: 'Olaniwun Ajayi',
+    title: 'Blue Experience 2.0, Open Day 2026',
+    line: 'For law undergraduates: a day at the firm\'s Lagos office on Banana Island to meet its lawyers, ask questions and see the firm from the inside. It is in person on Wednesday 25 November. Apply on the firm\'s online form. Applications close 13 November.',
+    /* The shorts are written to be joined: roleSummary() lists them in one
+       sentence, and this last one closes it. */
+    short: 'Olaniwun Ajayi\'s open day for law undergraduates on 25 November, both closing on 13 November',
+    blurb:
+      'And Olaniwun Ajayi are opening their Banana Island office to law undergraduates for a day on 25 November. Applications for that also close on 13 November.',
   },
 ] as const
 
@@ -129,10 +153,24 @@ export const NEW_ROLES_COUNT: number = ROLE_ENTRIES.length
  * the slugs rather than assumed downstream. Drops that are genuinely seats set
  * it back to 'role' and every surface follows.
  */
-export const DROP_NOUN: string = 'role'
+export const DROP_NOUN: string = 'opportunity'
+
+/**
+ * The noun, counted. "1 role", "2 roles", "2 opportunities".
+ *
+ * ⚠ THE PLURAL WAS `${DROP_NOUN}s`, WHICH HOLDS FOR 'role' AND NOTHING ELSE
+ * THIS FILE HAS USED. The 5 November drop is the first of two that is not all
+ * seats, and the welded-on "s" rendered "2 new opportunitys" in the subject
+ * line of the test render. Consonant-y takes -ies; everything else takes -s,
+ * which covers every noun a drop has needed so far.
+ */
+function dropNoun(count: number): string {
+  if (count === 1) return DROP_NOUN
+  return /[^aeiou]y$/.test(DROP_NOUN) ? `${DROP_NOUN.slice(0, -1)}ies` : `${DROP_NOUN}s`
+}
 
 export function roleCountLabel(): string {
-  return `${NEW_ROLES_COUNT} new ${DROP_NOUN}${NEW_ROLES_COUNT === 1 ? '' : 's'}`
+  return `${NEW_ROLES_COUNT} new ${dropNoun(NEW_ROLES_COUNT)}`
 }
 
 /** The board, filtered to exactly these listings. Read by JobsClient. */
@@ -263,7 +301,7 @@ export function seatsSentence(): string {
  * for the sharper line or leave it alone and still be correct. Named here
  * beside DROP_NOUN, because a drop should describe itself in one place.
  */
-export const DROP_ACTION: string = 'are hiring'
+export const DROP_ACTION: string = 'are taking applications'
 
 /**
  * "X and Y are taking applications."
@@ -344,5 +382,5 @@ export function dropPronoun(): string {
  * drop of one is not a hypothetical: this is what the 21 August drop is.
  */
 export function newRolesCta(): string {
-  return `Show me the new ${DROP_NOUN}${NEW_ROLES_COUNT === 1 ? '' : 's'}`
+  return `Show me the new ${dropNoun(NEW_ROLES_COUNT)}`
 }
