@@ -102,8 +102,8 @@ function monogram(name: string): string {
 /** An href safe to drop into an HTML attribute. */
 const attr = (u: string) => u.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
 
-const CONTOUR =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23241F16' stroke-opacity='0.28' stroke-width='1.5'%3E%3Cpath d='M0 20c26-14 54 14 80 0s54-14 80 0'/%3E%3Cpath d='M0 47c26-11 54 11 80 0s54-11 80 0'/%3E%3Cpath d='M0 74c26-16 54 16 80 0s54-16 80 0'/%3E%3Cpath d='M0 101c26-9 54 9 80 0s54-9 80 0'/%3E%3Cpath d='M0 128c26-15 54 15 80 0s54-15 80 0'/%3E%3C/g%3E%3C/svg%3E\")"
+/* CONTOUR, the wave pattern that sat behind the old ink masthead, went with
+   it on 5 November: the masthead is now the logo on plain cream. */
 
 /**
  * One entry per role.
@@ -291,8 +291,10 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
     const [, m, d] = iso.split('-').map(Number)
     return `${d} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][m - 1]}`
   }
-  const pillLabel = (r: (typeof ROLES)[number]) =>
-    `${r.prep === 'event' ? 'Apply by' : 'Closes'} ${shortDate(r.deadline)}`
+  /* "Closes" on every card, the open day included. It read "Apply by" there
+     for a week of drafts, and a pill that changes its verb on one card in
+     four reads as a different kind of fact when it is the same one. */
+  const pillLabel = (r: (typeof ROLES)[number]) => `Closes ${shortDate(r.deadline)}`
 
   /**
    * One role, as a card: the firm's plate, the seat, the copy, and the tool
@@ -528,49 +530,31 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
   ${roleSummary()}.
 </div>
 
-<table class="es-b-cream" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${CREAM}" style="border-collapse:collapse;background-color:${CREAM};background-image:${CONTOUR};background-repeat:repeat;">
+<table class="es-b-cream" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${CREAM}" style="border-collapse:collapse;background-color:${CREAM};">
   <tr>
-    <td style="padding:10px;">
+    <td align="center" style="padding:26px 14px 14px 14px;">
       <!--
-        THE MASTHEAD.
+        THE MASTHEAD IS THE LOGO, AS THE SITE SETS IT, AND NOTHING AROUND IT.
 
-        ⚠ WHAT CAME OFF AND WHY. This was ESQUIRELY set at 52px, weight 900,
-        letter-spacing -2.4px, centred on a full-bleed amber panel with a 5px
-        ink offset behind it. Three separate devices all turned up to maximum at
-        once: the size, the negative tracking and the hard shadow. At 52px in a
-        560px email that is most of the first screen spent shouting the sender's
-        own name at somebody who already knows who we are, because they signed
-        up. A masthead is a signature, not a headline.
+        ⚠ IT WAS AN INK PANEL: the amber E and an uppercase ESQUIRELY with
+        positive tracking, reversed out of a near-black block. Reported on the
+        5 November test as the logo "wrapped in a black background", and
+        rightly: neither half was the logo. The site's mark is the amber E
+        tile beside "Esquirely." in Hanken Grotesk Black, ink, tracked tight,
+        on cream. That is what this is now.
 
-        ⚠ THE MARK IS BULLETPROOF, WHICH IS THE ONLY WAY TO PUT A LOGO IN AN
-        EMAIL. Remote images are blocked by default in most clients, so an
-        <img> alone means the brand disappears for a large share of the list.
-        The cell carries the amber as a bgcolor ATTRIBUTE as well as in CSS, and
-        the alt text is styled ink, bold and centred at the cell's own line
-        height. Images on, the real logo.png renders. Images off, the cell is
-        still an amber square with an ink E in it, which is the same mark drawn
-        a different way. Neither state is the degraded one.
-
-        Left aligned, because a masthead sits where the eye starts rather than
-        in the middle of a line, and the wordmark now takes positive tracking
-        instead of negative: letters that lean away from each other read as
-        composed, letters jammed together read as a logo being compressed to
-        fit somewhere it does not.
+        ⚠ AN IMAGE, EXPORTED FROM FIGMA, NOT LIVE TEXT. Gmail and most phone
+        clients do not load web fonts, so "Esquirely." set in HTML arrives in
+        Arial, which is a different logo. public/email/lockup.png is the
+        lockup drawn in the real typeface at 2x, on a baked cream ground so
+        that a client which darkens the page shows it as a cream plate rather
+        than ink type on a dark band. Images off, the alt text is the wordmark
+        itself in ink.
       -->
-      <table class="es-b-ink" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${INK}" style="border-collapse:collapse;background-color:${INK};">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;width:560px;max-width:100%;">
         <tr>
-          <td style="padding:24px 22px;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-              <tr>
-                <td class="es-b-amber" width="46" height="46" bgcolor="${AMBER}" align="center" valign="middle" style="background-color:${AMBER};width:46px;height:46px;">
-                  <img class="es-t-ink" src="${siteUrl}/logo.png" width="46" height="46" alt="E" style="display:block;width:46px;height:46px;border:0;outline:none;text-decoration:none;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:27px;font-weight:900;line-height:46px;text-align:center;color:${INK};" />
-                </td>
-                <td valign="middle" style="padding-left:14px;">
-                  <p class="es-t-cream" style="margin:0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:22px;line-height:1;font-weight:900;letter-spacing:1.6px;color:${CREAM};">ESQUIRELY</p>
-                  <p class="es-t-muted" style="margin:7px 0 0 0;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:9px;line-height:1;letter-spacing:1.9px;text-transform:uppercase;color:${MUTED};">Nigeria&rsquo;s legal career platform</p>
-                </td>
-              </tr>
-            </table>
+          <td align="left" style="padding:0;">
+            <img src="${siteUrl}/email/lockup.png" width="175" height="40" alt="Esquirely." style="display:block;width:175px;height:40px;border:0;outline:none;text-decoration:none;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:28px;font-weight:900;letter-spacing:-1.2px;line-height:40px;color:#1A1A1A;" />
           </td>
         </tr>
       </table>

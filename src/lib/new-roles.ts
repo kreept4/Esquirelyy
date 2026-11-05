@@ -54,8 +54,8 @@
  * come from lib/tool-links.ts.
  *
  * `deadline` is the ISO closing date, shown on the email card as a pill
- * ("Closes 13 Nov", or "Apply by 13 Nov" for an event) so the date can be
- * found at a glance without reading the line.
+ * ("Closes 13 Nov") so the date can be found at a glance without reading
+ * the line.
  *
  * `short` is the same role in a clause, for the bell, where four full lines
  * would not fit. Both are written out rather than one being trimmed from the
