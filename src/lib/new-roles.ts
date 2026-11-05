@@ -53,6 +53,10 @@
  * the tracker. The card copy for each is in templates/new-roles.ts; the links
  * come from lib/tool-links.ts.
  *
+ * `deadline` is the ISO closing date, shown on the email card as a pill
+ * ("Closes 13 Nov", or "Apply by 13 Nov" for an event) so the date can be
+ * found at a glance without reading the line.
+ *
  * `short` is the same role in a clause, for the bell, where four full lines
  * would not fit. Both are written out rather than one being trimmed from the
  * other, because a truncated sentence loses the deadline first.
@@ -98,6 +102,7 @@ export const ROLE_ENTRIES = [
     title: 'Trainee Associate, 2027 NYSC',
     line: 'A service year spent in practice. Stren & Blan Partners are taking on trainee associates from the 2027 NYSC batch, at a firm with offices in Lagos, Abuja and Enugu. A 2:1 LL.B or better is the bar. Applications go through the firm\'s online form and close on Friday 13 November.',
     prep: 'apply',
+    deadline: '2026-11-13',
     short: 'trainee associate seats at Stren & Blan for the 2027 NYSC year',
     blurb:
       'Stren & Blan Partners are recruiting trainee associates for the 2027 NYSC year. They want a 2:1 LL.B, and applications close on 13 November.',
@@ -107,8 +112,9 @@ export const ROLE_ENTRIES = [
     employer: 'Ikeyi Shittu & Co',
     employerShort: 'Ikeyi Shittu',
     title: 'Lawyer, Litigation and Commercial Transactions',
-    line: 'For lawyers as sure-footed in court as they are on a transaction: five or more years\' call across litigation and commercial work, with a First or 2:1 LL.B, and an LL.M to your name helps. Depth in a field such as tax, employment, energy, maritime, technology or construction will set you apart. Hybrid, from Lagos, Abuja or Enugu. Send your CV by 13 November, with the role and your preferred city in the subject line.',
+    line: 'For lawyers as sure-footed in court as on a transaction: five or more years\' call across litigation and commercial work, a First or 2:1 LL.B, and ideally an LL.M. Depth in tax, employment, energy, maritime, technology or construction sets you apart. Hybrid, in Lagos, Abuja or Enugu. CVs by 13 November, with the role and your preferred city in the subject line.',
     prep: 'apply',
+    deadline: '2026-11-13',
     short: "lawyer seats at Ikeyi Shittu for five years' call in litigation and commercial work",
     blurb:
       "Ikeyi Shittu & Co are hiring lawyers with at least five years' call in litigation and commercial transactions, in Lagos, Abuja or Enugu, closing on 13 November too.",
@@ -122,6 +128,7 @@ export const ROLE_ENTRIES = [
     title: 'Blue Experience 2.0, Open Day 2026',
     line: 'Blue Experience is back for its second edition. Olaniwun Ajayi are opening their Banana Island office to law undergraduates for a day with the firm\'s lawyers: a look at practice from the inside, and a chance to ask what the classroom cannot answer. In person on Wednesday 25 November. Applications close on 13 November.',
     prep: 'event',
+    deadline: '2026-11-13',
     /* Closes the run of three that share 13 November; the Adeola Oyinlade
        short after it carries its own date. */
     short: 'Olaniwun Ajayi\'s open day for law undergraduates on 25 November, those three closing on 13 November',
@@ -135,6 +142,7 @@ export const ROLE_ENTRIES = [
     title: 'Senior Associate, Litigation',
     line: 'A senior associate seat for an advocate ready to lead. Adeola Oyinlade & Co want 5 to 10 years at the Bar with litigation at the centre of it: proven trial work, a sure command of procedure, and the drafting and judgement to run cases with little supervision. Full-time, from the firm\'s Yaba office. Send your CV and a cover letter, subject "Litigation Lawyer", by 20 November.',
     prep: 'apply',
+    deadline: '2026-11-20',
     /* The shorts are written to be joined: roleSummary() lists them in one
        sentence, and this last one closes it. */
     short: 'a senior litigation seat at Adeola Oyinlade in Yaba, closing on 20 November',

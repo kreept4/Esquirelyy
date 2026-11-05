@@ -46,7 +46,7 @@ export default function ToolPrompt({
           kicker: 'Before you apply',
           body: `A sharper CV and a cover letter written${at} are what move an application up the pile. Both tools open already set up for this role.`,
           links: [
-            { href: toolHref('cv-review', { role, firm }), label: 'Review your CV' },
+            { href: toolHref('cv-review', { role, firm }), label: 'Sharpen your CV' },
             { href: toolHref('cover-letter', { role, firm }), label: 'Write the cover letter' },
           ],
         }
