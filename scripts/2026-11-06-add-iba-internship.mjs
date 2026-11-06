@@ -52,43 +52,33 @@ const row = {
   firm_handles: {
     linkedin: { handle: 'international-bar-association', url: 'https://www.linkedin.com/company/international-bar-association' },
   },
+  /* Rewritten the same evening for length: the first version carried the
+     later intake, the unit-by-unit list and four steps, and read as a
+     brief rather than a listing. */
   description:
-    'Four months researching and writing for the International Bar Association, in its Human Rights Institute, ' +
-    'Legal Policy & Research Unit, AI Institute or eyeWitness. This intake runs 3 May to 27 August 2027, in London ' +
-    'or remotely. The IBA Educational Trust funds interns who could not otherwise take the place: up to £3,000 in ' +
-    'London, £2,000 remote, with applicants from developing countries first. Miss this one and the 30 August to ' +
-    '17 December 2027 intake closes on 19 March.',
+    'Four months researching and writing for the International Bar Association, 3 May to 27 August 2027. ' +
+    'Remote, or in London if you can work in the UK. Grants of up to £2,000 remote and £3,000 in London ' +
+    'are there if you need one.',
   eligibility:
-    'Law students, undergraduate or postgraduate, and newly qualified lawyers. Remote places are for students at ' +
-    'universities outside the UK. To intern in London you must be able to work in the UK; the IBA cannot help if a ' +
-    'visa is refused.',
+    'Law students and newly qualified lawyers. The remote option is for students at universities outside the UK.',
   application_steps: [
     {
       step: 1,
-      title: 'Write a cover letter',
-      detail: 'Why you want the placement, the dates you can do, and the areas of law you want to research.',
+      title: 'Prepare five documents',
+      detail:
+        'A cover letter, your CV, the IBA application form, a writing sample of up to five pages, and a ' +
+        'reference letter.',
     },
     {
       step: 2,
-      title: 'Gather four more documents',
-      detail:
-        'Your CV, the IBA application form for your office, an English writing sample of no more than five ' +
-        'pages, and a reference letter from a lecturer or employer.',
-    },
-    {
-      step: 3,
-      title: 'Email everything by 11 December',
-      detail:
-        'Send it to internprogramme@int-bar.org. Apply opens the IBA page with the forms. Decisions come at ' +
-        'least four weeks after the deadline.',
+      title: 'Email them by 11 December',
+      detail: 'To internprogramme@int-bar.org. The forms are on the page Apply opens.',
       off_platform: true,
     },
     {
-      step: 4,
-      title: 'Need a grant? Say so now',
-      detail:
-        'Fill in the IBA Educational Trust form with your application, and ask your referee to address your ' +
-        'case for funding in their letter.',
+      step: 3,
+      title: 'Need funding? Apply for a grant too',
+      detail: 'Send the IBA Educational Trust form with your application, and ask your referee to back it.',
       off_platform: true,
     },
   ],
