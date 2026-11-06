@@ -66,8 +66,10 @@
  */
 export const ROLE_ENTRIES = [
   /* THE 9 NOVEMBER DROP: SLINGSTONE'S LEKKI ASSOCIATE (closes 16 November),
-     ADEOLA OYINLADE'S COMMERCIAL LAWYERS (20 November) AND THE IBA'S LEGAL
-     INTERNSHIP PROGRAMME (11 December), soonest closing first.
+     ADEOLA OYINLADE'S COMMERCIAL LAWYERS (20 November), FEALTY PARTNERS'
+     DISPUTE RESOLUTION ASSOCIATE (no closing date) AND THE IBA'S LEGAL
+     INTERNSHIP PROGRAMME (11 December). Dated seats soonest first, the
+     undated seat after them, the internship last.
 
      All three went up on 6 November, the day after the 5 November send, and
      were held for one email on the Monday rather than a second message to
@@ -101,6 +103,21 @@ export const ROLE_ENTRIES = [
     short: 'commercial lawyer seats at Adeola Oyinlade',
     blurb:
       'Adeola Oyinlade & Co are hiring commercial lawyers at three to six years\' call in Yaba, closing on 20 November.',
+  },
+  {
+    /* Added 7 November, after the test of this drop had gone out. No
+       closing date, so it sits after the dated seats and before the
+       internship, and the card's pill says so rather than inventing one. */
+    slug: 'fealty-partners-dispute-resolution-associate',
+    employer: 'Fealty Partners LP',
+    employerShort: 'Fealty Partners',
+    title: 'Dispute Resolution Associate',
+    line: 'A dispute resolution seat for lawyers at least four years qualified: strong drafting, real courtroom advocacy, and the judgement to set litigation strategy and run matters on your own. Victoria Island, Lagos. Send your CV and a cover letter to info@fealtypartner.com. No closing date is set, so apply early.',
+    prep: 'apply',
+    deadline: null,
+    short: 'a dispute resolution seat at Fealty Partners',
+    blurb:
+      'Fealty Partners LP are hiring a dispute resolution associate at four or more years\' qualification in Victoria Island, with no closing date set.',
   },
   {
     /* An opportunity, not a jobs row: the slug is opportunitySlug(title). */

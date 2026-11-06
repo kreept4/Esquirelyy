@@ -296,7 +296,10 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
   /* "Closes" on every card, the open day included. It read "Apply by" there
      for a week of drafts, and a pill that changes its verb on one card in
      four reads as a different kind of fact when it is the same one. */
-  const pillLabel = (r: (typeof ROLES)[number]) => `Closes ${shortDate(r.deadline)}`
+  /* An undated listing says so. A pill is a promise about a date, and
+     leaving it blank or guessing would both break it. */
+  const pillLabel = (r: (typeof ROLES)[number]) =>
+    r.deadline ? `Closes ${shortDate(r.deadline)}` : 'No closing date'
 
   /**
    * One role, as a card: the firm's plate, the seat, the copy, and the tool
