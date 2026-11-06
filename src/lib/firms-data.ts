@@ -3021,6 +3021,19 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   adeolaoyinladeco: '/employer-logos/adeola-oyinlade.png',
   adeolaoyinlade: '/employer-logos/adeola-oyinlade.png',
 
+  /* Slingstone LP, added 6 November 2026 with their Lekki associate seat.
+     Hiring, not researched, so here rather than in ALL_FIRMS.
+
+     The full-colour lockup from slingstonelaw.com (img/logo.png): navy
+     wordmark, grey swirl in the second o, on transparency, trimmed. The
+     hiring notice prints a white version on blue, which would vanish in a
+     white ball; this one reads on both the ball and the cream card, so no
+     EMPLOYER_BALL_BG. A wide mark (about 4:1), so the ball sizes it by area
+     like the other wordmarks. */
+  slingstonelp: '/employer-logos/slingstone.png',
+  slingstone: '/employer-logos/slingstone.png',
+  slingstonelaw: '/employer-logos/slingstone.png',
+
   tangerineafrica: '/employer-logos/tangerine.png',
   tangerinelife: '/employer-logos/tangerine.png',
   tangerine: '/employer-logos/tangerine.png',
