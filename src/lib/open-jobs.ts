@@ -112,6 +112,9 @@ const OPEN_JOB_SLUGS = new Set<string>([
      intake, from the IBA's own pages. An opportunity, so the slug is
      opportunitySlug(title). */
   'iba-legal-internship-programme-may-to-august-2027',
+  /* 7 November: Fealty Partners' dispute resolution associate in Victoria
+     Island, from the firm's own notice. */
+  'fealty-partners-dispute-resolution-associate',
 
   /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
      drop, and the Lekki seat Sigma was recruiting for. Open for the reason

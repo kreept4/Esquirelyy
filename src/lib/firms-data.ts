@@ -3042,6 +3042,14 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   internationalbarassociation: '/employer-logos/iba.png',
   iba: '/employer-logos/iba.png',
 
+  /* Fealty Partners LP, added 7 November 2026 with their Victoria Island
+     dispute resolution associate seat. Hiring, not researched. The logo from
+     fealtypartners.ng (/images/logo.png): navy FP mark over the wordmark, on
+     transparency, trimmed. Reads in the white ball as it is. */
+  fealtypartnerslp: '/employer-logos/fealty-partners.png',
+  fealtypartners: '/employer-logos/fealty-partners.png',
+  fealty: '/employer-logos/fealty-partners.png',
+
   tangerineafrica: '/employer-logos/tangerine.png',
   tangerinelife: '/employer-logos/tangerine.png',
   tangerine: '/employer-logos/tangerine.png',
