@@ -275,7 +275,9 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
        card. Settled in the Figma pass: the kicker says when, the links say
        what, and naming the firm in the cover-letter link is what makes each
        one specific. */
-    return r.prep === 'event'
+    /* Widened to string: a drop with no event in it narrows `prep` to
+       'apply' and the comparison would not compile. */
+    return (r.prep as string) === 'event'
       ? { kicker: 'Going?', links: [{ label: 'Open your tracker', href: `${siteUrl}/tracker` }] }
       : {
           kicker: 'Before you apply',

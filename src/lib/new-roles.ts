@@ -65,89 +65,58 @@
  * the board.
  */
 export const ROLE_ENTRIES = [
-  /* THE 5 NOVEMBER DROP: STREN & BLAN'S 2027 NYSC TRAINEE ASSOCIATES, IKEYI
-     SHITTU'S LITIGATION AND COMMERCIAL LAWYERS, AND OLANIWUN AJAYI'S BLUE
-     EXPERIENCE OPEN DAY, all three closing on 13 November, and ADEOLA
-     OYINLADE'S SENIOR LITIGATION SEAT, closing on 20 November.
-     The three that share a date go first, as the listings a reader can miss
-     soonest; among them the two hiring rounds lead, newly called then five
-     years' call, and the open day follows. Adeola Oyinlade closes a week later,
-     so it goes last.
+  /* THE 9 NOVEMBER DROP: SLINGSTONE'S LEKKI ASSOCIATE (closes 16 November),
+     ADEOLA OYINLADE'S COMMERCIAL LAWYERS (20 November) AND THE IBA'S LEGAL
+     INTERNSHIP PROGRAMME (11 December), soonest closing first.
 
-     ⚠ AN OPEN DAY IS NOT A ROLE, so DROP_NOUN is 'opportunity' and DROP_ACTION
-     'are taking applications' below, for the reason those constants give: the
-     subject line must not tell undergraduates that Olaniwun Ajayi are hiring
-     them. Stren & Blan's round is a recruitment, and "taking applications" is
-     still true of it.
+     All three went up on 6 November, the day after the 5 November send, and
+     were held for one email on the Monday rather than a second message to
+     the same list inside a day. The 5 November entries are in git.
 
-     Stren & Blan leads: it went up first, and both share a closing date.
-
-     STREN & BLAN is one listing, though it is a recruitment round rather than a single seat: the
-     flier says "Trainee Associates", plural, and gives no number. It is filed
-     as one row because it is one form and one deadline, and the line below says
-     seats rather than "a seat" so nobody reads it as a single opening.
-
-     ⚠ IT CLOSES ON 13 NOVEMBER, EIGHT DAYS AFTER THE SEND. The line ends on the
-     date for that reason: a reader deciding whether to open the form tonight or
-     next week needs it more than anything else on the card.
-
-     Same day the board was cleared of seven rolling fliers from August and early
-     September (KBO, B.F.A., Principle, U&P, AVA, Tangerine, Abe & Asotie): none
-     carried a closing date and none had a live posting to check, so each is
-     delisted with that reason on its row, not deleted. */
+     ⚠ `inSentence` IS FOR THE IBA AND ANYTHING LIKE IT. The headline and
+     subject read the short names as a sentence, where "Slingstone, Adeola
+     Oyinlade and IBA are taking applications" drops an article a person would
+     never drop. The bare short name is still what the bell's row of names and
+     the card's cover-letter link use ("Draft your IBA cover letter"). */
   {
-    slug: 'stren-blan-trainee-associate-2027-nysc',
-    employer: 'Stren & Blan Partners',
-    employerShort: 'Stren & Blan',
-    title: 'Trainee Associate, 2027 NYSC',
-    line: 'A service year spent in practice. Stren & Blan Partners are taking on trainee associates from the 2027 NYSC batch, at a firm with offices in Lagos, Abuja and Enugu. A 2:1 LL.B or better is the bar. Applications go through the firm\'s online form and close on Friday 13 November.',
+    slug: 'slingstone-associate-lekki',
+    employer: 'Slingstone LP',
+    employerShort: 'Slingstone',
+    title: 'Associate',
+    line: 'An associate seat for lawyers four or more years into practice, in litigation or corporate and commercial work. In the firm\'s own words, brilliance is valued and kindness is non-negotiable. Lekki, Lagos. Send your CV to hello@slingstonelaw.com by Monday 16 November.',
     prep: 'apply',
-    deadline: '2026-11-13',
-    short: 'trainee associate seats at Stren & Blan for the 2027 NYSC year',
+    deadline: '2026-11-16',
+    short: 'an associate seat at Slingstone',
     blurb:
-      'Stren & Blan Partners are recruiting trainee associates for the 2027 NYSC year. They want a 2:1 LL.B, and applications close on 13 November.',
+      'Slingstone LP are hiring an associate with four or more years\' call in litigation or corporate and commercial work, closing on 16 November.',
   },
   {
-    slug: 'ikeyi-shittu-lawyer-litigation-commercial-transactions',
-    employer: 'Ikeyi Shittu & Co',
-    employerShort: 'Ikeyi Shittu',
-    title: 'Lawyer, Litigation and Commercial Transactions',
-    line: 'For lawyers as sure-footed in court as on a transaction: five or more years\' call across litigation and commercial work, a First or 2:1 LL.B, and ideally an LL.M. Depth in tax, employment, energy, maritime, technology or construction sets you apart. Hybrid, in Lagos, Abuja or Enugu. CVs by 13 November, with the role and your preferred city in the subject line.',
-    prep: 'apply',
-    deadline: '2026-11-13',
-    short: "lawyer seats at Ikeyi Shittu for five years' call in litigation and commercial work",
-    blurb:
-      "Ikeyi Shittu & Co are hiring lawyers with at least five years' call in litigation and commercial transactions, in Lagos, Abuja or Enugu, closing on 13 November too.",
-  },
-  {
-    /* An opportunity, not a jobs row: the slug is opportunitySlug(title) from
-       lib/opportunities.ts, which is what /jobs?roles= matches against. */
-    slug: 'blue-experience-2-0-olaniwun-ajayi-open-day-2026',
-    employer: 'Olaniwun Ajayi LP',
-    employerShort: 'Olaniwun Ajayi',
-    title: 'Blue Experience 2.0, Open Day 2026',
-    line: 'Blue Experience is back for its second edition. Olaniwun Ajayi are opening their Banana Island office to law undergraduates for a day with the firm\'s lawyers: a look at practice from the inside, and a chance to ask what the classroom cannot answer. In person on Wednesday 25 November. Applications close on 13 November.',
-    prep: 'event',
-    deadline: '2026-11-13',
-    /* Closes the run of three that share 13 November; the Adeola Oyinlade
-       short after it carries its own date. */
-    short: 'Olaniwun Ajayi\'s open day for law undergraduates on 25 November, those three closing on 13 November',
-    blurb:
-      'Olaniwun Ajayi are opening their Banana Island office to law undergraduates for a day on 25 November. Applications for that also close on 13 November.',
-  },
-  {
-    slug: 'adeola-oyinlade-senior-associate-litigation-yaba',
+    slug: 'adeola-oyinlade-commercial-lawyer-yaba',
     employer: 'Adeola Oyinlade & Co',
     employerShort: 'Adeola Oyinlade',
-    title: 'Senior Associate, Litigation',
-    line: 'A senior associate seat for an advocate ready to lead. Adeola Oyinlade & Co want 5 to 10 years at the Bar with litigation at the centre of it: proven trial work, a sure command of procedure, and the drafting and judgement to run cases with little supervision. Full-time, from the firm\'s Yaba office. Send your CV and a cover letter, subject "Litigation Lawyer", by 20 November.',
+    title: 'Commercial Lawyer',
+    line: 'Commercial transactions and company secretarial work, for lawyers three to six years into practice with a First or 2:1 and depth in a field such as tax, employment, energy or technology. Yaba, Lagos. Send your CV and a cover letter, subject "Commercial Lawyer", by 20 November.',
     prep: 'apply',
     deadline: '2026-11-20',
-    /* The shorts are written to be joined: roleSummary() lists them in one
-       sentence, and this last one closes it. */
-    short: 'a senior litigation seat at Adeola Oyinlade in Yaba, closing on 20 November',
+    short: 'commercial lawyer seats at Adeola Oyinlade',
     blurb:
-      'And Adeola Oyinlade & Co are hiring a senior associate to lead litigation in Yaba, at 5 to 10 years post-call, closing on 20 November.',
+      'Adeola Oyinlade & Co are hiring commercial lawyers at three to six years\' call in Yaba, closing on 20 November.',
+  },
+  {
+    /* An opportunity, not a jobs row: the slug is opportunitySlug(title). */
+    slug: 'iba-legal-internship-programme-may-to-august-2027',
+    employer: 'International Bar Association',
+    employerShort: 'IBA',
+    inSentence: 'the IBA',
+    title: 'Legal Internship Programme, May to August 2027',
+    /* ASCII on purpose: this line is also the plain-text part, so the grant
+       is described rather than priced in pounds. */
+    line: 'Four months researching and writing for the International Bar Association, remotely or in London. Open to law students and newly qualified lawyers; the remote route is for students outside the UK, and grants are there for those who need one. Applications close on 11 December.',
+    prep: 'apply',
+    deadline: '2026-12-11',
+    short: 'the IBA\'s 2027 legal internship',
+    blurb:
+      'And the International Bar Association are taking interns for May to August 2027, remotely or in London, closing on 11 December.',
   },
 ] as const
 
@@ -155,9 +124,10 @@ export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
    *  somebody who read the 1 September note has not seen this one. */
-  id: 'roles-2026-11-05',
-  /** ISO. Sorts the notification and dates the carousel slide. */
-  at: '2026-11-05T09:00:00.000Z',
+  id: 'roles-2026-11-09',
+  /** ISO. Sorts the notification and dates the carousel slide. The bell dates
+   *  the drop by its listings' own created_at and only falls back to this. */
+  at: '2026-11-09T07:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   /* ⚠ ONE NAME PER FIRM, NOT PER ROLE. Every consumer of these two joins them
      into a sentence or a row of names, and a drop where one firm posts several
@@ -169,6 +139,11 @@ export const NEW_ROLES = {
   employers: [...new Set<string>(ROLE_ENTRIES.map(r => r.employer))],
   /** The same firms without the parenthetical network names. Read by the bell. */
   employersShort: [...new Set<string>(ROLE_ENTRIES.map(r => r.employerShort))],
+  /** The short names as they read inside a sentence: "the IBA", not "IBA".
+   *  Read by the headline and subject helpers below. */
+  employersInSentence: [
+    ...new Set<string>(ROLE_ENTRIES.map(r => ('inSentence' in r ? r.inSentence : r.employerShort))),
+  ],
 } as const
 
 /* THE ANNOUNCEMENT EMAIL IS NOT RETROACTIVE, and that is fine. Each send bakes
@@ -258,7 +233,7 @@ export function employerSentence(): string {
  * same bug in the same file, avoided in one place and rewritten in the other.
  */
 export function employerSentenceShort(): string {
-  const names = [...NEW_ROLES.employersShort]
+  const names = [...NEW_ROLES.employersInSentence]
   if (names.length <= 1) return names[0] ?? ''
   return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
 }
@@ -274,7 +249,7 @@ export function employerSentenceShort(): string {
  * leads.
  */
 export function employerSubjectShort(): string {
-  const names = [...NEW_ROLES.employersShort]
+  const names = [...NEW_ROLES.employersInSentence]
   if (names.length <= 3) return employerSentenceShort()
   return `${names.slice(0, 2).join(', ')} and ${names.length - 2} more`
 }
