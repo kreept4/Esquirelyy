@@ -105,6 +105,9 @@ const OPEN_JOB_SLUGS = new Set<string>([
      opening, from the firm's own LinkedIn post. Not part of the drop that
      went out the day before, so it is open here and nowhere announced. */
   'adeola-oyinlade-commercial-lawyer-yaba',
+  /* 6 November, evening: Slingstone LP's associate seat in Lekki, from the
+     firm's own hiring notice. */
+  'slingstone-associate-lekki',
 
   /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
      drop, and the Lekki seat Sigma was recruiting for. Open for the reason
