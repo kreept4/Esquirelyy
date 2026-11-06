@@ -67,12 +67,12 @@ const row = {
       title: 'Prepare five documents',
       detail:
         'A cover letter, your CV, the IBA application form, a writing sample of up to five pages, and a ' +
-        'reference letter.',
+        'reference letter. Download the form from the IBA site using the Apply button.',
     },
     {
       step: 2,
       title: 'Email them by 11 December',
-      detail: 'To internprogramme@int-bar.org. The forms are on the page Apply opens.',
+      detail: 'Send everything to internprogramme@int-bar.org.',
       off_platform: true,
     },
     {
