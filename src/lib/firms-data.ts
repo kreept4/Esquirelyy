@@ -3034,6 +3034,14 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   slingstone: '/employer-logos/slingstone.png',
   slingstonelaw: '/employer-logos/slingstone.png',
 
+  /* The International Bar Association, added 6 November 2026 with its legal
+     internship programme. Not a firm, so here like the banks and the World
+     Bank. Its round seal from ibanet.org (IBA-logo-BLUE, 1389px), trimmed and
+     saved at 320px on transparency: navy, round, fills the ball the way the
+     Adeola Oyinlade seal does. No EMPLOYER_BALL_BG. */
+  internationalbarassociation: '/employer-logos/iba.png',
+  iba: '/employer-logos/iba.png',
+
   tangerineafrica: '/employer-logos/tangerine.png',
   tangerinelife: '/employer-logos/tangerine.png',
   tangerine: '/employer-logos/tangerine.png',
