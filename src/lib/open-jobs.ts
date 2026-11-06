@@ -108,6 +108,10 @@ const OPEN_JOB_SLUGS = new Set<string>([
   /* 6 November, evening: Slingstone LP's associate seat in Lekki, from the
      firm's own hiring notice. */
   'slingstone-associate-lekki',
+  /* Same evening: the IBA's legal internship programme, May to August 2027
+     intake, from the IBA's own pages. An opportunity, so the slug is
+     opportunitySlug(title). */
+  'iba-legal-internship-programme-may-to-august-2027',
 
   /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
      drop, and the Lekki seat Sigma was recruiting for. Open for the reason
