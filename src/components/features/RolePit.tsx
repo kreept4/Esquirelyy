@@ -2,7 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
+import { ArrowRight, Briefcase, CalendarClock, MapPin } from 'lucide-react'
 import { logoForEmployer, ballBgForEmployer } from '@/lib/firms-data'
+import { daysUntilDay, closesInWords } from '@/lib/day'
 
 /**
  * Ball pit of open roles. Each ball carries an employer mark; tap one and it
@@ -14,16 +16,14 @@ import { logoForEmployer, ballBgForEmployer } from '@/lib/firms-data'
  * starts and the balls lay out as a static grid.
  */
 
-const INK = '#1A1A1A'
 const CREAM = '#FAF7F2'
-const MUTED = '#8A8378'
-const CARTON = '#FFF8E5'
+/* INK, MUTED and CARTON went into globals.css with the detail card
+   (.role-pit-card[data-active], .rp-*), the only thing that used them. */
 
 /* The section sits inside the page's dark opening act now, so the palette is
    inverted: cream type on black, and the hairlines become low-opacity cream
    rather than the beige border that only existed to show up on cream. */
 const BLACK = '#000000'
-const ON_BLACK_LINE = 'rgba(250, 247, 242, 0.14)'
 const ON_BLACK_MUTED = 'rgba(250, 247, 242, 0.55)'
 
 const GRAVITY = 0.42
@@ -69,6 +69,22 @@ function deadlineLabel(l: any) {
   if (l.is_rolling) return 'Rolling'
   if (!l.deadline) return 'Open'
   return new Date(l.deadline).toLocaleDateString('en-NG', { day: 'numeric', month: 'short' })
+}
+
+/**
+ * The closing line on the detail card, and whether it is urgent.
+ *
+ * Within a week it counts down in words ("Closes in 3 days", "Closes
+ * tomorrow"), in Lagos calendar days through lib/day.ts like the board and the
+ * bell, and turns red; further out it is the date. Rolling and undated roles
+ * say so rather than inventing urgency.
+ */
+function closingLine(l: any): { text: string; soon: boolean } {
+  if (l.is_rolling) return { text: 'Rolling applications', soon: false }
+  if (!l.deadline) return { text: 'No closing date given', soon: false }
+  const days = daysUntilDay(l.deadline)
+  if (days !== null && days >= 0 && days <= 7) return { text: closesInWords(days), soon: true }
+  return { text: `Closes ${deadlineLabel(l)}`, soon: false }
 }
 
 /**
@@ -377,24 +393,45 @@ export default function RolePit({ listings }: { listings: any[] }) {
 
         {/* The panel holds its column whether or not a ball is selected. Leaving
             it empty is what made the section feel like something was missing. */}
-        {/* The carton card keeps its light ground: a lit panel against black is
-            the point. Its drop shadow was pure black, which is now invisible,
-            so the lift comes from a cream edge instead. */}
-        <div className="role-pit-card" style={{ backgroundColor: active ? CARTON : 'transparent', border: active ? `1.5px solid ${CARTON}` : `1px dashed ${ON_BLACK_LINE}`, borderRadius: 'var(--radius-panel)', boxShadow: active ? '6px 8px 0 rgba(250,247,242,0.22)' : 'none' }}>
+        {/* ⚠ STYLED BY CLASS, NOT INLINE, AND THAT IS THE FIX. The card's
+            carton ground was an inline style while its padding lived in the
+            stylesheet, and the phone rule zeroed the padding to suit the empty
+            state. Selected on a phone, the result was cream with the type and
+            the button run hard against its edges. data-active now decides the
+            whole look in one place, and the phone rule only touches the empty
+            state it was written for. */}
+        <div className="role-pit-card" data-active={active ? 'true' : 'false'}>
           {active ? (
-            <>
-              <button onClick={() => setOpen(null)} aria-label="Close" className="role-pit-close">×</button>
-              <p className="grotesk-bold" style={{ fontSize: '0.72rem', color: MUTED, marginBottom: '0.3rem' }}>{active.employer}</p>
-              <h3 className="display-bold" style={{ fontSize: 'clamp(1.15rem, 2vw, 1.6rem)', color: INK, lineHeight: 1.2, marginBottom: '0.75rem' }}>
-                {active.title}
-              </h3>
-              <p className="grotesk-regular" style={{ fontSize: '0.78rem', color: '#4A4A4A', marginBottom: '1.1rem' }}>
-                {[TYPE_LABELS[active.type] || active.type, active.location, deadlineLabel(active)].filter(Boolean).join(' · ')}
-              </p>
-              <Link href={'/jobs/' + active.slug} className="grotesk-bold" style={{ display: 'inline-block', padding: '0.65rem 1.5rem', borderRadius: '999px', fontSize: '0.76rem', backgroundColor: '#14B8A6', color: '#FFFFFF', textDecoration: 'none' }}>
-                View role
-              </Link>
-            </>
+            (() => {
+              const mark = logoForEmployer(active.employer) || (active as any).logo_url || null
+              const close = closingLine(active)
+              return (
+                <>
+                  <button onClick={() => setOpen(null)} aria-label="Close" className="role-pit-close">×</button>
+                  <div className="rp-head">
+                    <span className="rp-mark" style={{ backgroundColor: ballBgForEmployer(active.employer) || '#FFFFFF' }} aria-hidden>
+                      {mark ? <img src={mark} alt="" /> : <span className="display-black">{initials(active.employer)}</span>}
+                    </span>
+                    <span className="grotesk-bold rp-employer">{active.employer}</span>
+                  </div>
+                  <h3 className="display-bold rp-title">{active.title}</h3>
+                  <ul className="rp-facts">
+                    {(TYPE_LABELS[active.type] || active.type) && (
+                      <li className="grotesk-regular"><Briefcase size={15} aria-hidden /> {TYPE_LABELS[active.type] || active.type}</li>
+                    )}
+                    {active.location && (
+                      <li className="grotesk-regular"><MapPin size={15} aria-hidden /> {active.location}</li>
+                    )}
+                    <li className="grotesk-regular" data-soon={close.soon ? 'true' : undefined}>
+                      <CalendarClock size={15} aria-hidden /> {close.text}
+                    </li>
+                  </ul>
+                  <Link href={'/jobs/' + active.slug} className="grotesk-bold apply-card-cta rp-cta">
+                    View role <ArrowRight size={15} aria-hidden />
+                  </Link>
+                </>
+              )
+            })()
           ) : (
             <div className="role-pit-empty">
               {/* The count moved up into the eyebrow, so this panel no longer

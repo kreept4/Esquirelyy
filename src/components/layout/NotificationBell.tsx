@@ -86,7 +86,9 @@ function NotifRow({ n, unread }: { n: Notification; unread: boolean }) {
           and this stays only as the accessible name for it, which the dot
           cannot provide while it is aria-hidden. */}
       {unread && <span className="notif-item-new" aria-label="Unread" />}
-      <span className="grotesk-regular notif-item-time">{timeAgo(n.at)}</span>
+      {/* A closing-soon row carries its closing day in `label`; its `at` is
+          bookkeeping and would print a time nothing happened at. */}
+      <span className="grotesk-regular notif-item-time">{n.label || timeAgo(n.at)}</span>
     </>
   )
 }

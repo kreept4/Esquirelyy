@@ -57,6 +57,24 @@ export interface Notification {
   href?: string
   /** ISO. Sorts the feed and decides what counts as unread. */
   at: string
+  /**
+   * What the time column says, when `at` is not a moment anything happened.
+   *
+   * ⚠ A CLOSING-SOON ROW'S `at` IS BOOKKEEPING, NOT AN EVENT. It is midnight
+   * UTC seven days before the deadline, which is what keeps the row's unread
+   * state still (see the long note in the closing branch below). Printed as
+   * "6h" it told a member that three listings added the evening before had
+   * just gone up that morning, which is how it was reported. Those rows show
+   * the day they close instead, the one date on them that means something.
+   */
+  label?: string
+}
+
+/** "13 Nov" from an ISO date, read as a calendar day with no timezone. */
+function dayLabel(iso: string): string {
+  const [, m, d] = iso.slice(0, 10).split('-').map(Number)
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  return m >= 1 && m <= 12 && d ? `${d} ${MONTHS[m - 1]}` : ''
 }
 
 export type Prefs = { stage?: string; goal?: string; city?: string }
@@ -473,12 +491,22 @@ export function buildFeed(
          filtered to each reader's own preferences and may not include either of
          these, so the announcement has to stand on its own rather than depend
          on the roles beneath it having survived the filter. */
+  /* ⚠ DATED BY ITS LISTINGS, NOT BY THE CONSTANT. NEW_ROLES.at is typed in
+     when a drop is written, and the 5 November one said 09:00 while its last
+     listing went up at 18:32: the bell put the announcement nine hours before
+     anything it announced existed. The newest created_at among the drop's own
+     slugs is when the drop was actually complete. The constant stays as the
+     fallback for a drop whose rows are not in this fetch. */
+  const dropStamps = [...jobs, ...opportunities]
+    .filter(r => r?.slug && r?.created_at && NEW_ROLES.slugs.includes(r.slug))
+    .map(r => Date.parse(r.created_at))
+    .filter(Number.isFinite)
   out.push({
     id: NEW_ROLES.id,
     kind: 'drop',
     title: `${roleCountLabel()} on the board`,
     detail: NEW_ROLES.employersShort.join(' · '),
-    at: NEW_ROLES.at,
+    at: dropStamps.length ? new Date(Math.max(...dropStamps)).toISOString() : NEW_ROLES.at,
   })
 
   /* 0c. THE TEAM CALL IS NOT PUSHED, 24 August 2026, AND THE ID IS WHAT
@@ -540,6 +568,7 @@ export function buildFeed(
       kind: 'deadline',
       title: s.title,
       detail: closesInWords(days),
+      label: dayLabel(d.toISOString()),
       href: '/scholarships',
       // Dated to the moment it entered the window, so it surfaces once and then
       // ages out of unread rather than re-alerting every time the panel opens.
@@ -635,6 +664,7 @@ export function buildFeed(
       kind: 'deadline',
       title: o.title || '',
       detail: closesInWords(days),
+      label: dayLabel(o.deadline),
       href: `/jobs/${o.slug}`,
       at: new Date(entered - CLOSING_WINDOW_DAYS * 86_400_000).toISOString(),
     })
