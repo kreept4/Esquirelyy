@@ -115,6 +115,10 @@ const OPEN_JOB_SLUGS = new Set<string>([
   /* 7 November: Fealty Partners' dispute resolution associate in Victoria
      Island, from the firm's own notice. */
   'fealty-partners-dispute-resolution-associate',
+  /* 9 November: Chapel Hill Denham's 2027 Management Development Programme,
+     a finance graduate scheme open to law graduates, from the firm's own
+     programme page and recruitment portal. */
+  'chapel-hill-denham-2027-management-development-programme',
 
   /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
      drop, and the Lekki seat Sigma was recruiting for. Open for the reason

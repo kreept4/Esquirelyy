@@ -3050,6 +3050,17 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   fealtypartners: '/employer-logos/fealty-partners.png',
   fealty: '/employer-logos/fealty-partners.png',
 
+  /* Chapel Hill Denham, added 9 November 2026 with their 2027 Management
+     Development Programme. An investment bank, not a firm, so here like
+     Heirs Holdings and Andersen. The full-colour lockup from
+     chapelhilldenham.com (chapel-hill-denham-logo-retina-version.png): copper
+     shield mark over the navy wordmark, on transparency, trimmed and saved at
+     430px. The site header uses a white version, which would vanish in a
+     white ball; this one reads on the ball and the cream card as it is. */
+  chapelhilldenham: '/employer-logos/chapel-hill-denham.png',
+  chapelhilldenhamlimited: '/employer-logos/chapel-hill-denham.png',
+  chapelhill: '/employer-logos/chapel-hill-denham.png',
+
   tangerineafrica: '/employer-logos/tangerine.png',
   tangerinelife: '/employer-logos/tangerine.png',
   tangerine: '/employer-logos/tangerine.png',
