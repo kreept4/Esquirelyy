@@ -3,6 +3,7 @@ import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import SmallScreenNotice from '@/components/layout/SmallScreenNotice'
 import ReferralCapture from '@/components/features/ReferralCapture'
+import SiteAnalytics from '@/components/features/SiteAnalytics'
 import JsonLd, { FOUNDERS } from '@/components/seo/JsonLd'
 import { SITE_URL } from '@/lib/site-url'
 
@@ -206,6 +207,7 @@ export default function RootLayout({
         {children}
         <SmallScreenNotice />
         <ReferralCapture />
+        <SiteAnalytics />
       </body>
     </html>
   )
