@@ -60,7 +60,7 @@ const rows = [
     about:
       'An independent investment banking, securities trading and investment management firm, with offices in Lagos, Abuja and Accra.',
     role_desc:
-      'Chapel Hill Denham, an investment bank in Lagos, are taking graduates onto their 2027 Management Development Programme. It is a finance job, not a legal one: trainees work across investment banking, securities trading and investment management, and are trained in class and on the job. Law graduates can apply, as any degree at 2:1 or above is accepted. The programme is full-time in Lagos. Apply online by 30 November 2026.',
+      'Chapel Hill Denham, an investment bank in Lagos, are taking graduates onto their 2027 Management Development Programme. Trainees work across investment banking, securities trading and investment management, and are trained in class and on the job. Law graduates can apply, as any degree at 2:1 or above is accepted. The programme is full-time in Lagos. Apply online by 30 November 2026.',
     /* Written for the reader this board has, a law graduate: the firm's
        "bachelor's degree" becomes an LL.B, which is the degree they hold. */
     requirements: [
