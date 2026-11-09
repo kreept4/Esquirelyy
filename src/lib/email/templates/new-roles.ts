@@ -23,6 +23,7 @@ import { activeStudentNotice } from '@/lib/email/student-notice'
 import { activeClosingNotice } from '@/lib/email/closing-notice'
 import { logoForEmployer } from '@/lib/firms-data'
 import { toolHref } from '@/lib/tool-links'
+import { tagHtmlLinks, tagTextLinks } from '@/lib/email/campaign-links'
 import LOGO_PLATES from '@/lib/email/logo-plates.json'
 import SPLASH_PLATES from '@/lib/email/splash-plates.json'
 
@@ -916,6 +917,11 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
 </body>
 </html>`
 
-  return { subject, text, html }
+  /* Every link back to the site carries this send's drop id, so the visits it
+     produces can be told apart from LinkedIn's in analytics. Applied to the
+     finished parts rather than at each href, so a link added to the template
+     later is tagged without anybody remembering to. See campaign-links.ts. */
+  const c = { source: 'roles-email', campaign: mailing ? mailing.id : NEW_ROLES.id }
+  return { subject, text: tagTextLinks(text, siteUrl, c), html: tagHtmlLinks(html, siteUrl, c) }
 }
 
