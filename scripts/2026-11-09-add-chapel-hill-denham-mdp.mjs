@@ -11,11 +11,12 @@
  *
  * The same reason Heirs Holdings' and Andersen's graduate intakes are: it takes
  * law graduates. The requirement is a bachelor's degree at 2:1 with no subject
- * named, so an LL.B qualifies. But it is a finance career, investment banking
- * and investment management, with no legal or compliance track, and the
- * description says so in its second sentence so nobody reads it as a legal
- * seat. sector is 'other' for the reason set out in the Andersen script: the
- * filter is about what the employer is.
+ * named, so an LL.B qualifies. There is no legal or compliance track, so the
+ * listing is written from the law graduate's side rather than claiming one:
+ * who it suits (a lawyer drawn to capital markets and corporate finance who
+ * wants the business side of deals), then what trainees actually do. sector
+ * is 'other' for the reason set out in the Andersen script: the filter is
+ * about what the employer is.
  *
  * WHAT IS READ AND WHAT IS INFERRED
  *
@@ -58,9 +59,9 @@ const rows = [
     is_closing_soon: false,
     practice_areas: ['Capital Markets', 'Banking & Finance'],
     about:
-      'An independent investment banking, securities trading and investment management firm, with offices in Lagos, Abuja and Accra.',
+      'An independent investment bank in Lagos, with offices in Abuja and Accra. Its work covers investment banking, securities trading and investment management.',
     role_desc:
-      'Chapel Hill Denham, an investment bank in Lagos, are taking graduates onto their 2027 Management Development Programme. Trainees work across investment banking, securities trading and investment management, and are trained in class and on the job. Law graduates can apply, as any degree at 2:1 or above is accepted. The programme is full-time in Lagos. Apply online by 30 November 2026.',
+      'Chapel Hill Denham, an investment bank in Lagos, accept law graduates onto their 2027 Management Development Programme. It suits a law graduate interested in capital markets and corporate finance who wants to work on the business side of deals. Trainees move through investment banking, securities trading and investment management, with training in class and on the job. The programme is full-time in Lagos. Apply online by 30 November 2026.',
     /* Written for the reader this board has, a law graduate: the firm's
        "bachelor's degree" becomes an LL.B, which is the degree they hold. */
     requirements: [
