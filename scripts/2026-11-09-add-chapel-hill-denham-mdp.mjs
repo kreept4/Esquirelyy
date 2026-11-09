@@ -13,8 +13,10 @@
  * law graduates. The requirement is a bachelor's degree at 2:1 with no subject
  * named, so an LL.B qualifies. There is no legal or compliance track, so the
  * listing is written from the law graduate's side rather than claiming one:
- * who it suits (a lawyer drawn to capital markets and corporate finance who
- * wants the business side of deals), then what trainees actually do. sector
+ * the bank's deals are the ones corporate and capital markets lawyers work
+ * on (its own investment banking page names them: M&A, debt and equity
+ * capital markets, privatisation, restructurings), and trainees see them
+ * from the bank's side. sector
  * is 'other' for the reason set out in the Andersen script: the filter is
  * about what the employer is.
  *
@@ -29,11 +31,13 @@
  *                 posting mentions it, so the description says the programme
  *                 is in Lagos and that applying is online from anywhere.
  *   "any subject" Inferred from the requirement naming no subject. Not stated.
- *   practice      Capital Markets and Banking & Finance: the nearest of the
- *                 board's areas to the firm's own description of itself
- *                 ("investment banking, securities trading and investment
- *                 management"), so the listing reaches members filtering for
- *                 finance-side work.
+ *   practice      Capital Markets, Corporate & Commercial (M&A) and Banking &
+ *                 Finance: the board's areas for the deal types the firm's
+ *                 investment banking page lists, so the listing reaches
+ *                 members filtering for that work.
+ *   about         The Euromoney record and the deal types are from the
+ *                 firm's investment banking page
+ *                 (chapelhilldenham.com/investment-banking).
  *   apply_url     The portal posting exactly as the programme page links it.
  *
  * Run: node scripts/2026-11-09-add-chapel-hill-denham-mdp.mjs           (writes, via .env.local)
@@ -57,11 +61,11 @@ const rows = [
     is_rolling: false,
     is_verified: true,
     is_closing_soon: false,
-    practice_areas: ['Capital Markets', 'Banking & Finance'],
+    practice_areas: ['Capital Markets', 'Corporate & Commercial', 'Banking & Finance'],
     about:
-      'An independent investment bank in Lagos, with offices in Abuja and Accra. Its work covers investment banking, securities trading and investment management.',
+      "An investment bank in Lagos, with offices in Abuja and Accra, named Euromoney's best investment bank in Nigeria nine times in the last ten years. It advises companies and governments on mergers and acquisitions, share and bond issues, privatisations and restructurings.",
     role_desc:
-      'Chapel Hill Denham, an investment bank in Lagos, accept law graduates onto their 2027 Management Development Programme. It suits a law graduate interested in capital markets and corporate finance who wants to work on the business side of deals. Trainees move through investment banking, securities trading and investment management, with training in class and on the job. The programme is full-time in Lagos. Apply online by 30 November 2026.',
+      "Chapel Hill Denham accept law graduates onto their 2027 Management Development Programme. The bank works on the same deals corporate and capital markets lawyers do: mergers and acquisitions, share and bond issues, privatisations and restructurings. Trainees see that work from the bank's side, moving through investment banking, securities trading and investment management, with training in class and on the job. The programme is full-time in Lagos. Apply online by 30 November 2026.",
     /* Written for the reader this board has, a law graduate: the firm's
        "bachelor's degree" becomes an LL.B, which is the degree they hold. */
     requirements: [
