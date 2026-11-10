@@ -298,7 +298,7 @@ function Preview({ kind }: { kind: string }) {
     const rows = [
       ['Associate, Corporate & Commercial', 'Aluko & Oyebode', 'Lagos', 'Verified'],
       ['Associate, Capital Markets', 'G Elias & Co', 'Lagos', 'Rolling'],
-      ['Associate, Dispute Resolution', 'Kenna Partners', 'Lagos', 'Rolling'],
+      ['Associate, Dispute Resolution', 'Kenna LP', 'Lagos', 'Rolling'],
     ]
     return (
       <Panel>
