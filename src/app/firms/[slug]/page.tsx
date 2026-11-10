@@ -576,6 +576,16 @@ export default async function FirmDetailPage({ params }: { params: Promise<{ slu
                       {' '}instead.
                     </p>
                   )}
+                  {/* Firms that run rounds through a portal or form. The email
+                      stays for a speculative letter; this is the official
+                      route when a round is open. See Firm.careersUrl. */}
+                  {firm.careersUrl && (
+                    <p className="grotesk-regular apply-card-note">
+                      {firm.shortName} also take applications through{' '}
+                      <a href={firm.careersUrl} className="apply-card-mail" target="_blank" rel="noopener noreferrer">their careers page</a>
+                      , so check there when a recruitment round is open.
+                    </p>
+                  )}
                 </>
               )}
               </>

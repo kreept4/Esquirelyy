@@ -238,6 +238,21 @@ export interface Firm {
    */
   website?: string
   /**
+   * The firm's own careers page, where it runs applications through a portal
+   * or form rather than an inbox.
+   *
+   * Set on the firms whose careers page, checked 10 November 2026, sends
+   * applicants to a form or recruitment system and shows no application
+   * address: Aluko & Oyebode, Banwo & Ighodalo, Jackson Etti & Edu, Kenna,
+   * Punuka, AELEX and G Elias. Their `email` stays, because a speculative
+   * letter still needs somewhere to go between rounds; the profile shows this
+   * link under it as the official route when a round is open.
+   *
+   * It is the careers page, not the portal itself. Portal URLs change with
+   * every recruitment round; the page that links to them does not.
+   */
+  careersUrl?: string
+  /**
    * The firm's LinkedIn page.
    *
    * ⚠ HARVESTED FROM EACH FIRM'S OWN SITE, NEVER FROM SEARCHING LINKEDIN, and
@@ -611,11 +626,13 @@ const FIRMS_UNSORTED: Firm[] = [
     /* Three offices, not one. The Abuja address was supplied by hand: the firm's
        own office-details page returns 403 to every automated request, and Legal
        500's contact listing shows only Lagos and Port Harcourt, so neither
-       source could confirm it. Port Harcourt is from that Legal 500 listing. */
+       source could confirm it. Port Harcourt was from that Legal 500 listing
+       until 10 November 2026, when the firm's office-details page served and
+       gave Boaz House, 5 Abuja Lane instead; theirs is used. */
     offices: [
       { city: 'Lagos', address: '9th Floor, St. Nicholas House, Catholic Mission Street, Lagos Island, Lagos' },
       { city: 'Abuja', address: '2nd Floor, Abia House, Michika Street, Central Business District, Abuja' },
-      { city: 'Port Harcourt', address: '10 Igboukwu Street, D-Line, Port Harcourt' },
+      { city: 'Port Harcourt', address: 'Boaz House, 5 Abuja Lane, D-Line, Port Harcourt' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Banking & Finance', 'Dispute Resolution'],
     description: 'A leading Nigerian commercial law firm with particular strength in energy, corporate transactions, and dispute resolution. Combined with Dentons in 2021 and now practises as Dentons ACAS-Law.',
@@ -634,6 +651,7 @@ const FIRMS_UNSORTED: Firm[] = [
      * students were being sent to.
      */
     email: 'employment@aelex.com',
+    careersUrl: 'https://aelex.com/careers/',
     website: 'https://aelex.com',
     linkedin: 'https://www.linkedin.com/company/507546',
     offices: [
@@ -655,7 +673,8 @@ const FIRMS_UNSORTED: Firm[] = [
     tier: 'Established',
     // Careers page: applicants "send a mail directly to Recruitment@ainablankson.com
     // indicating the position of interest". Lowercased; the mailbox is not case sensitive.
-    email: 'recruitment@ainablankson.com',
+    /* Their careers page says "All applications should be sent via email only and addressed to: careers@ainablankson.com". recruitment@ is for advertised positions (10 November 2026). */
+    email: 'careers@ainablankson.com',
     website: 'https://ainablankson.com',
     linkedin: 'https://www.linkedin.com/company/103737330',
     offices: [
@@ -673,13 +692,11 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Ajumogobia & Okeke',
     shortName: 'A&O Nigeria',
     tier: 'Established',
-    email: 'ao@ajumogobiaokeke.com',
-    /* ⚠ CHECKED 2026-09-11 AND THE SERVER WAS REFUSING CONNECTIONS, on both
-       :80 and :443, with certificate checking disabled, across repeated probes.
-       The domain itself is fine: it resolves, and it holds live MX, so the
-       address above still delivers. Left in place because one afternoon of
-       probes from one location is not proof a site is gone; if it is still
-       refusing connections on a later check, drop the field. */
+    /* Their careers page: "Please send your CV to us at
+       careers@ajumogobiaokeke.com". ao@ is the general inbox on the contact
+       page. Checked 10 November 2026, when the site was serving again after
+       refusing connections on 11 September. */
+    email: 'careers@ajumogobiaokeke.com',
     website: 'https://ajumogobiaokeke.com',
     linkedin: 'https://www.linkedin.com/company/ajumogobia-%26-okeke',
     offices: [
@@ -698,6 +715,7 @@ const FIRMS_UNSORTED: Firm[] = [
     shortName: 'Aluko & Oyebode',
     tier: 'Leading',
     email: 'careers@aluko-oyebode.com',
+    careersUrl: 'https://aluko-oyebode.com/careers/',
     website: 'https://aluko-oyebode.com',
     linkedin: 'https://www.linkedin.com/company/aluko-%26-oyebode',
     offices: [
@@ -717,6 +735,7 @@ const FIRMS_UNSORTED: Firm[] = [
     shortName: 'Banwo & Ighodalo',
     tier: 'Leading',
     email: 'hr@banwo-ighodalo.com',
+    careersUrl: 'https://www.banwo-ighodalo.com/careers/',
     website: 'https://banwo-ighodalo.com',
     linkedin: 'https://www.linkedin.com/company/banwo%26ighodalo',
     offices: [
@@ -738,7 +757,7 @@ const FIRMS_UNSORTED: Firm[] = [
     email: 'recruitment@blackfriars-law.com',
     website: 'https://blackfriars-law.com',
     linkedin: 'https://www.linkedin.com/company/blackfriars-solicitors',
-    offices: [{ city: 'Lagos', address: '28 McCarthy Street, Onikan, Lagos' }],
+    offices: [{ city: 'Lagos', address: 'The Penthouse Floor, Itiku House, 28-30 Macarthy Street, Onikan, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Banking & Finance'],
     description: 'A boutique commercial law firm offering focused expertise in corporate transactions and dispute resolution.',
     foundedYear: 2008,
@@ -857,6 +876,7 @@ const FIRMS_UNSORTED: Firm[] = [
      */
     email: 'careers@gelias.com',
     internEmail: 'internships@gelias.com',
+    careersUrl: 'https://www.gelias.com/about-us/careers',
     website: 'https://gelias.com',
     linkedin: 'https://www.linkedin.com/company/gelias',
     offices: [
@@ -913,6 +933,7 @@ const FIRMS_UNSORTED: Firm[] = [
      * is where applications go. jee@jee.africa is the general line.
      */
     email: 'jacksonettiedu@jacksonettiandedu.com',
+    careersUrl: 'https://jee.africa/careers',
     website: 'https://jee.africa',
     linkedin: 'https://www.linkedin.com/company/jackson-etti-and-edu',
     offices: [
@@ -930,16 +951,21 @@ const FIRMS_UNSORTED: Firm[] = [
   {
     slug: 'kenna-partners',
     logoFile: 'kenna-partners.png',
-    name: 'Kenna Partners',
-    shortName: 'Kenna Partners',
+    /* Kenna LP since the rebrand: kennapartners.com now redirects to
+       kennalp.com, which calls the firm Kenna LP throughout. The slug stays
+       for the URLs already out there. */
+    name: 'Kenna LP',
+    shortName: 'Kenna',
+    formerName: 'Kenna Partners',
     tier: 'Established',
     email: 'careers@kennapartners.com',
-    website: 'https://kennapartners.com',
+    careersUrl: 'https://www.kennalp.com/careers/',
+    website: 'https://www.kennalp.com',
     linkedin: 'https://www.linkedin.com/company/kennapartners',
     offices: [
       { city: 'Lagos', address: '8 Ogunyemi Road, Palace Way, Oniru, Lagos' },
-      { city: 'Abuja', address: 'C3 Bensima House, 3rd Floor, Plot 2942, Cadastral Zone A6, Aguiyi Ironsi Street, Maitama, Abuja' },
-      { city: 'Enugu', address: '23 Umuawulu Street, Independence Layout, Enugu' },
+      { city: 'Abuja', address: '1st Floor, Novare Central, Plot 502, Dalaba Street, Wuse Zone 5, Abuja' },
+      { city: 'Enugu', address: '3 Emmanuel Ngwu Street, Thinkers Corner, Enugu' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Tax', 'Banking & Finance', 'Real Estate', 'Employment'],
     description: 'A full-service commercial law firm with deep expertise in corporate transactions, tax advisory, and real estate.',
@@ -1004,7 +1030,8 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Mike Igbokwe & Co',
     shortName: 'Mike Igbokwe',
     tier: 'Boutique',
-    email: 'mike@mikeigbokwe.com',
+    /* The Lagos office address on their contact page (10 November 2026). */
+    email: 'info@mikeigbokwe.com',
     website: 'https://mikeigbokwe.com',
     linkedin: 'https://www.linkedin.com/company/mikeigbokwesan',
     offices: [
@@ -1154,7 +1181,7 @@ const FIRMS_UNSORTED: Firm[] = [
     website: 'https://primeraal.com',
     linkedin: 'https://www.linkedin.com/company/primera-africa-legal',
     offices: [
-      { city: 'Lagos', address: '1B Utomi Aire Avenue, Off Fola Osibo, Lekki Phase 1, Lagos' },
+      { city: 'Lagos', address: '95 HFP Way, Dolphin Estate, Ikoyi, Lagos' },
       { city: 'Abuja', address: "No. 3 Andrew's Court, Sadiya Memorial, Kpaduma 1, Asokoro New Extension, Abuja" },
     ],
     practiceAreas: ['Corporate & Commercial', 'Banking & Finance', 'Capital Markets', 'Energy & Natural Resources'],
@@ -1169,6 +1196,7 @@ const FIRMS_UNSORTED: Firm[] = [
     shortName: 'Punuka',
     tier: 'Established',
     email: 'careers@punuka.com',
+    careersUrl: 'https://punuka.com/careers/',
     website: 'https://punuka.com',
     linkedin: 'https://www.linkedin.com/company/punuka-attorneys-%26-solicitors',
     offices: [
@@ -1190,7 +1218,11 @@ const FIRMS_UNSORTED: Firm[] = [
     email: 'info@resolutionlawng.com',
     website: 'https://resolutionlawng.com',
     linkedin: 'https://www.linkedin.com/company/resolution-law-firm',
-    offices: [{ city: 'Lagos', address: '50/52 Toyin Street, Ikeja, Lagos' }],
+    offices: [
+      { city: 'Lagos', address: 'Resolution House, 161 Ajao Road, Off Obafemi Awolowo Way, Ikeja, Lagos' },
+      { city: 'Lagos', address: 'Waterside, 5 Admiralty Road, Lekki Phase 1, Lagos' },
+      { city: 'Abuja', address: 'Suite 83, 3rd Floor, De Avalon Plaza, Plot 484, Obafemi Awolowo Way, Utako, Abuja' },
+    ],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Intellectual Property'],
     description: 'A boutique commercial law firm offering expertise in corporate advisory, dispute resolution, and intellectual property.',
     foundedYear: 2010,
@@ -1202,7 +1234,8 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Simmons Cooper Partners',
     shortName: 'Simmons Cooper',
     tier: 'Established',
-    email: 'careers@scp-law.com',
+    /* The only address on their site, which has no careers page (10 November 2026). */
+    email: 'info@scp-law.com',
     website: 'https://scp-law.com',
     linkedin: 'https://www.linkedin.com/company/simmonscooperpartners',
     offices: [
@@ -1271,7 +1304,9 @@ const FIRMS_UNSORTED: Firm[] = [
      * sent to the old address was undeliverable. The firm now trades online as sskohn.com.
      * ssk@sskohn.com is the address on their own NYSC Associate advert.
      */
-    email: 'ssk@sskohn.com',
+    /* Changed 10 November 2026 to the address their own contact page and
+       careers page now publish. ssk@ appears nowhere on the current site. */
+    email: 'info@sskohn.com',
     website: 'https://sskohn.com',
     linkedin: 'https://www.linkedin.com/company/sskohnng',
     offices: [
@@ -1293,7 +1328,10 @@ const FIRMS_UNSORTED: Firm[] = [
     email: 'reception@tayooyetibolaw.com',
     website: 'https://tayooyetibolaw.com',
     linkedin: 'https://www.linkedin.com/company/tayo-oyetibo-%26-co-',
-    offices: [{ city: 'Lagos', address: 'Faith House, Plot 6 Block 113, Lekki-Epe Expressway, Lekki Phase 1, Lagos' }],
+    offices: [
+      { city: 'Lagos', address: 'Faith House, Plot 6 Block 113, Lekki-Epe Expressway, Lekki Phase 1, Lagos' },
+      { city: 'Abuja', address: 'Faith House, 12B Justice Galadima Street, Covenant Garden Estate, Apo-Dutse, Abuja' },
+    ],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Banking & Finance', 'Energy & Natural Resources'],
     description: 'A full-service commercial law firm with expertise in corporate transactions, energy, and dispute resolution.',
     foundedYear: 1996,
@@ -1364,7 +1402,8 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Wole Olanipekun & Co',
     shortName: 'Wole Olanipekun',
     tier: 'Established',
-    email: 'info@woleolanipekun.com',
+    /* Their careers page, 10 November 2026: "submit their CV and covering letter to careers@woleolanipekun.com". */
+    email: 'careers@woleolanipekun.com',
     website: 'https://woleolanipekun.com',
     linkedin: 'https://www.linkedin.com/company/wole-olanipekun-company',
     offices: [
@@ -1446,6 +1485,7 @@ const FIRMS_UNSORTED: Firm[] = [
     linkedin: 'https://www.linkedin.com/company/duale-ovia-%26-alex-adedipe',
     offices: [
       { city: 'Lagos', address: 'Plot 1b, Block 129, Jide Sawyerr Drive, Lekki Phase 1, Lagos' },
+      { city: 'Abuja', address: 'AP Plaza, Plot 100, Ademola Adetokunbo Crescent, Wuse 2, Abuja' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Technology & Fintech', 'Private Equity & Venture Capital', 'Banking & Finance', 'Mergers & Acquisitions'],
     description: 'The firm most closely associated with Nigerian venture capital and startup work. Its corporate practice is co-led by Adeniyi Duale and Adeleke Alex-Adedipe and is ranked by both Legal 500 and IFLR1000.',
@@ -1497,7 +1537,8 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Lekan Bamidele & Co',
     shortName: 'Lekan Bamidele',
     tier: 'Boutique',
-    email: 'info@lbandcolaw.com',
+    /* The address on their home page; info@ is not on the site (10 November 2026). */
+    email: 'hello@lbandcolaw.com',
     website: 'https://lbandcolaw.com',
     linkedin: 'https://www.linkedin.com/company/lekan-bamidele-co-the-bohemian-firm',
     offices: [
@@ -1514,7 +1555,8 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Odujinrin & Adefulu',
     shortName: 'Odujinrin & Adefulu',
     tier: 'Established',
-    email: 'info@odujinrinadefulu.com',
+    /* Their careers page, 10 November 2026: "Send your CV to careers@odujinrinadefulu.com". */
+    email: 'careers@odujinrinadefulu.com',
     website: 'https://odujinrinadefulu.com',
     linkedin: 'https://www.linkedin.com/company/odujinrin-%26-adefulu',
     offices: [
@@ -1594,7 +1636,8 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Sofunde, Osakwe, Ogundipe & Belgore',
     shortName: 'SOOB',
     tier: 'Established',
-    email: 'info@sooblaw.com',
+    /* The address on their contact page; info@ is not on the site (10 November 2026). */
+    email: 'sooblaw@sooblaw.com',
     website: 'https://sooblaw.com',
     linkedin: 'https://www.linkedin.com/company/sofunde-osakwe-ogundipe-%26-belgore-legal-practitioners-',
     offices: [
@@ -1642,7 +1685,8 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Babalakin & Co',
     shortName: 'Babalakin',
     tier: 'Established',
-    email: 'info@babalakinandco.com',
+    /* Their careers page, 10 November 2026: "please email your CV and cover letter to careers@babalakinandco.com". */
+    email: 'careers@babalakinandco.com',
     website: 'https://www.babalakinandco.com',
     linkedin: 'https://www.linkedin.com/company/babalakin-%26-co--legal-practitioners',
     /* All three read from babalakinandco.com on 2026-08-08. */
@@ -1837,6 +1881,8 @@ const FIRMS_UNSORTED: Firm[] = [
     linkedin: 'https://www.linkedin.com/company/femi-atoyebi-co',
     offices: [
       { city: 'Lagos', address: 'Sea Voyager House, 29 Norman Williams Street, Off Awolowo Road, South West Ikoyi, Lagos' },
+      { city: 'Port Harcourt', address: 'Womfua House, 4 Evelyn Close, GRA Phase II, Port Harcourt, Rivers State' },
+      { city: 'Accra', address: '2nd Floor, Munasak Plaza, Lagos Avenue, East Legon, Accra, Ghana' },
     ],
     practiceAreas: ['Shipping & Maritime', 'Energy & Natural Resources', 'Dispute Resolution', 'Tax', 'Banking & Finance'],
     description: 'One of the few Nigerian firms where maritime and international trade is the main practice rather than a sideline, which makes it worth a letter if shipping is what you actually want to do. Finance, oil and gas and labour disputes alongside it.',
@@ -1890,11 +1936,10 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Olisa Agbakoba Legal',
     shortName: 'OAL',
     tier: 'Established',
-    /* The address their live contact page publishes. It is capitalised
-       Clientsupport@ there; written lowercase here because the local part is
-       case insensitive in practice and a capitalised mailto looks like a typo
-       to the person about to send their CV. */
-    email: 'clientsupport@oal.law',
+    /* Their careers page, 10 November 2026: "All applications can be sent to
+       careers@oal.law". clientsupport@ on the contact page is the client
+       enquiries inbox, not the one to send a CV to. */
+    email: 'careers@oal.law',
     website: 'https://oal.law',
     linkedin: 'https://www.linkedin.com/company/olisa-agbakoba-legal',
     /* ⚠ NOT from the live site. oal.law now publishes only city names on its
