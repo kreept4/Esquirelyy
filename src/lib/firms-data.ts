@@ -630,7 +630,7 @@ const FIRMS_UNSORTED: Firm[] = [
        until 10 November 2026, when the firm's office-details page served and
        gave Boaz House, 5 Abuja Lane instead; theirs is used. */
     offices: [
-      { city: 'Lagos', address: '9th Floor, St. Nicholas House, Catholic Mission Street, Lagos Island, Lagos' },
+      { city: 'Lagos', address: '9th Floor, St. Nicholas House, Catholic Mission Street, Lagos' },
       { city: 'Abuja', address: '2nd Floor, Abia House, Michika Street, Central Business District, Abuja' },
       { city: 'Port Harcourt', address: 'Boaz House, 5 Abuja Lane, D-Line, Port Harcourt' },
     ],
@@ -757,7 +757,7 @@ const FIRMS_UNSORTED: Firm[] = [
     email: 'recruitment@blackfriars-law.com',
     website: 'https://blackfriars-law.com',
     linkedin: 'https://www.linkedin.com/company/blackfriars-solicitors',
-    offices: [{ city: 'Lagos', address: 'The Penthouse Floor, Itiku House, 28-30 Macarthy Street, Onikan, Lagos' }],
+    offices: [{ city: 'Lagos', address: 'The Penthouse Floor, Itiku House, 28-30 Macarthy Street, Onikan, Ikoyi, Lagos' }],
     practiceAreas: ['Corporate & Commercial', 'Dispute Resolution', 'Banking & Finance'],
     description: 'A boutique commercial law firm offering focused expertise in corporate transactions and dispute resolution.',
     foundedYear: 2008,
@@ -880,7 +880,7 @@ const FIRMS_UNSORTED: Firm[] = [
     website: 'https://gelias.com',
     linkedin: 'https://www.linkedin.com/company/gelias',
     offices: [
-      { city: 'Lagos', address: '6 Broad Street, Lagos Island, Lagos' },
+      { city: 'Lagos', address: '6 Broad Street, Lagos' },
       { city: 'Abuja', address: '30 Mediterranean Street, Maitama, Abuja' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Telecommunications', 'Dispute Resolution', 'Tax', 'Capital Markets'],
@@ -993,7 +993,7 @@ const FIRMS_UNSORTED: Firm[] = [
     website: 'https://rajichambers.ng',
     linkedin: 'https://www.linkedin.com/company/raji-chambers',
     offices: [
-      { city: 'Ibadan', address: '38 Ladoke Akintola Avenue, New Bodija, Ibadan, Oyo State' },
+      { city: 'Ibadan', address: '38 Ladoke Akintola, New Bodija, Ibadan, Oyo State' },
       { city: 'Abuja', address: '8 Benue Crescent, Area 1, Garki, Abuja' },
     ],
     /* Trimmed from the thirteen the site lists to the ones the directory has a
@@ -1239,7 +1239,7 @@ const FIRMS_UNSORTED: Firm[] = [
     website: 'https://scp-law.com',
     linkedin: 'https://www.linkedin.com/company/simmonscooperpartners',
     offices: [
-      { city: 'Lagos', address: '9th Floor, Fortune Towers, 27/29 Adeyemo Alakija Street, Victoria Island, Lagos' },
+      { city: 'Lagos', address: '9th Floor, Fortune Towers, 27/29 Adeyemo Alakija Street, Lagos' },
       { city: 'Abuja', address: '9 Rima Street, Maitama, Abuja' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Banking & Finance', 'Dispute Resolution'],
@@ -1263,7 +1263,7 @@ const FIRMS_UNSORTED: Firm[] = [
          Garki II address: a firm that has moved keeps appearing at the previous
          address in aggregators for years, and this is a page a student may walk
          to. */
-      { city: 'Abuja', address: '2nd Floor, Left Wing, Commercial Plaza, Plot 1075 Joseph Gomwalk Street, Gudu, Abuja' },
+      { city: 'Abuja', address: '2nd Floor, Left Wing, Commercial Plaza, Gudu, Abuja' },
       { city: 'Ibadan', address: 'Top Floor Suite, SPAACO House, 138 Liberty Stadium Road, Ibadan' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Banking & Finance', 'Dispute Resolution', 'Capital Markets'],
@@ -1376,7 +1376,7 @@ const FIRMS_UNSORTED: Firm[] = [
     website: 'https://uubo.org',
     linkedin: 'https://www.linkedin.com/company/uubolaw',
     offices: [
-      { city: 'Lagos', address: 'St Nicholas House, 10th, 12th & 13th Floors, Catholic Mission Street, Lagos Island, Lagos' },
+      { city: 'Lagos', address: 'St Nicholas House, 10th, 12th & 13th Floors, Catholic Mission Street, Lagos' },
       { city: 'Abuja', address: 'Abia House, 2nd Floor, Michika Street, Ahmadu Bello Way, Central Business District, Abuja' },
       { city: 'Port Harcourt', address: '16 Khana Street, D-Line, Port Harcourt' },
     ],
@@ -1442,7 +1442,7 @@ const FIRMS_UNSORTED: Firm[] = [
     website: 'https://alliancelawfirm.ng',
     linkedin: 'https://www.linkedin.com/company/alliancelawfirm',
     offices: [
-      { city: 'Lagos', address: 'Alliance House, 71 Ademola Street, Off Awolowo Road, South-West Ikoyi, Lagos' },
+      { city: 'Lagos', address: 'Alliance House, 71 Ademola Street, South-West Ikoyi, Lagos' },
       { city: 'Abuja', address: '63 Mississippi Street, Off Alvan Ikoku Way, Maitama, Abuja' },
       { city: 'Port Harcourt', address: 'Plot 60A Circular Road, Federal Housing Estate, Amadi, Off Dr Peter Odili Road, Port Harcourt' },
     ],
@@ -1506,7 +1506,7 @@ const FIRMS_UNSORTED: Firm[] = [
     linkedin: 'https://www.linkedin.com/company/giwa-osagie-co',
     offices: [
       { city: 'Lagos', address: '2nd Floor, Wing A, Sapetro Towers, 1 Adeola Odeku Street, Victoria Island, Lagos' },
-      { city: 'Abuja', address: '2nd Floor, Oakland Centre, Plot 2490 Aguiyi Ironsi Street, Maitama, Abuja' },
+      { city: 'Abuja', address: '2nd Floor, Oakland Center, Plot 2490 Aguiyi Ironsi Street, Maitama, Abuja' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Energy & Natural Resources', 'Shipping & Maritime', 'Foreign Investment'],
     description: 'A long established Victoria Island commercial practice known for foreign investment, energy and maritime work, and a member of the Primerus international network.',
@@ -1600,7 +1600,7 @@ const FIRMS_UNSORTED: Firm[] = [
     website: 'https://paulusoro.com',
     linkedin: 'https://www.linkedin.com/company/paul-usoro-%26-co',
     offices: [
-      { city: 'Lagos', address: '7th Floor, 999c Danmole Street, Victoria Island, Lagos' },
+      { city: 'Lagos', address: 'PUC Tower, 7th Floor, Plot 999C, Danmole Street, Victoria Island, Lagos' },
     ],
     practiceAreas: ['Telecommunications & ICT', 'Dispute Resolution', 'Corporate & Commercial', 'Banking & Finance', 'Public Law & Regulatory'],
     description: 'A full service firm long identified with telecommunications and regulatory litigation, founded by Paul Usoro SAN, a past President of the Nigerian Bar Association. Established in Kaduna and headquartered in Lagos since 1992.',
@@ -1882,7 +1882,7 @@ const FIRMS_UNSORTED: Firm[] = [
     offices: [
       { city: 'Lagos', address: 'Sea Voyager House, 29 Norman Williams Street, Off Awolowo Road, South West Ikoyi, Lagos' },
       { city: 'Port Harcourt', address: 'Womfua House, 4 Evelyn Close, GRA Phase II, Port Harcourt, Rivers State' },
-      { city: 'Accra', address: '2nd Floor, Munasak Plaza, Lagos Avenue, East Legon, Accra, Ghana' },
+      { city: 'Accra', address: '2nd Floor, Munasak Plaza, Lagos Avenue, Adjacent Dejoy, Opposite Abedi Pele, East Legon, Accra, Ghana' },
     ],
     practiceAreas: ['Shipping & Maritime', 'Energy & Natural Resources', 'Dispute Resolution', 'Tax', 'Banking & Finance'],
     description: 'One of the few Nigerian firms where maritime and international trade is the main practice rather than a sideline, which makes it worth a letter if shipping is what you actually want to do. Finance, oil and gas and labour disputes alongside it.',
