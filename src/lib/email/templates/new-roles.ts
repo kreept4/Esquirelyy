@@ -129,7 +129,6 @@ const attr = (u: string) => u.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
  * ⚠ AND THE STANDARD ABOVE HAS SINCE MOVED ON. From the 5 November drop the
  * lines are written, not transcribed: one opening clause, then the same facts
  * in the same order. The rule and its limits are at ROLE_ENTRIES. */
-const ROLES = ROLE_ENTRIES
 
 /* Shared with the notification modal rather than defined twice — the singular
    possessive ("the employer's own notice", describing two employers) was in
@@ -143,8 +142,48 @@ const NOTICE_OWNER = noticePhrase()
    announcement sitting in the file that writes announcements is a trap for
    whoever edits this next. Git has the history. */
 
+/**
+ * One card's worth of content. ROLE_ENTRIES in lib/new-roles.ts conforms, and
+ * so does the closing reminder in lib/closing-reminder.ts.
+ */
+export type MailEntry = {
+  slug: string
+  employer: string
+  employerShort: string
+  title: string
+  line: string
+  prep: 'apply' | 'event'
+  deadline: string | null
+}
+
+/**
+ * What a mailing other than the roles drop supplies. Absent, the roles email
+ * renders exactly as it always has.
+ *
+ * A mailing brings its own cards, headline, subject, preview line, the
+ * paragraph under the cards and the button. The extra blocks the roles email
+ * carries (the closing notice, a closing scholarship, the student notice) are
+ * left out of it: a reminder is about its own cards and nothing else.
+ */
+export type MailingCopy = {
+  id: string
+  entries: readonly MailEntry[]
+  subject: string
+  headline: string
+  preheader: string
+  footnote: string
+  ctaLabel: string
+  ctaText: string
+  href: string
+}
+
 export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: string }) {
+  return rolesEmail({ name, siteUrl })
+}
+
+export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl: string; mailing?: MailingCopy }) {
   const first = (name || '').trim().split(/\s+/)[0]
+  const ROLES: readonly MailEntry[] = mailing ? mailing.entries : (ROLE_ENTRIES as readonly MailEntry[])
   /* THE SHORT FIRM NAMES, not the full ones. The headline is set at 26px and
      the subject line is cut off around 70 characters in most clients, and
      "Olajide Oyewole LLP (DLA Piper Africa)" spends 19 of those on a
@@ -190,7 +229,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
    * notice, both fall back to exactly what they said before, which is the
    * normal case and the one every previous send used.
    */
-  const closing = activeClosingNotice()
+  const closing = mailing ? null : activeClosingNotice()
 
   /* Vocative last, for the reason set out above. It holds in both branches:
      neither clause ends in a list of proper nouns. */
@@ -215,14 +254,16 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
      Naming both fixes the duplication as a side effect. The line now says
      something the cards underneath it do not, which is what a headline is for:
      there are two things in here, one shuts this week and one just opened. */
-  const headline = closing ? `${closing.employer} ${closes} and ${firms} ${DROP_ACTION}` : `${firms} ${DROP_ACTION}`
+  const headline = mailing ? mailing.headline : closing ? `${closing.employer} ${closes} and ${firms} ${DROP_ACTION}` : `${firms} ${DROP_ACTION}`
   const greeting = first ? `${headline}, ${first}.` : `${headline}.`
   /* Kept under the ~70 characters most clients show. "Heirs Holdings closes in
      2 days, and World Bank are hiring" is 57. */
-  const subject = closing
-    ? `${closing.employer} ${closes}, and ${firms} ${DROP_ACTION}`
-    : `${roleCountLabel()}: ${employerSubjectShort()}`
-  const link = `${siteUrl}${NEW_ROLES_HREF}`
+  const subject = mailing
+    ? mailing.subject
+    : closing
+      ? `${closing.employer} ${closes}, and ${firms} ${DROP_ACTION}`
+      : `${roleCountLabel()}: ${employerSubjectShort()}`
+  const link = `${siteUrl}${mailing ? mailing.href : NEW_ROLES_HREF}`
 
   /**
    * A scholarship closing this week, if there is one.
@@ -246,10 +287,10 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
    * the block is a nudge rather than a digest and the button under it already
    * goes to the page that lists every one of them.
    */
-  const closingScholarship = closingScholarships(7)[0] ?? null
+  const closingScholarship = mailing ? null : (closingScholarships(7)[0] ?? null)
   /* Null once the notice expires, which is what keeps a reused template from
      announcing a deadline that has passed. See lib/email/student-notice.ts. */
-  const studentNotice = activeStudentNotice()
+  const studentNotice = mailing ? null : activeStudentNotice()
   /* Null once the deadline passes, so a reused template cannot announce a
      role that has closed. See lib/email/closing-notice.ts.
 
@@ -267,7 +308,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
    * version is components/features/ToolPrompt.tsx: same kickers, same first
    * link, plus a sentence there because a page shows it once, not four times.
    */
-  const prompts = (r: (typeof ROLES)[number]) => {
+  const prompts = (r: MailEntry) => {
     const p = { role: r.title, firm: r.employer }
     /* ⚠ A KICKER AND THE LINKS, NO SENTENCE. The first version gave every card
        the same line about a sharper CV moving an application up the pile, and
@@ -277,7 +318,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
        one specific. */
     /* Widened to string: a drop with no event in it narrows `prep` to
        'apply' and the comparison would not compile. */
-    return (r.prep as string) === 'event'
+    return r.prep === 'event'
       ? { kicker: 'Going?', links: [{ label: 'Open your tracker', href: `${siteUrl}/tracker` }] }
       : {
           kicker: 'Before you apply',
@@ -298,7 +339,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
      four reads as a different kind of fact when it is the same one. */
   /* An undated listing says so. A pill is a promise about a date, and
      leaving it blank or guessing would both break it. */
-  const pillLabel = (r: (typeof ROLES)[number]) =>
+  const pillLabel = (r: MailEntry) =>
     r.deadline ? `Closes ${shortDate(r.deadline)}` : 'No closing date'
 
   /**
@@ -317,7 +358,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
    * employer in a future drop renders cleanly before anybody has run the asset
    * script for it. Run it anyway: a monogram is a fallback, not a design.
    */
-  const roleCard = (r: (typeof ROLES)[number]) => {
+  const roleCard = (r: MailEntry) => {
     const logo = logoForEmployer(r.employer)
     const plate = logo ? PLATES[logo] : undefined
     const mark = plate
@@ -391,7 +432,9 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
         '',
       ]
     }),
-    `${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER}, so ${publishedNouns()} above are the ones they published.`,
+    mailing
+      ? mailing.footnote
+      : `${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER}, so ${publishedNouns()} above are the ones they published.`,
     '',
     /* The plain-text part gets the notice too. A recipient whose client
        blocks HTML would otherwise receive a different email from everybody
@@ -404,7 +447,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
           '',
         ]
       : []),
-    `See ${dropPronoun()} here: ${link}`,
+    mailing ? `${mailing.ctaText}: ${link}` : `See ${dropPronoun()} here: ${link}`,
     '',
     'from Bolu & Ipinu',
     'Co-founders, Esquirely',
@@ -532,7 +575,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
 </head>
 <body style="margin:0;padding:0;background-color:${CREAM};">
 <div class="es-t-cream" style="display:none;font-size:1px;color:${CREAM};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
-  ${roleSummary()}.
+  ${mailing ? mailing.preheader : `${roleSummary()}.`}
 </div>
 
 <table class="es-b-cream" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" bgcolor="${CREAM}" style="border-collapse:collapse;background-color:${CREAM};">
@@ -643,9 +686,13 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
             }
 
             <p class="es-t-ink" style="margin:14px 0 20px 0;font-size:15px;line-height:1.7;color:${INK};">
-              ${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER.replace(/’/g, '&rsquo;')}, so
+              ${
+                mailing
+                  ? mailing.footnote.replace(/'/g, '&rsquo;')
+                  : `${dropSubject()} ${dropVerb()} read off ${NOTICE_OWNER.replace(/’/g, '&rsquo;')}, so
               ${publishedNouns()} above are the ones they published rather
-              than an aggregator&rsquo;s guess.
+              than an aggregator&rsquo;s guess.`
+              }
             </p>
 
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 24px 0;">
@@ -657,7 +704,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
                         <table class="es-b-mint" role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#14B8A6" style="border-collapse:collapse;background-color:#14B8A6;border:2px solid ${INK};">
                           <tr>
                             <td class="es-b-mint" align="center" bgcolor="#14B8A6" style="background-color:#14B8A6;padding:14px 28px;">
-                              <a class="es-t-white" href="${link}" style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FFFFFF;text-decoration:none;">${newRolesCta()}</a>
+                              <a class="es-t-white" href="${link}" style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#FFFFFF;text-decoration:none;">${mailing ? mailing.ctaLabel : newRolesCta()}</a>
                             </td>
                           </tr>
                         </table>
