@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendEmail, emailConfigured } from '@/lib/email/send'
-import { newRolesEmail } from '@/lib/email/templates/new-roles'
+import { newRolesEmail, rolesEmail } from '@/lib/email/templates/new-roles'
 import { NEW_ROLES } from '@/lib/new-roles'
+import { CLOSING_REMINDER, CLOSING_REMINDER_HREF } from '@/lib/closing-reminder'
+
+/* The mailings this deployment can send, by the drop id a run names: the
+   current roles drop, and the closing-soon reminder (lib/closing-reminder.ts).
+   A run for anything else is refused, as before. */
+type Render = (a: { name?: string; siteUrl: string }) => { subject: string; html: string; text: string }
+const MAILINGS: Record<string, Render> = {
+  [NEW_ROLES.id]: newRolesEmail,
+  [CLOSING_REMINDER.id]: a => rolesEmail({ ...a, mailing: { ...CLOSING_REMINDER, href: CLOSING_REMINDER_HREF } }),
+}
 
 /**
  * The roles broadcast, run from the deployment instead of from a laptop.
@@ -71,10 +81,12 @@ export async function GET(req: Request) {
   const finish = (patch: Record<string, unknown>) =>
     db.from('broadcast_runs').update({ finished_at: new Date().toISOString(), ...patch }).eq('id', runId)
 
-  if (claimed.drop_id !== NEW_ROLES.id) {
+  const render = MAILINGS[claimed.drop_id]
+  const dropId: string = claimed.drop_id
+  if (!render) {
     await finish({ sent: 0, failed: 0, skipped: 0 })
     return NextResponse.json(
-      { error: `approved for ${claimed.drop_id}, but this deployment would send ${NEW_ROLES.id}` },
+      { error: `approved for ${claimed.drop_id}, but this deployment can only send ${Object.keys(MAILINGS).join(' or ')}` },
       { status: 409 }
     )
   }
@@ -97,7 +109,7 @@ export async function GET(req: Request) {
     const { data: done } = await db
       .from('broadcast_sends')
       .select('email')
-      .eq('drop_id', NEW_ROLES.id)
+      .eq('drop_id', dropId)
       .eq('kind', 'broadcast')
       .eq('ok', true)
     const reached = new Set((done ?? []).map(r => r.email.toLowerCase()))
@@ -112,7 +124,7 @@ export async function GET(req: Request) {
   const queue = [...recipients]
   async function worker() {
     for (let r = queue.shift(); r; r = queue.shift()) {
-      const { subject, html, text } = newRolesEmail({ name: r.name, siteUrl })
+      const { subject, html, text } = render({ name: r.name, siteUrl })
       const result = await sendEmail({ to: r.email, toName: r.name || undefined, subject, html, text })
       const ok = result.ok && !result.skipped
       const error = !result.ok ? result.error : result.skipped ? result.reason : null
@@ -120,7 +132,7 @@ export async function GET(req: Request) {
       else failures.push({ email: r.email, error: error || 'unknown' })
       await db.from('broadcast_sends').insert({
         run_id: runId,
-        drop_id: NEW_ROLES.id,
+        drop_id: dropId,
         kind,
         email: r.email,
         ok,
@@ -133,7 +145,7 @@ export async function GET(req: Request) {
   await finish({ sent, failed: failures.length, skipped })
   return NextResponse.json({
     kind,
-    drop: NEW_ROLES.id,
+    drop: dropId,
     recipients: recipients.length,
     sent,
     skipped,
