@@ -227,8 +227,9 @@ export interface Firm {
    * The firm's own site.
    *
    * OPTIONAL, AND IT WAS REQUIRED UNTIL A FIRM HAD NONE THAT WORKED. Ninewells
-   * owns ninewellslegal.com and it serves an error stub, so the field could be
-   * filled and still send a student nowhere. A link that resolves to nothing is
+   * owned ninewellslegal.com while it served an error stub, so the field could
+   * be filled and still send a student nowhere (restored once the domain went
+   * live, November 2026; every firm has one again). A link that resolves to nothing is
    * worse than an absent one: the reader spends the click and concludes the firm
    * is defunct.
    *
@@ -2296,25 +2297,22 @@ const FIRMS_UNSORTED: Firm[] = [
     name: 'Ninewells Law Practice',
     shortName: 'Ninewells',
     tier: 'Established',
-    email: 'info@ninewellslegal.com',
-    /* ⚠ NO `website`, ON PURPOSE, AND IT IS THE ONLY RECORD HERE WITHOUT ONE.
-       The firm owns ninewellslegal.com and it serves a bare "Error. Page cannot
-       be displayed" stub; the www host answers 403. Their site is built and
-       deployed, but only to an unannounced vercel.app preview host, which is
-       deliberately not circulated here: the firm has not published it, and a
-       directory has no business handing out a deployment its owner has not put
-       its name to. That left a field whose only honest value was a link that
-       goes nowhere, so it is left empty and LinkedIn carries the profile.
-       Restore it the day the domain points at the deployment.
-
-       The LinkedIn is the firm's own, taken from the `social` object in their
-       site's JS bundle rather than from a search. scripts/harvest-firm-linkedin.mjs
-       missed it for the reason its header predicts: it reads served HTML, and
-       this site is a Vite build that injects its footer links at runtime. */
+    /* The contact block in their site's own data: enquiries@, with the
+       phones 09111002210 and 09165904000. info@ appears nowhere on the site. */
+    email: 'enquiries@ninewellslegal.com',
+    /* Restored 10 November 2026. ninewellslegal.com used to serve an error
+       stub and the www host a 403, so the field was left empty; the domain
+       now 308s to www.ninewellslegal.com, which serves their own site from
+       Vercel. It is a Vite build that renders in the browser, so the served
+       HTML is an empty shell and the details below were read from its JS
+       bundle, which is the site's own content. */
+    website: 'https://www.ninewellslegal.com',
+    /* The LinkedIn is the firm's own, taken from the `social` object in their
+       site's JS bundle rather than from a search. */
     linkedin: 'https://www.linkedin.com/company/ninewells',
     offices: [
-      { city: 'Lagos', address: 'Construction House, 18 Adeyemo Alakija, Victoria Island, Lagos 101241' },
-      { city: 'Abuja', address: '16 Aso Garden Estate, River Trent Street, off Thames Street, Ministers Hills, Maitama, Abuja' },
+      { city: 'Lagos', address: 'Construction House (Second Floor), 18 Adeyemo Alakija Street, Victoria Island, Lagos' },
+      { city: 'Abuja', address: '16 Aso Gardens Estate, River Trent Street, Off Thames Street, Ministers Hills, Maitama, Abuja' },
     ],
     practiceAreas: ['Corporate & Commercial', 'Capital Markets', 'Dispute Resolution', 'Energy & Natural Resources', 'Financial Services', 'Telecommunications & ICT'],
     description: 'A fully integrated multidisciplinary practice organised as a partnership, working across capital markets, energy and extractives, financial services and technology from Victoria Island and Maitama. Led by Professor Bayo Adaralegbe.',
