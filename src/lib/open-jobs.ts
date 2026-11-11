@@ -122,6 +122,9 @@ const OPEN_JOB_SLUGS = new Set<string>([
   /* 11 November: Órọrùn's remote research internship for law graduates
      waiting on Law School, from their own careers page and poster. */
   'ororun-research-intern-remote',
+  /* Same day: Órọrùn's part-time research internship, open to law students
+     as well, from their careers page and second poster. */
+  'ororun-part-time-research-intern-remote',
 
   /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
      drop, and the Lekki seat Sigma was recruiting for. Open for the reason
