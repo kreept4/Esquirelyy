@@ -28,7 +28,7 @@
  *                 is researching and uploading those cases. The posting also
  *                 tags Technology Law, which describes the company rather
  *                 than the work, so it is left off.
- *   pay           ₦70,000 a month, from both the posting and the poster.
+ *   pay           Left out of the listing at the user's request (11 November).
  *   apply_url     The posting itself. Applications are made on the page
  *                 ("INTERNAL"), with a CV and a cover letter, both required.
  *                 info@ororun.co is the posting's hiring contact, not an
@@ -60,7 +60,7 @@ const rows = [
     about:
       "A legal research platform for arbitration, with case law from around the world and verified profiles of arbitrators, built to cut the time dispute resolution research takes. Founded in 2025, with a team of under ten. The name is the Yoruba word for 'easy'.",
     role_desc:
-      "A paid, remote internship for law graduates in the gap year before Law School. The work is Órọrùn's own research: finding cases, uploading them to the platform, and editing what is already there so it stays accurate. You also help run the team of research volunteers, setting their schedules, tracking what they deliver and leading the regular report meetings. Órọrùn's poster calls the seat Assistant Head of Research. The pay is ₦70,000 a month. Apply on Órọrùn's careers page with a CV and a cover letter by 30 November 2026.",
+      "A paid, remote internship for law graduates in the gap year before Law School. The work is Órọrùn's own research: finding cases, uploading them to the platform, and editing what is already there so it stays accurate. You also help run the team of research volunteers, setting their schedules, tracking what they deliver and leading the regular report meetings. Órọrùn's poster calls the seat Assistant Head of Research. Apply on Órọrùn's careers page with a CV and a cover letter by 30 November 2026.",
     requirements: [
       'An LL.B',
       'Taking a gap year while you wait to start Law School',
