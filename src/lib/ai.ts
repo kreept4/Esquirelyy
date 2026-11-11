@@ -66,9 +66,16 @@ export class AIDisabledError extends Error {}
  * The off switch.
  *
  * ⚠ AN ENV VAR RATHER THAN A CODE CHANGE, BECAUSE THE MOMENT YOU NEED THIS IS
- * THE MOMENT A DEPLOY IS TOO SLOW. Set AI_TOOLS_DISABLED to 1 in Vercel and the
- * five tools stop calling Claude on the next request, with no build and no
- * promote. Clear it and they resume.
+ * THE MOMENT A CODE CHANGE IS TOO SLOW. Set AI_TOOLS_DISABLED to 1 in Vercel,
+ * then redeploy production, and the five tools stop calling Claude.
+ *
+ * ⚠ THE REDEPLOY IS NOT OPTIONAL. This comment used to promise "the next
+ * request, with no build and no promote", and on Vercel that is false: env
+ * values are fixed into a deployment when it is built, so a changed value does
+ * nothing until a new one goes live. The quick way is to rebuild what is
+ * already live, no code involved, about a minute:
+ *   vercel redeploy <production url> --target production --scope kreepts-projects
+ * Clear the value and redeploy again to turn the tools back on.
  *
  * The alternative people reach for is revoking the Anthropic key, which does
  * stop the spend but produces a different failure: every tool throws an
