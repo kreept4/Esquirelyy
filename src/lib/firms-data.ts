@@ -2777,8 +2777,16 @@ export const FIRMS_WITH_LOGOS: Firm[] = ALL_FIRMS.filter(f => !!firmLogo(f))
  *  Oyebode' and 'aluko-oyebode' all resolve. Returns null when the employer is
  *  not a firm in the directory (banks, fintechs, corporates). */
 /** Employer names arrive as free text from Supabase, so every lookup keys off
- *  the same normalisation: lowercased, '&' spelled out, punctuation stripped. */
-const norm = (s: string) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '')
+ *  the same normalisation: accents dropped, lowercased, '&' spelled out,
+ *  punctuation stripped.
+ *
+ *  ⚠ THE ACCENTS ARE DROPPED, NOT THE LETTERS. Before 11 November 2026 an
+ *  accented letter fell to the punctuation strip with everything else, so
+ *  'Órọrùn' keyed as 'rrn'. Decomposing first (NFD) leaves the base letter
+ *  and strips only the mark, so it keys as 'ororun'. Every name on the board
+ *  was plain ASCII when this changed, so no existing key moved. */
+const norm = (s: string) =>
+  s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '')
 
 /**
  * The directory entry for a free-text employer name, or null.
@@ -3104,6 +3112,16 @@ const EMPLOYER_LOGOS: Record<string, string> = {
   chapelhilldenhamlimited: '/employer-logos/chapel-hill-denham.png',
   chapelhill: '/employer-logos/chapel-hill-denham.png',
 
+  /* Órọrùn, added 11 November 2026 with their remote research internship.
+     A legal research platform, not a firm. The logo is the one on their
+     careers profile (ororun.s3.amazonaws.com, 1080px square JPEG): the wave
+     mark and the wordmark in white and pale blue on dark green. Cropped to
+     the lockup without the tagline, and the green taken out by brightness so
+     the art sits on transparency, saved at 480px. White art needs its own
+     ground, so see EMPLOYER_BALL_BG. Keyed on 'ororun', which is what the
+     accented name normalises to. */
+  ororun: '/employer-logos/ororun.png',
+
   tangerineafrica: '/employer-logos/tangerine.png',
   tangerinelife: '/employer-logos/tangerine.png',
   tangerine: '/employer-logos/tangerine.png',
@@ -3248,6 +3266,9 @@ const EMPLOYER_BALL_BG: Record<string, string> = {
   uandplaw: '#250301',
   uandp: '#250301',
   uandplawfirm: '#250301',
+  /* Órọrùn's own green, sampled off the logo's ground (rgb 1,37,35). The
+     mark is white, so without this it disappears on the white ball. */
+  ororun: '#012523',
 }
 
 /** Brand ground for an employer's ball, or null to use the default white. */

@@ -119,6 +119,9 @@ const OPEN_JOB_SLUGS = new Set<string>([
      a finance graduate scheme open to law graduates, from the firm's own
      programme page and recruitment portal. */
   'chapel-hill-denham-2027-management-development-programme',
+  /* 11 November: Órọrùn's remote research internship for law graduates
+     waiting on Law School, from their own careers page and poster. */
+  'ororun-research-intern-remote',
 
   /* 17 October: KS Legal's Ikoyi associate seat, the whole of the current
      drop, and the Lekki seat Sigma was recruiting for. Open for the reason
