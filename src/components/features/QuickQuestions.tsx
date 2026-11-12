@@ -16,6 +16,77 @@ import { createClient } from '@/lib/supabase/client'
  */
 
 const PREFS_KEY = 'esquirely:prefs'
+/** Set when a signed-in member skips or closes the questionnaire on the board,
+ *  so the prompt there asks once rather than on every visit. */
+export const QUIZ_DISMISSED_KEY = 'esquirely:quiz-dismissed'
+
+function readStored(): Answers | null {
+  try {
+    const raw = localStorage.getItem(PREFS_KEY)
+    const saved = raw ? JSON.parse(raw) : null
+    return saved && saved.stage ? saved : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Write answers to the member's profile. Shared by the questionnaire itself and
+ * by syncStoredAnswers below.
+ */
+async function saveToProfile(final: Answers) {
+  try {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    const { error } = await (supabase as any).from('profiles').upsert({
+      id: user.id,
+      career_stage: final.stage,
+      goals: final.goal,
+      location: final.city === 'Anywhere' ? null : final.city,
+      practice_areas: final.area ? [final.area] : [],
+      updated_at: new Date().toISOString(),
+    })
+    if (error) console.error('[quiz] could not save profile', error)
+  } catch (err) {
+    console.error('[quiz] could not save profile', err)
+  }
+}
+
+/**
+ * Whether a signed-in member still needs asking, after carrying over answers
+ * given on this device before they signed in.
+ *
+ * ⚠ THIS IS WHY ONLY 2 OF 221 PROFILES HELD ANSWERS ON 12 NOVEMBER. Most people
+ * meet the questionnaire on the home page signed out. Their answers went to
+ * localStorage only, and nothing copied them to the profile after sign-up, so
+ * the account never learned them and the home page, reading localStorage,
+ * never asked again.
+ *
+ * Returns 'answered' (profile holds a stage, possibly just copied), 'ask', or
+ * 'signed-out'.
+ */
+export async function syncStoredAnswers(): Promise<'answered' | 'ask' | 'signed-out'> {
+  try {
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return 'signed-out'
+    const { data } = await (supabase as any)
+      .from('profiles')
+      .select('career_stage')
+      .eq('id', user.id)
+      .maybeSingle()
+    if (data?.career_stage) return 'answered'
+    const stored = readStored()
+    if (stored) {
+      await saveToProfile(stored)
+      return 'answered'
+    }
+    return 'ask'
+  } catch {
+    return 'ask'
+  }
+}
 
 const STAGES = [
   { value: 'law_student', label: 'Law student', level: 'student' },
@@ -89,7 +160,15 @@ const QUESTIONS: {
   { key: 'area', question: 'Which area of law?', options: AREAS },
 ]
 
-export default function QuickQuestions() {
+export default function QuickQuestions({
+  variant = 'section',
+  onClose,
+}: {
+  /** 'section' is the home page band. 'modal' is the one-time prompt on the
+   *  board for signed-in members who have not answered (see QuizPrompt). */
+  variant?: 'section' | 'modal'
+  onClose?: () => void
+} = {}) {
   const router = useRouter()
   const [step, setStep] = useState(0)
   const [direction, setDirection] = useState<'forward' | 'back'>('forward')
@@ -124,8 +203,18 @@ export default function QuickQuestions() {
 
   useEffect(() => {
     let live = true
+    if (variant === 'modal') {
+      setResolved(true)
+      return
+    }
 
     ;(async () => {
+      /* Carry answers given signed-out over to a signed-in profile. */
+      const sync = await syncStoredAnswers()
+      if (sync === 'answered') {
+        if (live) { setAlreadyAnswered(true); setResolved(true) }
+        return
+      }
       try {
         const raw = localStorage.getItem(PREFS_KEY)
         if (raw) {
@@ -167,7 +256,7 @@ export default function QuickQuestions() {
     })()
 
     return () => { live = false }
-  }, [])
+  }, [variant])
 
   const stageGoals = goalsFor(answers.stage)
   const base = QUESTIONS[step]
@@ -178,49 +267,12 @@ export default function QuickQuestions() {
     try {
       localStorage.setItem(PREFS_KEY, JSON.stringify(final))
     } catch {
-      // Private browsing or storage disabled — the redirect below still works.
+      // Private browsing or storage disabled. The redirect below still works.
     }
-    try {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        /* Errors used to be dropped twice over: the upsert's own error was
-         * never read, and the catch below swallowed anything thrown. Between
-         * them they hid a missing GRANT on `profiles` that made every one of
-         * these writes fail. The localStorage copy above is why nothing was
-         * visibly wrong: the quiz kept working, it just never persisted. */
-        /* ⚠ practice_areas WAS BEING COLLECTED AND THROWN AWAY.
-           The fourth question, "Which area of law?", has always been asked and
-           has always been used, but only to build the ?practice= parameter on
-           the redirect below. It was never written here, so `profiles.
-           practice_areas` stayed empty for every account that answered, and the
-           one question whose answer nobody can infer from anything else was the
-           one that was not kept. Three of four answers persisted looks like it
-           works, which is why it survived.
-
-           Written as a single-element array because the column is text[] and
-           the quiz asks for one area. A member who later picks several keeps
-           them in the same column, so nothing downstream has to know whether
-           the value came from here.
-
-           "Not sure yet" is the empty option, and it writes an empty array
-           rather than [''] : an array containing a blank string would match
-           nothing on the board and would count as a stated preference in any
-           tally of what members want, which is worse than a null answer. */
-        const { error } = await (supabase as any).from('profiles').upsert({
-          id: user.id,
-          career_stage: final.stage,
-          goals: final.goal,
-          location: final.city === 'Anywhere' ? null : final.city,
-          practice_areas: final.area ? [final.area] : [],
-          updated_at: new Date().toISOString(),
-        })
-        if (error) console.error('[quiz] could not save profile', error)
-      }
-    } catch (err) {
-      // Never block the visitor on a profile write, but do not hide it either.
-      console.error('[quiz] could not save profile', err)
-    }
+    /* All four answers go to the profile, practice area included: it used to
+       be collected for the redirect and never stored. "Not sure yet" writes an
+       empty array, not [''], so it never counts as a stated preference. */
+    await saveToProfile(final)
   }
 
   async function choose(value: string) {
@@ -235,6 +287,7 @@ export default function QuickQuestions() {
 
     setSaving(true)
     await persist(next)
+    if (variant === 'modal') onClose?.()
 
     const goal = goalsFor(next.stage).find((g) => g.value === next.goal)
     const level = STAGES.find((s) => s.value === next.stage)?.level
@@ -265,12 +318,59 @@ export default function QuickQuestions() {
      the note on `resolved` above. Returning null rather than a collapsed
      section keeps the dark run continuous: the ticker, the carousel and the pit
      all share this background, so a zero-height gap here is invisible. */
-  if (!resolved || alreadyAnswered) return null
+  if (!resolved) return null
 
-  // #1A1A1A left a faint seam where this met the black sections above it.
-  // The whole dark run shares one value now.
-  return (
-    <section style={{ backgroundColor: '#000000', padding: '5rem 1.5rem' }}>
+  /* Answered already: a single line instead of nothing, so the answers can be
+     changed. Before 12 November there was no way back to these questions
+     once answered, short of clearing the browser. */
+  if (alreadyAnswered && variant === 'section') {
+    return (
+      <section style={{ backgroundColor: '#000000', padding: '2.25rem 1.5rem' }}>
+        <div
+          style={{
+            maxWidth: '760px',
+            margin: '0 auto',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'baseline',
+            justifyContent: 'space-between',
+            gap: '0.75rem 1.5rem',
+          }}
+        >
+          <p className="grotesk-regular" style={{ fontSize: '0.95rem', color: 'rgba(250,246,240,0.75)', margin: 0 }}>
+            Your board is set to your answers.
+          </p>
+          <button
+            onClick={() => { setAnswers({ stage: '', goal: '', city: '', area: '' }); setStep(0); setAlreadyAnswered(false) }}
+            className="grotesk-bold"
+            style={{
+              fontSize: '0.85rem',
+              color: '#FAF6F0',
+              background: 'none',
+              border: 'none',
+              borderBottom: '2px solid #14B8A6',
+              padding: '0 0 2px',
+              cursor: 'pointer',
+            }}
+          >
+            Change your answers
+          </button>
+        </div>
+      </section>
+    )
+  }
+
+  function skip() {
+    if (variant === 'modal') {
+      try { localStorage.setItem(QUIZ_DISMISSED_KEY, new Date().toISOString()) } catch {}
+      onClose?.()
+      return
+    }
+    router.push('/jobs')
+  }
+
+  const body = (
+
       <div style={{ maxWidth: '760px', margin: '0 auto' }}>
         <h2
           className="display-black"
@@ -281,7 +381,7 @@ export default function QuickQuestions() {
             marginBottom: '2.5rem',
           }}
         >
-          Tell us what you want, we&rsquo;ll show you the rest.
+          {variant === 'modal' ? 'Set up your board' : <>Tell us what you want, we&rsquo;ll show you the rest.</>}
         </h2>
 
         {/* Progress */}
@@ -395,7 +495,7 @@ export default function QuickQuestions() {
             </button>
           )}
           <button
-            onClick={() => router.push('/jobs')}
+            onClick={skip}
             disabled={saving}
             className="grotesk-regular"
             style={{
@@ -411,6 +511,43 @@ export default function QuickQuestions() {
           </button>
         </div>
       </div>
-    </section>
   )
+
+  if (variant === 'modal') {
+    return (
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Set up your board"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 10000,
+          background: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '1rem',
+        }}
+      >
+        <div
+          style={{
+            background: '#000000',
+            borderRadius: '16px',
+            padding: 'clamp(1.75rem, 5vw, 3rem) clamp(1.25rem, 5vw, 3rem)',
+            width: '100%',
+            maxWidth: '760px',
+            maxHeight: '100%',
+            overflowY: 'auto',
+          }}
+        >
+          {body}
+        </div>
+      </div>
+    )
+  }
+
+  // #1A1A1A left a faint seam where this met the black sections above it.
+  // The whole dark run shares one value now.
+  return <section style={{ backgroundColor: '#000000', padding: '5rem 1.5rem' }}>{body}</section>
 }
