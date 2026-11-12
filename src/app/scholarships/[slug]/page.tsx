@@ -108,7 +108,11 @@ export default async function ScholarshipPage(
                   gives an employer's. Left out when there is no logo: the
                   provider is named under the title either way. */}
               {s.logo ? (
-                <span className="job-mark job-detail-mark" aria-hidden>
+                <span
+                  className="job-mark job-detail-mark"
+                  style={s.logoBg ? { background: s.logoBg } : undefined}
+                  aria-hidden
+                >
                   <img src={s.logo} alt="" />
                 </span>
               ) : null}
