@@ -430,6 +430,133 @@ const SCHOLARSHIPS: Scholarship[] = [
     link: 'https://scholarship.nddc.gov.ng/',
   },
 
+  /* Added 12 November 2026: five LLM awards from a post on X, each checked
+   * against the school's own page before it went in.
+   *
+   *   NYU (both)   law.nyu.edu scholarships page, and the 2027 application
+   *                instructions PDF for the 17 December 2026 deadline and the
+   *                Hauser essay. Podell needs a World Bank low-income or
+   *                lower-middle-income country; the World Bank API lists
+   *                Nigeria as "Lower middle income" as of today.
+   *   Georgetown   law.georgetown.edu scholarships page. The post called these
+   *                "full-tuition scholarships", which is not what the page
+   *                says: the automatic awards are partial, and full tuition
+   *                goes to a small number of Alumni Scholars and about eight
+   *                Tax Scholars. The description leads with that.
+   *   Edinburgh    law.ed.ac.uk masters funding page. The post's "full-tuition
+   *                LLM scholarship" is ONE award for ONE programme, so the
+   *                title and the first line say so. Edinburgh's bigger award
+   *                (GBP 21,250 with a stipend) is only for its own LLB students
+   *                with Scottish fee status and is left out.
+   *   McGill       mcgill.ca Law funding page. It gives both "January 1" and
+   *                "by the deadline for application for admission", which the
+   *                same page puts at 15 December. The earlier date leads, so
+   *                nobody who goes by this misses it.
+   *
+   * Left out on purpose: the LSE "Demography Studentship" from a second post.
+   * It is LSE's general PhD studentship, not an LLM award, and its funding
+   * deadline is 13 January 2027, not the 27 May the post gave. */
+  {
+    slug: 'nyu-hauser-global-scholarship',
+    closesOn: '2026-12-17',
+    title: 'Hauser Global Scholarship',
+    provider: 'New York University School of Law',
+    region: 'United States',
+    level: 'LLM at NYU Law',
+    funding: 'Full tuition and a stipend for living costs such as rent and books',
+    deadline: 'Closes 17 December 2026 for LLM entry in fall 2027. You apply with your NYU application',
+    status: 'open',
+    description:
+      "NYU Law's top award for LLM students. About ten are given each year, on merit, to graduates of law schools outside the United States, so a Nigerian LL.B qualifies. It covers full tuition and a stipend towards rent, books and study materials. You apply for it inside the NYU LLM application, with one extra essay of 500 to 750 words, so the admission deadline is also the scholarship deadline. Expect a very strong field.",
+    eligibility: [
+      'A law degree from a law school outside the United States',
+      'Applying to the full-time NYU LLM starting in fall 2027',
+      'A separate essay of 500 to 750 words, attached to your admission application',
+      'Chosen on intellectual and leadership ability',
+    ],
+    link: 'https://www.law.nyu.edu/graduateadmissions/scholarshipprograms/hauserglobalscholarsarthurtvanderbiltscholarshipsdeansgraduateawards',
+  },
+  {
+    slug: 'nyu-podell-global-graduate-legal-scholarship',
+    closesOn: '2026-12-17',
+    title: 'Podell Global Graduate Legal Scholarship',
+    provider: 'New York University School of Law',
+    region: 'United States',
+    level: 'LLM at NYU Law',
+    funding: 'Tuition, reasonable living costs and one return economy flight to New York',
+    deadline: 'Closes 17 December 2026 for LLM entry in fall 2027. You are considered through your NYU application',
+    status: 'open',
+    description:
+      "One award a year, for an LLM student from a lower-income country who could not otherwise afford New York. It pays tuition, reasonable living costs such as rent and books, and one return flight. The World Bank classes Nigeria as lower-middle-income, so Nigerians who live in Nigeria qualify on that count. There is no separate form: you are considered when you file the NYU application, and finalists may be asked for financial documents for themselves and their immediate family.",
+    eligibility: [
+      'A citizen of Nigeria, or another World Bank low-income or lower-middle-income country, and living there',
+      'Able to show financial need',
+      'A record of superior academic merit',
+      'Applying to the NYU LLM. Finalists may need to document their family finances',
+    ],
+    link: 'https://www.law.nyu.edu/graduateadmissions/scholarshipprograms/hauserglobalscholarsarthurtvanderbiltscholarshipsdeansgraduateawards',
+  },
+  {
+    slug: 'georgetown-llm-scholarships',
+    closesOn: '2027-02-05',
+    title: 'Georgetown Law LL.M. Scholarships',
+    provider: 'Georgetown University Law Center',
+    region: 'United States',
+    level: 'LL.M. at Georgetown Law',
+    funding: 'Partial tuition for most. Full tuition for a small number of International LL.M. Alumni Scholars',
+    deadline: 'Complete your application by 5 February 2027 to be considered. Specialised awards close earlier, on 8 January 2027',
+    status: 'open',
+    description:
+      'Most of these cover part of the tuition, not all of it, so plan with that in mind. Every admitted LL.M. student is considered automatically for a partial award. Full tuition is rarer: the new International LL.M. Alumni Scholarships go to a small number of international students with a strong academic or professional record in transnational practice, and about eight Graduate Tax Scholarships go to students on the full-time Taxation LL.M. If you want a specialised award like the tax one, have your application complete by 8 January 2027.',
+    eligibility: [
+      'Admitted to a Georgetown Law LL.M. There is no separate form for the general awards',
+      'For full tuition: a strong academic or professional record in transnational legal practice',
+      'Graduate Tax Scholarships are only for the full-time on-campus Taxation LL.M.',
+      'A complete application by 5 February 2027, or by 8 January 2027 for specialised awards',
+    ],
+    link: 'https://www.law.georgetown.edu/admissions-aid/graduate-admissions/scholarships-fellowships/',
+  },
+  {
+    slug: 'edinburgh-llm-european-transnational-law-scholarship',
+    closesOn: '2027-04-30',
+    title: 'Edinburgh LLM European and Transnational Law Scholarship',
+    provider: 'Edinburgh Law School, University of Edinburgh',
+    region: 'United Kingdom',
+    level: 'Full-time LLM in European Law at Edinburgh, starting 2027-28',
+    funding: 'Full tuition at the Home or International rate, for one student. Fees only',
+    deadline: 'Closes 30 April 2027 for the 2027-28 academic year',
+    status: 'open',
+    description:
+      "One award, for one programme. It pays the full tuition fee, at the international rate if that is what you pay, for a student on Edinburgh's full-time LLM in European Law. It does not cover living costs. Apply to the LLM first, then apply for the scholarship with a personal statement; it is judged on that statement and your academic merit. If European law is not your field, this one is not for you.",
+    eligibility: [
+      'Accepted onto the full-time LLM in European Law starting in 2027-28',
+      'You must apply to the LLM before applying for the scholarship',
+      'Judged on academic merit and a personal statement',
+      'Covers tuition only, not living costs',
+    ],
+    link: 'https://www.law.ed.ac.uk/study/masters-degrees/scholarships-funding',
+  },
+  {
+    slug: 'mcgill-obrien-graduate-fellowship',
+    closesOn: '2026-12-15',
+    title: "McGill O'Brien Graduate Fellowship",
+    provider: 'Faculty of Law, McGill University',
+    region: 'Canada',
+    level: 'LLM at McGill, researching human rights and legal pluralism',
+    funding: 'Up to 25,000 Canadian dollars for one year of the LLM',
+    deadline: 'Send it with your LLM application by 15 December 2026. McGill also lists 1 January, so 15 December is the safe date',
+    status: 'open',
+    description:
+      "A research fellowship rather than a fee waiver: up to 25,000 Canadian dollars for a year of the LLM, for students whose research is in human rights and legal pluralism. It is open to every nationality and has no age limit. You email a short application form to the Faculty's Graduate Studies Office along with your LLM application, and fellows join McGill's Centre for Human Rights and Legal Pluralism. Selection turns on academic excellence, how original your proposed research is, and whether the Faculty has someone to supervise it.",
+    eligibility: [
+      "Registered in McGill's LLM in the year of the award",
+      'Research in human rights and legal pluralism',
+      'An outstanding academic record. No restriction by citizenship or age',
+      'Application form emailed to the Graduate Studies Office (grad.law@mcgill.ca) with your admission application',
+    ],
+    link: 'https://www.mcgill.ca/law/grad-studies/tuition-and-financial-support/funding-and-entrance-fellowships',
+  },
+
 ]
 
 /**
