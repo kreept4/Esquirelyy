@@ -179,12 +179,12 @@ export default async function ScholarshipPage(
                     eligible; this page is how somebody finds out the award
                     exists at all. */}
                 <p className="grotesk-regular job-note">
-                  These are the provider&rsquo;s own rules, shortened. They change from one year to
-                  the next, so read{' '}
+                  Summarised from the provider&rsquo;s published criteria. Confirm the current
+                  requirements on{' '}
                   <a href={s.link} target="_blank" rel="noopener noreferrer" className="job-note-link">
-                    their page
+                    the provider&rsquo;s page
                   </a>{' '}
-                  before you apply.
+                  before applying.
                 </p>
               </section>
             )}
@@ -217,8 +217,8 @@ export default async function ScholarshipPage(
                    not to be. Most of these run yearly, so the useful answer is
                    when to come back. */
                 <p className="grotesk-regular apply-card-note">
-                  This round has closed. Most of these run every year, so it is worth checking back
-                  with the provider before the next one opens.
+                  Applications for this cycle have closed. Most of these awards run annually; the
+                  provider will publish dates for the next intake.
                 </p>
               ) : (
                 <>
@@ -233,8 +233,8 @@ export default async function ScholarshipPage(
                   </a>
                   <p className="grotesk-regular apply-card-note">
                     {s.status === 'upcoming'
-                      ? 'This one has not opened yet. The provider posts the dates on their own page.'
-                      : 'You apply on the provider’s own site. Nothing about the application happens here.'}
+                      ? 'Applications have not opened yet. Dates are published on the provider’s page.'
+                      : 'Applications are made on the provider’s website.'}
                   </p>
                 </>
               )}
