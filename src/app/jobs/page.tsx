@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Footer from '@/components/layout/Footer'
 import JobsClient from './JobsClient'
+import QuizPrompt from '@/components/features/QuizPrompt'
 import { createClient as createSessionClient } from '@/lib/supabase/server'
 import { openJobs } from '@/lib/open-jobs'
 import { fetchOpportunities, toBoardRow, hasClosed } from '@/lib/opportunities'
@@ -138,6 +139,7 @@ export default async function JobsPage() {
           its header where it belongs, and needs no extra prop to do it. */}
       <Suspense fallback={null}>
         <JobsClient jobs={visible} gated={!user} totalCount={all.length} />
+        {user ? <QuizPrompt /> : null}
       </Suspense>
       <Footer />
     </div>
