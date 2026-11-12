@@ -94,7 +94,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'Closes 23:59 GMT on 27 August 2026, for entry in October 2027',
     status: 'open',
     description:
-      "Three scholarships a year for applicants from West Africa, covering any full-time postgraduate degree at the University of Oxford. Law graduates typically use it for the BCL or the MJur. Candidates are assessed on academic record, character, leadership and commitment to public service.",
+      "Three awards a year for West African applicants, covering any full-time postgraduate degree at Oxford, including the BCL and MJur. Selection is based on academic record, character, leadership and service.",
     eligibility: [
       "Citizen of Nigeria or another of the 20 eligible West African countries",
       "Outstanding academic record in your first degree",
@@ -116,7 +116,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'Open 4 August to 6 October 2026 for 2027/2028 entry',
     status: 'open',
     description:
-      "The UK government's international scholarship, funded by the Foreign, Commonwealth and Development Office. It covers a one-year taught master's in any subject at a UK university, including the LLM. Applicants list three eligible courses, and the award applies to whichever course admits them.",
+      "The UK government's international scholarship for a one-year taught master's, including the LLM. Applicants choose three eligible UK courses.",
     eligibility: [
       "Nigerian citizen, returning to Nigeria for at least two years after the course",
       "Undergraduate degree equivalent to a UK upper second class (2:1)",
@@ -139,7 +139,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'Opens 8 September, closes 20 October 2026 for 2027/2028 entry',
     status: 'upcoming',
     description:
-      "Funds a taught master's at a UK university for candidates who could not otherwise afford to study in the UK. Applications are assessed against six development themes set by the Commission. Law applications usually align with governance, rule of law, access to justice or human rights.",
+      "Funds a taught master's in the UK for candidates who could not otherwise afford it. Applications must align with one of the Commission's six development themes.",
     eligibility: [
       "Citizen of Nigeria or another eligible Commonwealth country, or holder of refugee status",
       "Undergraduate degree at upper second class (2:1) or above",
@@ -160,7 +160,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'December 2026 or January 2027, set by your course',
     status: 'upcoming',
     description:
-      "Covers the full cost of a full-time postgraduate degree at the University of Cambridge, including the LLM. There is no separate application form. Applicants complete the Gates Cambridge section of the Cambridge graduate application, so the course deadline is also the scholarship deadline.",
+      "Full funding for a postgraduate degree at Cambridge, including the LLM. Apply through the Cambridge graduate application by your course deadline.",
     eligibility: [
       "Citizen of any country outside the United Kingdom",
       "Applying to a full-time postgraduate course at Cambridge",
@@ -180,7 +180,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'December 2026 or January 2027, set by your course',
     status: 'upcoming',
     description:
-      "The University of Oxford's largest graduate scholarship scheme, with around 200 awards a year across all subjects, including the BCL and MJur. There is no separate application. Every applicant who applies to Oxford by the December or January deadline for their course is considered automatically.",
+      "Around 200 awards a year for graduate study at Oxford, including the BCL and MJur. All applicants who meet their course deadline are considered automatically.",
     eligibility: [
       "Open to all nationalities",
       "Applying for a new master's or DPhil at Oxford",
@@ -200,7 +200,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: "Follows the LSE graduate financial support deadline, usually in late April",
     status: 'upcoming',
     description:
-      "A £5,000 award towards the LSE LLM for women from Africa. It was endowed by Margaret Bennett, an LSE LLM graduate of 1968. Nigerian applicants are eligible, although preference is given to applicants from North Africa. Applicants are considered through the LSE graduate financial support application.",
+      "A £5,000 award towards the LSE LLM for women from Africa. Preference is given to applicants from North Africa.",
     eligibility: [
       "Female applicant from Nigeria or another eligible African country",
       "Applying for the LSE LLM",
@@ -220,7 +220,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'Two cycles yearly: November to December, and March to April',
     status: 'closed',
     description:
-      "Fully funded two-year master's degrees at universities in low- and middle-income Commonwealth countries, run by the Association of Commonwealth Universities. The scholarship is open to all disciplines, including law, and is aimed at students committed to development in their communities.",
+      "Fully funded two-year master's degrees at universities in low- and middle-income Commonwealth countries. Open to all disciplines, including law.",
     eligibility: [
       "Citizen of an eligible Commonwealth country, including Nigeria",
       "Strong academic record",
@@ -243,7 +243,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'Closes 1 February 2027 for a September 2027 start. Applications opened 1 November 2026',
     status: 'upcoming',
     description:
-      "A faculty scholarship for international students admitted to an English-taught master's at Utrecht University's Faculty of Law, Economics and Governance, including its LL.M. programmes. About six awards are made each year. It covers full tuition and one year of living costs.",
+      "Full tuition and one year of living costs for international students on an English-taught master's in Utrecht's Faculty of Law, Economics and Governance. About six awards a year.",
     eligibility: [
       "Non-EU nationality",
       "Secondary education completed outside the Netherlands",
@@ -272,7 +272,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: "Complete your Maastricht admission application by 10 December 2026. Scholarship applications close 1 February 2027, for a September 2027 start",
     status: 'upcoming',
     description:
-      "Eighteen full scholarships a year for non-EU students admitted to a master's programme at Maastricht University. Each award is worth around EUR 36,000 and covers the tuition fee, a monthly living allowance, visa costs and insurance. Applicants must complete their admission application by 10 December 2026.",
+      "Eighteen full scholarships a year, worth around EUR 36,000 each, for non-EU students admitted to a Maastricht master's. The admission application must be complete by 10 December 2026.",
     eligibility: [
       "Nationality outside the EU/EEA, Switzerland and Suriname, with no dual EU nationality",
       "No previous degree-seeking study in the Netherlands",
@@ -329,7 +329,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: "Apply with your Oxford course application. Law course deadlines fall in January, for entry the following October",
     status: 'upcoming',
     description:
-      "Fully funded graduate study at the University of Oxford combined with a leadership development programme. Eligible law courses are the BCL, the MJur and the MSc in Law and Finance. The scholarship is for applicants who intend to return to their home country and contribute to public life, and their plans are weighed alongside their academic record.",
+      "Full funding and a leadership programme for the BCL, MJur or MSc in Law and Finance at Oxford. For applicants who intend to return home and work in public life.",
     eligibility: [
       "National of an eligible country. Nigeria is on the current list; confirm on the Oxford page for your cycle",
       "Applying to the BCL, MJur or MSc in Law and Finance",
@@ -379,7 +379,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'The 2026/2027 window ran 23 March to 19 April 2026. Next cycle unannounced; the Commission has opened in March in past years',
     status: 'closed',
     description:
-      "The Niger Delta Development Commission's scholarship for postgraduate study abroad. It is limited to indigenes of the nine Niger Delta states, and law is one of the approved disciplines. Applicants must already hold admission to a postgraduate programme at a foreign university.",
+      "Funds postgraduate study abroad for indigenes of the nine Niger Delta states. Law is an approved discipline, and applicants must already hold an offer from a foreign university.",
     eligibility: [
       "Indigene of Abia, Akwa Ibom, Bayelsa, Cross River, Delta, Edo, Imo, Ondo or Rivers State",
       "First degree from an accredited university, Second Class Upper or above for most routes",
@@ -436,7 +436,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: "Closes 17 December 2026 for LLM entry in fall 2027. Considered through your NYU application",
     status: 'open',
     description:
-      "One award a year for an LLM student at NYU School of Law from a low-income or lower-middle-income country who could not otherwise afford to study in New York. Nigeria qualifies under the World Bank classification. The scholarship covers tuition, living costs and one return flight. Applicants are considered through the NYU LLM application, and finalists may be asked for family financial documents.",
+      "One award a year covering tuition, living costs and a return flight for an NYU LLM student from a lower-income country, including Nigeria. Considered through the LLM application.",
     eligibility: [
       "Citizen and resident of Nigeria or another World Bank low-income or lower-middle-income country",
       "Demonstrated financial need",
@@ -457,7 +457,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: "Closes 17 December 2026 for LLM entry in fall 2027. Submitted with your NYU application",
     status: 'open',
     description:
-      "NYU School of Law's leading LLM scholarship, awarded on merit to around ten graduates of law schools outside the United States each year. It covers full tuition and a stipend for living costs. Applicants submit an additional essay of 500 to 750 words with the NYU LLM application.",
+      "NYU Law's leading LLM scholarship, covering full tuition and living costs for around ten international law graduates a year. Requires an additional 500 to 750 word essay.",
     eligibility: [
       "Law degree from a law school outside the United States",
       "Applying to the full-time NYU LLM starting in fall 2027",
@@ -478,7 +478,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'Complete your application by 5 February 2027 to be considered. Specialised awards close earlier, on 8 January 2027',
     status: 'open',
     description:
-      "Georgetown Law considers every admitted LL.M. student for a partial tuition scholarship, with no separate application. A small number of International LL.M. Alumni Scholarships cover full tuition for international students with a strong record in transnational practice. About eight Graduate Tax Scholarships are available on the full-time Taxation LL.M.",
+      "All admitted LL.M. students are considered for partial tuition awards. A small number of full-tuition awards go to international students with transnational practice experience.",
     eligibility: [
       "Admission to a Georgetown Law LL.M.",
       "Full-tuition awards: strong academic or professional record in transnational legal practice",
@@ -499,7 +499,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: "Closes 15 December 2026, the LLM admission deadline. McGill also lists 1 January 2027 for the fellowship",
     status: 'open',
     description:
-      "A fellowship of up to 25,000 Canadian dollars for one year of the LLM at McGill's Faculty of Law, for research in human rights and legal pluralism. It is open to all nationalities. Fellows become members of the Centre for Human Rights and Legal Pluralism. The application form is in the O'Brien Fellowships section of McGill's funding page.",
+      "Up to 25,000 Canadian dollars for one year of the LLM, for research in human rights and legal pluralism. Open to all nationalities.",
     eligibility: [
       "Registered in McGill's LLM in the year of the award",
       "Research in human rights and legal pluralism",
@@ -520,7 +520,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'Closes 30 April 2027 for the 2027-28 academic year',
     status: 'open',
     description:
-      "One scholarship covering the full tuition fee, at the home or international rate, for a student on Edinburgh Law School's full-time LLM in European Law. It does not include living costs. Applicants must apply for the LLM before applying for the scholarship, which is assessed on academic merit and a personal statement.",
+      "One full-tuition scholarship for Edinburgh's full-time LLM in European Law. Living costs are not covered.",
     eligibility: [
       "Accepted onto the full-time LLM in European Law starting in 2027-28",
       "LLM application submitted before the scholarship application",

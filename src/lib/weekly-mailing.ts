@@ -47,27 +47,27 @@ const SCHOLARSHIPS: MailScholarship[] = [
   card(
     'nyu-podell-global-graduate-legal-scholarship',
     NYU,
-    'One award a year for an LLM student from a lower-income country, including Nigeria, who could not otherwise afford to study in New York. It covers tuition, living costs and a return flight. Applicants are considered through the NYU LLM application.'
+    'One award a year covering tuition, living costs and a return flight for an LLM student from a lower-income country, including Nigeria.'
   ),
   card(
     'nyu-hauser-global-scholarship',
     NYU,
-    "NYU Law's leading LLM scholarship, awarded to around ten graduates of law schools outside the United States each year. It covers full tuition and a living stipend. Applicants submit an additional essay of 500 to 750 words."
+    "Full tuition and a living stipend for around ten international law graduates a year. Requires an additional 500 to 750 word essay."
   ),
   card(
     'georgetown-llm-scholarships',
     GEORGETOWN,
-    'Every admitted LL.M. student is considered for a partial tuition award, with no separate application. A small number of full-tuition awards go to international students with a strong record in transnational practice.'
+    'All admitted LL.M. students are considered for partial tuition awards. A small number of full-tuition awards are also available.'
   ),
   card(
     'mcgill-obrien-graduate-fellowship',
     MCGILL,
-    'Up to 25,000 Canadian dollars for one year of the LLM, for research in human rights and legal pluralism. Open to all nationalities. The application form is emailed to the Faculty with your LLM application.'
+    'Up to 25,000 Canadian dollars for one year of the LLM, for research in human rights and legal pluralism.'
   ),
   card(
     'edinburgh-llm-european-transnational-law-scholarship',
     EDINBURGH,
-    'One scholarship covering the full tuition fee on the LLM in European Law. It does not include living costs, and applicants must apply for the LLM first.'
+    'One full-tuition scholarship for the LLM in European Law. Living costs are not covered.'
   ),
 ]
 
@@ -100,7 +100,7 @@ export const WEEKLY_MAILING = {
     'New LLM funding from NYU, Georgetown, McGill and Edinburgh, and two research internships at Ororun. Three deadlines fall in December.',
   /** The paragraph under the cards. */
   footnote:
-    "Every award and internship above has been checked against the provider's own page. Three of the scholarships close in December, so we recommend starting those applications this week.",
+    "Every listing has been checked against the provider's own page. Three scholarships close in December.",
   ctaLabel: 'See every scholarship',
   ctaText: 'See every scholarship here',
 } as const
