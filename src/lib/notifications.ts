@@ -1,5 +1,6 @@
 import { allScholarships, parseDeadline } from './scholarships-data'
 import { NEW_ROLES, roleCountLabel } from './new-roles'
+import { CLOSING_REMINDER, CLOSING_REMINDER_HREF } from './closing-reminder'
 import { daysUntilDay, closesInWords, today as lagosToday } from './day'
 
 /**
@@ -508,6 +509,31 @@ export function buildFeed(
     detail: NEW_ROLES.employersShort.join(' · '),
     at: dropStamps.length ? new Date(Math.max(...dropStamps)).toISOString() : NEW_ROLES.at,
   })
+
+  /* 0b'. The closing reminder, as one announcement, on the day before and the
+          day of its deadline. The per-listing "Closes tomorrow" rows below
+          were stamped a week ago so they stay still, which also means most
+          members read them days ago; this row is the fresh nudge.
+          ⚠ `at` IS A FIXED MOMENT, set when the row was added, so it is unread
+          for everybody who has not opened the bell since then and then stays
+          read. It must never be `now`: see the restamp note in section 2b. */
+  {
+    const deadline = CLOSING_REMINDER.entries[0]?.deadline
+    const days = deadline ? daysUntilDay(deadline, now) : null
+    if (deadline && days !== null && days >= 0 && days <= 1) {
+      const n = CLOSING_REMINDER.entries.length
+      const count = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six'][n] ?? String(n)
+      out.push({
+        id: `${CLOSING_REMINDER.id}-bell`,
+        kind: 'deadline',
+        title: `${count} ${n === 1 ? 'opening closes' : 'openings close'} ${days === 0 ? 'today' : 'tomorrow'}`,
+        detail: CLOSING_REMINDER.entries.map(e => e.employerShort).join(' · '),
+        label: dayLabel(deadline),
+        href: CLOSING_REMINDER_HREF,
+        at: '2026-11-12T07:00:00.000Z',
+      })
+    }
+  }
 
   /* 0c. THE TEAM CALL IS NOT PUSHED, 24 August 2026, AND THE ID IS WHAT
          RETIRED IT — exactly as lib/team-call.ts said it would be.

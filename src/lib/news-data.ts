@@ -14,6 +14,8 @@
  */
 
 import { ALL_FIRMS } from '@/lib/firms-data'
+import { CLOSING_REMINDER_HREF } from '@/lib/closing-reminder'
+import { today as lagosToday } from '@/lib/day'
 
 export type NewsKind = 'update' | 'tip' | 'news'
 
@@ -60,6 +62,12 @@ export interface NewsItem {
   cta?: string
   /** Optional. A slide reads perfectly well without one. */
   media?: NewsMedia
+  /**
+   * Optional. The last day (YYYY-MM-DD, Lagos) the slide is shown. For a slide
+   * about something with a deadline, so it comes off when the thing closes
+   * rather than when somebody remembers to edit this file.
+   */
+  until?: string
 }
 
 /** Label shown on a slide. Kept here so the carousel and the news page agree. */
@@ -96,56 +104,30 @@ const ITEMS: NewsItem[] = [
 
   {
     /**
-     * The 2026 SAN conferment, in the J.O Fabunmi competition's slot.
+     * The 13 November closings, in the slot the 2026 SAN conferment had.
      *
-     * ⚠ WHY THAT SLIDE CAME OFF, AND THE TWO BELOW IT WITH IT. All three were
-     * listings with a date on them and every date had passed: the Fabunmi
-     * registration closed on 28 September, Omaplex on 5 October, and the Law
-     * Crest internship was a single day, 7 October. A slide is worth what a
-     * reader can do with it, and a reader who tapped any of the three found a
-     * closed form. Same rule the LBVIP note above records: this file expires by
-     * somebody editing it.
+     * The SAN slide was news in October and history now; its own note said to
+     * pull it once something worth the slot arrived. Four openings closing on
+     * one day is that: the closing reminder email reached members on 10
+     * November, and this is the last nudge for anybody who lands on the
+     * homepage before the forms shut. The photo stays in /public/news.
      *
-     * ⚠ A `news` SLIDE, AND THE FIRST `type: 'photo'` SINCE THE BADEJO ONE CAME
-     * OFF. The ceremony is the story, so it gets a photograph of the ceremony
-     * rather than a mark: the new silks in wig and gown in the Supreme Court
-     * courtroom. It is a press photograph, so `credit` names where it came from
-     * and the carousel prints it, which is the acknowledgement the fair dealing
-     * for reporting current events expects. It came from Political Economist's
-     * report of the day (politicaleconomistng.com, 13 October), 664 by 462,
-     * the largest genuine photograph of the ceremony any outlet published;
-     * the larger images in the other reports were a portrait of the CJN
-     * composited onto stock scales and a gavel, which is not a picture of the
-     * event.
-     *
-     * ⚠ THE FILE IS AN AI UPSCALE OF THAT ORIGINAL, NOT A NEW PHOTOGRAPH.
-     * ESRGAN (the MIT-licensed @upscalerjs/esrgan-thick 4x model) took it to
-     * 2656 by 1848, and a Lanczos resize took that to a 3840-wide master,
-     * san-swearing-in-2026-4k.jpg. The carousel loads the 1920-wide copy: the
-     * slot is never wider than a tablet, and a 4K file on the home page is
-     * data a reader on a phone plan pays for and never sees.
-     *
-     * The facts are the reports': Channels, TVC, Radio Nigeria and Blueprint all
-     * carry the same numbers. 68 sworn in on Monday 12 October, opening the
-     * 2026/2027 legal year; 67 as advocates and one, Professor Nnamdi
-     * Obiaraeri, as an academic.
-     *
-     * ⚠ THIS ONE HAS A SHELF LIFE TOO. It is news this week and history next
-     * month. Pull it, or replace it, once the next thing worth a slot arrives.
+     * ⚠ `until` TAKES IT OFF BY ITSELF after Friday 13 November, Lagos time,
+     * so it cannot outlive the listings it points at. The home page revalidates
+     * hourly, so it goes within the hour after midnight.
      */
-    slug: 'san-conferment-2026',
-    kind: 'news',
-    date: '2026-10-12',
-    title: '68 new Senior Advocates of Nigeria',
+    slug: 'closing-2026-11-13',
+    kind: 'update',
+    date: '2026-11-12',
+    until: '2026-11-13',
+    title: 'Four openings close on Friday, 13 November',
     summary:
-      'The Chief Justice, Kudirat Kekere-Ekun, swore in 68 new SANs at the Supreme Court in Abuja on 12 October, opening the 2026/2027 legal year. Sixty-seven were conferred as advocates and one, Professor Nnamdi Obiaraeri, as an academic.',
-    href: 'https://www.channelstv.com/2026/10/12/full-list-cjn-swears-in-68-new-sans',
-    cta: 'See the full list',
+      "Stren & Blan's 2027 NYSC trainee seat, associate roles at Ikeyi Shittu and Olajide Oyewole, and Olaniwun Ajayi's Blue Experience open day all close on Friday. If one is yours, apply today.",
+    href: CLOSING_REMINDER_HREF,
+    cta: 'See all four',
     media: {
-      type: 'photo',
-      src: '/news/san-swearing-in-2026.jpg',
-      alt: 'New Senior Advocates of Nigeria in wigs and silk gowns at the swearing-in at the Supreme Court, Abuja',
-      credit: 'Political Economist',
+      type: 'logos',
+      slugs: ['Stren & Blan Partners', 'Ikeyi Shittu & Co', 'Olajide Oyewole LLP', 'Olaniwun Ajayi LP'],
     },
   },
 
@@ -315,8 +297,9 @@ const ITEMS: NewsItem[] = [
  * The single read point. Newest first, and tolerant of a malformed date so one
  * bad entry cannot reorder or crash the homepage.
  */
-export function getNewsItems(): NewsItem[] {
-  return [...ITEMS].sort((a, b) => {
+export function getNewsItems(now: Date = new Date()): NewsItem[] {
+  const today = lagosToday(now)
+  return ITEMS.filter(i => !i.until || i.until >= today).sort((a, b) => {
     const ta = Date.parse(a.date)
     const tb = Date.parse(b.date)
     if (Number.isNaN(ta) && Number.isNaN(tb)) return 0
