@@ -65,75 +65,42 @@
  * the board.
  */
 export const ROLE_ENTRIES = [
-  /* THE 9 NOVEMBER DROP: SLINGSTONE'S LEKKI ASSOCIATE (closes 16 November),
-     ADEOLA OYINLADE'S COMMERCIAL LAWYERS (20 November), FEALTY PARTNERS'
-     DISPUTE RESOLUTION ASSOCIATE (no closing date) AND THE IBA'S LEGAL
-     INTERNSHIP PROGRAMME (11 December). Dated seats soonest first, the
-     undated seat after them, the internship last.
+  /* THE 12 NOVEMBER DROP: ÓRỌRÙN'S TWO REMOTE RESEARCH INTERNSHIPS, both
+     closing 30 November. The full-time seat first, because it is the one the
+     poster called a head-of-research role; the part-time seat after it,
+     because it is the only opening on the board this week that a law student
+     can apply for, which the line says.
 
-     All three went up on 6 November, the day after the 5 November send, and
-     were held for one email on the Monday rather than a second message to
-     the same list inside a day. The 5 November entries are in git.
+     No pay figure in either line, at the user's request; both say "paid".
+     The 9 November entries are in git.
 
-     ⚠ `inSentence` IS FOR THE IBA AND ANYTHING LIKE IT. The headline and
-     subject read the short names as a sentence, where "Slingstone, Adeola
-     Oyinlade and IBA are taking applications" drops an article a person would
-     never drop. The bare short name is still what the bell's row of names and
-     the card's cover-letter link use ("Draft your IBA cover letter"). */
+     ⚠ THE EMAIL SPELLS THE NAME "Ororun". The roles email's plain-text part is
+     kept ASCII-only (see noticePhrase below for why), and "Órọrùn" is not
+     ASCII. lib/weekly-mailing.ts maps the name to the Latin spelling the
+     company uses for its own handle and domain. The site keeps the accents. */
   {
-    slug: 'slingstone-associate-lekki',
-    employer: 'Slingstone LP',
-    employerShort: 'Slingstone',
-    title: 'Associate',
-    line: 'An associate seat for lawyers four or more years into practice, in litigation or corporate and commercial work. In the firm\'s own words, brilliance is valued and kindness is non-negotiable. Lekki, Lagos. Send your CV to hello@slingstonelaw.com by Monday 16 November.',
+    slug: 'ororun-research-intern-remote',
+    employer: 'Órọrùn',
+    employerShort: 'Órọrùn',
+    title: 'Research Intern',
+    line: "A paid, remote internship for law graduates in the gap year before Law School, at a research platform for arbitration case law. The work is finding and uploading cases, keeping the platform's records accurate, and helping run a team of research volunteers. Apply on Órọrùn's careers page with a CV and a cover letter by 30 November.",
     prep: 'apply',
-    deadline: '2026-11-16',
-    short: 'an associate seat at Slingstone',
+    deadline: '2026-11-30',
+    short: 'a remote research internship at Órọrùn',
     blurb:
-      'Slingstone LP are hiring an associate with four or more years\' call in litigation or corporate and commercial work, closing on 16 November.',
+      'Órọrùn are taking a paid, remote research intern from law graduates waiting on Law School, closing on 30 November.',
   },
   {
-    slug: 'adeola-oyinlade-commercial-lawyer-yaba',
-    employer: 'Adeola Oyinlade & Co',
-    employerShort: 'Adeola Oyinlade',
-    title: 'Commercial Lawyer',
-    line: 'Commercial transactions and company secretarial work, for lawyers three to six years into practice with a First or 2:1 and depth in a field such as tax, employment, energy or technology. Yaba, Lagos. Send your CV and a cover letter, subject "Commercial Lawyer", by 20 November.',
+    slug: 'ororun-part-time-research-intern-remote',
+    employer: 'Órọrùn',
+    employerShort: 'Órọrùn',
+    title: 'Part-Time Research Intern',
+    line: "The same research work, part-time and remote, and open to law students as well as graduates waiting on Law School. You find and upload cases, edit the records already there, and write short summaries of the judgments. Paid. Apply on Órọrùn's careers page with a CV and a cover letter by 30 November.",
     prep: 'apply',
-    deadline: '2026-11-20',
-    short: 'commercial lawyer seats at Adeola Oyinlade',
+    deadline: '2026-11-30',
+    short: 'a part-time version open to law students',
     blurb:
-      'Adeola Oyinlade & Co are hiring commercial lawyers at three to six years\' call in Yaba, closing on 20 November.',
-  },
-  {
-    /* Added 7 November, after the test of this drop had gone out. No
-       closing date, so it sits after the dated seats and before the
-       internship, and the card's pill says so rather than inventing one. */
-    slug: 'fealty-partners-dispute-resolution-associate',
-    employer: 'Fealty Partners LP',
-    employerShort: 'Fealty Partners',
-    title: 'Dispute Resolution Associate',
-    line: 'A dispute resolution seat for lawyers at least four years qualified: strong drafting, real courtroom advocacy, and the judgement to set litigation strategy and run matters on your own. Victoria Island, Lagos. Send your CV and a cover letter to info@fealtypartner.com. No closing date is set, so apply early.',
-    prep: 'apply',
-    deadline: null,
-    short: 'a dispute resolution seat at Fealty Partners',
-    blurb:
-      'Fealty Partners LP are hiring a dispute resolution associate at four or more years\' qualification in Victoria Island, with no closing date set.',
-  },
-  {
-    /* An opportunity, not a jobs row: the slug is opportunitySlug(title). */
-    slug: 'iba-legal-internship-programme-may-to-august-2027',
-    employer: 'International Bar Association',
-    employerShort: 'IBA',
-    inSentence: 'the IBA',
-    title: 'Legal Internship Programme, May to August 2027',
-    /* ASCII on purpose: this line is also the plain-text part, so the grant
-       is described rather than priced in pounds. */
-    line: 'Four months researching and writing for the International Bar Association, remotely or in London. Open to law students and newly qualified lawyers; the remote route is for students outside the UK, and grants are there for those who need one. Applications close on 11 December.',
-    prep: 'apply',
-    deadline: '2026-12-11',
-    short: 'the IBA\'s 2027 legal internship',
-    blurb:
-      'And the International Bar Association are taking interns for May to August 2027, remotely or in London, closing on 11 December.',
+      'A part-time version is open to law students too, on the same date.',
   },
 ] as const
 
@@ -141,10 +108,10 @@ export const NEW_ROLES = {
   /** Changing this makes the notification unread again for everybody, which is
    *  correct when the drop itself changes: this is a new drop entirely, so
    *  somebody who read the 1 September note has not seen this one. */
-  id: 'roles-2026-11-09',
+  id: 'roles-2026-11-12',
   /** ISO. Sorts the notification and dates the carousel slide. The bell dates
    *  the drop by its listings' own created_at and only falls back to this. */
-  at: '2026-11-09T07:00:00.000Z',
+  at: '2026-11-12T07:00:00.000Z',
   slugs: ROLE_ENTRIES.map(r => r.slug),
   /* ⚠ ONE NAME PER FIRM, NOT PER ROLE. Every consumer of these two joins them
      into a sentence or a row of names, and a drop where one firm posts several
@@ -159,7 +126,9 @@ export const NEW_ROLES = {
   /** The short names as they read inside a sentence: "the IBA", not "IBA".
    *  Read by the headline and subject helpers below. */
   employersInSentence: [
-    ...new Set<string>(ROLE_ENTRIES.map(r => ('inSentence' in r ? r.inSentence : r.employerShort))),
+    /* Read through a widened type: a drop with no `inSentence` anywhere, like
+       this one, narrows the `in` check to never and the call stops compiling. */
+    ...new Set<string>(ROLE_ENTRIES.map(r => (r as { inSentence?: string }).inSentence ?? r.employerShort)),
   ],
 } as const
 
@@ -202,7 +171,7 @@ export const NEW_ROLES_COUNT: number = ROLE_ENTRIES.length
  * the slugs rather than assumed downstream. Drops that are genuinely seats set
  * it back to 'role' and every surface follows.
  */
-export const DROP_NOUN: string = 'opportunity'
+export const DROP_NOUN: string = 'internship'
 
 /**
  * The noun, counted. "1 role", "2 roles", "2 opportunities".
@@ -333,7 +302,11 @@ export function noticePhrase(): string {
 
      The rendered email is now clean ASCII in all three of subject, text and
      html, and it is worth keeping it that way: this was the only offender. */
-  return NEW_ROLES_COUNT === 1 ? "the employer's own notice" : "the employers' own notices"
+  /* Counted by employer as well as by role: the 12 November drop is two
+     postings from one company, and "the employers' own notices" would have
+     invented a second employer. */
+  if (NEW_ROLES.employers.length > 1) return "the employers' own notices"
+  return NEW_ROLES_COUNT === 1 ? "the employer's own notice" : "the employer's own postings"
 }
 
 /**

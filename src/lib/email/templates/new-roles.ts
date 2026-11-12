@@ -166,9 +166,32 @@ export type MailEntry = {
  * carries (the closing notice, a closing scholarship, the student notice) are
  * left out of it: a reminder is about its own cards and nothing else.
  */
+/**
+ * One scholarship's card in a mailing. Written per send rather than read
+ * straight off scholarships-data.ts, because the page's description is a
+ * paragraph and a card wants two sentences. The title, provider and dates still
+ * come from that file, so the two cannot disagree on facts.
+ */
+export type MailScholarship = {
+  slug: string
+  title: string
+  provider: string
+  /** YYYY-MM-DD, shown as the card's pill. */
+  closesOn: string
+  line: string
+}
+
 export type MailingCopy = {
   id: string
   entries: readonly MailEntry[]
+  /** Optional. When present, these lead the email under their own label and
+   *  the role cards follow under `rolesLabel`. */
+  scholarships?: readonly MailScholarship[]
+  scholarshipsLabel?: string
+  rolesLabel?: string
+  /** A link beside the roles label, to the board filtered to these roles. */
+  rolesLinkLabel?: string
+  rolesHref?: string
   subject: string
   headline: string
   preheader: string
@@ -359,6 +382,58 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
    * employer in a future drop renders cleanly before anybody has run the asset
    * script for it. Run it anyway: a monogram is a fallback, not a design.
    */
+  const scholarships = mailing?.scholarships ?? []
+
+  /**
+   * A section label: small caps in stone, with an optional link on the right.
+   * Only drawn when a mailing has two kinds of card, so the reader can tell
+   * the scholarships from the roles at a glance.
+   */
+  const sectionLabel = (label: string, link?: { label: string; href: string }) => `
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:6px 0 12px 0;">
+              <tr>
+                <td class="es-t-stone" valign="bottom" style="padding:0;font-size:11px;line-height:15px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;color:${STONE};">${label}</td>
+                ${
+                  link
+                    ? `<td align="right" valign="bottom" style="padding:0;font-size:11px;line-height:15px;"><a class="es-t-ink" href="${attr(link.href)}" style="font-weight:600;color:${INK};text-decoration:none;border-bottom:2px solid #14B8A6;padding-bottom:1px;white-space:nowrap;">${link.label}&nbsp;&rarr;</a></td>`
+                    : ''
+                }
+              </tr>
+            </table>`
+
+  /**
+   * One scholarship, as a card: the same frame as a role card, with the
+   * provider where a role card has the firm's plate, and one link to the full
+   * terms on the site instead of the CV and cover letter tools.
+   */
+  const scholarshipCard = (sc: MailScholarship) => `
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate;margin:0 0 16px 0;">
+              <tr>
+                <td class="es-b-card" bgcolor="${CARD}" background="${siteUrl}/email/card-linen.png" style="padding:22px 22px 20px 22px;background-color:${CARD};background-image:url('${siteUrl}/email/card-linen.png');background-repeat:repeat;border:1px solid ${INK};border-radius:12px;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+                    <tr>
+                      <td class="es-t-stone" valign="middle" style="padding:0;font-size:11px;line-height:15px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;color:${STONE};">${sc.provider}</td>
+                      <td align="right" valign="middle" style="padding:0 0 0 12px;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right" style="border-collapse:separate;">
+                          <tr>
+                            <td class="es-b-white es-t-ink" bgcolor="#FFFFFF" style="padding:6px 11px;background-color:#FFFFFF;border:1px solid ${RULE};border-radius:999px;font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:10px;line-height:1.2;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:${INK};white-space:nowrap;">Closes ${shortDate(sc.closesOn)}</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                  <p class="es-t-ink" style="margin:12px 0 12px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:20px;line-height:25px;font-weight:700;letter-spacing:-0.3px;color:${INK};">${sc.title}</p>
+                  <p class="es-t-ink" style="margin:0;font-size:14px;line-height:23px;color:${INK};">${sc.line}</p>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:16px 0 0 0;">
+                    <tr>
+                      <td class="es-b-rule" height="1" bgcolor="${RULE}" style="height:1px;line-height:1px;font-size:0;background-color:${RULE};">&nbsp;</td>
+                    </tr>
+                  </table>
+                  <p style="margin:16px 0 0 0;font-size:12.5px;line-height:22px;"><a class="es-t-ink" href="${attr(`${siteUrl}/scholarships/${sc.slug}`)}" style="font-weight:600;color:${INK};text-decoration:none;border-bottom:2px solid #14B8A6;padding-bottom:1px;white-space:nowrap;">See the full terms&nbsp;&rarr;</a></p>
+                </td>
+              </tr>
+            </table>`
+
   const roleCard = (r: MailEntry) => {
     const logo = logoForEmployer(r.employer)
     const plate = logo ? PLATES[logo] : undefined
@@ -420,6 +495,23 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
           `${closingNotice.label.toUpperCase()}: ${closingNotice.employer}, ${closingNotice.title}`,
           closingNotice.body,
           `${siteUrl}/jobs/${closingNotice.slug}`,
+          '',
+        ]
+      : []),
+    ...(scholarships.length
+      ? [
+          (mailing?.scholarshipsLabel ?? 'Scholarships').toUpperCase(),
+          '',
+          ...scholarships.flatMap(sc => [
+            `${sc.provider}: ${sc.title} (closes ${shortDate(sc.closesOn)})`,
+            sc.line,
+            `See the full terms: ${siteUrl}/scholarships/${sc.slug}`,
+            '',
+          ]),
+          (mailing?.rolesLabel ?? 'Roles').toUpperCase(),
+          ...(mailing?.rolesHref && mailing.rolesLinkLabel
+            ? [`${mailing.rolesLinkLabel}: ${siteUrl}${mailing.rolesHref}`]
+            : []),
           '',
         ]
       : []),
@@ -645,6 +737,18 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
                 : ''
             }
 
+            ${
+              scholarships.length
+                ? `${sectionLabel(mailing?.scholarshipsLabel ?? 'Scholarships')}
+            ${scholarships.map(scholarshipCard).join('')}
+            ${sectionLabel(
+              mailing?.rolesLabel ?? 'Roles',
+              mailing?.rolesHref && mailing.rolesLinkLabel
+                ? { label: mailing.rolesLinkLabel, href: `${siteUrl}${mailing.rolesHref}` }
+                : undefined
+            )}`
+                : ''
+            }
             ${ROLES.map(roleCard).join('')}
 
             ${
