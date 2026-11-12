@@ -54,10 +54,9 @@ export interface Scholarship {
  *  Verified 2026-08-05 against each provider's own page. Deadlines move every
  *  cycle, so re-check the `status` field each term rather than trusting it.
  *
- *  The Mastercard Foundation entry was added 2026-08-24 off the programme's own
- *  recruitment flier and has NOT been checked against the Edinburgh Global page
- *  the way the nine above were. Its funding line says so rather than itemising
- *  an award the flier does not itemise. */
+ *  12 November 2026: the Mastercard Foundation programme at Edinburgh was
+ *  removed. None of its funded degrees is a law degree, and this page is for
+ *  law graduates. */
 const SCHOLARSHIPS: Scholarship[] = [
   {
     slug: 'rhodes-scholarship-west-africa',
@@ -203,84 +202,6 @@ const SCHOLARSHIPS: Scholarship[] = [
     link: 'https://www.acu.ac.uk/our-work/queen-elizabeth-commonwealth-scholarships/',
   },
 
-  /**
-   * ⚠ THE ONE ENTRY HERE THAT DOES NOT FUND AN LLM, AND IT IS IN ON PURPOSE.
-   *
-   * The rule at the top of this file is that a scholarship which welcomes
-   * Nigerians but funds only an MSc in Robotics does not belong. This one is the
-   * genuine edge of that rule rather than an exception to it. Every funded
-   * programme is sustainability-facing and none is a law degree, but several are
-   * degrees Nigerian law graduates actually read and are admitted to: Africa &
-   * International Development, Data, Inequality & Society, Social Justice &
-   * Community Action, International Development. A lawyer moving into policy,
-   * development or climate governance is the intended candidate for those.
-   *
-   * So it goes in WITH THE SUBJECT LIMIT IN THE FIRST LINE OF THE DESCRIPTION
-   * rather than buried in the eligibility list. The failure this file guards
-   * against is somebody spending an evening on an application they were never
-   * eligible for.
-   *
-   * ============================================================
-   * ⚠ 'upcoming', NOT 'open', AND IT WAS 'open' UNTIL KREEPT CAUGHT IT
-   * ============================================================
-   *
-   * Checked against the programme's own How to Apply page on 24 August 2026.
-   * You cannot apply today and there is no form to apply on. The sequence is:
-   *
-   *   15 to 24 Sept 2026   six virtual information sessions, three for
-   *                        on-campus applicants and three for online
-   *   13 October 2026      attendees are told whether they are invited to apply
-   *   19 October 2026      Applicant Declaration Form deadline, 5pm UK
-   *   19 November 2026     the application itself closes, 5pm UK
-   *
-   * Every other entry here uses 'open' to mean an application window that is
-   * accepting submissions right now, which is what Chevening's "Open 4 August to
-   * 6 October" means and what Commonwealth's 'upcoming' means by contrast.
-   * Marking this 'open' put it under a filter promising something a reader
-   * cannot do, and would have sent somebody looking for a form that does not
-   * exist yet.
-   *
-   * ⚠ THE COST OF THAT HONESTY IS THAT buildFeed SKIPS IT, because the bell
-   * only notifies on 'open'. That is the right trade today: the first session
-   * is 22 days out and the bell's window is seven, so it would not have fired
-   * anyway. IT BECOMES THE WRONG TRADE AROUND 8 SEPTEMBER, when the registration
-   * gate is a week away and still nothing will announce it. If this is still
-   * 'upcoming' then, that is the moment to give buildFeed a second rule for
-   * scholarships whose ACTION is open even though their APPLICATION is not.
-   *
-   * The registration step is what the deadline line leads with, because it is
-   * the only thing a reader can act on now and missing it forecloses the
-   * application entirely.
-   */
-  {
-    slug: 'mastercard-foundation-scholars-edinburgh',
-    opensOn: '2026-10-13',
-    closesOn: '2026-11-19',
-    title: 'Mastercard Foundation Scholars Program at the University of Edinburgh',
-    provider: 'Mastercard Foundation and the University of Edinburgh',
-    region: 'United Kingdom',
-    level: "On-campus and online distance learning Master's degrees, starting September 2027",
-    funding: 'Fully funded',
-    /* ⚠ THIS DOES NOT CLAIM A REGISTRATION CUT-OFF, AND AN EARLIER DRAFT DID.
-       It read "Register for an information session by 15 September 2026", which
-       is an invented deadline: the programme publishes six sessions running to
-       24 September and does not say when registration for each one closes. A
-       reader who could have taken the 24 September session and was told to
-       register by the 15th has been shut out by our copy rather than by the
-       programme. The dates that ARE published are the ones here. */
-    deadline: 'Information sessions 15 to 24 September 2026. Applications close 19 November 2026',
-    status: 'upcoming',
-    description:
-      'The funded degrees are not law. They are subjects like Africa & International Development, Data, Inequality & Society, Social Justice & Community Action and Global Health, studied on campus in Edinburgh or by online distance learning. That makes it a route for a lawyer moving into policy, development or climate work, and not a way to fund an LLM. The process changed this cycle and the change is the important part: you must register for and attend one of the virtual information sessions held between 15 and 24 September 2026. Attending does not guarantee anything, but not attending rules you out, because the application form is only released to invited attendees. Invitations go out on 13 October and the application itself closes on 19 November 2026. Applications are especially encouraged from young women, young people with disabilities, and young people with refugee or displaced status.',
-    eligibility: [
-      'From Africa, so Nigerian nationality qualifies',
-      'Applying for one of the listed sustainability-focused programmes, not an LLM',
-      'Must register for and attend an information session between 15 and 24 September 2026',
-      'Only attendees who meet the eligibility bar are invited to apply, on 13 October',
-      'Programme list changes each cycle, so check the page before registering',
-    ],
-    link: 'https://edinburgh-global.ed.ac.uk/mastercard-foundation-scholars-program/apply-for-a-scholarship/how-to-apply',
-  },
 
   {
     slug: 'utrecht-leg-international-talent',
@@ -291,7 +212,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     region: 'Netherlands',
     level: "English-taught Master's at the Graduate School of Law, Economics and Governance",
     funding: 'Full tuition plus one year of living costs at the level Dutch immigration requires',
-    deadline: 'Opens 1 November 2026, closes 1 February 2027 for a September 2027 start',
+    deadline: 'Closes 1 February 2027 for a September 2027 start. Applications opened 1 November 2026',
     status: 'upcoming',
     description:
       'A faculty scholarship rather than a general one, which is what makes it unusually relevant: it is attached to the Law, Economics and Governance graduate school, so an LL.M there is squarely in scope rather than competing against every subject in the university. About six are awarded a year.',
@@ -304,17 +225,25 @@ const SCHOLARSHIPS: Scholarship[] = [
     link: 'https://www.uu.nl/en/masters/general-information/application-and-admission/scholarships-and-grants/law-economics-and-governance-international-talent-scholarship',
   },
   {
+    /* Corrected 12 November 2026 against Maastricht's own page: 18 awards,
+       not 21, and the admission file must be complete by 10 December 2026,
+       which this entry did not say. That earlier date leads the deadline line
+       so the closing-soon alerts fire on the date a reader can still act on.
+       The page's 2027-28 programme list includes the law LLMs (European Law
+       School, Globalisation and Law, International and European Tax Law,
+       Forensics, Criminology and Law). Applications opened 1 October 2026. */
     slug: 'maastricht-nl-high-potential',
+    opensOn: '2026-10-01',
     closesOn: '2027-02-01',
     title: 'Maastricht University NL-High Potential Scholarship',
     provider: 'Maastricht University',
     region: 'Netherlands',
     level: "Master's at Maastricht University",
     funding: 'Around EUR 36,000: tuition waiver, a monthly stipend, visa and insurance',
-    deadline: 'Closes 1 February 2027 for a September 2027 start',
+    deadline: 'Complete your Maastricht admission application by 10 December 2026. The scholarship itself closes 1 February 2027, for a September 2027 start',
     status: 'upcoming',
     description:
-      'Twenty-one full awards a year, restricted to non-EU nationals, which is a far shorter queue than the open-to-all schemes. Maastricht has a substantial law faculty and a well-known set of LL.M programmes, so a Nigerian law graduate is applying into a real fit rather than an exception.',
+      'Eighteen full awards a year, restricted to non-EU nationals, which is a far shorter queue than the open-to-all schemes. Maastricht has a substantial law faculty and a well-known set of LL.M programmes, so a Nigerian law graduate is applying into a real fit rather than an exception.',
     eligibility: [
       'Nationality outside the EU/EEA, Switzerland and Suriname, and no dual EU nationality',
       'No previous degree-seeking study in the Netherlands',
