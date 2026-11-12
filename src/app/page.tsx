@@ -9,7 +9,7 @@ import QuickQuestions from '@/components/features/QuickQuestions'
 import RolePit from '@/components/features/RolePit'
 import EverythingYouNeed from '@/components/features/EverythingYouNeed'
 import NewsCarousel from '@/components/features/NewsCarousel'
-import { getNewsItems } from '@/lib/news-data'
+import { getNewsItems, resolveClosing } from '@/lib/news-data'
 import { FIRMS_WITH_LOGOS, firmLogo } from '@/lib/firms-data'
 import { fetchOpportunities, toBoardRow, hasClosed } from '@/lib/opportunities'
 import LogoFrame from '@/components/ui/LogoFrame'
@@ -190,7 +190,7 @@ export default async function HomePage() {
 
       {/* Between the ticker and the pit, still inside the dark run, so the
           glass panel has ink behind it to be glass against. */}
-      <NewsCarousel items={getNewsItems()} />
+      <NewsCarousel items={getNewsItems().map(i => resolveClosing(i))} />
 
       <RolePit listings={openRoles} />
 

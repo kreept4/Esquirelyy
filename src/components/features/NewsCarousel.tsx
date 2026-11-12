@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
-import { KIND_LABEL, type NewsItem } from '@/lib/news-data'
+import { ArrowRight, Timer } from 'lucide-react'
+import { KIND_LABEL, closingEndsAt, resolveClosing, type NewsItem } from '@/lib/news-data'
 import { logoForEmployer } from '@/lib/firms-data'
 
 /**
@@ -96,7 +96,57 @@ const Arrow = () => (
   </svg>
 )
 
-export default function NewsCarousel({ items }: { items: NewsItem[] }) {
+/**
+ * The red countdown on a closing slide: hours, minutes and seconds to the end
+ * of the closing day in Lagos.
+ *
+ * Renders nothing until it has mounted. The home page is built on the server
+ * and cached for an hour, so a time printed there would be up to an hour stale
+ * and would not match what the browser computes, which React reports as a
+ * hydration error. The clock belongs to the reader's device.
+ *
+ * role="timer" with aria-live off: a screen reader can read it on request, and
+ * is not interrupted every second.
+ */
+function Countdown({ endsAt }: { endsAt: number }) {
+  const [now, setNow] = useState<number | null>(null)
+  useEffect(() => {
+    setNow(Date.now())
+    const id = window.setInterval(() => setNow(Date.now()), 1000)
+    return () => window.clearInterval(id)
+  }, [])
+  if (now === null) return null
+  const left = Math.max(0, Math.floor((endsAt - now) / 1000))
+  if (left === 0) return null
+  const h = Math.floor(left / 3600)
+  const m = Math.floor((left % 3600) / 60)
+  const s = left % 60
+  const two = (n: number) => String(n).padStart(2, '0')
+  return (
+    <span className="grotesk-bold news-timer" role="timer" aria-live="off">
+      <Timer size={13} aria-hidden />
+      <span className="news-timer-digits">
+        {h > 0 ? `${h}h ` : ''}{two(m)}m {two(s)}s
+      </span>
+      {' '}left
+    </span>
+  )
+}
+
+export default function NewsCarousel({ items: given }: { items: NewsItem[] }) {
+  /* A closing slide says "tomorrow" or "today", so its wording depends on the
+     reader's day. The first render uses the wording the server sent, so it
+     matches the server's HTML; after mounting, and once a minute after that,
+     the slide is worded for the day it actually is. */
+  const [today, setToday] = useState<Date | null>(null)
+  useEffect(() => {
+    if (!given.some(i => i.closing)) return
+    setToday(new Date())
+    const id = window.setInterval(() => setToday(new Date()), 60_000)
+    return () => window.clearInterval(id)
+  }, [given])
+  const items = today ? given.map(i => resolveClosing(i, today)) : given
+
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const rootRef = useRef<HTMLElement>(null)
@@ -299,7 +349,17 @@ export default function NewsCarousel({ items }: { items: NewsItem[] }) {
                 const body = (
                   <>
                     <span className="news-copy">
-                    <span className="grotesk-bold news-kind">{KIND_LABEL[item.kind]}</span>
+                    {item.closing ? (
+                      /* One row, so the label and the pill share a centre
+                         line. Two inline boxes of different heights sat on
+                         different baselines. */
+                      <span className="news-kind-row">
+                        <span className="grotesk-bold news-kind">{KIND_LABEL[item.kind]}</span>
+                        <Countdown endsAt={closingEndsAt(item.closing.on)} />
+                      </span>
+                    ) : (
+                      <span className="grotesk-bold news-kind">{KIND_LABEL[item.kind]}</span>
+                    )}
                     <p className="display-black news-title">{item.title}</p>
                     <p className="grotesk-regular news-summary">{item.summary}</p>
                     {cta}
