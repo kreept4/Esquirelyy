@@ -4,14 +4,17 @@ import { sendEmail, emailConfigured } from '@/lib/email/send'
 import { newRolesEmail, rolesEmail } from '@/lib/email/templates/new-roles'
 import { NEW_ROLES } from '@/lib/new-roles'
 import { CLOSING_REMINDER, CLOSING_REMINDER_HREF } from '@/lib/closing-reminder'
+import { WEEKLY_MAILING, WEEKLY_MAILING_HREF } from '@/lib/weekly-mailing'
 
 /* The mailings this deployment can send, by the drop id a run names: the
-   current roles drop, and the closing-soon reminder (lib/closing-reminder.ts).
+   current roles drop, the closing-soon reminder (lib/closing-reminder.ts) and
+   the Monday mailing (lib/weekly-mailing.ts).
    A run for anything else is refused, as before. */
 type Render = (a: { name?: string; siteUrl: string }) => { subject: string; html: string; text: string }
 const MAILINGS: Record<string, Render> = {
   [NEW_ROLES.id]: newRolesEmail,
   [CLOSING_REMINDER.id]: a => rolesEmail({ ...a, mailing: { ...CLOSING_REMINDER, href: CLOSING_REMINDER_HREF } }),
+  [WEEKLY_MAILING.id]: a => rolesEmail({ ...a, mailing: { ...WEEKLY_MAILING, href: WEEKLY_MAILING_HREF } }),
 }
 
 /**

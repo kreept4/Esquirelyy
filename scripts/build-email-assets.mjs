@@ -136,6 +136,15 @@ function logoHeightFor(aspect) {
   return 30 * SCALE
 }
 
+/** Plates that cannot be white. A mark drawn in white for a dark ground
+ *  vanishes on the standard plate, so it gets its own ground here, taken from
+ *  the brand, the same way EMPLOYER_BALL_BG in firms-data.ts gives the site's
+ *  ball a ground. Keyed by the logo path, as logoForEmployer returns it. */
+const PLATE_FILL = {
+  /* Órọrùn's own green, sampled off their logo's ground (rgb 1,37,35). */
+  '/employer-logos/ororun.png': '#012523',
+}
+
 async function buildPlate(logoPath) {
   const src = join(PUBLIC, logoPath.replace(/^\//, ''))
   if (!existsSync(src)) throw new Error(`no logo at ${src}`)
@@ -157,7 +166,7 @@ async function buildPlate(logoPath) {
   const r = 9 * SCALE
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${plateW}" height="${PLATE_H}">
     <rect x="1" y="1" width="${plateW - 2}" height="${PLATE_H - 2}" rx="${r}" ry="${r}"
-      fill="#FFFFFF" stroke="#D8D0C2" stroke-width="2"/>
+      fill="${PLATE_FILL[logoPath] ?? '#FFFFFF'}" stroke="#D8D0C2" stroke-width="2"/>
   </svg>`
   const name = basename(logoPath)
   mkdirSync(join(PUBLIC, 'email', 'logos'), { recursive: true })
