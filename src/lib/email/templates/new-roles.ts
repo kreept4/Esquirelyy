@@ -179,6 +179,9 @@ export type MailScholarship = {
   /** YYYY-MM-DD, shown as the card's pill. */
   closesOn: string
   line: string
+  /** The school's logo, as a path under public/ that has a plate in
+   *  logo-plates.json. Without one the card leads with the provider's name. */
+  logo?: string
 }
 
 export type MailingCopy = {
@@ -406,13 +409,24 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
    * provider where a role card has the firm's plate, and one link to the full
    * terms on the site instead of the CV and cover letter tools.
    */
-  const scholarshipCard = (sc: MailScholarship) => `
+  const scholarshipCard = (sc: MailScholarship) => {
+    /* With a plate, the card reads like a role card: the school's mark beside
+       the pill, and its name under them. Without one, the name takes the
+       mark's place on the top row. */
+    const plate = sc.logo ? PLATES[sc.logo] : undefined
+    const top = plate
+      ? `<td valign="middle" style="padding:0;"><img src="${siteUrl}${plate.src}" width="${plate.width}" height="${plate.height}" alt="${sc.provider}" style="display:block;width:${plate.width}px;height:${plate.height}px;border:0;outline:none;text-decoration:none;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;line-height:16px;color:${INK};" /></td>`
+      : `<td class="es-t-stone" valign="middle" style="padding:0;font-size:11px;line-height:15px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;color:${STONE};">${sc.provider}</td>`
+    const under = plate
+      ? `<p class="es-t-stone" style="margin:16px 0 4px 0;font-size:11px;line-height:15px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;color:${STONE};">${sc.provider}</p>`
+      : ''
+    return `
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:separate;margin:0 0 16px 0;">
               <tr>
                 <td class="es-b-card" bgcolor="${CARD}" background="${siteUrl}/email/card-linen.png" style="padding:22px 22px 20px 22px;background-color:${CARD};background-image:url('${siteUrl}/email/card-linen.png');background-repeat:repeat;border:1px solid ${INK};border-radius:12px;">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
                     <tr>
-                      <td class="es-t-stone" valign="middle" style="padding:0;font-size:11px;line-height:15px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;color:${STONE};">${sc.provider}</td>
+                      ${top}
                       <td align="right" valign="middle" style="padding:0 0 0 12px;">
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right" style="border-collapse:separate;">
                           <tr>
@@ -422,7 +436,8 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
                       </td>
                     </tr>
                   </table>
-                  <p class="es-t-ink" style="margin:12px 0 12px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:20px;line-height:25px;font-weight:700;letter-spacing:-0.3px;color:${INK};">${sc.title}</p>
+                  ${under}
+                  <p class="es-t-ink" style="margin:${plate ? '0' : '12px'} 0 12px 0;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:20px;line-height:25px;font-weight:700;letter-spacing:-0.3px;color:${INK};">${sc.title}</p>
                   <p class="es-t-ink" style="margin:0;font-size:14px;line-height:23px;color:${INK};">${sc.line}</p>
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;margin:16px 0 0 0;">
                     <tr>
@@ -433,6 +448,7 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
                 </td>
               </tr>
             </table>`
+  }
 
   const roleCard = (r: MailEntry) => {
     const logo = logoForEmployer(r.employer)

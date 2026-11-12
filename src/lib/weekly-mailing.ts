@@ -27,33 +27,46 @@ import { ROLE_ENTRIES } from '@/lib/new-roles'
 import { scholarshipBySlug } from '@/lib/scholarships-data'
 
 /** Card facts from the scholarships file, plus the line written for the email. */
-function card(slug: string, line: string): MailScholarship {
+function card(slug: string, logo: string, line: string): MailScholarship {
   const s = scholarshipBySlug(slug)
   if (!s || !s.closesOn) throw new Error(`weekly-mailing: no dated scholarship "${slug}"`)
-  return { slug, title: s.title, provider: s.provider, closesOn: s.closesOn, line }
+  return { slug, title: s.title, provider: s.provider, closesOn: s.closesOn, logo, line }
 }
+
+/* The schools' own logos, from their own sites, with email plates built by
+   scripts/build-email-assets.mjs. A logo without a plate falls back to the
+   provider's name, so a missing file degrades rather than breaks. */
+const NYU = '/employer-logos/nyu-law.png'
+const GEORGETOWN = '/employer-logos/georgetown-law.png'
+const MCGILL = '/employer-logos/mcgill.png'
+const EDINBURGH = '/employer-logos/edinburgh-law.png'
 
 /* In the order /scholarships shows them, which is the relevance order agreed
    on 12 November: Podell, Hauser, Georgetown, McGill, Edinburgh. */
 const SCHOLARSHIPS: MailScholarship[] = [
   card(
     'nyu-podell-global-graduate-legal-scholarship',
+    NYU,
     'One award a year, for an LLM student from a lower-income country who could not otherwise afford New York. Nigeria qualifies if you live here. It pays tuition, living costs and a return flight, and you are considered through your NYU application.'
   ),
   card(
     'nyu-hauser-global-scholarship',
+    NYU,
     "NYU Law's top LLM award: full tuition and a living stipend, about ten a year, for graduates of law schools outside the United States. It needs one extra essay of 500 to 750 words with your NYU application."
   ),
   card(
     'georgetown-llm-scholarships',
+    GEORGETOWN,
     'Every admitted LL.M. student is considered automatically, but most awards cover part of the tuition. Full tuition goes to a small number of international students with a strong record in transnational practice.'
   ),
   card(
     'mcgill-obrien-graduate-fellowship',
+    MCGILL,
     'Up to 25,000 Canadian dollars for a year of the LLM, for research in human rights and legal pluralism. Open to every nationality. Send the short form with your LLM application.'
   ),
   card(
     'edinburgh-llm-european-transnational-law-scholarship',
+    EDINBURGH,
     'One award that pays the full tuition fee on the LLM in European Law. Fees only, and you apply to the LLM first.'
   ),
 ]
