@@ -1895,29 +1895,42 @@ video:not([controls])::-webkit-media-controls-panel {
 /* The countdown on a closing slide. The site's one red, the same as the
    destructive button on the account page, because this is the one thing on the
    carousel that is running out. Tabular figures so the pill does not change
-   width as the seconds tick. */
+   width as the seconds tick.
+
+   ALIGNED BY BASELINE, NOT BY CENTRE. Centring two boxes lines up their
+   edges, and where the letters sit inside a box is each browser's reading of
+   the font's metrics: Chrome put the two texts on one line and Safari did not
+   have to. Baseline alignment is about the letters themselves, so "What's
+   new" and the figures stand on the same line in every engine. For that the
+   pill's own baseline has to be its text and not its icon, which is why the
+   icon opts out with align-self and the text is the first baseline item. The
+   two are the same size so their x-heights match as well. */
+.news-kind-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.6rem;
+  margin-bottom: 0.9rem;
+}
+.news-kind-row .news-kind { display: inline; margin-bottom: 0; line-height: 1.2; }
 .news-timer {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.35rem;
-  padding: 0.28rem 0.65rem 0.28rem 0.5rem;
+  padding: 0.3rem 0.65rem 0.3rem 0.5rem;
   border-radius: 999px;
   background: #B42318;
   color: #FFFFFF;
-  font-size: 0.72rem;
-  line-height: 1;
-  vertical-align: middle;
+  font-size: 0.75rem;
+  line-height: 1.2;
   white-space: nowrap;
 }
 .news-timer-digits { font-variant-numeric: tabular-nums; }
-.news-kind-row {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 0.9rem;
+.news-timer svg {
+  align-self: center;
+  flex: none;
+  animation: news-timer-pulse 1s ease-in-out infinite;
 }
-.news-kind-row .news-kind { margin-bottom: 0; }
-.news-timer svg { animation: news-timer-pulse 1s ease-in-out infinite; }
 @keyframes news-timer-pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.45; }
