@@ -1892,6 +1892,40 @@ video:not([controls])::-webkit-media-controls-panel {
   color: var(--fg);
   margin-bottom: 0.9rem;
 }
+/* The countdown on a closing slide. The site's one red, the same as the
+   destructive button on the account page, because this is the one thing on the
+   carousel that is running out. Tabular figures so the pill does not change
+   width as the seconds tick. */
+.news-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.65rem 0.28rem 0.5rem;
+  border-radius: 999px;
+  background: #B42318;
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  line-height: 1;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.news-timer-digits { font-variant-numeric: tabular-nums; }
+.news-kind-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+}
+.news-kind-row .news-kind { margin-bottom: 0; }
+.news-timer svg { animation: news-timer-pulse 1s ease-in-out infinite; }
+@keyframes news-timer-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .news-timer svg { animation: none; }
+}
+
 .news-title {
   font-size: clamp(1.25rem, 2.7vw, 1.85rem);
   line-height: 1.06;

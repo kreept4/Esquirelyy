@@ -15,7 +15,7 @@
 
 import { ALL_FIRMS } from '@/lib/firms-data'
 import { CLOSING_REMINDER_HREF } from '@/lib/closing-reminder'
-import { today as lagosToday } from '@/lib/day'
+import { today as lagosToday, daysUntilDay } from '@/lib/day'
 
 export type NewsKind = 'update' | 'tip' | 'news'
 
@@ -68,6 +68,49 @@ export interface NewsItem {
    * rather than when somebody remembers to edit this file.
    */
   until?: string
+  /**
+   * Optional. For a slide about a deadline: the day it closes, and the title
+   * and summary written with `{when}` where the day goes.
+   *
+   * `{when}` becomes "tomorrow", then "today", which a fixed string cannot do:
+   * "tomorrow" typed into `title` is wrong for the whole of the closing day.
+   * The carousel fills it in the reader's browser and draws a countdown to the
+   * end of that day in Lagos. `title` and `summary` stay as the dated wording,
+   * for /news, which is built once and cannot say "tomorrow" truthfully.
+   */
+  closing?: { on: string; title: string; summary: string }
+}
+
+/** "tomorrow", "today", or "on Friday 13 November" further out or after. */
+export function closingWhen(on: string, now: Date = new Date()): string {
+  const days = daysUntilDay(on, now)
+  if (days === 0) return 'today'
+  if (days === 1) return 'tomorrow'
+  const [y, m, d] = on.split('-').map(Number)
+  const day = new Date(Date.UTC(y, m - 1, d)).toLocaleDateString('en-GB', {
+    weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC',
+  })
+  return `on ${day}`
+}
+
+/** A closing slide's title and summary for `now`; any other slide unchanged. */
+export function resolveClosing(item: NewsItem, now: Date = new Date()): NewsItem {
+  if (!item.closing) return item
+  const when = closingWhen(item.closing.on, now)
+  return {
+    ...item,
+    title: item.closing.title.replace('{when}', when),
+    summary: item.closing.summary.replace('{when}', when),
+  }
+}
+
+/**
+ * The instant a closing day ends, in milliseconds. Lagos is UTC+1 all year, so
+ * the end of the day is 23:00 UTC on that date. A deadline given as a date
+ * means the end of that day (see isPastDay in lib/day.ts).
+ */
+export function closingEndsAt(on: string): number {
+  return Date.parse(`${on}T00:00:00+01:00`) + 86_400_000
 }
 
 /** Label shown on a slide. Kept here so the carousel and the news page agree. */
@@ -122,7 +165,15 @@ const ITEMS: NewsItem[] = [
     until: '2026-11-13',
     title: 'Four openings close on Friday, 13 November',
     summary:
-      "Stren & Blan's 2027 NYSC trainee seat, associate roles at Ikeyi Shittu and Olajide Oyewole, and Olaniwun Ajayi's Blue Experience open day all close on Friday. If one is yours, apply today.",
+      "Stren & Blan's 2027 NYSC trainee seat, associate roles at Ikeyi Shittu and Olajide Oyewole, and Olaniwun Ajayi's Blue Experience open day all close on Friday. If one is yours, apply now.",
+    /* What the carousel shows: "close tomorrow" on the 12th and "close today"
+       on the 13th, with a red countdown to the end of Friday in Lagos. */
+    closing: {
+      on: '2026-11-13',
+      title: 'Four openings close {when}',
+      summary:
+        "Stren & Blan's 2027 NYSC trainee seat, associate roles at Ikeyi Shittu and Olajide Oyewole, and Olaniwun Ajayi's Blue Experience open day all close {when}. If one is yours, apply now.",
+    },
     href: CLOSING_REMINDER_HREF,
     cta: 'See all four',
     media: {
