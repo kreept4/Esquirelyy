@@ -104,6 +104,14 @@ export default async function ScholarshipPage(
             </Link>
 
             <div className="job-detail-id">
+              {/* The provider's mark, on the same cream plate a job's page
+                  gives an employer's. Left out when there is no logo: the
+                  provider is named under the title either way. */}
+              {s.logo ? (
+                <span className="job-mark job-detail-mark" aria-hidden>
+                  <img src={s.logo} alt="" />
+                </span>
+              ) : null}
               <div>
                 {/* Status leads, exactly as it does on the board. A closed
                     scholarship is worthless and that should be visible before
