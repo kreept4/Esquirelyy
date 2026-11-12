@@ -382,7 +382,7 @@ export default function JobsClient({
               and open on demand for the ones who do not. */}
           <details className="jobs-explainer">
             <summary className="grotesk-regular">
-              <span>Trainee, graduate trainee or internship? What each one means</span>
+              <span>Internship, trainee associate or graduate trainee?</span>
               <span className="jobs-explainer-marker" aria-hidden>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
                   <path d="M12 5v14M5 12h14" />
@@ -391,71 +391,36 @@ export default function JobsClient({
             </summary>
 
             <div className="jobs-explainer-body">
-              {/* Undergraduates only. Law School students are not looking for
-                  attachments; that year is short, examined throughout, and ends
-                  in call to the Bar, so they are already applying for trainee
-                  associate roles rather than internships. */}
               <div className="jobs-route">
                 <p className="grotesk-bold">Internship</p>
                 <p className="grotesk-regular">
-                  For undergraduates still in the law faculty. You spend a few weeks in chambers
-                  over the long vacation, learning how a file actually moves, usually unpaid or on
-                  a small stipend. You will find very few listed here, and that is not a gap on this
-                  board: firms fill these places from letters students send them directly, so there
-                  is nothing to advertise.
-                </p>
-                <p className="grotesk-regular">
-                  Which makes the{' '}
-                  <Link href="/firms" className="jobs-route-link">firms directory</Link>{' '}
-                  the place to start. Every profile carries the practice areas, the offices and the
-                  address to write to, so you can pick the chambers whose work actually interests
-                  you instead of sending the same letter to forty firms.
+                  A short placement for law students, or graduates awaiting Law School. Some are
+                  paid, many are not. Firms also take direct applications: the{' '}
+                  <Link href="/firms" className="jobs-route-link">firms directory</Link> lists where
+                  to write.
                 </p>
               </div>
 
               <div className="jobs-route">
-                <p className="grotesk-bold">Trainee or NYSC associate</p>
+                <p className="grotesk-bold">Trainee associate</p>
                 <p className="grotesk-regular">
-                  For people already called to the Nigerian Bar, serving their NYSC year or just out
-                  of it. Firms put corps members on the same files as first-year associates, and
-                  many keep them on at the end of service. This is a salaried entry-level job, not
-                  an internship, and it sits here under <strong>Entry-level</strong>.
-                </p>
-                <p className="grotesk-regular">
-                  Start with{' '}
+                  For lawyers called to the Bar and serving NYSC. The firm is your place of primary
+                  assignment and pays a monthly allowance; some retain trainees after service.
+                  Listed under{' '}
                   <Link href="/jobs?level=junior&sector=law_firm" className="jobs-route-link">
-                    entry-level roles at firms
+                    Entry-level
                   </Link>
-                  , then read the chambers up in the{' '}
-                  <Link href="/firms" className="jobs-route-link">firms directory</Link>{' '}
-                  before you apply. Knowing a firm&rsquo;s practice areas is most of what separates
-                  a good cover letter from a generic one.
+                  .
                 </p>
               </div>
 
               <div className="jobs-route">
                 <p className="grotesk-bold">Graduate trainee</p>
                 <p className="grotesk-regular">
-                  The in-house route. Banks, fintechs, energy companies, regulators and
-                  multinationals run structured intakes for recent graduates, often rotating you
-                  through departments before you land in legal, compliance or company secretarial.
-                  Salaried, with a fixed start and a hard closing date. Also{' '}
-                  <strong>Entry-level</strong>, not an internship.
-                </p>
-                <p className="grotesk-regular">
-                  These sit outside the law firms, so set the sector filter accordingly:{' '}
-                  <Link href="/jobs?level=junior&sector=banking" className="jobs-route-link">
-                    banking and finance
-                  </Link>
-                  ,{' '}
-                  <Link href="/jobs?level=junior&sector=fintech" className="jobs-route-link">
-                    technology and fintech
-                  </Link>
-                  , or{' '}
-                  <Link href="/jobs?level=junior&sector=energy" className="jobs-route-link">
-                    energy
-                  </Link>
-                  . Deadlines here are real, so apply before the closing date rather than on it.
+                  A salaried programme at a bank, company or regulator for recent graduates, usually
+                  after NYSC. Trainees rotate through departments, often ending in legal or
+                  compliance. Listed under{' '}
+                  <Link href="/jobs?level=junior" className="jobs-route-link">Entry-level</Link>.
                 </p>
               </div>
             </div>
