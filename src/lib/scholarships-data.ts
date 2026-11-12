@@ -490,7 +490,7 @@ const SCHOLARSHIPS: Scholarship[] = [
   {
     slug: 'mcgill-obrien-graduate-fellowship',
     closesOn: '2026-12-15',
-    title: "McGill O'Brien Graduate Fellowship",
+    title: "McGill O'Brien Fellowship for Human Rights and Legal Pluralism",
     provider: 'Faculty of Law, McGill University',
     logo: '/employer-logos/mcgill.png',
     region: 'Canada',
@@ -499,12 +499,12 @@ const SCHOLARSHIPS: Scholarship[] = [
     deadline: 'Send it with your LLM application by 15 December 2026. McGill also lists 1 January, so 15 December is the safe date',
     status: 'open',
     description:
-      "A research fellowship rather than a fee waiver: up to 25,000 Canadian dollars for a year of the LLM, for students whose research is in human rights and legal pluralism. It is open to every nationality and has no age limit. You email a short application form to the Faculty's Graduate Studies Office along with your LLM application, and fellows join McGill's Centre for Human Rights and Legal Pluralism. Selection turns on academic excellence, how original your proposed research is, and whether the Faculty has someone to supervise it.",
+      "McGill's page lists every graduate award in its Faculty of Law, so scroll to the section headed O'Brien Fellowships for Human Rights and Legal Pluralism. McGill says it has no other internal funding for LLM students apart from this and a health law fellowship. The O'Brien pays up to 25,000 Canadian dollars for one year of the LLM, for research in human rights and legal pluralism, and is open to every nationality with no age limit. Download the O'Brien Fellowship Application Form from that section and email it to the Faculty's Graduate Studies Office by the admission deadline. Fellows join McGill's Centre for Human Rights and Legal Pluralism. Selection turns on academic excellence, how original your research is, whether the Faculty can supervise it, and the diversity of candidates and topics.",
     eligibility: [
       "Registered in McGill's LLM in the year of the award",
       'Research in human rights and legal pluralism',
       'An outstanding academic record. No restriction by citizenship or age',
-      'Application form emailed to the Graduate Studies Office (grad.law@mcgill.ca) with your admission application',
+      "The O'Brien Fellowship Application Form (Word file, in the O'Brien section of McGill's page), emailed to grad.law@mcgill.ca by the admission deadline",
     ],
     link: 'https://www.mcgill.ca/law/grad-studies/tuition-and-financial-support/funding-and-entrance-fellowships',
   },
