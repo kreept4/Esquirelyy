@@ -453,29 +453,17 @@ const SCHOLARSHIPS: Scholarship[] = [
    *                same page puts at 15 December. The earlier date leads, so
    *                nobody who goes by this misses it.
    *
+   * ORDERED BY RELEVANCE, not by date, because the page keeps file order
+   * inside each status: Podell is written for exactly this reader (a Nigerian
+   * living in Nigeria who needs the whole cost covered), then Hauser (full
+   * funding, open to every non-US law graduate), then Georgetown (every
+   * admitted LL.M. is considered, though mostly for partial awards), then
+   * McGill (real money, but only for human rights and legal pluralism
+   * research), then Edinburgh (one award, one programme, fees only).
+   *
    * Left out on purpose: the LSE "Demography Studentship" from a second post.
    * It is LSE's general PhD studentship, not an LLM award, and its funding
    * deadline is 13 January 2027, not the 27 May the post gave. */
-  {
-    slug: 'nyu-hauser-global-scholarship',
-    closesOn: '2026-12-17',
-    title: 'Hauser Global Scholarship',
-    provider: 'New York University School of Law',
-    region: 'United States',
-    level: 'LLM at NYU Law',
-    funding: 'Full tuition and a stipend for living costs such as rent and books',
-    deadline: 'Closes 17 December 2026 for LLM entry in fall 2027. You apply with your NYU application',
-    status: 'open',
-    description:
-      "NYU Law's top award for LLM students. About ten are given each year, on merit, to graduates of law schools outside the United States, so a Nigerian LL.B qualifies. It covers full tuition and a stipend towards rent, books and study materials. You apply for it inside the NYU LLM application, with one extra essay of 500 to 750 words, so the admission deadline is also the scholarship deadline. Expect a very strong field.",
-    eligibility: [
-      'A law degree from a law school outside the United States',
-      'Applying to the full-time NYU LLM starting in fall 2027',
-      'A separate essay of 500 to 750 words, attached to your admission application',
-      'Chosen on intellectual and leadership ability',
-    ],
-    link: 'https://www.law.nyu.edu/graduateadmissions/scholarshipprograms/hauserglobalscholarsarthurtvanderbiltscholarshipsdeansgraduateawards',
-  },
   {
     slug: 'nyu-podell-global-graduate-legal-scholarship',
     closesOn: '2026-12-17',
@@ -493,6 +481,26 @@ const SCHOLARSHIPS: Scholarship[] = [
       'Able to show financial need',
       'A record of superior academic merit',
       'Applying to the NYU LLM. Finalists may need to document their family finances',
+    ],
+    link: 'https://www.law.nyu.edu/graduateadmissions/scholarshipprograms/hauserglobalscholarsarthurtvanderbiltscholarshipsdeansgraduateawards',
+  },
+  {
+    slug: 'nyu-hauser-global-scholarship',
+    closesOn: '2026-12-17',
+    title: 'Hauser Global Scholarship',
+    provider: 'New York University School of Law',
+    region: 'United States',
+    level: 'LLM at NYU Law',
+    funding: 'Full tuition and a stipend for living costs such as rent and books',
+    deadline: 'Closes 17 December 2026 for LLM entry in fall 2027. You apply with your NYU application',
+    status: 'open',
+    description:
+      "NYU Law's top award for LLM students. About ten are given each year, on merit, to graduates of law schools outside the United States, so a Nigerian LL.B qualifies. It covers full tuition and a stipend towards rent, books and study materials. You apply for it inside the NYU LLM application, with one extra essay of 500 to 750 words, so the admission deadline is also the scholarship deadline. Expect a very strong field.",
+    eligibility: [
+      'A law degree from a law school outside the United States',
+      'Applying to the full-time NYU LLM starting in fall 2027',
+      'A separate essay of 500 to 750 words, attached to your admission application',
+      'Chosen on intellectual and leadership ability',
     ],
     link: 'https://www.law.nyu.edu/graduateadmissions/scholarshipprograms/hauserglobalscholarsarthurtvanderbiltscholarshipsdeansgraduateawards',
   },
@@ -517,26 +525,6 @@ const SCHOLARSHIPS: Scholarship[] = [
     link: 'https://www.law.georgetown.edu/admissions-aid/graduate-admissions/scholarships-fellowships/',
   },
   {
-    slug: 'edinburgh-llm-european-transnational-law-scholarship',
-    closesOn: '2027-04-30',
-    title: 'Edinburgh LLM European and Transnational Law Scholarship',
-    provider: 'Edinburgh Law School, University of Edinburgh',
-    region: 'United Kingdom',
-    level: 'Full-time LLM in European Law at Edinburgh, starting 2027-28',
-    funding: 'Full tuition at the Home or International rate, for one student. Fees only',
-    deadline: 'Closes 30 April 2027 for the 2027-28 academic year',
-    status: 'open',
-    description:
-      "One award, for one programme. It pays the full tuition fee, at the international rate if that is what you pay, for a student on Edinburgh's full-time LLM in European Law. It does not cover living costs. Apply to the LLM first, then apply for the scholarship with a personal statement; it is judged on that statement and your academic merit. If European law is not your field, this one is not for you.",
-    eligibility: [
-      'Accepted onto the full-time LLM in European Law starting in 2027-28',
-      'You must apply to the LLM before applying for the scholarship',
-      'Judged on academic merit and a personal statement',
-      'Covers tuition only, not living costs',
-    ],
-    link: 'https://www.law.ed.ac.uk/study/masters-degrees/scholarships-funding',
-  },
-  {
     slug: 'mcgill-obrien-graduate-fellowship',
     closesOn: '2026-12-15',
     title: "McGill O'Brien Graduate Fellowship",
@@ -555,6 +543,26 @@ const SCHOLARSHIPS: Scholarship[] = [
       'Application form emailed to the Graduate Studies Office (grad.law@mcgill.ca) with your admission application',
     ],
     link: 'https://www.mcgill.ca/law/grad-studies/tuition-and-financial-support/funding-and-entrance-fellowships',
+  },
+  {
+    slug: 'edinburgh-llm-european-transnational-law-scholarship',
+    closesOn: '2027-04-30',
+    title: 'Edinburgh LLM European and Transnational Law Scholarship',
+    provider: 'Edinburgh Law School, University of Edinburgh',
+    region: 'United Kingdom',
+    level: 'Full-time LLM in European Law at Edinburgh, starting 2027-28',
+    funding: 'Full tuition at the Home or International rate, for one student. Fees only',
+    deadline: 'Closes 30 April 2027 for the 2027-28 academic year',
+    status: 'open',
+    description:
+      "One award, for one programme. It pays the full tuition fee, at the international rate if that is what you pay, for a student on Edinburgh's full-time LLM in European Law. It does not cover living costs. Apply to the LLM first, then apply for the scholarship with a personal statement; it is judged on that statement and your academic merit. If European law is not your field, this one is not for you.",
+    eligibility: [
+      'Accepted onto the full-time LLM in European Law starting in 2027-28',
+      'You must apply to the LLM before applying for the scholarship',
+      'Judged on academic merit and a personal statement',
+      'Covers tuition only, not living costs',
+    ],
+    link: 'https://www.law.ed.ac.uk/study/masters-degrees/scholarships-funding',
   },
 
 ]
