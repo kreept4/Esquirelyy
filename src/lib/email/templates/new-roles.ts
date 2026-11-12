@@ -24,6 +24,7 @@ import { activeClosingNotice } from '@/lib/email/closing-notice'
 import { logoForEmployer } from '@/lib/firms-data'
 import { toolHref } from '@/lib/tool-links'
 import LOGO_PLATES from '@/lib/email/logo-plates.json'
+import SPLASH_PLATES from '@/lib/email/splash-plates.json'
 
 /**
  * The new roles announcement.
@@ -88,6 +89,11 @@ const RULE = '#D8D0C2'
 
 type Plate = { src: string; width: number; height: number }
 const PLATES = LOGO_PLATES as Record<string, Plate>
+/* The paint-splash plates, the fliers' construction rendered to pixels by
+   scripts/build-email-splashes.cjs. Preferred wherever a mark has one; the
+   flat plate above stays the fallback for every mark that does not yet. */
+const SPLASH = SPLASH_PLATES as Record<string, Plate>
+const artFor = (logo?: string | null): Plate | undefined => (logo ? SPLASH[logo] ?? PLATES[logo] : undefined)
 
 /** Two initials for the fallback plate, skipping "&" and "and". */
 function monogram(name: string): string {
@@ -412,7 +418,7 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
     /* With a plate, the card reads like a role card: the school's mark beside
        the pill, and its name under them. Without one, the name takes the
        mark's place on the top row. */
-    const plate = sc.logo ? PLATES[sc.logo] : undefined
+    const plate = artFor(sc.logo)
     const top = plate
       ? `<td valign="middle" style="padding:0;"><img src="${siteUrl}${plate.src}" width="${plate.width}" height="${plate.height}" alt="${sc.provider}" style="display:block;width:${plate.width}px;height:${plate.height}px;border:0;outline:none;text-decoration:none;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;line-height:16px;color:${INK};" /></td>`
       : `<td class="es-t-stone" valign="middle" style="padding:0;font-size:11px;line-height:15px;letter-spacing:1.4px;text-transform:uppercase;font-weight:600;color:${STONE};">${sc.provider}</td>`
@@ -451,7 +457,7 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
 
   const roleCard = (r: MailEntry) => {
     const logo = logoForEmployer(r.employer)
-    const plate = logo ? PLATES[logo] : undefined
+    const plate = artFor(logo)
     const mark = plate
       ? `<img src="${siteUrl}${plate.src}" width="${plate.width}" height="${plate.height}" alt="${r.employerShort}" style="display:block;width:${plate.width}px;height:${plate.height}px;border:0;outline:none;text-decoration:none;font-family:'Hanken Grotesk',Arial,Helvetica,sans-serif;font-size:14px;font-weight:900;line-height:${plate.height}px;color:${INK};" />`
       : `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;">
