@@ -32,10 +32,13 @@ const SOURCES = [
   ['wht.webp', 'weidenfeld-hoffmann-trust.png', 'https://whtrust.org/ (whtrust-logo-2026.webp)'],
   ['gates-white.png', 'gates-cambridge.png', 'https://www.gatescambridge.org/ (header logo, the white version; drawn on their navy)'],
   ['csc.png', 'commonwealth-scholarship-commission.png', 'https://cscuk.fcdo.gov.uk/ (header logo, white; drawn on their ground)'],
-  ['acu.svg', 'acu.png', 'https://www.acu.ac.uk/ (header logo, logo.svg)'],
-  ['nddc.png', 'nddc.png', 'https://www.nddc.gov.ng/ (header logo, nddclogo.png)'],
-  ['chevening.svg', 'chevening.png', 'https://www.chevening.org/ (header logo)'],
-  ['chevening.png', 'chevening.png', 'https://www.chevening.org/ (header logo)'],
+  /* These three sites answer automated requests with a bot challenge, so the
+     marks come from the files Wikipedia's articles on them use. */
+  ['acu.svg', 'acu.png', 'https://en.wikipedia.org/wiki/File:Association_of_Commonwealth_Universities_logo.svg'],
+  ['nddc.jpg', 'nddc.png', 'https://en.wikipedia.org/wiki/File:Logo-nddc.jpg (76px: the only copy available)'],
+  /* nddc.png was then cut to its circle by hand: the source sits on a grey
+     square, not white, so keyWhite leaves the corners. */
+  ['chevening.png', 'chevening.png', 'https://en.wikipedia.org/wiki/File:Chevening_Scholarship_crest.png'],
   ['rhodes.svg', 'rhodes-trust.png', 'https://www.rhodeshouse.ox.ac.uk/ (header logo)'],
   ['rhodes.png', 'rhodes-trust.png', 'https://www.rhodeshouse.ox.ac.uk/ (header logo)'],
 ]
