@@ -52,6 +52,14 @@ export interface Scholarship {
    * without one shows the provider's initials, as a job without a logo does.
    */
   logo?: string
+  /**
+   * The ground a logo is drawn on, for a mark that is white. Gates Cambridge
+   * and the Commonwealth Scholarship Commission publish only the white
+   * version of their logo, on their site's coloured header; this is that
+   * header's colour, read from their stylesheet, so the mark sits on the
+   * ground its owner puts it on. Absent for every dark-on-light mark.
+   */
+  logoBg?: string
 }
 
 /** Every entry here must be open to a Nigerian lawyer or law student. That is the
@@ -101,7 +109,6 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2026-10-06',
     title: 'Chevening Scholarship',
     provider: 'UK Foreign, Commonwealth and Development Office',
-    logo: '/employer-logos/chevening.png',
     region: 'United Kingdom',
     level: "One year taught Master's",
     funding: 'Full tuition, monthly stipend, flights and visa costs',
@@ -124,6 +131,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     title: "Commonwealth Master's Scholarship",
     provider: 'Commonwealth Scholarship Commission in the UK',
     logo: '/employer-logos/commonwealth-scholarship-commission.png',
+    logoBg: '#042E7D',
     region: 'United Kingdom',
     level: "Taught Master's",
     funding: 'Full tuition, return airfare, and a monthly stipend of £1,712 (£2,000 in London)',
@@ -144,6 +152,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     title: 'Gates Cambridge Scholarship',
     provider: 'Bill and Melinda Gates Foundation, University of Cambridge',
     logo: '/employer-logos/gates-cambridge.png',
+    logoBg: '#013240',
     region: 'United Kingdom',
     level: "Master's and doctoral study at Cambridge",
     funding: 'Full tuition, £21,000 annual maintenance, flights, visa and health cover',
@@ -203,7 +212,6 @@ const SCHOLARSHIPS: Scholarship[] = [
     slug: 'queen-elizabeth-commonwealth-scholarship',
     title: 'Queen Elizabeth Commonwealth Scholarships',
     provider: 'Association of Commonwealth Universities',
-    logo: '/employer-logos/acu.png',
     region: 'Select Commonwealth countries',
     level: "Master's degree",
     funding: 'Full tuition and living costs for two years',
@@ -362,7 +370,6 @@ const SCHOLARSHIPS: Scholarship[] = [
     slug: 'nddc-foreign-postgraduate-scholarship',
     title: 'NDDC Foreign Postgraduate Scholarship',
     provider: 'Niger Delta Development Commission',
-    logo: '/employer-logos/nddc.png',
     region: 'Nigeria, for study abroad',
     level: "Master's abroad, in an approved discipline",
     funding: 'Tuition, air travel, a living stipend and study allowances',

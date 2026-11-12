@@ -25,11 +25,12 @@ import EmptyState from '@/components/ui/EmptyState'
  * ("Two cycles yearly, November to December") far more often than as dates.
  */
 
-/** "RT" from "Rhodes Trust, University of Oxford": the first two words. */
+/** "RT" from "Rhodes Trust, University of Oxford": the first two words that
+ *  are not "of", "the" and the like. */
 function initials(name: string) {
   return name
     .split(/[\s,]+/)
-    .filter(w => /^[A-Za-z]/.test(w))
+    .filter(w => /^[A-Za-z]/.test(w) && !/^(of|the|and|in|for)$/i.test(w))
     .slice(0, 2)
     .map(w => w[0].toUpperCase())
     .join('')
@@ -208,7 +209,11 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
                       provider is named in text on the next line. */}
                   <span className="sch-head">
                     {s.logo ? (
-                      <span className="job-mark sch-logo" aria-hidden>
+                      <span
+                        className="job-mark sch-logo"
+                        style={s.logoBg ? { background: s.logoBg, borderColor: s.logoBg } : undefined}
+                        aria-hidden
+                      >
                         <img src={s.logo} alt="" loading="lazy" />
                       </span>
                     ) : (
