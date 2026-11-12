@@ -1,0 +1,27 @@
+{
+  "/employer-logos/nyu-law.png": {
+    "src": "/email/splash/nyu-law.png",
+    "width": 226,
+    "height": 118
+  },
+  "/employer-logos/georgetown-law.png": {
+    "src": "/email/splash/georgetown-law.png",
+    "width": 337,
+    "height": 118
+  },
+  "/employer-logos/mcgill.png": {
+    "src": "/email/splash/mcgill.png",
+    "width": 212,
+    "height": 118
+  },
+  "/employer-logos/edinburgh-law.png": {
+    "src": "/email/splash/edinburgh-law.png",
+    "width": 214,
+    "height": 118
+  },
+  "/employer-logos/ororun.png": {
+    "src": "/email/splash/ororun.png",
+    "width": 224,
+    "height": 118
+  }
+}
