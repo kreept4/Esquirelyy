@@ -25,6 +25,16 @@ import EmptyState from '@/components/ui/EmptyState'
  * ("Two cycles yearly, November to December") far more often than as dates.
  */
 
+/** "RT" from "Rhodes Trust, University of Oxford": the first two words. */
+function initials(name: string) {
+  return name
+    .split(/[\s,]+/)
+    .filter(w => /^[A-Za-z]/.test(w))
+    .slice(0, 2)
+    .map(w => w[0].toUpperCase())
+    .join('')
+}
+
 const STATUS: Record<string, { label: string; cls: string }> = {
   open: { label: 'Open', cls: 'is-open' },
   upcoming: { label: 'Upcoming', cls: 'is-upcoming' },
@@ -191,10 +201,28 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
                       compared side by side far more than jobs are, and
                       stripping the row back to a title would make the board
                       worse at the one question it exists to answer. */}
-                  <Link href={'/scholarships/' + s.slug} className="grotesk-bold sch-title sch-title-link">
-                    {s.title}
-                  </Link>
-                  <span className="grotesk-regular sch-provider">{s.provider}</span>
+                  {/* The provider's mark beside the title, on the plate the
+                      job board uses, so the two boards read as one site. A
+                      scholarship with no logo yet gets the provider's
+                      initials, as a job without one does. Decorative: the
+                      provider is named in text on the next line. */}
+                  <span className="sch-head">
+                    {s.logo ? (
+                      <span className="job-mark sch-logo" aria-hidden>
+                        <img src={s.logo} alt="" loading="lazy" />
+                      </span>
+                    ) : (
+                      <span className="job-mark job-mark-fallback sch-logo" aria-hidden>
+                        <span className="grotesk-bold">{initials(s.provider)}</span>
+                      </span>
+                    )}
+                    <span className="sch-head-text">
+                      <Link href={'/scholarships/' + s.slug} className="grotesk-bold sch-title sch-title-link">
+                        {s.title}
+                      </Link>
+                      <span className="grotesk-regular sch-provider">{s.provider}</span>
+                    </span>
+                  </span>
                   <span className="grotesk-regular sch-desc">{s.description}</span>
                   <span className="sch-elig">
                     {s.eligibility.map(e => (

@@ -6305,6 +6305,19 @@ video::-webkit-media-controls { display: none !important; }
    were when they had no wrapper. It becomes a real box again below 1100px,
    where it is the single thing occupying the `meta` area. */
 .sch-meta { display: contents; }
+/* The provider's mark and the title block, side by side. The mark is the job
+   board's plate at the job board's size, so a logo weighs the same on both
+   boards. Not positioned: the title link's stretched ::after has to keep
+   resolving against .sch-row. */
+.sch-head { display: flex; align-items: flex-start; gap: 0.9rem; min-width: 0; }
+.sch-head-text { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.sch-logo {
+  background: #FFFFFF;
+  border: 0.5px solid #EDE9E2;
+  border-radius: var(--radius-mark);
+}
+.sch-logo.job-mark-fallback { background: var(--ink); border-color: var(--ink); width: 4.5rem; }
+.sch-logo img { max-width: 84%; max-height: 74%; }
 .sch-title { font-size: 1rem; color: var(--ink); line-height: 1.3; }
 .sch-provider { font-size: 0.82rem; color: var(--ink-muted); }
 .sch-desc {

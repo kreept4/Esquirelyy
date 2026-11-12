@@ -42,6 +42,16 @@ export interface Scholarship {
   description: string
   eligibility: string[]
   link: string
+  /**
+   * The provider's own logo, as a path under /public. Taken from the
+   * provider's own site (the University of Oxford's from Wikimedia Commons,
+   * because ox.ac.uk refuses automated requests) and shown beside the title
+   * on the board and on the scholarship's page.
+   *
+   * Optional so a new entry can go up before its mark is sourced: a row
+   * without one shows the provider's initials, as a job without a logo does.
+   */
+  logo?: string
 }
 
 /** Every entry here must be open to a Nigerian lawyer or law student. That is the
@@ -64,6 +74,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2026-08-27',
     title: 'Rhodes Scholarship for West Africa',
     provider: 'Rhodes Trust, University of Oxford',
+    logo: '/employer-logos/rhodes-trust.png',
     region: 'United Kingdom',
     level: "Master's and doctoral study at Oxford",
     funding: 'Full University and College fees, £20,400 annual stipend, flights, visa and health cover',
@@ -90,6 +101,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2026-10-06',
     title: 'Chevening Scholarship',
     provider: 'UK Foreign, Commonwealth and Development Office',
+    logo: '/employer-logos/chevening.png',
     region: 'United Kingdom',
     level: "One year taught Master's",
     funding: 'Full tuition, monthly stipend, flights and visa costs',
@@ -111,6 +123,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2026-10-20',
     title: "Commonwealth Master's Scholarship",
     provider: 'Commonwealth Scholarship Commission in the UK',
+    logo: '/employer-logos/commonwealth-scholarship-commission.png',
     region: 'United Kingdom',
     level: "Taught Master's",
     funding: 'Full tuition, return airfare, and a monthly stipend of £1,712 (£2,000 in London)',
@@ -130,6 +143,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     slug: 'gates-cambridge-scholarship',
     title: 'Gates Cambridge Scholarship',
     provider: 'Bill and Melinda Gates Foundation, University of Cambridge',
+    logo: '/employer-logos/gates-cambridge.png',
     region: 'United Kingdom',
     level: "Master's and doctoral study at Cambridge",
     funding: 'Full tuition, £21,000 annual maintenance, flights, visa and health cover',
@@ -149,6 +163,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     slug: 'clarendon-fund-scholarship',
     title: 'Clarendon Fund Scholarship',
     provider: 'University of Oxford',
+    logo: '/employer-logos/university-of-oxford.png',
     region: 'United Kingdom',
     level: "Master's and doctoral study at Oxford",
     funding: 'Full tuition and college fees, plus at least £18,622 a year for living costs',
@@ -168,6 +183,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     slug: 'margaret-bennett-scholarship',
     title: 'Margaret Bennett Scholarship',
     provider: 'London School of Economics and Political Science',
+    logo: '/employer-logos/lse.png',
     region: 'United Kingdom',
     level: 'LLM',
     funding: '£5,000 towards the LSE LLM',
@@ -187,6 +203,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     slug: 'queen-elizabeth-commonwealth-scholarship',
     title: 'Queen Elizabeth Commonwealth Scholarships',
     provider: 'Association of Commonwealth Universities',
+    logo: '/employer-logos/acu.png',
     region: 'Select Commonwealth countries',
     level: "Master's degree",
     funding: 'Full tuition and living costs for two years',
@@ -209,6 +226,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2027-02-01',
     title: 'Law, Economics and Governance International Talent Scholarship',
     provider: 'Utrecht University',
+    logo: '/employer-logos/utrecht-university.png',
     region: 'Netherlands',
     level: "English-taught Master's at the Graduate School of Law, Economics and Governance",
     funding: 'Full tuition plus one year of living costs at the level Dutch immigration requires',
@@ -237,6 +255,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2027-02-01',
     title: 'Maastricht University NL-High Potential Scholarship',
     provider: 'Maastricht University',
+    logo: '/employer-logos/maastricht-university.png',
     region: 'Netherlands',
     level: "Master's at Maastricht University",
     funding: 'Around EUR 36,000: tuition waiver, a monthly stipend, visa and insurance',
@@ -293,6 +312,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     slug: 'weidenfeld-hoffmann-scholarship',
     title: 'Weidenfeld-Hoffmann Scholarships and Leadership Programme',
     provider: 'Weidenfeld-Hoffmann Trust and the University of Oxford',
+    logo: '/employer-logos/weidenfeld-hoffmann-trust.png',
     region: 'United Kingdom',
     level: 'BCL, MJur or MSc in Law and Finance at Oxford',
     funding: '100% of course fees and a living grant of at least GBP 20,780 a year, plus a leadership programme',
@@ -342,6 +362,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     slug: 'nddc-foreign-postgraduate-scholarship',
     title: 'NDDC Foreign Postgraduate Scholarship',
     provider: 'Niger Delta Development Commission',
+    logo: '/employer-logos/nddc.png',
     region: 'Nigeria, for study abroad',
     level: "Master's abroad, in an approved discipline",
     funding: 'Tuition, air travel, a living stipend and study allowances',
@@ -398,6 +419,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2026-12-17',
     title: 'Podell Global Graduate Legal Scholarship',
     provider: 'New York University School of Law',
+    logo: '/employer-logos/nyu-law.png',
     region: 'United States',
     level: 'LLM at NYU Law',
     funding: 'Tuition, reasonable living costs and one return economy flight to New York',
@@ -418,6 +440,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2026-12-17',
     title: 'Hauser Global Scholarship',
     provider: 'New York University School of Law',
+    logo: '/employer-logos/nyu-law.png',
     region: 'United States',
     level: 'LLM at NYU Law',
     funding: 'Full tuition and a stipend for living costs such as rent and books',
@@ -438,6 +461,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2027-02-05',
     title: 'Georgetown Law LL.M. Scholarships',
     provider: 'Georgetown University Law Center',
+    logo: '/employer-logos/georgetown-law.png',
     region: 'United States',
     level: 'LL.M. at Georgetown Law',
     funding: 'Partial tuition for most. Full tuition for a small number of International LL.M. Alumni Scholars',
@@ -458,6 +482,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2026-12-15',
     title: "McGill O'Brien Graduate Fellowship",
     provider: 'Faculty of Law, McGill University',
+    logo: '/employer-logos/mcgill.png',
     region: 'Canada',
     level: 'LLM at McGill, researching human rights and legal pluralism',
     funding: 'Up to 25,000 Canadian dollars for one year of the LLM',
@@ -478,6 +503,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     closesOn: '2027-04-30',
     title: 'Edinburgh LLM European and Transnational Law Scholarship',
     provider: 'Edinburgh Law School, University of Edinburgh',
+    logo: '/employer-logos/edinburgh-law.png',
     region: 'United Kingdom',
     level: 'Full-time LLM in European Law at Edinburgh, starting 2027-28',
     funding: 'Full tuition at the Home or International rate, for one student. Fees only',
