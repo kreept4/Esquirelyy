@@ -284,7 +284,9 @@ const SCHOLARSHIPS: Scholarship[] = [
      *                      deadline is your COURSE's deadline, which for the
      *                      law degrees falls in January. That is written as it
      *                      stands rather than flattened into one date.
-     *   Nigeria            NOT confirmed on an Oxford page. ox.ac.uk answers
+     *   Nigeria            CONFIRMED 13 November 2026 from a screenshot of
+     *                      the eligibility list on ox.ac.uk. Before that,
+     *                      not confirmed on an Oxford page: ox.ac.uk answers
      *                      403 to an automated fetch, so the eligible-country
      *                      list itself could not be read. Nigeria appears on
      *                      every secondary listing of it and the programme is
@@ -311,7 +313,7 @@ const SCHOLARSHIPS: Scholarship[] = [
     description:
       "Full funding and a leadership programme for the BCL, MJur or MSc in Law and Finance at Oxford. For applicants who intend to return home and work in public life.",
     eligibility: [
-      "National of an eligible country, including Nigeria",
+      "Ordinarily resident in an eligible country. Nigeria is on the list",
       "Applying to the BCL, MJur or MSc in Law and Finance at Oxford",
       "Planning to return to your home country after the course",
       "Oxford application submitted by the January course deadline",
