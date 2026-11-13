@@ -104,7 +104,6 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
     return c
   }, [scholarships])
 
-  const openCount = counts.open ?? 0
 
   return (
     <main className="jobs-page">
@@ -159,9 +158,6 @@ export default function ScholarshipsClient({ scholarships }: { scholarships: Sch
             </select>
           </div>
 
-          <p className="grotesk-regular jobs-count">
-            {openCount} open now, {scholarships.length} tracked
-          </p>
         </div>
       </header>
 

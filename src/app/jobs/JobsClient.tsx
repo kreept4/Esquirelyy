@@ -445,15 +445,14 @@ export default function JobsClient({
             </div>
           )}
 
+          {/* The count line is gone (13 November: read as an eyebrow). The
+              shortlist toggle stays, because it has to be reachable from the
+              page you build the shortlist on; it only appears once something
+              is saved. */}
+          {savedCount > 0 && (
           <p className="grotesk-regular jobs-count">
-            {filtered.length} {filtered.length === 1 ? 'role' : 'roles'}
-            {filtered.length !== jobs.length ? ` of ${jobs.length}` : ''} open
-            {/* The shortlist has to be reachable from the page you build it on.
-                Only shown once something is in it, so it is a door rather than
-                a permanently empty tab. */}
-            {savedCount > 0 && (
+            {(
               <>
-                {' · '}
                 <button
                   type="button"
                   className="jobs-saved-toggle"
@@ -472,6 +471,7 @@ export default function JobsClient({
               </>
             )}
           </p>
+          )}
         </div>
       </header>
 
