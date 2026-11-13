@@ -8556,3 +8556,75 @@ select.sch-region {
 .feat-opp-top { align-items: center; }
 .feat-opp-mark { width: 2.1rem; height: 2.1rem; }
 .feat-opp-mark-logo { width: 3.4rem; height: 2.1rem; }
+
+
+/* ============================================================
+   ONE FAMILY, A LITTLE GLOSS, 13 November 2026
+   Asked for the cards and the page headers to share a look, and for both to
+   be "a bit glossy". The headers already had the identity: an ink outline and
+   a hard ink offset. Cards take the same outline and offset, both take the
+   same corner radius, and both get the same sheen: a white wash that fades
+   out by the middle of the panel, and a bright hairline along the top edge,
+   the way light sits on a lacquered surface. The soft long shadow under the
+   offset is what keeps it from reading as flat print.
+   ============================================================ */
+:root {
+  --gloss: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.12) 36%, rgba(255, 255, 255, 0) 60%);
+  --gloss-edge: inset 0 2px 0 rgba(255, 255, 255, 0.6);
+  --family-radius: 14px;
+}
+
+/* Headers */
+.page-header-panel,
+.jobs-header > .shell,
+.doc-masthead-inner {
+  background-image: var(--gloss);
+  border-radius: var(--family-radius);
+  box-shadow: var(--gloss-edge), 7px 8px 0 var(--on-amber), var(--depth-ambient);
+}
+@media (max-width: 640px) {
+  .page-header-panel,
+  .jobs-header > .shell,
+  .doc-masthead-inner {
+    box-shadow: var(--gloss-edge), 5px 6px 0 var(--on-amber), var(--depth-ambient);
+  }
+}
+
+/* Cards */
+.card-grid > *,
+.firm-related-card,
+.trk-work-card,
+.acct-card {
+  background-color: #FFF8E5;
+  background-image: var(--gloss);
+  border: 2px solid var(--ink);
+  border-radius: var(--family-radius);
+  box-shadow: var(--gloss-edge), 4px 5px 0 var(--ink), var(--depth-soft);
+}
+.card-grid > *:hover,
+.firm-related-card:hover,
+.trk-work-card:hover {
+  background-color: #FFFBEF;
+  transform: translate(-1px, -2px);
+  box-shadow: var(--gloss-edge), 6px 7px 0 var(--ink), var(--depth-lift);
+}
+.acct-card-quiet { background-image: none; box-shadow: none; border-color: #E6DFD3; }
+
+.tool-card,
+.about-card,
+.apply-card {
+  background-image: var(--gloss);
+  border-radius: var(--family-radius);
+}
+.tool-card,
+.about-card { box-shadow: var(--gloss-edge), 6px 7px 0 #241F16, var(--depth-ambient); }
+.apply-card { box-shadow: var(--gloss-edge), 5px 6px 0 rgba(36, 31, 22, 0.82), var(--depth-ambient); }
+.news-card { box-shadow: var(--gloss-edge), 7px 9px 0 rgba(36, 31, 22, 0.9), var(--depth-ambient); }
+
+/* The closing-soon strip keeps its light outline so it stays below the
+   listings in weight; it only takes the sheen. */
+.feat-opp-link {
+  background-image: var(--gloss);
+  box-shadow: var(--gloss-edge), var(--depth-soft);
+}
+.feat-opp-link:hover { box-shadow: var(--gloss-edge), var(--depth-lift); }
