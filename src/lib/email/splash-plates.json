@@ -28,5 +28,10 @@
     "src": "/email/splash/chapel-hill-denham.png",
     "width": 205,
     "height": 118
+  },
+  "/employer-logos/principle-legal-consult.png": {
+    "src": "/email/splash/principle-legal-consult.png",
+    "width": 156,
+    "height": 118
   }
 }
