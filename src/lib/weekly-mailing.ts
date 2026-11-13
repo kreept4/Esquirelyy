@@ -103,6 +103,11 @@ export const WEEKLY_MAILING = {
     "Every listing has been checked against the provider's own page. Three scholarships close in December.",
   ctaLabel: 'See every scholarship',
   ctaText: 'See every scholarship here',
+  notice: {
+    text: 'We have updated our privacy policy. We now count site visits with cookieless analytics, and we name Zoho, which handles email sent to us.',
+    linkLabel: 'Read the privacy policy',
+    href: '/privacy',
+  },
 } as const
 
 export const WEEKLY_MAILING_HREF = '/scholarships'

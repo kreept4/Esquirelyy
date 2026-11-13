@@ -535,6 +535,22 @@ export function buildFeed(
     }
   }
 
+  /* 0b''. Privacy policy update, 13 November 2026, for a week. Clause 10 of
+          the policy promises account holders are told of material changes;
+          the same notice is in the 13 November email. A fixed stamp, so it is
+          unread once and then stays read. */
+  if (now.getTime() < Date.parse('2026-11-20T23:00:00Z')) {
+    out.push({
+      id: 'privacy-2026-11-13',
+      kind: 'deadline',
+      title: 'Privacy policy updated',
+      detail: 'Cookieless visit counts, and Zoho named',
+      label: '13 Nov',
+      href: '/privacy',
+      at: '2026-11-13T07:00:00.000Z',
+    })
+  }
+
   /* 0c. THE TEAM CALL IS NOT PUSHED, 24 August 2026, AND THE ID IS WHAT
          RETIRED IT — exactly as lib/team-call.ts said it would be.
          It sat here saying "We are opening up the team / Volunteer positions,

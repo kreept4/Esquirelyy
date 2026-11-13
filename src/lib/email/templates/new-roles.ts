@@ -207,6 +207,9 @@ export type MailingCopy = {
   footnote: string
   ctaLabel: string
   ctaText: string
+  /** Optional one-line notice under the sign-off, such as a policy update.
+   *  ASCII only: it is the plain-text part too. */
+  notice?: { text: string; linkLabel: string; href: string }
   href: string
 }
 
@@ -567,6 +570,7 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
     'from Bolu & Ipinu',
     'Co-founders, Esquirely',
     '',
+    ...(mailing?.notice ? [`${mailing.notice.text} ${mailing.notice.linkLabel}: ${siteUrl}${mailing.notice.href}`, ''] : []),
     `Esquirely. ${siteUrl}`,
   ].join('\n')
 
@@ -886,6 +890,11 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
                 </td>
               </tr>
             </table>
+            ${
+              mailing?.notice
+                ? `<p class="es-t-muted" style="margin:22px 0 4px 0;font-size:12.5px;line-height:1.6;color:${MUTED};">${mailing.notice.text} <a class="es-t-ink" href="${attr(`${siteUrl}${mailing.notice.href}`)}" style="color:${INK};font-weight:600;text-decoration:underline;">${mailing.notice.linkLabel}</a></p>`
+                : ''
+            }
           </td>
         </tr>
 
