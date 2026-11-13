@@ -40,10 +40,18 @@ const NYU = '/employer-logos/nyu-law.png'
 const GEORGETOWN = '/employer-logos/georgetown-law.png'
 const MCGILL = '/employer-logos/mcgill.png'
 const EDINBURGH = '/employer-logos/edinburgh-law.png'
+const PRINCIPLE = '/employer-logos/principle-legal-consult.png'
 
-/* In the order /scholarships shows them, which is the relevance order agreed
-   on 12 November: Podell, Hauser, Georgetown, McGill, Edinburgh. */
+/* PUSG first, added 13 November: it is the one award here for the Nigerian
+   Law School, which most members are at or heading to. Then the LLM awards in
+   the relevance order agreed on 12 November: Podell, Hauser, Georgetown,
+   McGill, Edinburgh. */
 const SCHOLARSHIPS: MailScholarship[] = [
+  card(
+    'prada-uzodimma-law-school-scholarship-grant',
+    PRINCIPLE,
+    'Full Nigerian Law School tuition fees for applicants from across Nigeria who cannot afford them. No first class required. Closes 13 December.'
+  ),
   card(
     'nyu-podell-global-graduate-legal-scholarship',
     NYU,
@@ -100,20 +108,20 @@ export const WEEKLY_MAILING = {
   id: 'weekly-2026-11-16',
   entries: ENTRIES,
   scholarships: SCHOLARSHIPS,
-  scholarshipsLabel: 'New LLM scholarships',
+  scholarshipsLabel: 'New scholarships',
   rolesLabel: 'New roles',
   rolesLinkLabel: 'See all three on the board',
   rolesHref: `/jobs?roles=${ENTRIES.map(e => e.slug).join(',')}`,
-  /** 46 characters, inside what every client shows. */
-  subject: 'Five new LLM scholarships and three new roles',
+  /** 40 characters, inside what every client shows. */
+  subject: 'Six new scholarships and three new roles',
   /** The member's first name goes after it, as in the roles email. */
-  headline: 'Five new LLM scholarships and three new roles',
+  headline: 'Six new scholarships and three new roles',
   /** The hidden preview line in the inbox list. */
   preheader:
-    "New LLM funding from NYU, Georgetown, McGill and Edinburgh, two research internships at Ororun, and Chapel Hill Denham's graduate programme.",
+    "Law School fees from the Prada Uzodimma grant, LLM funding from NYU, Georgetown, McGill and Edinburgh, and three new roles.",
   /** The paragraph under the cards. */
   footnote:
-    "Every listing has been checked against the provider's own page. Three scholarships close in December.",
+    "Every listing has been checked against the provider's own page. Four scholarships close in December.",
   ctaLabel: 'See the scholarships',
   ctaText: 'See the scholarships',
   secondaryCta: {
