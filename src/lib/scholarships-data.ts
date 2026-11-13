@@ -683,3 +683,15 @@ export function scholarshipSlugs(): string[] {
   return SCHOLARSHIPS.map(s => s.slug)
 }
 
+/**
+ * The file's entries exactly as typed, hand-set `status` included.
+ *
+ * Since 13 November 2026 the `scholarships` table is the source of truth and
+ * the /admin page edits it. This file is now the fallback that
+ * lib/scholarships-live.ts serves if the database cannot be read, and the
+ * list the table was first seeded from.
+ */
+export function fileScholarships(): Scholarship[] {
+  return SCHOLARSHIPS.map(s => ({ ...s }))
+}
+

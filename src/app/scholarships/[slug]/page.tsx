@@ -4,12 +4,8 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
 import Footer from '@/components/layout/Footer'
 import JsonLd, { breadcrumb } from '@/components/seo/JsonLd'
-import {
-  scholarshipBySlug,
-  scholarshipSlugs,
-  allScholarships,
-  daysUntilDeadline,
-} from '@/lib/scholarships-data'
+import { daysUntilDeadline } from '@/lib/scholarships-data'
+import { liveScholarships, liveScholarshipBySlug, liveScholarshipSlugs } from '@/lib/scholarships-live'
 
 /**
  * One scholarship.
@@ -41,15 +37,17 @@ import {
 
 export const revalidate = 3600
 
-export function generateStaticParams() {
-  return scholarshipSlugs().map(slug => ({ slug }))
+/* Pages for slugs added later through /admin are built on first request
+   (dynamicParams is on by default) and saved like the rest. */
+export async function generateStaticParams() {
+  return (await liveScholarshipSlugs()).map(slug => ({ slug }))
 }
 
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> },
 ): Promise<Metadata> {
   const { slug } = await params
-  const s = scholarshipBySlug(slug)
+  const s = await liveScholarshipBySlug(slug)
   if (!s) return {}
   return {
     title: `${s.title} | Scholarships`,
@@ -73,7 +71,7 @@ export default async function ScholarshipPage(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params
-  const s = scholarshipBySlug(slug)
+  const s = await liveScholarshipBySlug(slug)
   if (!s) notFound()
 
   const days = daysUntilDeadline(s)
@@ -84,7 +82,7 @@ export default async function ScholarshipPage(
 
   /* Other open awards, so a closed page is a route onward rather than a wall.
      The same slot the job page gives to more roles. */
-  const alsoOpen = allScholarships()
+  const alsoOpen = (await liveScholarships())
     .filter(o => o.slug !== s.slug && o.status === 'open')
     .slice(0, 4)
 
