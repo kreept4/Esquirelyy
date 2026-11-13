@@ -2860,6 +2860,11 @@ const EMPLOYER_LOGOS: Record<string, string> = {
      the P-3 Legal Officer listing. */
   internationalcourtofjustice: '/employer-logos/international-court-of-justice.png',
   icj: '/employer-logos/international-court-of-justice.png',
+  /* Tsedaqah Attorneys: the TA monogram, cut from the firm's own "We are
+     hiring" flier (14 November 2026). The monogram alone, because the full
+     TSEDAQAH ATTORNEYS lockup is unreadable at the size the board draws marks. */
+  tsedaqahattorneys: '/employer-logos/tsedaqah-attorneys.png',
+  tsedaqah: '/employer-logos/tsedaqah-attorneys.png',
   /* Law schools with scholarships on /scholarships, for the carousel slide
      that points there. Same files the scholarship rows use. */
   nyuschooloflaw: '/employer-logos/nyu-law.png',
