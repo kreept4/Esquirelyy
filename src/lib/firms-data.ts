@@ -2855,6 +2855,11 @@ export function logoForEmployer(employer?: string | null): string | null {
  *  so their marks live in /public/employer-logos. Drop a file in that folder
  *  and add the key here; the key is the normalised employer name. */
 const EMPLOYER_LOGOS: Record<string, string> = {
+  /* The International Court of Justice's own seal, from icj-cij.org
+     (logo_color2.png), trimmed and cut to 128px. Added 14 November 2026 for
+     the P-3 Legal Officer listing. */
+  internationalcourtofjustice: '/employer-logos/international-court-of-justice.png',
+  icj: '/employer-logos/international-court-of-justice.png',
   /* Law schools with scholarships on /scholarships, for the carousel slide
      that points there. Same files the scholarship rows use. */
   nyuschooloflaw: '/employer-logos/nyu-law.png',
