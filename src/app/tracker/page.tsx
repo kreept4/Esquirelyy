@@ -13,13 +13,14 @@ import { createClient } from '@/lib/supabase/client'
 import { stateOptions } from '@/lib/nigeria'
 import ToolPrompt from '@/components/features/ToolPrompt'
 import { firmForEmployer, firmLogo, ballBgForEmployer, logoForEmployer } from '@/lib/firms-data'
+import FirmPicker, { BuildingMark } from './FirmPicker'
 
 /**
  * The firm's logo beside the name a member typed, when that firm is in the
  * directory. Members type names freely ("Templars Law", "Aluko and Oyebode
  * LP"), so after an exact match this retries with the usual endings removed.
- * No match, no logo: a guessed mark beside the wrong firm would be worse than
- * none.
+ * No match: the drawn building rather than a guessed mark beside the wrong
+ * firm.
  */
 const FIRM_SUFFIX = /\b(llp|lp|ltd|limited|plc|law firm|law|legal|solicitors|barristers|partners|chambers|associates|& co\.?|and co\.?|co\.?)\s*$/i
 function trackerFirm(name: string) {
@@ -40,11 +41,11 @@ function FirmMark({ name, size = 'row' }: { name: string; size?: 'row' | 'small'
      the directory but whose logos are already on the site. */
   const firm = trackerFirm(name)
   const src = (firm ? firmLogo(firm) : null) || logoForEmployer(name)
-  if (!src) return null
-  const bg = ballBgForEmployer(firm ? firm.name : name)
+  const bg = src ? ballBgForEmployer(firm ? firm.name : name) : null
+  /* No logo: the drawn building, so every row keeps the same shape. */
   return (
     <span className={`trk-firm-mark trk-firm-mark-${size}`} style={bg ? { background: bg } : undefined} aria-hidden>
-      <img src={src} alt="" loading="lazy" decoding="async" />
+      {src ? <img src={src} alt="" loading="lazy" decoding="async" /> : <BuildingMark />}
     </span>
   )
 }
@@ -438,7 +439,7 @@ function AddModal({ onClose, onAdd }: {
         <div className="trk-form">
           <div className="trk-field trk-field-wide">
             <label className="grotesk-regular tool-label" htmlFor="f-firm">Firm or employer</label>
-            <input id="f-firm" className="tool-input" value={form.firm} onChange={e => set('firm', e.target.value)} placeholder="Banwo &amp; Ighodalo" autoFocus />
+            <FirmPicker value={form.firm} onChange={v => set('firm', v)} />
           </div>
           <div className="trk-field trk-field-wide">
             <label className="grotesk-regular tool-label" htmlFor="f-role">Role</label>
