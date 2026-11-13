@@ -187,6 +187,13 @@ export default function Footer() {
               Scroll to top
             </button>
             <p className="grotesk-bold footer-legal">&copy;{new Date().getFullYear()} Esquirely</p>
+            {/* Required by Storyset's free licence, which covers the
+                illustrations on the empty states, the articles page and the
+                404 page. */}
+            <p className="grotesk-regular footer-credit">
+              Illustrations by{' '}
+              <a href="https://storyset.com" target="_blank" rel="noopener noreferrer">Storyset</a>
+            </p>
           </div>
         </div>
       </div>
@@ -350,6 +357,8 @@ export default function Footer() {
         .footer-top:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 ${INK}; }
         .footer-top:active { transform: translate(4px, 4px); box-shadow: 0 0 0 ${INK}; }
 
+        .footer-credit { font-size: 0.7rem; margin-top: 0.35rem; color: ${INK}; opacity: 0.7; }
+        .footer-credit a { color: inherit; }
         .footer-legal {
           font-size: 0.75rem;
           line-height: 1.45;

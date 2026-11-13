@@ -131,6 +131,23 @@ async function handle(req: Request) {
        A row that fails stays selected for tomorrow's run rather than being
        marked done, which is the right way round: retrying a deletion is safe,
        forgetting one is not. */
+    /* Two tables are not linked to the account, so deleting the auth user
+       does not cascade to them: the tracker (`applications`) and the record of
+       which mailings reached which address (`broadcast_sends`). They are
+       cleared first, explicitly. Every other user-keyed table cascades from
+       auth.users. A failure here stops this account's deletion so it is
+       retried tomorrow rather than leaving its tracker behind. */
+    const { error: appsError } = await db.from('applications').delete().eq('user_id', profile.id)
+    const { error: sendsError } = profile.email
+      ? await db.from('broadcast_sends').delete().ilike('email', profile.email)
+      : { error: null }
+    if (appsError || sendsError) {
+      const msg = (appsError || sendsError)!.message
+      console.error('[purge-deleted] could not clear data for', profile.id, msg)
+      failed.push({ id: profile.id, error: msg })
+      continue
+    }
+
     const { error: delError } = await db.auth.admin.deleteUser(profile.id)
 
     if (delError) {
