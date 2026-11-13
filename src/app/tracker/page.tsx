@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
-  Plus, X, MapPin, ChevronDown, Trash2, ArrowRight, Check,
+  Plus, X, MapPin, ChevronDown, Trash2, Pencil, ArrowRight, Check,
   FileText, PenLine, MessagesSquare,
 } from 'lucide-react'
 import Footer from '@/components/layout/Footer'
@@ -236,16 +236,19 @@ function Funnel({
 /* -------------------------------------------------------------------- row */
 
 function LedgerRow({
-  app, index, onStatusChange, onDelete, onNoteChange,
+  app, index, onStatusChange, onDelete, onNoteChange, onEdit,
 }: {
   app: Application
   index: number
   onStatusChange: (id: string, s: UIStatus) => void
   onDelete: (id: string) => void
   onNoteChange: (id: string, n: string) => void
+  onEdit: (app: Application) => void
 }) {
   const [open, setOpen] = useState(false)
   const [note, setNote] = useState(app.notes)
+  /* An edit made in the modal changes the notes too; keep the box in step. */
+  useEffect(() => { setNote(app.notes) }, [app.notes])
   const [confirmDelete, setConfirmDelete] = useState(false)
   const dl = readDeadline(app.deadline)
   const stageIdx = LIVE_STAGES.indexOf(app.status)
@@ -370,9 +373,14 @@ function LedgerRow({
                   <button type="button" className="grotesk-regular trk-confirm-no" onClick={() => setConfirmDelete(false)}>Keep</button>
                 </span>
               ) : (
-                <button type="button" className="grotesk-regular trk-remove" onClick={() => setConfirmDelete(true)}>
-                  <Trash2 size={13} aria-hidden /> Remove
-                </button>
+                <>
+                  <button type="button" className="grotesk-regular trk-remove" onClick={() => onEdit(app)}>
+                    <Pencil size={13} aria-hidden /> Edit
+                  </button>
+                  <button type="button" className="grotesk-regular trk-remove" onClick={() => setConfirmDelete(true)}>
+                    <Trash2 size={13} aria-hidden /> Remove
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -395,15 +403,23 @@ function LedgerRow({
 
 /* ------------------------------------------------------------------ modal */
 
-function AddModal({ onClose, onAdd }: {
+function AddModal({ onClose, onAdd, initial }: {
   onClose: () => void
   onAdd: (a: Omit<Application, 'id' | 'appliedAt'>) => Promise<void>
+  /** An existing entry: the modal edits it instead of logging a new one. */
+  initial?: Application
 }) {
+  const editing = !!initial
   const [form, setForm] = useState({
-    firm: '', role: '', type: 'Full-time', location: '',
-    dateApplied: fmtDate(new Date().toISOString()),
-    deadline: '', status: 'Applied' as UIStatus, notes: '',
+    firm: initial?.firm ?? '', role: initial?.role ?? '', type: initial?.type || 'Full-time',
+    location: initial?.location ?? '',
+    dateApplied: initial?.dateApplied || fmtDate(new Date().toISOString()),
+    deadline: initial?.deadline ?? '', status: (initial?.status ?? 'Applied') as UIStatus, notes: initial?.notes ?? '',
   })
+  /* Entries from before the state list may hold a typed location; keep it
+     selectable rather than silently blanking it on save. */
+  const locOptions = stateOptions('Pick a state')
+  const extraLoc = form.location && !locOptions.some(o => o.value === form.location) ? form.location : ''
   const [saving, setSaving] = useState(false)
   const set = (k: keyof typeof form, v: string) => setForm(p => ({ ...p, [k]: v }))
   const ready = form.firm.trim().length > 0
@@ -423,18 +439,18 @@ function AddModal({ onClose, onAdd }: {
 
   return (
     <div className="trk-scrim" onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="trk-modal" role="dialog" aria-modal="true" aria-label="Log an application">
+      <div className="trk-modal" role="dialog" aria-modal="true" aria-label={editing ? 'Edit application' : 'Log an application'}>
         <div className="trk-modal-head">
-          <h2 className="display-black trk-modal-title">Log an application</h2>
+          <h2 className="display-black trk-modal-title">{editing ? 'Edit application' : 'Log an application'}</h2>
           <button type="button" className="trk-modal-close" onClick={onClose} aria-label="Close">
             <X size={18} />
           </button>
         </div>
 
-        <p className="grotesk-regular trk-modal-note">
+        {!editing && <p className="grotesk-regular trk-modal-note">
           Only the firm is required. Anything you leave blank you can fill in later, and applications
           you send from a listing on here get logged on their own.
-        </p>
+        </p>}
 
         <div className="trk-form">
           <div className="trk-field trk-field-wide">
@@ -448,13 +464,15 @@ function AddModal({ onClose, onAdd }: {
           <div className="trk-field">
             <label className="grotesk-regular tool-label" htmlFor="f-type">Type</label>
             <select id="f-type" className="tool-select" value={form.type} onChange={e => set('type', e.target.value)}>
-              {['Full-time', 'Internship', 'Clerkship', 'Contract', 'Scholarship'].map(t => <option key={t}>{t}</option>)}
+              {[...(form.type && !['Full-time', 'Internship', 'Clerkship', 'Contract', 'Scholarship'].includes(form.type) ? [form.type] : []), 'Full-time', 'Internship', 'Clerkship', 'Contract', 'Scholarship'].map(t => <option key={t}>{t}</option>)}
             </select>
           </div>
           <div className="trk-field">
             <label className="grotesk-regular tool-label" htmlFor="f-stage">Stage</label>
             <select id="f-stage" className="tool-select" value={form.status} onChange={e => set('status', e.target.value as UIStatus)}>
-              {[...LIVE_STAGES, 'Closed' as UIStatus].map(s => <option key={s}>{s}</option>)}
+              {/* A saved entry keeps Saved as a choice, so editing it does not
+                  quietly mark it Applied. */}
+              {[...(initial?.status === 'Saved' ? ['Saved' as UIStatus] : []), ...LIVE_STAGES, 'Closed' as UIStatus].map(s => <option key={s}>{s}</option>)}
             </select>
           </div>
           <div className="trk-field">
@@ -463,7 +481,8 @@ function AddModal({ onClose, onAdd }: {
                 Typed locations drifted into four spellings of one place, and
                 nothing downstream could group them. */}
             <select id="f-loc" className="tool-select" value={form.location} onChange={e => set('location', e.target.value)}>
-              {stateOptions('Pick a state').map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              {extraLoc && <option value={extraLoc}>{extraLoc}</option>}
+              {locOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </div>
           <div className="trk-field">
@@ -479,7 +498,7 @@ function AddModal({ onClose, onAdd }: {
         </div>
 
         <button type="button" className="grotesk-bold tool-submit" onClick={submit} disabled={!ready || saving}>
-          {saving ? 'Saving' : 'Log it'}
+          {saving ? 'Saving' : editing ? 'Save changes' : 'Log it'}
         </button>
       </div>
     </div>
@@ -493,6 +512,7 @@ export default function TrackerPage() {
   const [apps, setApps] = useState<Application[]>([])
   const [work, setWork] = useState({ cv: 0, letters: 0, interviews: 0 })
   const [showModal, setShowModal] = useState(false)
+  const [editingApp, setEditingApp] = useState<Application | null>(null)
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<UIStatus | null>(null)
   const [showClosed, setShowClosed] = useState(false)
@@ -579,6 +599,20 @@ export default function TrackerPage() {
     setApps(prev => prev.filter(a => a.id !== id))
     const supabase = createClient()
     await (supabase.from('applications') as any).delete().eq('id', id)
+  }
+
+  async function editApp(id: string, form: Omit<Application, 'id' | 'appliedAt'>) {
+    const next = {
+      firm: form.firm.trim(),
+      role: form.role.trim(),
+      type: form.type,
+      location: form.location.trim(),
+      deadline: form.deadline.trim(),
+      notes: form.notes.trim(),
+    }
+    setApps(prev => prev.map(a => a.id === id ? { ...a, ...next, status: form.status } : a))
+    const supabase = createClient()
+    await (supabase.from('applications') as any).update({ ...next, status: STATUS_TO_DB[form.status] }).eq('id', id)
   }
 
   async function updateNote(id: string, notes: string) {
@@ -776,6 +810,7 @@ export default function TrackerPage() {
                         onStatusChange={changeStatus}
                         onDelete={deleteApp}
                         onNoteChange={updateNote}
+                        onEdit={setEditingApp}
                       />
                     ))}
                   </ul>
@@ -810,6 +845,14 @@ export default function TrackerPage() {
       </main>
       <Footer />
       {showModal && <AddModal onClose={() => setShowModal(false)} onAdd={addApp} />}
+      {editingApp && (
+        <AddModal
+          key={editingApp.id}
+          initial={editingApp}
+          onClose={() => setEditingApp(null)}
+          onAdd={f => editApp(editingApp.id, f)}
+        />
+      )}
     </>
   )
 }
