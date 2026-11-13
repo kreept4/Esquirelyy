@@ -207,6 +207,9 @@ export type MailingCopy = {
   footnote: string
   ctaLabel: string
   ctaText: string
+  /** Optional second button beside the main one, for a mailing with two
+   *  kinds of listing. href is a site path. */
+  secondaryCta?: { label: string; text: string; href: string }
   /** Optional one-line notice under the sign-off, such as a policy update.
    *  ASCII only: it is the plain-text part too. */
   notice?: { text: string; linkLabel: string; href: string }
@@ -566,6 +569,7 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
         ]
       : []),
     mailing ? `${mailing.ctaText}: ${link}` : `See ${dropPronoun()} here: ${link}`,
+    ...(mailing?.secondaryCta ? [`${mailing.secondaryCta.text}: ${siteUrl}${mailing.secondaryCta.href}`] : []),
     '',
     'from Bolu & Ipinu',
     'Co-founders, Esquirely',
@@ -826,7 +830,9 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
               }
             </p>
 
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 24px 0;">
+            <div style="margin:0 0 12px 0;">
+            <div style="display:inline-block;vertical-align:top;margin:0 12px 12px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0;">
               <tr>
                 <td class="es-b-ink" bgcolor="${INK}" style="background-color:${INK};">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
@@ -845,6 +851,32 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
                 </td>
               </tr>
             </table>
+            </div>${
+              mailing?.secondaryCta
+                ? `<div style="display:inline-block;vertical-align:top;margin:0 0 12px 0;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0;">
+              <tr>
+                <td class="es-b-ink" bgcolor="${INK}" style="background-color:${INK};">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+                    <tr>
+                      <td style="padding:0 3px 3px 0;">
+                        <table class="es-b-white" role="presentation" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF" style="border-collapse:collapse;background-color:#FFFFFF;border:2px solid ${INK};">
+                          <tr>
+                            <td class="es-b-white" align="center" bgcolor="#FFFFFF" style="background-color:#FFFFFF;padding:14px 28px;">
+                              <a class="es-t-ink" href="${attr(`${siteUrl}${mailing.secondaryCta.href}`)}" style="font-family:'Schibsted Grotesk',Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${INK};text-decoration:none;">${mailing.secondaryCta.label}</a>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+            </div>`
+                : ''
+            }
+            </div>
 
             <!--
               THE SIGN-OFF.

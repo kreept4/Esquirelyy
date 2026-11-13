@@ -114,8 +114,13 @@ export const WEEKLY_MAILING = {
   /** The paragraph under the cards. */
   footnote:
     "Every listing has been checked against the provider's own page. Three scholarships close in December.",
-  ctaLabel: 'See every scholarship',
-  ctaText: 'See every scholarship here',
+  ctaLabel: 'See the scholarships',
+  ctaText: 'See the scholarships',
+  secondaryCta: {
+    label: 'See the roles',
+    text: 'See the roles',
+    href: `/jobs?roles=${ENTRIES.map(e => e.slug).join(',')}`,
+  },
   notice: {
     text: 'We have updated our privacy policy. We now count site visits with cookieless analytics, and we name Zoho, which handles email sent to us.',
     linkLabel: 'Read the privacy policy',
