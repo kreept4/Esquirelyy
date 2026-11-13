@@ -40,10 +40,11 @@ export const AI_LIMITS = {
      practice session, so a single legitimate sitting is a dozen calls. It is
      also the cheapest route on the list at 1,024 tokens. */
   'interview-feedback': 40,
-  /* One call at the end of a mock interview, reviewing the whole transcript.
-     The interview itself makes no calls: its follow-ups are written by the
-     question generation that started the session. */
-  'interview-debrief': 6,
+  /* One mock interview a day per member, set on 13 November 2026 while the
+     tool is free. The interview itself makes no calls; this counts the one
+     review at the end. A review that fails is handed back (see
+     refundLastUse), so a broken call does not cost the member their day. */
+  'interview-debrief': 1,
 } as const
 
 export type AiRoute = keyof typeof AI_LIMITS
@@ -317,4 +318,43 @@ export async function requireUserWithQuota(
   }
 
   return { user: auth.user, error: null }
+}
+
+
+/**
+ * How many uses of a route this user has left today, without spending one.
+ * For a screen that should say "come back tomorrow" before the member does the
+ * work, not after. Exempt accounts get Infinity.
+ */
+export async function quotaRemaining(user: { id: string; email?: string }, route: AiRoute): Promise<number> {
+  if (user.email && EXEMPT_EMAILS.has(user.email.toLowerCase())) return Infinity
+  const since = new Date()
+  since.setUTCHours(0, 0, 0, 0)
+  const { count, error } = await createAdminClient()
+    .from('ai_usage')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .eq('route', route)
+    .gte('created_at', since.toISOString())
+  if (error) return AI_LIMITS[route]
+  return Math.max(0, AI_LIMITS[route] - (count ?? 0))
+}
+
+/**
+ * Give back the use recorded for a call that then failed: the newest row for
+ * this user and route from the last ten minutes. Used where the allowance is
+ * small enough that losing one to our own error would cost the member the day.
+ */
+export async function refundLastUse(userId: string, route: AiRoute): Promise<void> {
+  const db = createAdminClient()
+  const since = new Date(Date.now() - 10 * 60 * 1000).toISOString()
+  const { data } = await db
+    .from('ai_usage')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('route', route)
+    .gte('created_at', since)
+    .order('created_at', { ascending: false })
+    .limit(1)
+  if (data?.[0]?.id) await db.from('ai_usage').delete().eq('id', data[0].id)
 }

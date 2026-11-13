@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { ArrowRight, AlertCircle } from 'lucide-react'
+import { ArrowRight, AlertCircle, Mic, MicOff } from 'lucide-react'
 import BrandLoader from '@/components/ui/BrandLoader'
 
 /**
@@ -29,15 +29,37 @@ type Debrief = {
 }
 type Line = { who: 'them' | 'you'; text: string }
 
-const SHORT_ANSWER = 45
 const MAX_FOLLOW_UPS = 3
-const ACKS = ['Thank you.', 'Okay, that is helpful.', 'Right.', 'I see.', 'Understood, thank you.', 'Okay.']
+/* Neutral on purpose. "That is helpful" after a weak answer is the line a
+   real interviewer would not say, and praise from a script is noise. */
+const ACKS = ['Thank you.', 'Okay.', 'Right, thank you.', 'Noted.', 'Okay, thank you.', "Let's move on."]
 const PROBE_LEADS = ['Can I push on that a little?', 'Let me follow up on that.', 'Just to press on that,']
+const OPENER = 'To start, tell me a little about yourself.'
+const CLOSER = 'That is everything from me. Do you have any questions for us?'
 
 const words = (s: string) => s.trim().split(/\s+/).filter(Boolean).length
 
+/**
+ * Does the answer already carry evidence: a number or date, a named court,
+ * matter, firm or place, or the words people use to start an example? If so,
+ * asking "can you give me an example?" would be the script showing. Rough,
+ * and deliberately so: it only decides whether to ask for an example.
+ */
+function concrete(answer: string): boolean {
+  if (/\d/.test(answer)) return true
+  if (/\b(for example|for instance|when i|at my|during my|in my (final|second|third|first) year|nysc|high court|court of appeal|supreme court|tribunal|matter|case|client|deal|transaction)\b/i.test(answer)) return true
+  // Two capitalised words together mid-sentence: a name, a firm, a place.
+  return /[a-z,]\s+[A-Z][a-z]+\s+[A-Z][a-z]+/.test(answer)
+}
+
+/** The voice to text the browser offers, if any. Nothing reaches Esquirely. */
+function speechRecognition(): any {
+  if (typeof window === 'undefined') return null
+  return (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition || null
+}
+
 export default function MockInterview({
-  questions, interviewer, persona, targetRole, employer, onExit,
+  questions: generated, interviewer, persona, targetRole, employer, onExit,
 }: {
   questions: MockQuestion[]
   interviewer: string
@@ -46,9 +68,17 @@ export default function MockInterview({
   employer?: string
   onExit: () => void
 }) {
+  /* A real interview opens with "tell me about yourself" and closes with
+     "any questions for us?". The generated six sit between them, unless the
+     generator already opened that way. */
+  const questions: MockQuestion[] = [
+    ...(/about yourself/i.test(generated[0]?.question || '') ? [] : [{ id: 'opener', question: OPENER, category: 'opening' }]),
+    ...generated,
+    { id: 'closer', question: CLOSER, category: 'closing' },
+  ]
   const [lines, setLines] = useState<Line[]>([
     { who: 'them', text: 'Thank you for coming in. I have a few questions for you, so take your time with each one.' },
-    { who: 'them', text: questions[0]?.question || '' },
+    { who: 'them', text: questions[0].question },
   ])
   const [turns, setTurns] = useState<Turn[]>([])
   const [qi, setQi] = useState(0)
@@ -59,26 +89,55 @@ export default function MockInterview({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [debrief, setDebrief] = useState<Debrief | null>(null)
+  const [listening, setListening] = useState(false)
+  const [canSpeak, setCanSpeak] = useState(false)
+  const rec = useRef<any>(null)
   const end = useRef<HTMLDivElement>(null)
 
+  useEffect(() => { setCanSpeak(!!speechRecognition()) }, [])
   useEffect(() => { end.current?.scrollIntoView({ behavior: 'smooth', block: 'end' }) }, [lines, done, debrief])
+  useEffect(() => () => { try { rec.current?.stop() } catch {} }, [])
 
   function say(...add: Line[]) { setLines(l => [...l, ...add]) }
 
-  function nextQuestion(nextTurns: Turn[]) {
+  function toggleMic() {
+    if (listening) { try { rec.current?.stop() } catch {} ; return }
+    const SR = speechRecognition()
+    if (!SR) return
+    const r = new SR()
+    r.lang = 'en-NG'
+    r.continuous = true
+    r.interimResults = false
+    const base = draft.trim()
+    let heard = ''
+    r.onresult = (e: any) => {
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) heard += (heard ? ' ' : '') + e.results[i][0].transcript.trim()
+      }
+      setDraft((base ? base + ' ' : '') + heard)
+    }
+    r.onend = () => setListening(false)
+    r.onerror = () => setListening(false)
+    rec.current = r
+    setListening(true)
+    try { r.start() } catch { setListening(false) }
+  }
+
+  function nextQuestion() {
     const n = qi + 1
+    setInFollowUp(false)
     if (n >= questions.length) {
-      say({ who: 'them', text: 'That is everything from me. Thank you for your time.' })
+      say({ who: 'them', text: 'Thank you for your time. We will be in touch.' })
       setDone(true)
       return
     }
     setQi(n)
-    setInFollowUp(false)
-    say({ who: 'them', text: `${ACKS[n % ACKS.length]} ${questions[n].question}` })
-    void nextTurns
+    const ack = ACKS[(n + followUps) % ACKS.length]
+    say({ who: 'them', text: questions[n].id === 'closer' ? questions[n].question : `${ack} ${questions[n].question}` })
   }
 
   function submit() {
+    if (listening) { try { rec.current?.stop() } catch {} }
     const answer = draft.trim()
     if (!answer) return
     setDraft('')
@@ -86,26 +145,31 @@ export default function MockInterview({
     const q = questions[qi]
 
     if (inFollowUp) {
-      const updated = turns.map((t, i) => (i === turns.length - 1 ? { ...t, followUpAnswer: answer } : t))
-      setTurns(updated)
-      nextQuestion(updated)
+      setTurns(t => t.map((x, i) => (i === t.length - 1 ? { ...x, followUpAnswer: answer } : x)))
+      nextQuestion()
       return
     }
 
-    const updated = [...turns, { question: q.question, answer }]
-    setTurns(updated)
+    const turn: Turn = { question: q.question, answer }
     const probes = (q.probes || []).filter(Boolean)
-    const wantProbe = followUps < MAX_FOLLOW_UPS && probes.length > 0 && (words(answer) < SHORT_ANSWER || qi % 2 === 1)
-    if (wantProbe) {
-      const probe = words(answer) < SHORT_ANSWER ? probes[0] : probes[1] || probes[0]
-      updated[updated.length - 1].followUp = probe
-      setTurns([...updated])
+    /* Vague answers get asked for an example, whatever their length. An
+       answer that already has one is only pressed on judgement, and only on
+       alternate questions, so a good concise answer is not interrogated. */
+    let probe = ''
+    if (followUps < MAX_FOLLOW_UPS && probes.length) {
+      if (!concrete(answer)) probe = probes[0]
+      else if (qi % 2 === 1 && words(answer) >= 25) probe = probes[1] || ''
+    }
+    if (probe) {
+      turn.followUp = probe
+      setTurns(t => [...t, turn])
       setFollowUps(f => f + 1)
       setInFollowUp(true)
       say({ who: 'them', text: `${PROBE_LEADS[followUps % PROBE_LEADS.length]} ${probe}` })
       return
     }
-    nextQuestion(updated)
+    setTurns(t => [...t, turn])
+    nextQuestion()
   }
 
   async function getDebrief() {
@@ -152,6 +216,12 @@ export default function MockInterview({
             <button type="button" className="tool-submit" onClick={submit} disabled={!draft.trim()}>
               Answer <ArrowRight size={15} aria-hidden />
             </button>
+            {canSpeak && (
+              <button type="button" className="mock-mic" data-on={listening || undefined} onClick={toggleMic} aria-pressed={listening}>
+                {listening ? <MicOff size={15} aria-hidden /> : <Mic size={15} aria-hidden />}
+                {listening ? 'Stop speaking' : 'Speak instead'}
+              </button>
+            )}
             {turns.length > 0 && (
               <button type="button" className="grotesk-regular tool-restart" onClick={() => { setDone(true); say({ who: 'them', text: 'Let us stop there. Thank you.' }) }}>
                 End the interview here
@@ -160,6 +230,7 @@ export default function MockInterview({
           </div>
           <p className="grotesk-regular tool-note">
             Question {Math.min(qi + 1, questions.length)} of {questions.length}. Nothing is reviewed until the end, so answer the way you would on the day.
+            {canSpeak && ' Speaking uses your browser\u2019s own speech service; nothing is sent to Esquirely until you press Answer.'}
           </p>
         </div>
       )}

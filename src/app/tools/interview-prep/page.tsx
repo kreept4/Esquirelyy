@@ -65,6 +65,28 @@ export default function InterviewPrepPage() {
   const [result, setResult] = useState<SessionResult|null>(null)
   const [expandedQ, setExpandedQ] = useState<string|null>(null)
   const [practising, setPractising] = useState(false)
+  const [checkingQuota, setCheckingQuota] = useState(false)
+  const [practiceNote, setPracticeNote] = useState('')
+
+  /* Asked before the interview starts, so nobody answers eight questions and
+     then learns the day's review is used. */
+  async function startPractice() {
+    setCheckingQuota(true)
+    setPracticeNote('')
+    try {
+      const res = await fetch('/api/interview-debrief')
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.remaining === 0) {
+        setPracticeNote("You have had today's mock interview. You can run another tomorrow.")
+        return
+      }
+      setPractising(true)
+    } catch {
+      setPractising(true)
+    } finally {
+      setCheckingQuota(false)
+    }
+  }
   const [error, setError] = useState('')
   const [showHistory, setShowHistory] = useState(false)
   const [history, setHistory] = useState<HistoryItem[]>([])
@@ -316,9 +338,12 @@ export default function InterviewPrepPage() {
                   onExit={() => setPractising(false)}
                 />
               ) : (<>
-              <button type="button" className="tool-submit" style={{ marginBottom: '1.25rem' }} onClick={() => setPractising(true)}>
+              <button type="button" className="tool-submit" style={{ marginBottom: '0.6rem' }} onClick={startPractice} disabled={checkingQuota}>
                 Practise it as a live interview <ArrowRight size={15} aria-hidden />
               </button>
+              <p className="grotesk-regular tool-note" style={{ marginTop: 0, marginBottom: '1.25rem' }}>
+                {practiceNote || 'One mock interview a day, with feedback at the end.'}
+              </p>
               <p className="grotesk-regular tool-note" style={{ marginTop: 0, marginBottom: '1.75rem' }}>
                 Tap a question to see why it gets asked. These are AI-generated, so adapt them to
                 your real background rather than rehearsing them as written.
