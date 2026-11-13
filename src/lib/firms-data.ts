@@ -2802,6 +2802,10 @@ const norm = (s: string) =>
  */
 export function firmForEmployer(employer?: string | null): Firm | null {
   if (!employer) return null
+  /* Same rule as logoForEmployer: a bracketed trading name is tried without
+     the brackets, then on its own. */
+  const bracket = employer.match(/^(.*?)\s*\(([^)]+)\)\s*$/)
+  if (bracket) return firmForEmployer(bracket[1]) || firmForEmployer(bracket[2])
   const target = norm(employer)
   if (!target) return null
   // Exact only. A startsWith fallback here once matched the string
@@ -2831,6 +2835,11 @@ export function officesForEmployer(employer?: string | null): FirmOffice[] {
 
 export function logoForEmployer(employer?: string | null): string | null {
   if (!employer) return null
+  /* A trading name in brackets, as in "Lekan Bamidele & Co (The Bohemian
+     Firm)": try the name without it, then the bracketed name on its own.
+     Without this the bracketed form matched nothing and showed no logo. */
+  const bracket = employer.match(/^(.*?)\s*\(([^)]+)\)\s*$/)
+  if (bracket) return logoForEmployer(bracket[1]) || logoForEmployer(bracket[2])
   const target = norm(employer)
   if (!target) return null
   const hit = firmForEmployer(employer)

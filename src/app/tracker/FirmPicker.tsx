@@ -82,7 +82,10 @@ export default function FirmPicker({ value, onChange }: { value: string; onChang
     }
     for (const n of employers) {
       const k = key(n)
-      if (seen.has(k)) continue
+      /* "Lekan Bamidele & Co (The Bohemian Firm)" is the directory's
+         "Lekan Bamidele & Co"; offer it once, under the directory name. */
+      const bare = key(n.replace(/\s*\([^)]*\)\s*$/, ''))
+      if (seen.has(k) || seen.has(bare)) continue
       seen.add(k)
       out.push({ name: n, logo: logoForEmployer(n), bg: ballBgForEmployer(n) })
     }
