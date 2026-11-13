@@ -8704,3 +8704,37 @@ select.sch-region {
 /* Interview prep: the interviewer choice, grouped by setting. */
 .tool-persona-group + .tool-persona-group { margin-top: 0.85rem; }
 .tool-persona-setting { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 0.4rem; }
+
+
+/* Tracker: the firm picker. */
+.trk-picker { position: relative; }
+.trk-picker-field { display: flex; align-items: center; gap: 0.6rem; }
+.trk-picker-field .tool-input { flex: 1; min-width: 0; }
+.trk-picker-list {
+  position: absolute;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  top: calc(100% + 0.35rem);
+  list-style: none;
+  margin: 0;
+  padding: 0.35rem;
+  background: #FFFDF6;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 4px 5px 0 var(--ink), var(--depth-soft);
+  max-height: 20rem;
+  overflow-y: auto;
+}
+.trk-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+.trk-picker-item[data-active] { background: rgba(251, 191, 36, 0.22); }
+.trk-picker-add { border-top: 1px solid #EDE9E2; margin-top: 0.25rem; padding-top: 0.6rem; }
