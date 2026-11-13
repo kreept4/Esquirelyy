@@ -209,25 +209,6 @@ const SCHOLARSHIPS: Scholarship[] = [
     ],
     link: 'https://www.lse.ac.uk/study-at-lse/Graduate/fees-and-funding/margaret-bennett-scholarship',
   },
-  {
-    slug: 'queen-elizabeth-commonwealth-scholarship',
-    title: 'Queen Elizabeth Commonwealth Scholarships',
-    provider: 'Association of Commonwealth Universities',
-    logo: '/employer-logos/acu.png',
-    region: 'Select Commonwealth countries',
-    level: "Master's degree",
-    funding: 'Full tuition and living costs for two years',
-    deadline: 'Two cycles yearly: November to December, and March to April',
-    status: 'closed',
-    description:
-      "Fully funded two-year master's degrees at universities in low- and middle-income Commonwealth countries. Open to all disciplines, including law.",
-    eligibility: [
-      "Citizen of Nigeria or another eligible Commonwealth country",
-      "Applying for a master's at a participating university in a low- or middle-income Commonwealth country",
-      "Application made in one of the two yearly cycles: November to December, or March to April",
-    ],
-    link: 'https://www.acu.ac.uk/our-work/queen-elizabeth-commonwealth-scholarships/',
-  },
 
 
   {
