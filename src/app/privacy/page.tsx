@@ -119,7 +119,7 @@ export default function PrivacyPage() {
             path: '/privacy',
             name: 'Esquirely Privacy Policy',
             description:
-              'How Esquirely handles personal data under the Nigeria Data Protection Act 2023. Uploaded CV files are never stored; four processors (Supabase, Anthropic, Vercel, Brevo); no analytics, advertising or third-party tracking; data is never sold or passed to employers; accounts can be deleted self-serve with a 30 day grace period.',
+              'How Esquirely handles personal data under the Nigeria Data Protection Act 2023. Uploaded CV files are never stored; five processors (Supabase, Anthropic, Vercel, Brevo, Zoho); cookieless visit statistics only, with no advertising or third-party tracking; data is never sold or passed to employers; accounts can be deleted self-serve with a 30 day grace period.',
           }),
           breadcrumb([
             { name: 'Esquirely', path: '/' },
@@ -129,15 +129,15 @@ export default function PrivacyPage() {
       />
     <LegalPage
       title="Privacy"
-      updated="14 August 2026"
+      updated="13 November 2026"
       intro="What we collect, why we collect it, who else sees it, and what you can make us do about it. Written to be read, not to be survived."
       summary={{
         heading: 'Headnote',
         points: [
           'We collect your email, your account profile, and whatever you put in the tracker.',
           'Your CV file is never stored. What the tools write from it is: the review, and any CV you generate.',
-          'Four processors: Supabase, Anthropic, Vercel and Brevo.',
-          'No analytics, no advertising, no third-party trackers, and so no cookie banner.',
+          'Five processors: Supabase, Anthropic, Vercel, Brevo and Zoho.',
+          'Cookieless visit statistics only. No advertising and no third-party trackers, so no cookie banner.',
           'We do not sell your data or pass it to employers.',
           'You can delete your account yourself from the account page. It runs 30 days later, and signing in cancels it.',
         ],
@@ -212,12 +212,18 @@ export default function PrivacyPage() {
               it would need consent BEFORE it loads, and a banner would have to
               come with it. */}
           <li>
-            <strong>Cookies and browser storage.</strong> We use no advertising cookies, no
-            analytics, and no third-party trackers. What we do store is:
+            <strong>Cookies and browser storage.</strong> We use no advertising cookies and no
+            third-party trackers. We count visits with Vercel Web Analytics, which sets no cookies,
+            stores nothing on your device and does not follow you to other sites; it records the
+            pages viewed, the referring site, and your country and device type, and links in our
+            emails carry a tag saying which email they came from. Signed-in founder accounts are
+            excluded. What we do store is:
             {' '}a sign-in cookie, set by Supabase, which is what keeps you signed in and is deleted
             when you sign out; and a small amount of storage in your own browser that never reaches
             us. <code>esquirely:prefs</code> holds your answers to the questions on the home page
-            if you answer them without an account, and{' '}
+            if you answer them without an account, and they are copied to your profile once you sign
+            in; <code>esquirely:quiz-dismissed</code> records that you skipped those questions;
+            and{' '}
             <code>esquirely:notifications-seen</code>, <code>esquirely:notifications-read</code>,{' '}
             <code>esquirely:notifications-dismissed</code> and <code>esquirely:welcomed-at</code>,
             which only record which notifications you have already looked at, or deleted, so the
@@ -306,12 +312,17 @@ export default function PrivacyPage() {
             what you send to train its models.
           </li>
           <li>
-            <strong>Vercel</strong> for hosting and delivery. Handles technical logs.
+            <strong>Vercel</strong> for hosting and delivery, and for the cookieless visit
+            statistics described in clause 1. Handles technical logs.
           </li>
           <li>
             <strong>Brevo</strong> for the emails we send you, such as the welcome message. Receives
             your email address and your name so the message can be addressed and delivered, and
             nothing else. It does not receive your CV, your tool output or your tracker.
+          </li>
+          <li>
+            <strong>Zoho</strong> for our mailbox. Holds any email you send us, such as a question
+            or a request under clause 7.
           </li>
         </ul>
         <p>
@@ -323,7 +334,7 @@ export default function PrivacyPage() {
 
       <Clause n={5} heading="Data leaving Nigeria">
         <p>
-          Anthropic, Vercel and Brevo process data outside Nigeria. Where the destination has not been
+          Anthropic, Vercel, Brevo and Zoho process data outside Nigeria. Where the destination has not been
           recognised as providing adequate protection, we rely on the providers&rsquo; contractual data
           protection terms, which oblige them to protect your data to a comparable standard. You can
           ask us for details of those arrangements.
@@ -401,9 +412,9 @@ export default function PrivacyPage() {
 
       <Clause n={9} heading="Children">
         <p>
-          Esquirely is intended for law students and qualified lawyers, and is not directed at
-          children under 13. If you believe a child has given us personal data, tell us and we will
-          delete it.
+          Esquirely is for law students and lawyers. Under the Act, anyone under 18 needs the
+          consent of a parent or guardian before giving us personal data. If you believe a child has
+          given us personal data without that consent, tell us and we will delete it.
         </p>
       </Clause>
 
