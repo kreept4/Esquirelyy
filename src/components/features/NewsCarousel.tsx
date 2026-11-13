@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Timer } from 'lucide-react'
-import { KIND_LABEL, closingEndsAt, resolveClosing, type NewsItem } from '@/lib/news-data'
+import { closingEndsAt, resolveClosing, type NewsItem } from '@/lib/news-data'
 import { logoForEmployer } from '@/lib/firms-data'
 
 /**
@@ -354,12 +354,9 @@ export default function NewsCarousel({ items: given }: { items: NewsItem[] }) {
                          line. Two inline boxes of different heights sat on
                          different baselines. */
                       <span className="news-kind-row">
-                        <span className="grotesk-bold news-kind">{KIND_LABEL[item.kind]}</span>
                         <Countdown endsAt={closingEndsAt(item.closing.on)} />
                       </span>
-                    ) : (
-                      <span className="grotesk-bold news-kind">{KIND_LABEL[item.kind]}</span>
-                    )}
+                    ) : null}
                     <p className="display-black news-title">{item.title}</p>
                     <p className="grotesk-regular news-summary">{item.summary}</p>
                     {cta}

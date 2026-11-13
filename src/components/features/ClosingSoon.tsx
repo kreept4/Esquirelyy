@@ -213,8 +213,15 @@ function CardMark({ employer, logoUrl }: { employer: string; logoUrl?: string | 
   )
 }
 
+/* At most four, so the strip stays a strip. Reported on 13 November as
+   overshadowing the listings it sits above: it was a grid of tall cards with
+   an eligibility paragraph each, heavier than the board rows under it. The
+   full list is the board itself, sorted and filtered. */
+const MAX_ITEMS = 4
+
 export default function ClosingSoon({ rows }: { rows: Row[] }) {
-  const items = closingSoon(rows)
+  const all = closingSoon(rows)
+  const items = all.slice(0, MAX_ITEMS)
   /* Renders nothing when nothing is closing, rather than an empty state. An
      empty block is a promise the page did not keep, and the board underneath is
      already the complete answer. */
@@ -227,7 +234,7 @@ export default function ClosingSoon({ rows }: { rows: Row[] }) {
           <h2 id="closing-soon-h" className="grotesk-bold feat-opps-title">
             Closing soon
             <span className="feat-opps-count">
-              {items.length === 1 ? 'next 14 days' : `${items.length} in the next 14 days`}
+              {all.length === 1 ? 'next 14 days' : `${all.length} in the next 14 days`}
             </span>
           </h2>
         </div>
