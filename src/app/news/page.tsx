@@ -67,9 +67,6 @@ function Entry({ item, index }: { item: NewsItem; index: number }) {
 
   const body = (
     <>
-      <span className="grotesk-bold news-kind" data-kind={item.kind}>
-        {KIND_LABEL[item.kind]}
-      </span>
       <h3 className="display-black doc-row-title">{item.title}</h3>
       <p className="grotesk-regular doc-row-body">{item.summary}</p>
       {item.href && (

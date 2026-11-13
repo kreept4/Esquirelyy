@@ -8471,3 +8471,88 @@ select.sch-region {
 /* On an opportunity page it sits under the card, at the card's width and
    flush with its left edge. */
 .opp-page .tool-prompt { max-width: 46rem; box-sizing: border-box; }
+
+
+/* ============================================================
+   DEPTH AND WEIGHT, 13 November 2026
+   Reported: cards looked flat across the site, and the closing-soon strip on
+   the board outweighed the listings under it. Kept in one block at the end so
+   the change can be read, and reverted, as one decision.
+   ============================================================ */
+:root {
+  /* A contact shadow and a long soft one, the same construction as the
+     fliers' tickets: close and dark under the edge, wide and faint below. */
+  --depth-soft: 0 1px 2px rgba(36, 31, 22, 0.06), 0 10px 24px -10px rgba(36, 31, 22, 0.22);
+  --depth-lift: 0 2px 4px rgba(36, 31, 22, 0.08), 0 18px 34px -12px rgba(36, 31, 22, 0.3);
+  --depth-ambient: 0 24px 36px -16px rgba(36, 31, 22, 0.3);
+}
+
+/* Grids that were drawn as one sheet with 1px seams become separate cards. */
+.card-grid,
+.firm-related,
+.trk-work-grid {
+  gap: 1rem;
+  background: transparent;
+  border: none;
+}
+.card-grid > *,
+.firm-related-card,
+.trk-work-card {
+  background: #FFFDF8;
+  border: 1px solid #E6DFD3;
+  border-radius: var(--radius-panel);
+  box-shadow: var(--depth-soft);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.15s ease;
+}
+.card-grid > *:hover,
+.firm-related-card:hover,
+.trk-work-card:hover {
+  background: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: var(--depth-lift);
+}
+.acct-card {
+  border-radius: var(--radius-panel);
+  box-shadow: var(--depth-soft);
+}
+.acct-card-quiet { box-shadow: none; }
+
+/* Cards with the hard ink offset keep it, and gain the soft shadow under it,
+   so they sit above the page rather than on it. */
+.tool-card,
+.about-card { box-shadow: 6px 7px 0 #241F16, var(--depth-ambient); }
+.apply-card { box-shadow: 5px 6px 0 rgba(36, 31, 22, 0.82), var(--depth-ambient); }
+.news-card { box-shadow: 7px 9px 0 rgba(36, 31, 22, 0.9), var(--depth-ambient); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card-grid > *:hover,
+  .firm-related-card:hover,
+  .trk-work-card:hover { transform: none; }
+}
+
+/* Closing soon: a compact strip, not a second board. One line per item, no
+   eligibility paragraph and no type chip, a hairline instead of the ink
+   border and offset. */
+.feat-opps { padding: 1.25rem 0 0; }
+.feat-opps-list {
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.6rem;
+}
+.feat-opp-link {
+  gap: 0.35rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #E6DFD3;
+  border-radius: 10px;
+  background: #FFFDF8;
+  box-shadow: var(--depth-soft);
+}
+.feat-opp-link:hover { transform: translateY(-1px); box-shadow: var(--depth-lift); }
+.feat-opp-elig,
+.feat-opp-kind,
+.feat-opp-steps { display: none; }
+.feat-opp-name { font-size: 0.88rem; line-height: 1.25; }
+.feat-opp-org { font-size: 0.72rem; margin-bottom: 0.05rem; }
+.feat-opp-foot { padding-top: 0.15rem; }
+.feat-opp-top { align-items: center; }
+.feat-opp-mark { width: 2.1rem; height: 2.1rem; }
+.feat-opp-mark-logo { width: 3.4rem; height: 2.1rem; }
