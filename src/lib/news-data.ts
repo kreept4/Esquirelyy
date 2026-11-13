@@ -204,7 +204,7 @@ const ITEMS: NewsItem[] = [
     until: '2026-12-17',
     title: 'Six new scholarships are open',
     summary:
-      'The Prada Uzodimma grant pays Nigerian Law School tuition in full, with no first class required, and closes on 13 December. Also new: LLM funding from NYU, Georgetown, McGill and Edinburgh.',
+      'The Prada Uzodimma Law School Scholarship Grant, and LLM funding from NYU, Georgetown, McGill and Edinburgh. The first deadline is 13 December.',
     href: '/scholarships',
     cta: 'See the scholarships',
     media: {
