@@ -390,6 +390,38 @@ const SCHOLARSHIPS: Scholarship[] = [
     link: 'https://scholarship.nddc.gov.ng/',
   },
 
+  /* Added 13 November 2026 from Principle Legal Consult's own LinkedIn post
+   * (the firm runs the grant). Checked against principlelegalconsult.com/pusg
+   * and its terms page, Vanguard (February 2026, the Nigerian Law School DG's
+   * endorsement), the Guardian and ThisDay. The 13 December deadline is from
+   * the organiser's post; its site says only "application now open".
+   *
+   * Left out on purpose: the award amount, which no source publishes, and
+   * Imo indigeneity. The terms page lists it, but the PUSG page and the press
+   * describe a national grant; the Imo-only scheme is the separate PUIISG. */
+  {
+    slug: 'prada-uzodimma-law-school-scholarship-grant',
+    closesOn: '2026-12-13',
+    title: 'Prada Uzodimma Law School Scholarship Grant (PUSG) 2026',
+    provider: 'Principle Legal Consult',
+    logo: '/employer-logos/principle-legal-consult.png',
+    region: 'Nigeria',
+    level: 'Nigerian Law School (Bar Part II)',
+    funding: 'Nigerian Law School fees, paid directly to the school',
+    deadline: '13 December 2026',
+    status: 'open',
+    description:
+      "An annual grant for law graduates admitted to the Nigerian Law School who cannot afford the fees. It is run by Principle Legal Consult and endorsed by the Law School's Director-General. A first class is not required.",
+    eligibility: [
+      'Nigerian citizen',
+      'Admitted, or awaiting admission, to the Nigerian Law School',
+      'Financial need, confirmed by a sworn affidavit',
+      'Not currently holding any other scholarship',
+      'Applications only through the official PUSG website; late applications are not accepted',
+    ],
+    link: 'https://www.principlelegalconsult.com/pusg',
+  },
+
   /* Added 12 November 2026: five LLM awards from a post on X, each checked
    * against the school's own page before it went in.
    *
