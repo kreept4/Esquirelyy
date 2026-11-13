@@ -220,8 +220,7 @@ function CardMark({ employer, logoUrl }: { employer: string; logoUrl?: string | 
 const MAX_ITEMS = 4
 
 export default function ClosingSoon({ rows }: { rows: Row[] }) {
-  const all = closingSoon(rows)
-  const items = all.slice(0, MAX_ITEMS)
+  const items = closingSoon(rows).slice(0, MAX_ITEMS)
   /* Renders nothing when nothing is closing, rather than an empty state. An
      empty block is a promise the page did not keep, and the board underneath is
      already the complete answer. */
@@ -233,9 +232,6 @@ export default function ClosingSoon({ rows }: { rows: Row[] }) {
         <div className="feat-opps-head">
           <h2 id="closing-soon-h" className="grotesk-bold feat-opps-title">
             Closing soon
-            <span className="feat-opps-count">
-              {all.length === 1 ? 'next 14 days' : `${all.length} in the next 14 days`}
-            </span>
           </h2>
         </div>
 
