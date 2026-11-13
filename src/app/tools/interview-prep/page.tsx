@@ -341,7 +341,11 @@ export default function InterviewPrepPage() {
               <button type="button" className="tool-submit" style={{ marginBottom: '0.6rem' }} onClick={startPractice} disabled={checkingQuota}>
                 Practise it as a live interview <ArrowRight size={15} aria-hidden />
               </button>
-              <p className="grotesk-regular tool-note" style={{ marginTop: 0, marginBottom: '1.25rem' }}>
+              <p
+                className="grotesk-regular tool-note"
+                role={practiceNote ? 'alert' : undefined}
+                style={{ marginTop: 0, marginBottom: '1.25rem', ...(practiceNote ? { color: '#B91C1C', fontWeight: 600 } : {}) }}
+              >
                 {practiceNote || 'One mock interview a day, with feedback at the end.'}
               </p>
               <p className="grotesk-regular tool-note" style={{ marginTop: 0, marginBottom: '1.75rem' }}>
