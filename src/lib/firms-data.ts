@@ -2855,6 +2855,15 @@ export function logoForEmployer(employer?: string | null): string | null {
  *  so their marks live in /public/employer-logos. Drop a file in that folder
  *  and add the key here; the key is the normalised employer name. */
 const EMPLOYER_LOGOS: Record<string, string> = {
+  /* Law schools with scholarships on /scholarships, for the carousel slide
+     that points there. Same files the scholarship rows use. */
+  nyuschooloflaw: '/employer-logos/nyu-law.png',
+  nyulaw: '/employer-logos/nyu-law.png',
+  georgetownlaw: '/employer-logos/georgetown-law.png',
+  georgetownuniversitylawcenter: '/employer-logos/georgetown-law.png',
+  mcgillfacultyoflaw: '/employer-logos/mcgill.png',
+  mcgill: '/employer-logos/mcgill.png',
+  edinburghlawschool: '/employer-logos/edinburgh-law.png',
   /* J.O Fabunmi & Co, the firm behind the LGIC competition. Same reasoning as
      every entry here for why it is not in ALL_FIRMS: on the board because it is
      running something, not in the directory because nobody has researched it.
