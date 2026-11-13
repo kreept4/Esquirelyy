@@ -378,7 +378,7 @@ const SCHOLARSHIPS: Scholarship[] = [
    * the organiser's post; its site says only "application now open".
    *
    * Left out on purpose: the award amount, which no source publishes, and
-   * Imo indigeneity. The terms page lists it, but the PUSG page and the press
+   * Imo indigeneity. The terms page lists it, but the official PUSG text and the press
    * describe a national grant; the Imo-only scheme is the separate PUIISG. */
   {
     slug: 'prada-uzodimma-law-school-scholarship-grant',
@@ -388,19 +388,20 @@ const SCHOLARSHIPS: Scholarship[] = [
     logo: '/employer-logos/principle-legal-consult.png',
     region: 'Nigeria',
     level: 'Nigerian Law School (Bar Part II)',
-    funding: 'Nigerian Law School fees, paid directly to the school',
+    funding: 'Full Nigerian Law School tuition fees',
     deadline: '13 December 2026',
     status: 'open',
     description:
-      "An annual grant for law graduates admitted to the Nigerian Law School who cannot afford the fees. It is run by Principle Legal Consult and endorsed by the Law School's Director-General. A first class is not required.",
+      "An annual grant that pays the full Nigerian Law School tuition fees of selected applicants from across Nigeria who cannot afford them. It was started by Prada O. Uzodimma with Principle Legal Consult, and is endorsed by the Law School's Director-General. The portal opens at the same time as the Law School's own application portal.",
     eligibility: [
       'Nigerian citizen',
-      'Admitted, or awaiting admission, to the Nigerian Law School',
+      'Applying to the Nigerian Law School',
+      'No minimum grade. A first class is not required',
       'Financial need, confirmed by a sworn affidavit',
       'Not currently holding any other scholarship',
-      'Applications only through the official PUSG website; late applications are not accepted',
+      'Apply only through principlelegalconsult.com/scholarship. Late applications are not accepted',
     ],
-    link: 'https://www.principlelegalconsult.com/pusg',
+    link: 'https://www.principlelegalconsult.com/scholarship',
   },
 
   /* Added 12 November 2026: five LLM awards from a post on X, each checked
