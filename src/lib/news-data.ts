@@ -69,6 +69,12 @@ export interface NewsItem {
    */
   until?: string
   /**
+   * Optional. The first day (YYYY-MM-DD, Lagos) the slide is shown. For a
+   * slide that takes over a slot when another one's `until` runs out, so the
+   * swap happens on its own at midnight rather than on a deploy.
+   */
+  from?: string
+  /**
    * Optional. For a slide about a deadline: the day it closes, and the title
    * and summary written with `{when}` where the day goes.
    *
@@ -179,6 +185,31 @@ const ITEMS: NewsItem[] = [
     media: {
       type: 'logos',
       slugs: ['Stren & Blan Partners', 'Ikeyi Shittu & Co', 'Olajide Oyewole LLP', 'Olaniwun Ajayi LP'],
+    },
+  },
+
+  {
+    /**
+     * The scholarships added on 12 and 13 November, in the slot the 13
+     * November closings slide leaves. `from` is the day after that slide's
+     * `until`, so one replaces the other at midnight, Lagos time, with no
+     * deploy. `until` is 17 December, the last of the December deadlines
+     * (NYU); Georgetown and Edinburgh run later but are not why the slide is
+     * up. PUSG leads because it is the one most members can apply for.
+     */
+    slug: 'new-scholarships-2026-11',
+    kind: 'update',
+    date: '2026-11-14',
+    from: '2026-11-14',
+    until: '2026-12-17',
+    title: 'Six new scholarships, including Law School fees',
+    summary:
+      'The Prada Uzodimma grant pays Nigerian Law School tuition in full, with no first class required, and closes on 13 December. Also new: LLM funding from NYU, Georgetown, McGill and Edinburgh.',
+    href: '/scholarships',
+    cta: 'See the scholarships',
+    media: {
+      type: 'logos',
+      slugs: ['Principle Legal Consult', 'NYU School of Law', 'Georgetown Law', 'McGill Faculty of Law'],
     },
   },
 
@@ -350,7 +381,7 @@ const ITEMS: NewsItem[] = [
  */
 export function getNewsItems(now: Date = new Date()): NewsItem[] {
   const today = lagosToday(now)
-  return ITEMS.filter(i => !i.until || i.until >= today).sort((a, b) => {
+  return ITEMS.filter(i => (!i.until || i.until >= today) && (!i.from || i.from <= today)).sort((a, b) => {
     const ta = Date.parse(a.date)
     const tb = Date.parse(b.date)
     if (Number.isNaN(ta) && Number.isNaN(tb)) return 0
