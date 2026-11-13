@@ -8681,3 +8681,22 @@ select.sch-region {
   .job-row:not(.job-row-head):hover,
   .sch-row:not(.sch-row-head):hover { transform: none; }
 }
+
+
+/* Tracker: the firm's logo beside its name, when the firm is in the
+   directory. A small white plate so marks drawn on white sit cleanly on the
+   cream rows. */
+.trk-firm-line { display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
+.trk-firm-mark {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border: 1px solid #E6DFD3;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.trk-firm-mark img { display: block; max-width: 84%; max-height: 74%; width: auto; height: auto; object-fit: contain; }
+.trk-firm-mark-row { width: 3.4rem; height: 2.2rem; }
+.trk-firm-mark-small { width: 2.4rem; height: 1.6rem; border-radius: 6px; }

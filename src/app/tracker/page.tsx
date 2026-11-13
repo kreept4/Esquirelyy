@@ -12,6 +12,42 @@ import BrandLoader from '@/components/ui/BrandLoader'
 import { createClient } from '@/lib/supabase/client'
 import { stateOptions } from '@/lib/nigeria'
 import ToolPrompt from '@/components/features/ToolPrompt'
+import { firmForEmployer, firmLogo, ballBgForEmployer, logoForEmployer } from '@/lib/firms-data'
+
+/**
+ * The firm's logo beside the name a member typed, when that firm is in the
+ * directory. Members type names freely ("Templars Law", "Aluko and Oyebode
+ * LP"), so after an exact match this retries with the usual endings removed.
+ * No match, no logo: a guessed mark beside the wrong firm would be worse than
+ * none.
+ */
+const FIRM_SUFFIX = /\b(llp|lp|ltd|limited|plc|law firm|law|legal|solicitors|barristers|partners|chambers|associates|& co\.?|and co\.?|co\.?)\s*$/i
+function trackerFirm(name: string) {
+  let hit = firmForEmployer(name)
+  let s = name.trim()
+  for (let i = 0; !hit && i < 3; i++) {
+    const next = s.replace(FIRM_SUFFIX, '').replace(/[\s,&]+$/, '').trim()
+    if (!next || next === s) break
+    s = next
+    hit = firmForEmployer(s)
+  }
+  return hit
+}
+
+function FirmMark({ name, size = 'row' }: { name: string; size?: 'row' | 'small' }) {
+  /* The directory first; then the employers the board has a curated mark
+     for (Slingstone, Pentagon Partners, AVA and the like), which are not in
+     the directory but whose logos are already on the site. */
+  const firm = trackerFirm(name)
+  const src = (firm ? firmLogo(firm) : null) || logoForEmployer(name)
+  if (!src) return null
+  const bg = ballBgForEmployer(firm ? firm.name : name)
+  return (
+    <span className={`trk-firm-mark trk-firm-mark-${size}`} style={bg ? { background: bg } : undefined} aria-hidden>
+      <img src={src} alt="" loading="lazy" decoding="async" />
+    </span>
+  )
+}
 
 /**
  * The tracker.
@@ -232,7 +268,10 @@ function LedgerRow({
         </span>
 
         <span className="trk-row-main">
-          <span className="grotesk-bold trk-firm">{app.firm}</span>
+          <span className="trk-firm-line">
+            <FirmMark name={app.firm} />
+            <span className="grotesk-bold trk-firm">{app.firm}</span>
+          </span>
           <span className="grotesk-regular trk-role">{app.role || 'Speculative application'}</span>
           <span className="trk-meta">
             {app.location && (
@@ -698,7 +737,10 @@ export default function TrackerPage() {
                           {d.daysLeft === 0 ? 'Today' : `${d.daysLeft}d`}
                         </span>
                         <span className="trk-next-main">
-                          <span className="grotesk-bold trk-next-firm">{a.firm}</span>
+                          <span className="trk-firm-line">
+                            <FirmMark name={a.firm} size="small" />
+                            <span className="grotesk-bold trk-next-firm">{a.firm}</span>
+                          </span>
                           <span className="grotesk-regular trk-next-role">{a.role || 'Speculative application'}</span>
                         </span>
                         <span className="grotesk-regular trk-next-date">{d.text}</span>
