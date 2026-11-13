@@ -8779,3 +8779,11 @@ select.sch-region {
 .mock-answer-review { font-size: 0.9rem; line-height: 1.6; color: var(--ink); }
 .mock-answer-review p + p { margin-top: 0.25rem; }
 .mock-stronger { font-style: italic; color: #3A342A; }
+
+.mock-mic {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.55rem 0.9rem; border-radius: 999px;
+  border: 1.5px solid var(--ink); background: #FFFFFF; color: var(--ink);
+  font-size: 0.82rem; font-weight: 600; cursor: pointer;
+}
+.mock-mic[data-on] { background: #B42318; border-color: #B42318; color: #FFFFFF; }

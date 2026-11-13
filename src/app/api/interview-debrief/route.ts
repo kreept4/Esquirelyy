@@ -1,4 +1,5 @@
-import { requireUserWithQuota } from '@/lib/ai-quota'
+import { requireUserWithQuota, quotaRemaining, refundLastUse } from '@/lib/ai-quota'
+import { requireUser } from '@/lib/api-auth'
 import { NextRequest, NextResponse } from 'next/server'
 import { askClaude, parseJSON, friendlyError } from '@/lib/ai'
 import { HOUSE_STYLE } from '@/lib/house-style'
@@ -21,8 +22,16 @@ type Turn = { question: string; answer: string; followUp?: string; followUpAnswe
 const MAX_TURNS = 10
 const MAX_CHARS = 2500
 
+/** Whether this member has today's mock interview left. Spends nothing. */
+export async function GET() {
+  const auth = await requireUser()
+  if (auth.error) return auth.error
+  const remaining = await quotaRemaining(auth.user, 'interview-debrief')
+  return NextResponse.json({ remaining: Number.isFinite(remaining) ? remaining : 99 })
+}
+
 export async function POST(req: NextRequest) {
-  const { error: unauthorized } = await requireUserWithQuota('interview-debrief')
+  const { user, error: unauthorized } = await requireUserWithQuota('interview-debrief')
   if (unauthorized) return unauthorized
 
   try {
@@ -30,6 +39,7 @@ export async function POST(req: NextRequest) {
     const turns: Turn[] = Array.isArray(body.turns) ? body.turns.slice(0, MAX_TURNS) : []
     const answered = turns.filter(t => t && typeof t.question === 'string' && typeof t.answer === 'string' && t.answer.trim())
     if (!answered.length) {
+      await refundLastUse(user.id, 'interview-debrief').catch(() => {})
       return NextResponse.json({ error: 'Answer at least one question first.' }, { status: 400 })
     }
 
@@ -40,7 +50,7 @@ export async function POST(req: NextRequest) {
     const cut = (s: unknown) => String(s || '').slice(0, MAX_CHARS)
 
     const system =
-      'You are ' + who + '. You have just finished a practice interview with a candidate and are giving them an honest debrief, the way a respected senior figure would for someone they want to see succeed: constructive, specific and not soft. Judge substance, not confidence. Credit real evidence; name assertions and generic claims as such. If an answer did not address the question, say so plainly. Never invent facts the candidate did not state. ' +
+      'You are ' + who + '. You have just finished a practice interview with a candidate and are giving them an honest debrief, the way a respected senior figure would for someone they want to see succeed: constructive, specific and not soft. Judge substance, not confidence. Credit real evidence; name assertions and generic claims as such. If an answer did not address the question, say so plainly. Never invent facts the candidate did not state. The interview opens with "tell me about yourself", judged as a two-minute pitch, and closes with "do you have any questions for us?", where a question that shows the candidate researched the employer is a strong close and having none is a weak one. ' +
       'Return ONLY valid JSON, no markdown, no code fences, in this exact shape: { "score": number, "summary": string, "strengths": [string], "priorities": [string], "answers": [{ "verdict": string, "improve": string, "strongerAnswer": string }] }. ' +
       'score is 1 to 10 for the interview as a whole, not a courtesy score. summary is two sentences on how the interview went overall. strengths has one to three short points. priorities has one to three specific things to work on before the real interview, most important first. answers has one entry per question in the order given: verdict is one sentence on how that answer (and its follow-up, if there was one) landed; improve is one specific, actionable sentence; strongerAnswer is a short first-person example of a better answer using only details the candidate gave, or an empty string if the answer was already strong.\n\n' +
       HOUSE_STYLE
@@ -56,6 +66,8 @@ export async function POST(req: NextRequest) {
     const text = await askClaude({ system, prompt, maxTokens: 2600 })
     return NextResponse.json(parseJSON(text))
   } catch (err: any) {
+    /* Our failure, not the member's: hand the day's interview back. */
+    await refundLastUse(user.id, 'interview-debrief').catch(() => {})
     const { error, status } = friendlyError(err, 'interview')
     return NextResponse.json({ error }, { status })
   }
