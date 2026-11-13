@@ -8,6 +8,7 @@ import ToolShell from '../ToolShell'
 import BrandLoader from '@/components/ui/BrandLoader'
 
 import { INTERVIEWERS, interviewerLabel } from '@/lib/interviewers'
+import MockInterview from './MockInterview'
 
 const AREAS = [
   'Corporate/M&A','Dispute Resolution','Banking & Finance',
@@ -30,6 +31,8 @@ interface Question {
   question: string
   category: string
   whyTheyAsk: string
+  /** Two follow-ups for the mock interview. Absent on sessions from before it. */
+  probes?: string[]
 }
 
 interface SessionResult {
@@ -61,6 +64,7 @@ export default function InterviewPrepPage() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<SessionResult|null>(null)
   const [expandedQ, setExpandedQ] = useState<string|null>(null)
+  const [practising, setPractising] = useState(false)
   const [error, setError] = useState('')
   const [showHistory, setShowHistory] = useState(false)
   const [history, setHistory] = useState<HistoryItem[]>([])
@@ -100,6 +104,8 @@ export default function InterviewPrepPage() {
       inferredRole: item.target_role || 'CV-based session',
       questions: item.questions,
     })
+    if (INTERVIEWERS.some(i => i.id === item.interviewer_persona)) setPersona(item.interviewer_persona)
+    setPractising(false)
     setShowHistory(false)
   }
 
@@ -155,6 +161,7 @@ export default function InterviewPrepPage() {
 
   const handleReset = () => {
     setResult(null)
+    setPractising(false)
     setCvFile(null)
     setTargetRole('')
     setPracticeArea('')
@@ -300,6 +307,18 @@ export default function InterviewPrepPage() {
             </div>
 
             <div>
+              {practising ? (
+                <MockInterview
+                  questions={result.questions}
+                  interviewer={result.interviewerPersona}
+                  persona={persona}
+                  targetRole={result.inferredRole || targetRole}
+                  onExit={() => setPractising(false)}
+                />
+              ) : (<>
+              <button type="button" className="tool-submit" style={{ marginBottom: '1.25rem' }} onClick={() => setPractising(true)}>
+                Practise it as a live interview <ArrowRight size={15} aria-hidden />
+              </button>
               <p className="grotesk-regular tool-note" style={{ marginTop: 0, marginBottom: '1.75rem' }}>
                 Tap a question to see why it gets asked. These are AI-generated, so adapt them to
                 your real background rather than rehearsing them as written.
@@ -337,6 +356,7 @@ export default function InterviewPrepPage() {
               <button type="button" onClick={handleReset} className="tool-restart">
                 Start a new session <ArrowRight size={14} aria-hidden />
               </button>
+              </>)}
             </div>
           </section>
         )}

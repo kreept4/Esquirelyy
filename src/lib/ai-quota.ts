@@ -40,6 +40,10 @@ export const AI_LIMITS = {
      practice session, so a single legitimate sitting is a dozen calls. It is
      also the cheapest route on the list at 1,024 tokens. */
   'interview-feedback': 40,
+  /* One call at the end of a mock interview, reviewing the whole transcript.
+     The interview itself makes no calls: its follow-ups are written by the
+     question generation that started the session. */
+  'interview-debrief': 6,
 } as const
 
 export type AiRoute = keyof typeof AI_LIMITS
@@ -107,6 +111,7 @@ const MIN_SECONDS_BETWEEN: Record<AiRoute, number> = {
   'cover-letter': 20,
   'interview-prep': 20,
   'interview-feedback': 5,
+  'interview-debrief': 30,
 }
 
 /** Friendly name for the message the user actually sees. */
@@ -116,6 +121,7 @@ const ROUTE_NAMES: Record<AiRoute, string> = {
   'cover-letter': 'cover letters',
   'interview-prep': 'interview prep sessions',
   'interview-feedback': 'answer reviews',
+  'interview-debrief': 'mock interview reviews',
 }
 
 /**

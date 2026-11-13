@@ -8738,3 +8738,44 @@ select.sch-region {
 }
 .trk-picker-item[data-active] { background: rgba(251, 191, 36, 0.22); }
 .trk-picker-add { border-top: 1px solid #EDE9E2; margin-top: 0.25rem; padding-top: 0.6rem; }
+
+
+/* Interview prep: the mock interview. */
+.mock { display: flex; flex-direction: column; gap: 1.1rem; }
+.mock-lines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.mock-line {
+  max-width: 44rem;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.mock-line-them {
+  align-self: flex-start;
+  background-color: #FFF8E5;
+  background-image: var(--gloss);
+  border: 2px solid var(--ink);
+  box-shadow: var(--gloss-edge), 3px 4px 0 var(--ink);
+}
+.mock-line-you {
+  align-self: flex-end;
+  background: #FFFFFF;
+  border: 1px solid #E6DFD3;
+  box-shadow: var(--depth-soft);
+  white-space: pre-wrap;
+}
+.mock-who { display: block; font-size: 0.72rem; color: var(--ink-muted); margin-bottom: 0.25rem; }
+.mock-answer { display: flex; flex-direction: column; gap: 0.75rem; }
+.mock-input { min-height: 7rem; }
+.mock-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.mock-debrief { display: flex; flex-direction: column; gap: 0.6rem; }
+.mock-score { font-size: 3rem; line-height: 1; color: var(--ink); }
+.mock-score span { font-size: 1.1rem; color: var(--ink-muted); margin-left: 0.2rem; }
+.mock-summary { font-size: 0.98rem; line-height: 1.65; color: var(--ink); }
+.mock-h { font-size: 0.95rem; color: var(--ink); margin-top: 0.75rem; }
+.mock-list { margin: 0; padding-left: 1.15rem; font-size: 0.9rem; line-height: 1.6; color: var(--ink); }
+.mock-answers { margin: 0; padding-left: 1.15rem; display: flex; flex-direction: column; gap: 0.9rem; }
+.mock-answer-review { font-size: 0.9rem; line-height: 1.6; color: var(--ink); }
+.mock-answer-review p + p { margin-top: 0.25rem; }
+.mock-stronger { font-style: italic; color: #3A342A; }
