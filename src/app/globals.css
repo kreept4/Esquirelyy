@@ -8700,3 +8700,7 @@ select.sch-region {
 .trk-firm-mark img { display: block; max-width: 84%; max-height: 74%; width: auto; height: auto; object-fit: contain; }
 .trk-firm-mark-row { width: 3.4rem; height: 2.2rem; }
 .trk-firm-mark-small { width: 2.4rem; height: 1.6rem; border-radius: 6px; }
+
+/* Interview prep: the interviewer choice, grouped by setting. */
+.tool-persona-group + .tool-persona-group { margin-top: 0.85rem; }
+.tool-persona-setting { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 0.4rem; }

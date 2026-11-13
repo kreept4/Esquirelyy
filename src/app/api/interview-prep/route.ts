@@ -4,6 +4,7 @@ import { extractText as extractPdfText, getDocumentProxy } from 'unpdf'
 import mammoth from 'mammoth'
 import { askClaude, parseJSON, friendlyError } from '@/lib/ai'
 import { HOUSE_STYLE } from '@/lib/house-style'
+import { INTERVIEWERS } from '@/lib/interviewers'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -59,6 +60,7 @@ export async function POST(req: NextRequest) {
     let careerStage = ''
     let practiceArea = ''
     let cvText = ''
+    let interviewerId = ''
 
     if (contentType.includes('multipart/form-data')) {
       const formData = await req.formData()
@@ -67,6 +69,7 @@ export async function POST(req: NextRequest) {
       employer = (formData.get('employer') as string) || ''
       careerStage = (formData.get('careerStage') as string) || ''
       practiceArea = (formData.get('practiceArea') as string) || ''
+      interviewerId = (formData.get('persona') as string) || ''
 
       if (file) {
         if (file.size > 5 * 1024 * 1024) {
@@ -83,15 +86,19 @@ export async function POST(req: NextRequest) {
       employer = body.employer || ''
       careerStage = body.careerStage || ''
       practiceArea = body.practiceArea || ''
+      interviewerId = body.persona || ''
     }
 
     if (!targetRole && !cvText) {
       return NextResponse.json({ error: 'Please provide a target role or upload your CV.' }, { status: 400 })
     }
 
-    const persona = getPersona(targetRole)
+    /* The interviewer the member chose. The role-title guess is only the
+       fallback for a request that names none. */
+    const chosen = INTERVIEWERS.find(i => i.id === interviewerId)
+    const persona = chosen ? chosen.brief : getPersona(targetRole)
 
-    const systemPrompt = 'You are ' + persona + ', an elite recruitment strategist, not a generic question generator. Before writing a single question, work out silently: what does this employer actually need, why does this role exist, what would make this specific candidate fail, and which claims on their CV deserve to be tested rather than taken at face value. You have interviewed hundreds of candidates for competitive Nigerian and international roles and you know exactly what people in this position actually ask, including technical or practice-area specific questions, situational and ethics questions, and standard Nigerian market context like NYSC, call to bar, or relevant certifications depending on the field. If given a CV, infer the most relevant target role, practice area, and seniority from it. Prioritize questions that arise from specifics in their actual background over generic ones like "tell me about yourself": if they list an achievement, question whether they understand it, not just what it was; if they list a practice area or a project, question their ownership and judgment in it. Calibrate difficulty to seniority, a law student should not be asked partner-level judgment questions and a senior candidate should not be handed entry-level ones. Order the six questions on a rough progression from background and motivation, through competency and role-specific technical depth, to a harder situational, ethical, or pressure question that a skeptical interviewer would actually ask. If the CV shows a gap, a career transition, or an unusual path, include one question that gives the candidate a fair, direct chance to address it rather than avoiding it. Never invent facts about the employer that were not given to you; work from the role and industry context supplied. Return ONLY valid JSON with this exact shape, no markdown, no code fences: { "interviewerPersona": string, "inferredRole": string, "questions": [{ "id": string, "question": string, "category": string, "whyTheyAsk": string }] }. The interviewerPersona field should be a short phrase describing who is asking, e.g. "Senior Partner, Corporate Practice" or "HR Manager, Talent Acquisition". The inferredRole field should state the role you are targeting the questions at, whether given directly or inferred from the CV. Generate exactly 6 questions. Mix categories: include at least one behavioural, one technical or role-specific, one situational or ethics-based, and one about motivation or fit. The whyTheyAsk field should be one sharp sentence naming the underlying competency or concern the interviewer is actually testing, not a restatement of the question.\n\n' + HOUSE_STYLE
+    const systemPrompt = 'You are ' + persona + '. You are an experienced interviewer, not a generic question generator. Before writing a single question, work out silently: what does this employer actually need, why does this role exist, what would make this specific candidate fail, and which claims on their CV deserve to be tested rather than taken at face value. You have interviewed hundreds of candidates for competitive Nigerian and international roles and you know exactly what people in this position actually ask, including technical or practice-area specific questions, situational and ethics questions, and standard Nigerian market context like NYSC, call to bar, or relevant certifications depending on the field. If given a CV, infer the most relevant target role, practice area, and seniority from it. Prioritize questions that arise from specifics in their actual background over generic ones like "tell me about yourself": if they list an achievement, question whether they understand it, not just what it was; if they list a practice area or a project, question their ownership and judgment in it. Calibrate difficulty to seniority, a law student should not be asked partner-level judgment questions and a senior candidate should not be handed entry-level ones. Order the six questions on a rough progression from background and motivation, through competency and role-specific technical depth, to a harder situational, ethical, or pressure question that a skeptical interviewer would actually ask. If the CV shows a gap, a career transition, or an unusual path, include one question that gives the candidate a fair, direct chance to address it rather than avoiding it. Never invent facts about the employer that were not given to you; work from the role and industry context supplied. Return ONLY valid JSON with this exact shape, no markdown, no code fences: { "interviewerPersona": string, "inferredRole": string, "questions": [{ "id": string, "question": string, "category": string, "whyTheyAsk": string }] }. The interviewerPersona field should be a plain job title for who is asking, such as "HR Manager", "Partner, Dispute Resolution" or "Head of Legal". Never a personal name, and nothing grander than the person who would really run this round. Keep every question inside what this interviewer\'s round actually covers. The inferredRole field should state the role you are targeting the questions at, whether given directly or inferred from the CV. Generate exactly 6 questions. Mix categories: include at least one behavioural, one technical or role-specific, one situational or ethics-based, and one about motivation or fit. The whyTheyAsk field should be one sharp sentence naming the underlying competency or concern the interviewer is actually testing, not a restatement of the question.\n\n' + HOUSE_STYLE
 
     let userPrompt = ''
     if (cvText) {

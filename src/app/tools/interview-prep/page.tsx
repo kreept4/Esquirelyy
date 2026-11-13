@@ -7,12 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import ToolShell from '../ToolShell'
 import BrandLoader from '@/components/ui/BrandLoader'
 
-const PERSONAS = [
-  { id: 'senior_partner', label: 'Senior partner', desc: 'Probing, precedent-focused' },
-  { id: 'hr_director', label: 'HR director', desc: 'Competency and culture fit' },
-  { id: 'magic_circle', label: 'Magic Circle associate', desc: 'Technical, commercial awareness' },
-  { id: 'nigerian_firm', label: 'Nigerian firm partner', desc: 'Local market, client handling' },
-]
+import { INTERVIEWERS, interviewerLabel } from '@/lib/interviewers'
 
 const AREAS = [
   'Corporate/M&A','Dispute Resolution','Banking & Finance',
@@ -61,7 +56,7 @@ export default function InterviewPrepPage() {
   const [mode, setMode] = useState<'role'|'cv'>('role')
   const [targetRole, setTargetRole] = useState('')
   const [practiceArea, setPracticeArea] = useState('')
-  const [persona, setPersona] = useState('senior_partner')
+  const [persona, setPersona] = useState('law_hr')
   const [cvFile, setCvFile] = useState<File|null>(null)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<SessionResult|null>(null)
@@ -101,7 +96,7 @@ export default function InterviewPrepPage() {
 
   function loadFromHistory(item: HistoryItem) {
     setResult({
-      interviewerPersona: PERSONAS.find(p => p.id === item.interviewer_persona)?.label || item.interviewer_persona,
+      interviewerPersona: interviewerLabel(item.interviewer_persona),
       inferredRole: item.target_role || 'CV-based session',
       questions: item.questions,
     })
@@ -258,20 +253,25 @@ export default function InterviewPrepPage() {
 
                 <div className="tool-row">
                   <label className="tool-label">Who is interviewing you</label>
-                  <div className="tool-personas">
-                    {PERSONAS.map(p => (
-                      <button
-                        key={p.id}
-                        type="button"
-                        onClick={() => setPersona(p.id)}
-                        className="tool-persona"
-                        data-active={persona === p.id}
-                      >
-                        <span className="grotesk-bold tool-persona-name">{p.label}</span>
-                        <span className="grotesk-regular tool-persona-desc">{p.desc}</span>
-                      </button>
-                    ))}
-                  </div>
+                  {(['Law firm', 'Company or organisation'] as const).map(setting => (
+                    <div key={setting} className="tool-persona-group">
+                      <p className="grotesk-regular tool-persona-setting">{setting}</p>
+                      <div className="tool-personas">
+                        {INTERVIEWERS.filter(p => p.setting === setting).map(p => (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => setPersona(p.id)}
+                            className="tool-persona"
+                            data-active={persona === p.id}
+                          >
+                            <span className="grotesk-bold tool-persona-name">{p.label}</span>
+                            <span className="grotesk-regular tool-persona-desc">{p.desc}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 {error && (
@@ -365,7 +365,7 @@ export default function InterviewPrepPage() {
                 <button key={h.id} onClick={() => loadFromHistory(h)} className="tool-drawer-item">
                   <p className="grotesk-bold tool-drawer-item-title">{h.target_role || 'CV-based session'}</p>
                   <p className="grotesk-regular tool-drawer-item-meta">
-                    {PERSONAS.find(p => p.id === h.interviewer_persona)?.label || h.interviewer_persona} · {new Date(h.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    {interviewerLabel(h.interviewer_persona)} · {new Date(h.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </p>
                 </button>
               ))}
