@@ -1,6 +1,6 @@
 import Footer from '@/components/layout/Footer'
 import ScholarshipsClient from './ScholarshipsClient'
-import { allScholarships } from '@/lib/scholarships-data'
+import { liveScholarships } from '@/lib/scholarships-live'
 
 export const metadata = {
   title: 'Scholarships',
@@ -17,17 +17,19 @@ export const metadata = {
  * following Tuesday would still read "Upcoming" until an unrelated deploy
  * happened to rebuild it.
  *
- * An hour is far shorter than anything that changes here and costs nothing to
- * render: the data is a TypeScript array, so a regeneration is a map over ten
- * objects with no network call behind it. A window opening on the 8th is right
+ * An hour is far shorter than anything that changes here. Since 13 November
+ * 2026 the list comes from the `scholarships` table (lib/scholarships-live.ts),
+ * one small query per regeneration, and a save in /admin clears this page at
+ * once rather than waiting for the hour. A window opening on the 8th is right
  * within an hour of midnight in Lagos rather than whenever somebody next ships.
  */
 export const revalidate = 3600
 
-export default function ScholarshipsPage() {
+export default async function ScholarshipsPage() {
+  const scholarships = await liveScholarships()
   return (
     <div>
-      <ScholarshipsClient scholarships={allScholarships()} />
+      <ScholarshipsClient scholarships={scholarships} />
       <Footer />
     </div>
   )
