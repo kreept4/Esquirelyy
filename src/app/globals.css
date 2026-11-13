@@ -8628,3 +8628,56 @@ select.sch-region {
   box-shadow: var(--gloss-edge), var(--depth-soft);
 }
 .feat-opp-link:hover { box-shadow: var(--gloss-edge), var(--depth-lift); }
+
+
+/* ============================================================
+   THE BOARD ROWS AS CARDS, 13 November 2026
+   Reported from a phone: the listings "look like they are just on a canvas",
+   ruled lines on the page ground under a header and a closing-soon strip that
+   both had edges and depth. Each row is now a card in the same family as the
+   headers: ink outline, hard offset, sheen, soft shadow. The column headings
+   stay as plain type above them.
+   ============================================================ */
+.jobs-board {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.job-row:not(.job-row-head),
+.sch-row:not(.sch-row-head) {
+  background-color: #FFFDF6;
+  background-image: var(--gloss);
+  border: 2px solid var(--ink);
+  border-radius: var(--family-radius);
+  box-shadow: var(--gloss-edge), 4px 5px 0 var(--ink), var(--depth-soft);
+  padding-left: 1.1rem;
+  padding-right: 1.1rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.15s ease;
+}
+.job-row:not(.job-row-head):hover,
+.sch-row:not(.sch-row-head):hover {
+  background-color: #FFFFFF;
+  transform: translate(-1px, -2px);
+  box-shadow: var(--gloss-edge), 6px 7px 0 var(--ink), var(--depth-lift);
+}
+.job-row-head,
+.sch-row-head {
+  border-bottom: none;
+  padding-bottom: 0.2rem;
+  /* The cards' padding plus their 2px outline, so each heading sits over its
+     column rather than a few pixels to the left of it. */
+  padding-left: calc(1.1rem + 2px);
+  padding-right: calc(1.1rem + 2px);
+}
+@media (max-width: 640px) {
+  .job-row:not(.job-row-head),
+  .sch-row:not(.sch-row-head) {
+    box-shadow: var(--gloss-edge), 3px 4px 0 var(--ink), var(--depth-soft);
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .job-row:not(.job-row-head):hover,
+  .sch-row:not(.sch-row-head):hover { transform: none; }
+}
