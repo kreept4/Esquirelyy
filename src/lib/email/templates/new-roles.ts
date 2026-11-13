@@ -142,6 +142,12 @@ const attr = (u: string) => u.replace(/&/g, '&amp;').replace(/"/g, '&quot;')
    both places, and fixing it in one would have left the other wrong. */
 const NOTICE_OWNER = noticePhrase()
 
+/* Added 13 November 2026, after the weekly mailing landed in Gmail's
+   Promotions tab for members. One line under the sign-off on every send, in
+   plain text and HTML alike. ASCII only, as the plain-text part requires. */
+const INBOX_TIP =
+  "If this landed in Promotions or Spam, move it to your Primary inbox so you don't miss closing dates."
+
 /* _RETIRED_ROLES lived here: a copy of the two roles from the drop before last,
    kept "for reference" after the entries moved to lib/new-roles.ts. It was dead
    the day it was written — nothing read it — and by the time it was deleted it
@@ -575,6 +581,8 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
     'Co-founders, Esquirely',
     '',
     ...(mailing?.notice ? [`${mailing.notice.text} ${mailing.notice.linkLabel}: ${siteUrl}${mailing.notice.href}`, ''] : []),
+    INBOX_TIP,
+    '',
     `Esquirely. ${siteUrl}`,
   ].join('\n')
 
@@ -927,6 +935,7 @@ export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl:
                 ? `<p class="es-t-muted" style="margin:22px 0 4px 0;font-size:12.5px;line-height:1.6;color:${MUTED};">${mailing.notice.text} <a class="es-t-ink" href="${attr(`${siteUrl}${mailing.notice.href}`)}" style="color:${INK};font-weight:600;text-decoration:underline;">${mailing.notice.linkLabel}</a></p>`
                 : ''
             }
+            <p class="es-t-muted" style="margin:${mailing?.notice ? '8px' : '22px'} 0 4px 0;font-size:12.5px;line-height:1.6;color:${MUTED};">${INBOX_TIP}</p>
           </td>
         </tr>
 
