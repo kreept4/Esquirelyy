@@ -23,5 +23,10 @@
     "src": "/email/splash/ororun.png",
     "width": 224,
     "height": 118
+  },
+  "/employer-logos/chapel-hill-denham.png": {
+    "src": "/email/splash/chapel-hill-denham.png",
+    "width": 205,
+    "height": 118
   }
 }

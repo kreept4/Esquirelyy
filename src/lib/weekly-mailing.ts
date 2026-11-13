@@ -73,31 +73,44 @@ const SCHOLARSHIPS: MailScholarship[] = [
 
 /** The roles drop's entries, with the employer's name in ASCII. */
 const ascii = (t: string) => t.replace(/Órọrùn/g, 'Ororun')
-const ENTRIES: MailEntry[] = ROLE_ENTRIES.map(r => ({
-  slug: r.slug,
-  employer: ascii(r.employer),
-  employerShort: ascii(r.employerShort),
-  title: r.title,
-  line: ascii(r.line),
-  prep: r.prep,
-  deadline: r.deadline,
-}))
+const ENTRIES: MailEntry[] = [
+  ...ROLE_ENTRIES.map(r => ({
+    slug: r.slug,
+    employer: ascii(r.employer),
+    employerShort: ascii(r.employerShort),
+    title: r.title,
+    line: ascii(r.line),
+    prep: r.prep,
+    deadline: r.deadline,
+  })),
+  /* Added to the board on the evening of 9 November, hours after that day's
+     roles email went out, so members were never told about it. */
+  {
+    slug: 'chapel-hill-denham-2027-management-development-programme',
+    employer: 'Chapel Hill Denham',
+    employerShort: 'Chapel Hill Denham',
+    title: '2027 Management Development Programme',
+    line: "A full-time graduate programme in Lagos that accepts law graduates with a 2:1 or First. Trainees rotate through investment banking, securities trading and investment management. Apply online by 30 November.",
+    prep: 'apply',
+    deadline: '2026-11-30',
+  },
+]
 
 export const WEEKLY_MAILING = {
   id: 'weekly-2026-11-16',
   entries: ENTRIES,
   scholarships: SCHOLARSHIPS,
   scholarshipsLabel: 'New LLM scholarships',
-  rolesLabel: 'New internships',
-  rolesLinkLabel: 'See both on the board',
+  rolesLabel: 'New roles',
+  rolesLinkLabel: 'See all three on the board',
   rolesHref: `/jobs?roles=${ENTRIES.map(e => e.slug).join(',')}`,
-  /** 55 characters, inside what every client shows. */
-  subject: 'Five new LLM scholarships, and two research internships',
+  /** 46 characters, inside what every client shows. */
+  subject: 'Five new LLM scholarships and three new roles',
   /** The member's first name goes after it, as in the roles email. */
-  headline: 'Five new LLM scholarships and two research internships',
+  headline: 'Five new LLM scholarships and three new roles',
   /** The hidden preview line in the inbox list. */
   preheader:
-    'New LLM funding from NYU, Georgetown, McGill and Edinburgh, and two research internships at Ororun. Three deadlines fall in December.',
+    "New LLM funding from NYU, Georgetown, McGill and Edinburgh, two research internships at Ororun, and Chapel Hill Denham's graduate programme.",
   /** The paragraph under the cards. */
   footnote:
     "Every listing has been checked against the provider's own page. Three scholarships close in December.",
