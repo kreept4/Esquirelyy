@@ -90,7 +90,7 @@ export async function saveJob(input: JobInput): Promise<ActionResult> {
     const applyEmail = optional(input.apply_email)
     if (!applyUrl && !applyEmail) return fail('Add an apply link or an apply email.')
     if (applyUrl && !isUrl(applyUrl)) return fail('The apply link must start with http:// or https://.')
-    if (applyEmail && !/^\S+@\S+\.\S+$/.test(applyEmail)) return fail('The apply email does not look right.')
+    if (applyEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(applyEmail)) return fail('The apply email does not look right.')
     const deadline = date(input.deadline)
 
     const row = {
