@@ -1,3 +1,4 @@
+import { firstNameOf } from '@/lib/email/first-name'
 /**
  * The World Bank Group legal internship, closing today.
  *
@@ -48,7 +49,7 @@ export const WBG = {
 }
 
 export function wbgDeadlineEmail({ name, siteUrl }: { name?: string; siteUrl: string }) {
-  const first = (name || '').trim().split(/\s+/)[0]
+  const first = firstNameOf(name)
   const greeting = first ? `${first}, this one closes today.` : 'This one closes today.'
   /* Names the institution. "Closing today" on its own is the shape of every
      marketing email anybody has ever ignored; whose internship it is decides

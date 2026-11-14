@@ -26,6 +26,7 @@ import { toolHref } from '@/lib/tool-links'
 import { tagHtmlLinks, tagTextLinks } from '@/lib/email/campaign-links'
 import LOGO_PLATES from '@/lib/email/logo-plates.json'
 import SPLASH_PLATES from '@/lib/email/splash-plates.json'
+import { firstNameOf } from '@/lib/email/first-name'
 
 /**
  * The new roles announcement.
@@ -227,7 +228,7 @@ export function newRolesEmail({ name, siteUrl }: { name?: string; siteUrl: strin
 }
 
 export function rolesEmail({ name, siteUrl, mailing }: { name?: string; siteUrl: string; mailing?: MailingCopy }) {
-  const first = (name || '').trim().split(/\s+/)[0]
+  const first = firstNameOf(name)
   const ROLES: readonly MailEntry[] = mailing ? mailing.entries : (ROLE_ENTRIES as readonly MailEntry[])
   /* THE SHORT FIRM NAMES, not the full ones. The headline is set at 26px and
      the subject line is cut off around 70 characters in most clients, and

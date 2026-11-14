@@ -1,3 +1,4 @@
+import { firstNameOf } from '@/lib/email/first-name'
 /**
  * What is closing in the next few days, as one email.
  *
@@ -89,7 +90,7 @@ export function closingSoonEmail({
    */
   daysAhead?: number
 }) {
-  const first = (name || '').trim().split(/\s+/)[0]
+  const first = firstNameOf(name)
   const soonest = items[0]
   const when = soonest ? whenPhrase(soonest.deadline, now) : ''
 

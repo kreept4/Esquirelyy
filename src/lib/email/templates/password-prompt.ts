@@ -1,3 +1,4 @@
+import { firstNameOf } from '@/lib/email/first-name'
 /**
  * The nudge to change a password.
  *
@@ -32,7 +33,7 @@ const CONTOUR =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23241F16' stroke-opacity='0.28' stroke-width='1.5'%3E%3Cpath d='M0 20c26-14 54 14 80 0s54-14 80 0'/%3E%3Cpath d='M0 47c26-11 54 11 80 0s54-11 80 0'/%3E%3Cpath d='M0 74c26-16 54 16 80 0s54-16 80 0'/%3E%3Cpath d='M0 101c26-9 54 9 80 0s54-9 80 0'/%3E%3Cpath d='M0 128c26-15 54 15 80 0s54-15 80 0'/%3E%3C/g%3E%3C/svg%3E\")"
 
 export function passwordPromptEmail({ name, siteUrl }: { name?: string; siteUrl: string }) {
-  const first = (name || '').trim().split(/\s+/)[0]
+  const first = firstNameOf(name)
   const greeting = first ? `${first}, when did you last change it?` : 'When did you last change it?'
 
   const subject = first

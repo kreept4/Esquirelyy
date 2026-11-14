@@ -45,6 +45,7 @@
  */
 
 import { daysUntilDay, daysLeftWords } from '@/lib/day'
+import { firstNameOf } from '@/lib/email/first-name'
 
 const INK = '#241F16'
 const AMBER = '#FBBF24'
@@ -119,7 +120,7 @@ export function wbgYppEmail({
      the same threshold the bell uses for its closing rows, so the site agrees
      with itself about when a deadline becomes urgent. */
   const countdownColour = days <= 7 ? CORAL : INK
-  const first = (name || '').trim().split(/\s+/)[0]
+  const first = firstNameOf(name)
   /* ⚠ THE GREETING TRACKS THE COUNT TOO, AND DID NOT USED TO.
      It was a fixed "the World Bank shuts this one soon", which is right on the
      28th and false on the 2nd: 28 days is not soon, and a headline that
